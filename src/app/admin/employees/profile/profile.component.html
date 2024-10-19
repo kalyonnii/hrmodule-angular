@@ -1,0 +1,580 @@
+<div class="container-fluid mt-2" *ngIf="employees">
+  <div class="card heading-card p-3">
+    <div class="row align-items-center">
+      <div class="col-md-10">
+        <div class="d-flex justify-content-start align-items-center mb-2">
+          <div
+            class="d-flex align-items-center pointer-cursor"
+            (click)="goBack()"
+          >
+            <i class="pi pi-arrow-left fw-bold back-btn-icon"></i>
+            <span class="back-btn-text ms-2 text-capitalize">{{
+              employees.employeeName | capitalizeFirst
+            }}</span>
+          </div>
+        </div>
+        <div class="bread-crumb mt-3">
+          <p-breadcrumb [model]="breadCrumbItems"></p-breadcrumb>
+        </div>
+      </div>
+      <div class="col-md-2 text-end">
+        <img
+          src="../../../../assets/images/menu/viewemployee.png"
+          width="100"
+          class="heading-image"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid mt-3 text-capitalize" *ngIf="employees">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card profilecard">
+        <div
+          class="d-flex flex-column align-items-center justify-content-center"
+          style="height: 250px"
+        >
+          <div
+            *ngIf="
+              employees && employees.passPhoto && employees.passPhoto.length > 0
+            "
+          >
+            <ng-container *ngIf="isImageFile(employees.passPhoto[0])">
+              <a [href]="'//' + employees.passPhoto[0]" target="_blank">
+                <img
+                  [src]="'//' + employees.passPhoto[0]"
+                  alt="Profile"
+                  class="profileimg mb-3"
+                  style="width: 190px; height: 190px"
+                />
+              </a>
+            </ng-container>
+            <ng-container *ngIf="!isImageFile(employees.passPhoto[0])">
+              <a [href]="'//' + employees.passPhoto[0]" target="_blank">
+                <i
+                  [class]="getFileIcon(employees.passPhoto[0].split('.').pop())"
+                  class="file-icon"
+                ></i>
+              </a>
+            </ng-container>
+          </div>
+          <div *ngIf="employees && employees.passPhoto.length == 0">
+            <tr class="text-center">
+              <img
+                class="profile-img"
+                src="../../../../assets/images/profile/woman.png"
+                alt="Profile"
+                class="rounded-circle mb-3"
+                style="width: 150px; height: 150px"
+              />
+            </tr>
+          </div>
+          <h5 class="card-title">
+            {{ employees.employeeName | capitalizeFirst }}
+          </h5>
+        </div>
+        <div
+          class="card tabcard"
+          [ngClass]="{ 'active-card': activeSection === 'employeeDetails' }"
+          (click)="selectSection('employeeDetails')"
+        >
+          <div class="">
+            <h5 class="card-name">Employee Details</h5>
+          </div>
+        </div>
+
+        <div
+          class="card tabcard"
+          [ngClass]="{ 'active-card': activeSection === 'addressDetails' }"
+          (click)="selectSection('addressDetails')"
+        >
+          <div class="">
+            <h5 class="card-name">Address Details</h5>
+          </div>
+        </div>
+        <div
+          class="card tabcard"
+          [ngClass]="{ 'active-card': activeSection === 'experienceDetails' }"
+          (click)="selectSection('experienceDetails')"
+        >
+          <div class="">
+            <h5 class="card-name">Experience Details</h5>
+          </div>
+        </div>
+        <div
+          class="card tabcard"
+          [ngClass]="{ 'active-card': activeSection === 'kycDetails' }"
+          (click)="selectSection('kycDetails')"
+        >
+          <div class="">
+            <h5 class="card-name">KYC Details</h5>
+          </div>
+        </div>
+
+        <div
+          class="card tabcard"
+          [ngClass]="{ 'active-card': activeSection === 'accountDetails' }"
+          (click)="selectSection('accountDetails')"
+        >
+          <div class="">
+            <h5 class="card-name">Account Details</h5>
+          </div>
+        </div>
+
+        <div
+          class="card tabcard"
+          [ngClass]="{ 'active-card': activeSection === 'otherDetails' }"
+          (click)="selectSection('otherDetails')"
+        >
+          <div class="">
+            <h5 class="card-name">Other Details</h5>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-8">
+      <ng-container [ngSwitch]="activeSection">
+        <div *ngSwitchCase="'employeeDetails'">
+          <div class="card detailscard">
+            <div
+              class="card-header d-flex justify-content-between align-items-center"
+            >
+              <span>Basic Details</span>
+              <button
+                pButton
+                pRipple
+                type="button"
+                pTooltip="Update"
+                class="editicon"
+                icon="fa fa-pen-to-square"
+                (click)="updateEmployee(employees.employeeId)"
+              ></button>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="info-line">
+                  <span class="icon"><i class="fas fa-user"></i></span>
+                  <div class="label d-flex justify-content-between">
+                    Name<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">
+                    {{ employees.employeeName | capitalizeFirst }}
+                  </div>
+                </div>
+                <div class="info-line">
+                  <span class="icon"><i class="fas fa-id-badge"></i></span>
+                  <div class="label d-flex justify-content-between">
+                    Employee Id<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">{{ employees.customEmployeeId }}</div>
+                </div>
+                <div class="info-line">
+                  <span class="icon"><i class="fas fa-building"></i></span>
+                  <div class="label d-flex justify-content-between">
+                    Department<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">{{ employees.designationName }}</div>
+                </div>
+                <div class="info-line">
+                  <span class="icon"><i class="fas fa-calendar-alt"></i></span>
+                  <div class="label d-flex justify-content-between">
+                    Date Of Joining<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">{{ employees.joiningDate | date }}</div>
+                </div>
+                <div class="info-line">
+                  <span class="icon"><i class="fas fa-briefcase"></i></span>
+                  <div class="label d-flex justify-content-between">
+                    Office Branch<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">{{ employees.ofcBranchName }}</div>
+                </div>
+                <div class="info-line">
+                  <span class="icon"
+                    ><i class="fas fa-money-bill-wave"></i
+                  ></span>
+                  <div class="label d-flex justify-content-between">
+                    Salary<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">
+                    {{ employees.salary | capitalizeFirst }}
+                  </div>
+                </div>
+
+                <div class="info-line">
+                  <span class="icon"><i class="fas fa-envelope"></i></span>
+                  <div class="label d-flex justify-content-between">
+                    Email Id<b>:&nbsp;</b>
+                  </div>
+                  <div class="value text-lowercase">
+                    {{ employees.emailAddress }}
+                  </div>
+                </div>
+                <div class="info-line">
+                  <span class="icon"><i class="fas fa-venus-mars"></i></span>
+                  <div class="label d-flex justify-content-between">
+                    Gender<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">
+                    {{ employees.gender | capitalizeFirst }}
+                  </div>
+                </div>
+                <div class="info-line">
+                  <span class="icon"><i class="fas fa-phone"></i></span>
+                  <div class="label d-flex justify-content-between">
+                    Primary Phone<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">{{ employees.primaryPhone }}</div>
+                </div>
+                <div class="info-line">
+                  <span class="icon"><i class="fas fa-phone-alt"></i></span>
+                  <div class="label d-flex justify-content-between">
+                    Secondary Phone<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">{{ employees.secondaryPhone }}</div>
+                </div>
+                <div class="info-line">
+                  <span class="icon"><i class="fas fa-user-friends"></i></span>
+                  <div class="label d-flex justify-content-between">
+                    Guardian<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">
+                    {{ employees.careOfName | capitalizeFirst }} ({{
+                      employees.careOf | capitalizeFirst
+                    }})
+                  </div>
+                </div>
+                <div class="info-line">
+                  <span class="icon"><i class="fas fa-birthday-cake"></i></span>
+                  <div class="label d-flex justify-content-between">
+                    Date Of Birth<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">{{ employees.dateOfBirth | date }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngSwitchCase="'addressDetails'">
+          <div class="card detailscard">
+            <div
+              class="card-header d-flex justify-content-between align-items-center"
+            >
+              <span>Address Details</span>
+              <button
+                pButton
+                pRipple
+                type="button"
+                pTooltip="Update"
+                class="editicon"
+                icon="fa fa-pen-to-square"
+                (click)="updateEmployee(employees.employeeId)"
+              ></button>
+            </div>
+            <div class="card-body">
+              <div class="row">
+
+                <div class="info-line">
+                  <span class="icon"
+                    ><i class="fas fa-map-location"></i
+                  ></span>
+                  <div class="label d-flex justify-content-between">
+                    City<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">
+                    {{ employees.city | capitalizeFirst }}
+                  </div>
+                </div>
+                <div class="info-line">
+                  <span class="icon"
+                    ><i class="fas fa-map-marker-alt"></i
+                  ></span>
+                  <div class="label d-flex justify-content-between">
+                    Present Address<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">
+                    {{ employees.currentAddress | capitalizeFirst }}
+                  </div>
+                </div>
+                <div class="info-line">
+                  <span class="icon"><i class="fas fa-home"></i></span>
+                  <div class="label d-flex justify-content-between">
+                    Permanent Address<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">
+                    {{ employees.permanentAddress | capitalizeFirst }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngSwitchCase="'experienceDetails'">
+          <div class="card detailscard">
+            <div
+              class="card-header d-flex justify-content-between align-items-center"
+            >
+              <span>Experience Details</span>
+              <button
+                pButton
+                pRipple
+                type="button"
+                pTooltip="Update"
+                class="editicon"
+                icon="fa fa-pen-to-square"
+                (click)="updateEmployee(employees.employeeId)"
+              ></button>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="info-line">
+                  <span class="icon"><i class="fas fa-building"></i></span>
+                  <div class="label d-flex justify-content-between">
+                    Previous Company Name<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">
+                    {{ employees.prevCompanyName | capitalizeFirst }}
+                  </div>
+                </div>
+                <div class="info-line">
+                  <span class="icon"><i class="fas fa-user"></i></span>
+                  <div class="label d-flex justify-content-between">
+                    Previous Employer Name<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">
+                    {{ employees.prevEmployerName | capitalizeFirst }}
+                  </div>
+                </div>
+                <div class="info-line">
+                  <span class="icon"><i class="fas fa-phone"></i></span>
+                  <div class="label d-flex justify-content-between">
+                    Previous Employer Contact<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">
+                    {{ employees.prevEmployerContact | capitalizeFirst }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngSwitchCase="'kycDetails'">
+          <div class="card detailscard">
+            <div
+              class="card-header d-flex justify-content-between align-items-center"
+            >
+              <span>KYC Details</span>
+              <button
+                pButton
+                pRipple
+                type="button"
+                pTooltip="Update"
+                class="editicon"
+                icon="fa fa-pen-to-square"
+                (click)="updateEmployee(employees.employeeId)"
+              ></button>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="info-line">
+                  <span class="icon"><i class="fas fa-address-card"></i></span>
+                  <div class="label d-flex justify-content-between">
+                    Pan Number<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">{{ employees.panNumber }}</div>
+                </div>
+                <div class="info-line">
+                  <span class="icon"><i class="fas fa-fingerprint"></i></span>
+                  <div class="label d-flex justify-content-between">
+                    Aadhar Number<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">{{ employees.aadharNumber }}</div>
+                </div>
+                <div class="">
+                  <div class="label">Pan Card<b>:&nbsp;</b></div>
+                  <div class="value">
+                    <div
+                      *ngIf="
+                        employees &&
+                        employees.panCard &&
+                        employees.panCard.length > 0
+                      "
+                    >
+                      <ng-container *ngIf="isImageFile(employees.panCard[0])">
+                        <a [href]="'//' + employees.panCard[0]" target="_blank">
+                          <img
+                            [src]="'//' + employees.panCard[0]"
+                            alt="Image"
+                            class="profile-img"
+                          />
+                        </a>
+                      </ng-container>
+                      <ng-container *ngIf="!isImageFile(employees.panCard[0])">
+                        <a [href]="'//' + employees.panCard[0]" target="_blank">
+                          <i
+                            [class]="
+                              getFileIcon(employees.panCard[0].split('.').pop())
+                            "
+                            class="file-icon"
+                          ></i>
+                        </a>
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="">
+                  <div class="label">Aadhar Card<b>:&nbsp;</b></div>
+                  <div class="value">
+                    <div
+                      *ngIf="
+                        employees &&
+                        employees.aadharCard &&
+                        employees.aadharCard.length > 0
+                      "
+                      class="files-container"
+                    >
+                      <div
+                        *ngFor="let file of employees.aadharCard"
+                        class="file-item"
+                      >
+                        <ng-container
+                          *ngIf="isImageFile(file); else otherFileTemplate"
+                        >
+                          <a [href]="'//' + file" target="_blank">
+                            <img
+                              [src]="'//' + file"
+                              alt="Aadhar Image"
+                              class="kycimage"
+                            />
+                          </a>
+                        </ng-container>
+                        <ng-template #otherFileTemplate>
+                          <a [href]="'//' + file" target="_blank">
+                            <i
+                              [class]="getFileIcon(file.split('.').pop())"
+                              class="file-icon"
+                            ></i>
+                          </a>
+                        </ng-template>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngSwitchCase="'accountDetails'">
+          <div class="card detailscard">
+            <div
+              class="card-header d-flex justify-content-between align-items-center"
+            >
+              <span>Salary Account Details</span>
+              <button
+                pButton
+                pRipple
+                type="button"
+                pTooltip="Update"
+                class="editicon"
+                icon="fa fa-pen-to-square"
+                (click)="updateEmployee(employees.employeeId)"
+              ></button>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="info-line">
+                  <span class="icon"><i class="fas fa-user"></i></span>
+                  <div class="label d-flex justify-content-between">
+                    Account Holder Name<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">
+                    {{ employees.accountHolderName | capitalizeFirst }}
+                  </div>
+                </div>
+                <div class="info-line">
+                  <span class="icon"
+                    ><i class="fas fa-building-columns"></i
+                  ></span>
+                  <div class="label d-flex justify-content-between">
+                    Bank Name<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">{{ employees.bankName }}</div>
+                </div>
+                <div class="info-line">
+                  <span class="icon"><i class="fas fa-briefcase"></i></span>
+                  <div class="label d-flex justify-content-between">
+                    Branch<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">
+                    {{ employees.bankBranch | capitalizeFirst }}
+                  </div>
+                </div>
+                <div class="info-line">
+                  <span class="icon"><i class="fas fa-credit-card"></i></span>
+                  <div class="label d-flex justify-content-between">
+                    Account Number<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">{{ employees.accountNumber }}</div>
+                </div>
+                <div class="info-line">
+                  <span class="icon"><i class="fas fa-key"></i></span>
+                  <div class="label d-flex justify-content-between">
+                    IFSC Code<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">{{ employees.ifscCode }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngSwitchCase="'otherDetails'">
+          <div class="card detailscard">
+            <div
+              class="card-header d-flex justify-content-between align-items-center"
+            >
+              <span>Other Details</span>
+              <button
+                pButton
+                pRipple
+                type="button"
+                pTooltip="Update"
+                class="editicon"
+                icon="fa fa-pen-to-square"
+                (click)="updateEmployee(employees.employeeId)"
+              ></button>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="info-line">
+                  <span class="icon"><i class="fas fa-user"></i></span>
+                  <div class="label d-flex justify-content-between">
+                    Created By<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">
+                    {{ employees.createdBy | capitalizeFirst }}
+                  </div>
+                </div>
+                <div class="info-line">
+                  <span class="icon"><i class="fas fa-calendar-alt"></i></span>
+                  <div class="label d-flex justify-content-between">
+                    Created On<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">
+                    {{ employees.createdOn | date }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>

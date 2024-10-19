@@ -1,0 +1,188 @@
+<div class="container-fluid mt-2">
+  <div class="card heading-card p-3">
+    <div class="row align-items-center">
+      <div class="col-md-10">
+        <div class="d-flex justify-content-start align-items-center mb-2">
+          <div
+            class="d-flex align-items-center pointer-cursor"
+            (click)="goBack()"
+          >
+            <i class="pi pi-arrow-left fw-bold back-btn-icon"></i>
+            <span class="back-btn-text ms-2 text-capitalize">{{
+              heading
+            }}</span>
+          </div>
+        </div>
+        <div class="bread-crumb mt-3">
+          <p-breadcrumb [model]="breadCrumbItems"></p-breadcrumb>
+        </div>
+      </div>
+      <div class="col-md-2 text-end">
+        <img
+          src="../../../../assets/images/menu/createattendance.png"
+          width="100"
+          class="heading-image"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="loading">
+  <app-preloader></app-preloader>
+</div>
+<div class="text-capitalize table-card mt-3">
+  <div class="selecteddate mb-3">
+    <p-calendar
+      [(ngModel)]="selectedDate"
+      dateFormat="mm/dd/yy"
+      [showIcon]="true"
+      appendTo="body"
+      [showButtonBar]="true"
+      placeholder="Select a date"
+    >
+    </p-calendar>
+  </div>
+  <p-table
+    #employeesTable
+    [value]="employeeDetails"
+    [sortOrder]="-1"
+    [sortField]="'createdOn'"
+    [lazy]="true"
+    (onLazyLoad)="loadEmployees($event)"
+    dataKey="id"
+    [showCurrentPageReport]="true"
+    class="p-datatable-striped table"
+    [totalRecords]="totalEmployeesCount"
+    [loading]="loading"
+    responsiveLayout="scroll"
+    scrollHeight="flex"
+    [globalFilterFields]="[
+      'referenceNo',
+      'customer.firstName',
+      'partner.partnerName',
+      'status'
+    ]"
+    styleClass="p-datatable-customers"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Employees"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Attendance Status</th>
+        <th>Check-in Time</th>
+        <th>Check-Out Time</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-employee>
+      <tr>
+        <td>{{ employee.employeeId }}</td>
+        <td>
+          <div class="d-flex align-items-center">
+            <span class="me-2">
+              <ng-container
+                *ngIf="
+                  employee &&
+                    employee.passPhoto &&
+                    employee.passPhoto.length > 0;
+                  else defaultImage
+                "
+              >
+                <a [href]="'//' + employee.passPhoto[0]" target="_blank">
+                  <img
+                    [src]="'//' + employee.passPhoto[0]"
+                    alt="Image"
+                    class="employeeImage"
+                    style="height: 40px; width: 40px"
+                  />
+                </a>
+              </ng-container>
+              <ng-template #defaultImage>
+                <img
+                  src="../../../assets/images/profile/user.png"
+                  alt="Default Image"
+                  class="employeeImage"
+                  style="height: 40px; width: 40px"
+                />
+              </ng-template>
+            </span>
+            <b>
+              <span *ngIf="employee.employeeName" class="table-column-data">
+                {{ employee.employeeName | capitalizeFirst }}
+              </span>
+            </b>
+          </div>
+        </td>
+        <td>
+          <p-dropdown
+            [options]="attendanceOptions"
+            [(ngModel)]="employee.status"
+            [showClear]="true"
+            appendTo="body"
+            (onChange)="updateAttendanceStatus(employee)"
+            [style]="{ width: '200px' }"
+          ></p-dropdown>
+        </td>
+        <td>
+          <ng-container
+            *ngIf="employee.status === 'Absent'; else editableCheckIn"
+          >
+            <!-- No Check-in time for Absent -->
+          </ng-container>
+          <ng-template #editableCheckIn>
+            <input
+              pInputText
+              type="time"
+              class="rounded-lg"
+              [(ngModel)]="employee.checkInTime"
+              [disabled]="employee.status === 'Absent'"
+              class="form-control"
+              [style]="{ width: '150px' }"
+            />
+          </ng-template>
+        </td>
+        <td>
+          <ng-container
+            *ngIf="employee.status === 'Absent'; else editableCheckOut"
+          >
+            <!-- No Check-out time for Absent -->
+          </ng-container>
+          <ng-template #editableCheckOut>
+            <input
+              pInputText
+              type="time"
+              class="rounded-lg"
+              [(ngModel)]="employee.checkOutTime"
+              [disabled]="employee.status === 'Absent'"
+              class="form-control"
+              [style]="{ width: '150px' }"
+            />
+          </ng-template>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+<div class="d-flex justify-content-center mt-5 mb-5">
+  <button
+    pButton
+    pRipple
+    type="button"
+    class="p-button-info goback-button p-button-raised me-3"
+    (click)="goBack()"
+  >
+    Go Back
+  </button>
+  <button
+    pButton
+    pRipple
+    type="submit"
+    [disabled]="!selectedDate"
+    (click)="saveAttendance()"
+    class="p-button-primary p-button-raised"
+  >
+    {{ actionType === "create" ? "Add" : "Update" }} Attendance
+  </button>
+</div>

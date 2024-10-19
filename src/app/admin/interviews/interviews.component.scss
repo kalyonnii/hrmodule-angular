@@ -1,0 +1,14 @@
+::ng-deep .p-menu .p-submenu-header {
+  background-color: #2e4374 !important;
+  color: #ffffff;
+}
+::ng-deep .p-menu .p-menuitem-link .p-menuitem-icon {
+  color: #8cb5ff !important;
+}
+
+.custom-btn {
+  height: 30px;
+  background-color: #2e4374 !important;
+  border: #2e4374;
+  box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
+}

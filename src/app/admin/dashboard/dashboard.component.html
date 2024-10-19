@@ -1,0 +1,77 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-8 mt-3">
+      <div class="card welcome-card" *ngIf="userDetails">
+        <div class="d-flex justify-content-between">
+          <div class="card-content">
+            <h4>Welcome Back, {{ userDetails.username }}</h4>
+          </div>
+          <img
+            class="card-icon"
+            src="../../../assets/images/dashboard/welcome.png"
+            alt="Welcome Icon"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="loading">
+  <app-preloader></app-preloader>
+</div>
+<div class="bg-color" *ngIf="!loading">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-8 d-flex flex-wrap justify-content-start">
+        <ng-container *ngFor="let item of countsAnalytics">
+          <ng-container *ngIf="item.condition">
+            <div class="col-lg-4 col-md-6 col-sm-6 col-12 mt-2">
+              <div
+                class="card p-3 shadow-sm pointer-cursor m-2 cards"
+                (click)="goToRoute(item.routerLink)"
+              >
+                <div class="d-flex">
+                  <div class="me-4">
+                    <img
+                      src="assets/images/menu/{{ item.name }}.png"
+                      width="70"
+                      alt="{{ item.displayName }} icon"
+                    />
+                  </div>
+                  <div class="d-flex align-items-center">
+                    <div>
+                      <div class="count-sub-title">
+                        {{ item.displayName }}
+                      </div>
+                      <div class="count-title">
+                        {{ item.count }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 col-12">
+        <div class="row mt-3">
+          <ng-container>
+            <div class="col-md-6 col-12" *ngIf="DepartmentChartOptions">
+              <br class="d-lg-none d-md-none" />
+              <div class="card p-2" style="height: 420px">
+                <app-apex-charts
+                  [chartOptions]="DepartmentChartOptions"
+                ></app-apex-charts>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+      <br />
+    </div>
+  </div>
+</div>

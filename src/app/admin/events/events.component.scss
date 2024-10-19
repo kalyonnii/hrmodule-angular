@@ -1,0 +1,45 @@
+/* Calendar container to center the content */
+.calendar-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f4f6f9; /* Light background */
+  padding: 20px;
+}
+
+/* Card design for the calendar */
+.calendar-card {
+  width: 80%;
+  max-width: 1000px;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Header section for the calendar */
+.calendar-header {
+  padding: 15px;
+  background-color: #007bff; /* Primary blue color */
+  color: white;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* Styling the FullCalendar */
+full-calendar {
+  padding: 10px;
+}
+
+@media (max-width: 768px) {
+  .calendar-card {
+    width: 100%;
+    margin: 10px;
+  }
+
+  .calendar-header {
+    font-size: 1.2rem;
+  }
+}
