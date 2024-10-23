@@ -9,6 +9,9 @@ import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
 import { MenuModule } from 'primeng/menu';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
+import { FormsModule } from '@angular/forms';
+import { FilterModule } from 'src/app/filter/filter.module';
+import { InputTextModule } from 'primeng/inputtext';
 
 const routes: Routes = [
   { path: '', component: UsersComponent },
@@ -29,9 +32,12 @@ const routes: Routes = [
   imports: [
     CommonModule,
     TableModule,
+    FormsModule,
     BreadcrumbModule,
     PreloaderModule,
+    FilterModule,
     CapitalizeFirstPipe,
+    InputTextModule,
     MenuModule,
     ButtonModule,
     TooltipModule,

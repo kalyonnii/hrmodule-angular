@@ -19,6 +19,11 @@ export class EmployeesService {
     return this.serviceMeta.httpPost(url, data);
   }
 
+  createEmployeeFromInterview(data) {
+    const url = 'employees/interviewtoemployee';
+    return this.serviceMeta.httpPost(url, data);
+  }
+
   updateEmployee(employeeId, data) {
     const url = 'employees/' + employeeId;
     return this.serviceMeta.httpPut(url, data);

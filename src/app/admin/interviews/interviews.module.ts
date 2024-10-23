@@ -8,6 +8,10 @@ import { MenuModule } from 'primeng/menu';
 import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
 import { ButtonModule } from 'primeng/button';
 import { PreloaderModule } from 'src/app/preloader/preloader.module';
+import { FormsModule } from '@angular/forms';
+import { DropdownModule } from 'primeng/dropdown';
+import { FilterModule } from 'src/app/filter/filter.module';
+import { InputTextModule } from 'primeng/inputtext';
 
 const routes: Routes = [
   { path: '', component: InterviewsComponent },
@@ -31,8 +35,12 @@ const routes: Routes = [
     PreloaderModule,
     TableModule,
     MenuModule,
+    FormsModule,
     CapitalizeFirstPipe,
+    DropdownModule,
     ButtonModule,
+    InputTextModule,
+    FilterModule,
     [RouterModule.forChild(routes)],
   ],
 })

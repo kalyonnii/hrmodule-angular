@@ -62,7 +62,49 @@
     styleClass="p-datatable-customers"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Holidays"
   >
-    <ng-template pTemplate="caption"> </ng-template>
+    <ng-template pTemplate="caption">
+      <div class="row">
+        <div class="col-md-4 mt-1 mb-1 no-padding-small">
+          <div class="p-inputgroup">
+            <input
+              type="text"
+              pInputText
+              placeholder="Search with Employee Name"
+              [(ngModel)]="holidayNameToSearch"
+              (ngModelChange)="
+                inputValueChangeEvent('employeeId', holidayNameToSearch)
+              "
+              (keyup.enter)="filterWithHolidayName()"
+            />
+            <button
+              type="button"
+              pButton
+              icon="pi pi-search"
+              class="p-button-primary"
+              [disabled]="!holidayNameToSearch"
+              (click)="filterWithHolidayName()"
+            ></button>
+          </div>
+        </div>
+        <div class="col-md-4 mt-1 mb-1 no-padding-small"></div>
+        <div class="col-md-4 mt-1 mb-1 no-padding-small text-right">
+          <div class="d-flex">
+            <div class="flex-grow-1 me-2"></div>
+            <div class="d-flex align-items-center pointer-cursor">
+              <app-filter
+                [position]="'right'"
+                [iconColor]="'#33009C'"
+                [iconSize]="'28px!important'"
+                (filterEvent)="applyConfigFilters($event)"
+                [filterConfig]="filterConfig"
+                [showFilterIndication]="appliedFilter"
+              >
+              </app-filter>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
     <ng-template pTemplate="header" let-columns>
       <tr>
         <th pSortableColumn="holidayId">
@@ -124,6 +166,7 @@
                 (click)="updateHoliday(holiday.holidayId)"
               ></button>
               <button
+                *ngIf="userDetails?.designation == 4"
                 pButton
                 type="button"
                 icon="fa fa-trash"

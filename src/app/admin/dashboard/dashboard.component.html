@@ -1,4 +1,8 @@
-<div class="container-fluid">
+<div *ngIf="loading">
+  <app-preloader></app-preloader>
+</div>
+
+<div class="container-fluid mb-3">
   <div class="row">
     <div class="col-md-8 mt-3">
       <div class="card welcome-card" *ngIf="userDetails">
@@ -13,65 +17,259 @@
           />
         </div>
       </div>
-    </div>
-  </div>
-</div>
-
-<div *ngIf="loading">
-  <app-preloader></app-preloader>
-</div>
-<div class="bg-color" *ngIf="!loading">
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-md-8 d-flex flex-wrap justify-content-start">
-        <ng-container *ngFor="let item of countsAnalytics">
-          <ng-container *ngIf="item.condition">
-            <div class="col-lg-4 col-md-6 col-sm-6 col-12 mt-2">
-              <div
-                class="card p-3 shadow-sm pointer-cursor m-2 cards"
-                (click)="goToRoute(item.routerLink)"
-              >
-                <div class="d-flex">
-                  <div class="me-4">
-                    <img
-                      src="assets/images/menu/{{ item.name }}.png"
-                      width="70"
-                      alt="{{ item.displayName }} icon"
-                    />
-                  </div>
-                  <div class="d-flex align-items-center">
-                    <div>
-                      <div class="count-sub-title">
-                        {{ item.displayName }}
+      <div class="bg-color" *ngIf="!loading">
+        <div class="row">
+          <div class="d-flex flex-wrap justify-content-start">
+            <ng-container *ngFor="let item of countsAnalytics">
+              <ng-container *ngIf="item.condition">
+                <div class="col-lg-4 col-md-6 col-sm-6 col-12 mt-2">
+                  <div
+                    class="card p-3 shadow-sm pointer-cursor m-2 cards"
+                    (click)="goToRoute(item.routerLink)"
+                  >
+                    <div class="d-flex">
+                      <div class="me-4">
+                        <img
+                          src="assets/images/menu/{{ item.name }}.png"
+                          width="70"
+                          alt="{{ item.displayName }} icon"
+                        />
                       </div>
-                      <div class="count-title">
-                        {{ item.count }}
+                      <div class="d-flex align-items-center">
+                        <div>
+                          <div class="count-sub-title">
+                            {{ item.displayName }}
+                          </div>
+                          <div class="count-title">
+                            {{ item.count }}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </ng-container>
-        </ng-container>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12 col-12">
-        <div class="row mt-3">
-          <ng-container>
-            <div class="col-md-6 col-12" *ngIf="DepartmentChartOptions">
-              <br class="d-lg-none d-md-none" />
-              <div class="card p-2" style="height: 420px">
-                <app-apex-charts
-                  [chartOptions]="DepartmentChartOptions"
-                ></app-apex-charts>
-              </div>
-            </div>
-          </ng-container>
+              </ng-container>
+            </ng-container>
+          </div>
         </div>
       </div>
-      <br />
+    </div>
+    <div class="col-md-4 mt-3">
+      <div class="card attendancecard">
+        <div class="text-center d-flex justify-content-between">
+          <h4 class="attendance-heading">Today Attendance</h4>
+          <p-calendar
+            [(ngModel)]="selectedDate"
+            dateFormat="yy-mm-dd"
+            [showIcon]="true"
+            [style]="{ width: '200px' }"
+            appendTo="body"
+            [showButtonBar]="true"
+            (ngModelChange)="onDateChange($event)"
+            placeholder="Select a date"
+          >
+          </p-calendar>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6">
+            <div class="info-line">
+              <span class="icon text-success"
+                ><i class="fas fa-check"></i
+              ></span>
+              <div class="label d-flex justify-content-between">
+                Present<b>:&nbsp;</b>
+              </div>
+              <div class="value">{{ totalPresentCount }}</div>
+            </div>
+            <div class="info-line">
+              <span class="icon text-danger"><i class="fas fa-xmark"></i></span>
+              <div class="label d-flex justify-content-between">
+                Absent<b>:&nbsp;</b>
+              </div>
+              <div class="value">{{ totalAbsentCount }}</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="info-line">
+              <span class="icon text-warning"
+                ><i class="fas fa-star-half-stroke"></i
+              ></span>
+              <div class="label d-flex justify-content-between">
+                Half-day<b>:&nbsp;</b>
+              </div>
+              <div class="value">{{ totalHalfDayCount }}</div>
+            </div>
+            <div class="info-line">
+              <span class="icon text-primary"
+                ><i class="fas fa-circle-exclamation"></i
+              ></span>
+              <div class="label d-flex justify-content-between">
+                Late<b>:&nbsp;</b>
+              </div>
+              <div class="value">{{ totalLateCount }}</div>
+            </div>
+          </div>
+        </div>
+        <h5>Absent Employees:</h5>
+        <div class="scrollable-section">
+          <p-table
+            #employeesTable
+            [value]="employeeDetails"
+            [sortOrder]="-1"
+            [sortField]="'createdOn'"
+            [lazy]="true"
+            (onLazyLoad)="loadEmployees($event)"
+            dataKey="id"
+            [showCurrentPageReport]="true"
+            class="p-datatable-striped table"
+            [totalRecords]="totalEmployeesCount"
+            [loading]="loading"
+            responsiveLayout="scroll"
+            scrollHeight="flex"
+            [globalFilterFields]="[
+              'referenceNo',
+              'customer.firstName',
+              'partner.partnerName',
+              'status'
+            ]"
+            styleClass="p-datatable-customers absenttable"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Employees"
+          >
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Employee</th>
+                <th>Status</th>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-employee>
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <span class="me-2">
+                      <ng-container
+                        *ngIf="
+                          employee &&
+                            employee.passPhoto &&
+                            employee.passPhoto.length > 0;
+                          else defaultImage
+                        "
+                      >
+                        <a
+                          [href]="'//' + employee.passPhoto[0]"
+                          target="_blank"
+                        >
+                          <img
+                            [src]="'//' + employee.passPhoto[0]"
+                            alt="Image"
+                            class="employeeImage"
+                            style="height: 40px; width: 40px"
+                          />
+                        </a>
+                      </ng-container>
+                      <ng-template #defaultImage>
+                        <img
+                          src="../../../assets/images/profile/user.png"
+                          alt="Default Image"
+                          class="employeeImage"
+                          style="height: 40px; width: 40px"
+                        />
+                      </ng-template>
+                    </span>
+                    <b>
+                      <span
+                        *ngIf="employee.employeeName"
+                        class="table-column-data"
+                      >
+                        {{ employee.employeeName | capitalizeFirst }}
+                      </span>
+                    </b>
+                  </div>
+                </td>
+                <td>Absent</td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr class="text-center">
+                <td colspan="10" class="text-center fw-bold">
+                  <img
+                    src="../../../assets/images/menu/nodata.gif"
+                    width="200"
+                    height="200"
+                  />
+                  <p>No Absent Data Found</p>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
     </div>
   </div>
+  <div class="row">
+    <div class="col-md-12 col-12">
+      <div class="row mt-3">
+        <ng-container>
+          <div class="col-md-4 col-12" *ngIf="DepartmentChartOptions">
+            <br class="d-lg-none d-md-none" />
+            <div class="card p-2 chart-container" style="height: 420px">
+              <app-apex-charts
+                [chartOptions]="DepartmentChartOptions"
+              ></app-apex-charts>
+            </div>
+          </div>
+        </ng-container>
+
+        <div class="col-md-4 col-12" *ngIf="pieChartOptions">
+          <br class="d-lg-none d-md-none" />
+          <div class="card p-2" style="height: 420px; position: relative">
+            <div>
+              <app-apex-charts
+                [chartOptions]="pieChartOptions"
+              ></app-apex-charts>
+              <div
+                class="nodata-container"
+                *ngIf="maleCount == 0 && femaleCount == 0"
+              >
+                <img
+                  src="../../../assets/images/menu/nodata.gif"
+                  alt="No Data Available"
+                  class="nodata"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 col-12" *ngIf="branchpieChartOptions">
+          <br class="d-lg-none d-md-none" />
+          <div class="card p-2" style="height: 420px; position: relative">
+            <div>
+              <app-apex-charts
+                [chartOptions]="branchpieChartOptions"
+              ></app-apex-charts>
+              <div
+                class="nodata-container"
+                *ngIf="panjaguttaCount == 0 && BegumpetCount == 0"
+              >
+                <img
+                  src="../../../assets/images/menu/nodata.gif"
+                  alt="No Data Available"
+                  class="nodata"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br />
+  </div>
+  <footer class="bg-light card text-center text-lg-start mt-3">
+    <div class="text-center fw-bold">
+      © 2024 <span style="color: #1e4079">The</span>&nbsp;<b
+        style="color: #51c297"
+        >Fintalk</b
+      >. | All Rights Reserved
+    </div>
+  </footer>
 </div>

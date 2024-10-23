@@ -219,7 +219,7 @@
                     Gender<b>:&nbsp;</b>
                   </div>
                   <div class="value">
-                    {{ employees.gender | capitalizeFirst }}
+                    {{ employees.genderName | capitalizeFirst }}
                   </div>
                 </div>
                 <div class="info-line">
@@ -276,11 +276,8 @@
             </div>
             <div class="card-body">
               <div class="row">
-
                 <div class="info-line">
-                  <span class="icon"
-                    ><i class="fas fa-map-location"></i
-                  ></span>
+                  <span class="icon"><i class="fas fa-map-location"></i></span>
                   <div class="label d-flex justify-content-between">
                     City<b>:&nbsp;</b>
                   </div>
@@ -358,6 +355,57 @@
                     {{ employees.prevEmployerContact | capitalizeFirst }}
                   </div>
                 </div>
+                <ng-container>
+                  <div
+                    class="card-header d-flex justify-content-between align-items-center mb-2"
+                  >
+                    <span>Other Documents</span>
+                  </div>
+                  <ng-container
+                    *ngFor="let document of employees.otherDocuments"
+                  >
+                    <div class="info-line">
+                      <span class="icon"><i class="fas fa-file"></i></span>
+                      <div class="label d-flex justify-content-between">
+                        {{ document.name }}<b>:&nbsp;</b>
+                      </div>
+                      <div class="value">
+                        <div
+                          *ngIf="
+                            document.otherDocuments &&
+                            document.otherDocuments.length > 0
+                          "
+                          class="files-container"
+                        >
+                          <div
+                            *ngFor="let file of document.otherDocuments"
+                            class="file-item"
+                          >
+                            <ng-container
+                              *ngIf="isImageFile(file); else otherFileTemplate"
+                            >
+                              <a [href]="'//' + file" target="_blank">
+                                <img
+                                  [src]="'//' + file"
+                                  alt="{{ document.name }} Image"
+                                  class="otherdocs"
+                                />
+                              </a>
+                            </ng-container>
+                            <ng-template #otherFileTemplate>
+                              <a [href]="'//' + file" target="_blank">
+                                <i
+                                  [class]="getFileIcon(file.split('.').pop())"
+                                  class="file-icon"
+                                ></i>
+                              </a>
+                            </ng-template>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-container>
+                </ng-container>
               </div>
             </div>
           </div>
@@ -403,26 +451,32 @@
                         employees.panCard &&
                         employees.panCard.length > 0
                       "
+                      class="files-container"
                     >
-                      <ng-container *ngIf="isImageFile(employees.panCard[0])">
-                        <a [href]="'//' + employees.panCard[0]" target="_blank">
-                          <img
-                            [src]="'//' + employees.panCard[0]"
-                            alt="Image"
-                            class="profile-img"
-                          />
-                        </a>
-                      </ng-container>
-                      <ng-container *ngIf="!isImageFile(employees.panCard[0])">
-                        <a [href]="'//' + employees.panCard[0]" target="_blank">
-                          <i
-                            [class]="
-                              getFileIcon(employees.panCard[0].split('.').pop())
-                            "
-                            class="file-icon"
-                          ></i>
-                        </a>
-                      </ng-container>
+                      <div
+                        *ngFor="let file of employees.panCard"
+                        class="file-item"
+                      >
+                        <ng-container
+                          *ngIf="isImageFile(file); else otherFileTemplate"
+                        >
+                          <a [href]="'//' + file" target="_blank">
+                            <img
+                              [src]="'//' + file"
+                              alt="Aadhar Image"
+                              class="kycimage"
+                            />
+                          </a>
+                        </ng-container>
+                        <ng-template #otherFileTemplate>
+                          <a [href]="'//' + file" target="_blank">
+                            <i
+                              [class]="getFileIcon(file.split('.').pop())"
+                              class="file-icon"
+                            ></i>
+                          </a>
+                        </ng-template>
+                      </div>
                     </div>
                   </div>
                 </div>

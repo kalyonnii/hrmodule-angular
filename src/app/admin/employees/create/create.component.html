@@ -110,6 +110,7 @@
                   [placeholder]="'Select ' + field.label"
                   [showIcon]="true"
                   appendTo="body"
+                  dateFormat="yy-mm-dd"
                   [showButtonBar]="true"
                 ></p-calendar>
               </ng-container>
@@ -161,6 +162,7 @@
                   [formControlName]="field.controlName"
                   [placeholder]="'Select ' + field.label"
                   [showIcon]="true"
+                  dateFormat="yy-mm-dd"
                   appendTo="body"
                   [showButtonBar]="true"
                 ></p-calendar>
@@ -201,26 +203,28 @@
                 pRipple
                 type="button"
                 class="p-button-primary me-2"
-                (click)="addOtherAttachmentsRow()"
+                (click)="addotherDocumentsRow()"
               >
                 <i class="pi pi-plus"></i>&nbsp;Add Additional Documents
               </button>
             </div>
-            <h3 style="font-weight: bold; color: rgba(2, 5, 129, 0.91)">
+            <h3
+              style="
+                font-weight: bold;
+
+                color: rgba(2, 5, 129, 0.91);
+              "
+            >
               Other Documents
             </h3>
             <div
               class="row"
-              formArrayName="otherAttachments"
-              *ngFor="
-                let attachment of otherAttachments.controls;
-                let i = index
-              "
+              *ngFor="let attachments of otherDocuments; let i = index"
             >
-              <div [formGroupName]="i" class="col-md-3 mt-2">
+              <div class="col-md-3 mt-2">
                 <div>
                   <div class="my-1">
-                    <label>Document Name&nbsp;</label>
+                    <label>Document Name&nbsp; </label>
                   </div>
                   <input
                     pInputText
@@ -228,7 +232,8 @@
                     [style]="{ width: '100%' }"
                     type="text"
                     placeholder="Enter Document Name"
-                    formControlName="name"
+                    [ngModelOptions]="{ standalone: true }"
+                    [(ngModel)]="attachments['name']"
                     autocomplete="off"
                   />
                 </div>
@@ -243,8 +248,8 @@
                       pButton
                       pRipple
                       type="button"
-                      class="p-button-info"
-                      (click)="uploadFiles('otherAttachments', '*/*', i)"
+                      class="p-button-info me-2"
+                      (click)="uploadFiles('otherDocuments', '*/*', i)"
                     >
                       <i class="pi pi-upload"></i>&nbsp;Upload Files
                     </button>
@@ -252,34 +257,52 @@
                       pButton
                       pRipple
                       type="button"
-                      class="p-button-danger ml-1"
+                      class="p-button-danger row-delete ml-1"
                       *ngIf="i > 0"
-                      (click)="deleteOtherAttachmentsRow(i)"
+                      (click)="deleteotherDocumentsRow(i)"
                     >
-                      <i class="pi pi-times"></i>
+                      <i class="fa fa-trash"></i>
                     </button>
                   </div>
                 </div>
+
                 <div
                   *ngIf="
-                    employeeData?.otherDocuments[i]?.otherAttachments?.length >
-                    0
+                    employeeData &&
+                    employeeData.otherDocuments &&
+                    employeeData.otherDocuments[i] &&
+                    employeeData.otherDocuments[i].otherDocuments &&
+                    employeeData.otherDocuments[i].otherDocuments.length > 0
                   "
                   class="mt-2"
                 >
                   <span
                     *ngFor="
-                      let file of employeeData.otherDocuments[i]
-                        .otherAttachments
+                      let file of employeeData.otherDocuments[i].otherDocuments;
+                      let fileIndex = index
                     "
-                    class="me-2"
+                    class="file-wrapper"
                   >
-                    <a [href]="'//' + file" target="_blank">
+                    <!-- File Link -->
+                    <a [href]="'//' + file" target="_blank" class="file-link">
                       <i
                         [class]="getFileIcon(file.split('.').pop())"
-                        class="file-icon"
+                        class="file-icon me-2"
                       ></i>
                     </a>
+
+                    <!-- Delete Button -->
+                    <button
+                      pButton
+                      *ngIf="this.userDetails?.designation == 4"
+                      type="button"
+                      class="delete-btn p-button-danger p-button-sm"
+                      (click)="
+                        confirmDelete(file, 'otherDocuments', i, fileIndex)
+                      "
+                    >
+                      <i class="pi pi-times"></i>
+                    </button>
                   </span>
                 </div>
               </div>
@@ -346,6 +369,7 @@
                       </a>
                       <button
                         pButton
+                        *ngIf="this.userDetails?.designation == 4"
                         type="button"
                         class="delete-btn p-button-danger p-button-sm ml-2"
                         (click)="
@@ -359,7 +383,6 @@
                       </button>
                     </div>
                   </div>
-
                   <ng-container *ngIf="field.controlName !== 'passPhoto'">
                     <button
                       pButton
@@ -395,9 +418,9 @@
                             class="file-icon me-2"
                           ></i>
                         </a>
-
                         <button
                           pButton
+                          *ngIf="this.userDetails?.designation == 4"
                           type="button"
                           class="delete-btn p-button-danger p-button-sm"
                           (click)="confirmDelete(file, field.controlName)"
@@ -412,7 +435,6 @@
             </div>
           </div>
         </div>
-
         <div *ngIf="activeIndex === 4">
           <h3 style="font-weight: bold; color: rgba(2, 5, 129, 0.91)">
             Salary Account Details
@@ -461,6 +483,7 @@
                   [formControlName]="field.controlName"
                   [placeholder]="'Select ' + field.label"
                   [showIcon]="true"
+                  dateFormat="yy-mm-dd"
                   appendTo="body"
                   [showButtonBar]="true"
                 ></p-calendar>

@@ -68,6 +68,52 @@
     styleClass="p-datatable-customers"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Attendance"
   >
+    <ng-template pTemplate="caption">
+      <div class="row">
+        <div class="col-md-1 mt-1 mb-1 no-padding-small">
+          <div class="p-inputgroup">
+            <p-dropdown
+              [options]="years"
+              [style]="{ width: '120px' }"
+              [(ngModel)]="selectedYear"
+              placeholder="Select Year"
+              (onChange)="onYearOrMonthChange()"
+            ></p-dropdown>
+          </div>
+        </div>
+
+        <div class="col-md-1 mt-1 mb-1 no-padding-small">
+          <div class="p-inputgroup">
+            <p-dropdown
+              [options]="months"
+              [style]="{ width: '120px' }"
+              [(ngModel)]="selectedMonth"
+              placeholder="Select Month"
+              (onChange)="onYearOrMonthChange()"
+            ></p-dropdown>
+          </div>
+        </div>
+
+        <div class="col-md-4 mt-1 mb-1 no-padding-small">
+          <div class="p-inputgroup">
+            <p-calendar
+              [(ngModel)]="selectedDate"
+              [showIcon]="true"
+              dateFormat="mm/dd/yy"
+              [style]="{ width: '300px' }"
+              appendTo="body"
+              placeholder="Select Date"
+              [showButtonBar]="true"
+              [minDate]="minDate"
+              [maxDate]="maxDate"
+              (ngModelChange)="filterByDate()"
+              [defaultDate]="defaultDate"
+            ></p-calendar>
+          </div>
+        </div>
+      </div>
+
+    </ng-template>
     <ng-template pTemplate="header">
       <tr>
         <th pSortableColumn="attendanceId">
@@ -120,6 +166,7 @@
                 (click)="updateAttendance(attendance.attendanceId)"
               ></button>
               <button
+                *ngIf="userDetails?.designation == 4"
                 pButton
                 type="button"
                 icon="fa fa-trash"

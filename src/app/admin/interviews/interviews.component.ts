@@ -1,29 +1,41 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { EmployeesService } from '../employees/employees.service';
 import { ConfirmationService, MenuItem } from 'primeng/api';
 import { ToastService } from 'src/app/services/toast.service';
 import { RoutingService } from 'src/app/services/routing-service';
 import { projectConstantsLocal } from 'src/app/constants/project-constants';
+import { LocalStorageService } from 'src/app/services/local-storage.service';
 @Component({
   selector: 'app-interviews',
   templateUrl: './interviews.component.html',
   styleUrls: ['./interviews.component.scss'],
 })
-export class InterviewsComponent {
+export class InterviewsComponent implements OnInit {
   breadCrumbItems: any = [];
   currentTableEvent: any;
   totalInterviewsCount: any = 0;
   loading: any;
+  userDetails: any;
+  appliedFilter: {};
+  filterConfig: any[] = [];
+  searchFilter: any = {};
   interviews: any = [];
+  candidateNameToSearch: any;
+  countsAnalytics: any[] = [];
+  interviewStatusCount: { [key: number]: number } = { 1: 0, 2: 0, 3: 0 };
   interviewInternalStatusList: any = projectConstantsLocal.INTERVIEW_STATUS;
+  scheduledloactionDetails = projectConstantsLocal.BRANCH_ENTITIES;
+  attendedinterviewDetails = projectConstantsLocal.ATTENDED_INTERVIEW_ENTITIES;
+  selectedInterviewStatus: any;
 
   constructor(
     private employeesService: EmployeesService,
     private location: Location,
     private confirmationService: ConfirmationService,
     private toastService: ToastService,
-    private routingService: RoutingService
+    private routingService: RoutingService,
+    private localStorageService: LocalStorageService
   ) {
     this.breadCrumbItems = [
       {
@@ -35,41 +47,397 @@ export class InterviewsComponent {
     ];
   }
 
+  ngOnInit(): void {
+    let userDetails =
+      this.localStorageService.getItemFromLocalStorage('userDetails');
+    this.userDetails = userDetails.user;
+    this.updateCountsAnalytics();
+    this.setFilterConfig();
+  }
+
+  setFilterConfig() {
+    this.filterConfig = [
+      {
+        header: 'Interview Id',
+        data: [
+          {
+            field: 'interviewId',
+            title: 'Interview Id',
+            type: 'text',
+            filterType: 'like',
+          },
+        ],
+      },
+      {
+        header: 'Candidate Name',
+        data: [
+          {
+            field: 'candidateName',
+            title: 'Candidate Name',
+            type: 'text',
+            filterType: 'like',
+          },
+        ],
+      },
+      {
+        header: 'Created Date Range',
+        data: [
+          {
+            field: 'createdOn',
+            title: 'From',
+            type: 'date',
+            filterType: 'gte',
+          },
+          { field: 'createdOn', title: 'To', type: 'date', filterType: 'lte' },
+        ],
+      },
+      {
+        header: 'Contact Number',
+        data: [
+          {
+            field: 'primaryPhone',
+            title: 'Phone Number',
+            type: 'text',
+            filterType: 'like',
+          },
+        ],
+      },
+      {
+        header: 'Date Of Birth',
+        data: [
+          {
+            field: 'dateOfBirth',
+            title: 'Date Of Birth',
+            type: 'date',
+            filterType: 'like',
+          },
+        ],
+      },
+      {
+        header: 'Qualification',
+        data: [
+          {
+            field: 'qualification',
+            title: 'Qualification',
+            type: 'text',
+            filterType: 'like',
+          },
+        ],
+      },
+
+      {
+        header: 'created On  ',
+        data: [
+          {
+            field: 'createdOn',
+            title: 'Date ',
+            type: 'date',
+            filterType: 'like',
+          },
+        ],
+      },
+
+      {
+        header: 'Current Address',
+        data: [
+          {
+            field: 'currentAddress',
+            title: 'Current Address',
+            type: 'text',
+            filterType: 'like',
+          },
+        ],
+      },
+      {
+        header: 'Permanent Address',
+        data: [
+          {
+            field: 'permanentAddress',
+            title: 'Permanent Address',
+            type: 'text',
+            filterType: 'like',
+          },
+        ],
+      },
+
+      {
+        header: 'Experience',
+        data: [
+          {
+            field: 'experience',
+            title: 'Experience',
+            type: 'text',
+            filterType: 'like',
+          },
+        ],
+      },
+
+      {
+        header: 'Scheduled Location',
+        data: [
+          {
+            field: 'scheduledLocation',
+            title: 'Scheduled Location',
+            type: 'dropdown',
+            filterType: 'like',
+            options: this.scheduledloactionDetails.map((entity) => ({
+              label: entity.displayName,
+              value: entity.id,
+            })),
+          },
+        ],
+      },
+
+      {
+        header: 'Scheduled Date ',
+        data: [
+          {
+            field: 'scheduledDate',
+            title: 'Date ',
+            type: 'date',
+            filterType: 'like',
+          },
+        ],
+      },
+
+      {
+        header: 'Postponed Date ',
+        data: [
+          {
+            field: 'postponedDate',
+            title: 'Date ',
+            type: 'date',
+            filterType: 'like',
+          },
+        ],
+      },
+
+      {
+        header: 'Attended Interview?',
+        data: [
+          {
+            field: 'attendedInterview',
+            title: 'Attended Interview',
+            type: 'dropdown',
+            filterType: 'like',
+            options: this.attendedinterviewDetails.map((entity) => ({
+              label: entity.displayName,
+              value: entity.id,
+            })),
+          },
+        ],
+      },
+      {
+        header: 'Reference No',
+        data: [
+          {
+            field: 'referenceNo',
+            title: 'Reference No',
+            type: 'text',
+            filterType: 'like',
+          },
+        ],
+      },
+    ];
+  }
+  updateCountsAnalytics() {
+    this.countsAnalytics = [
+      {
+        name: 'user',
+        displayName: 'Interviews',
+        count: this.totalInterviewsCount,
+        textcolor: '#6C5FFC',
+        backgroundcolor: '#F0EFFF',
+      },
+      {
+        name: 'star-half-stroke',
+        displayName: 'Pending',
+        count: this.interviewStatusCount[1],
+        textcolor: '#FFC107',
+        backgroundcolor: '#FFF3D6',
+      },
+      {
+        name: 'check-circle',
+        displayName: 'Selected',
+        count: this.interviewStatusCount[2],
+        textcolor: '#2ECC71',
+        backgroundcolor: '#F0F9E8',
+      },
+      {
+        name: 'circle-xmark',
+        displayName: 'Rejected',
+        count: this.interviewStatusCount[3],
+        textcolor: '#DC3545',
+        backgroundcolor: '#F8D7DA',
+      },
+    ];
+  }
   actionItems(interview: any): MenuItem[] {
     const menuItems: any = [{ label: 'Actions', items: [] }];
 
     if (interview.interviewInternalStatus === 1) {
       menuItems[0].items.push({
-        label: 'In Active',
+        label: 'Slected',
+        icon: 'fa fa-circle-check',
+        command: () => this.selectedInterview(interview),
+      });
+      menuItems[0].items.push({
+        label: 'Rejected',
+        icon: 'fa fa-circle-xmark',
+        command: () => this.rejectedInterview(interview),
+      });
+
+      menuItems[0].items.push({
+        label: 'Update',
+        icon: 'fa fa-pen-to-square',
+        command: () => this.updateInterview(interview.interviewId),
+      });
+      if (this.userDetails?.designation == 4) {
+        menuItems[0].items.push({
+          label: 'Delete',
+          icon: 'fa fa-trash',
+          command: () => this.confirmDelete(interview.interviewId),
+        });
+      }
+    } else if (interview.interviewInternalStatus === 2) {
+      menuItems[0].items.push({
+        label: 'Send To Employee',
         icon: 'fa fa-right-to-bracket',
-        command: () => this.inactiveInterview(interview),
+        command: () => this.sendToEmployee(interview),
+      });
+
+      menuItems[0].items.push({
+        label: 'Pending',
+        icon: 'fa fa-clock-rotate-left',
+        command: () => this.pendingInterview(interview),
+      });
+      menuItems[0].items.push({
+        label: 'Rejected',
+        icon: 'fa fa-circle-xmark',
+        command: () => this.rejectedInterview(interview),
       });
       menuItems[0].items.push({
         label: 'Update',
         icon: 'fa fa-pen-to-square',
         command: () => this.updateInterview(interview.interviewId),
       });
-
+      if (this.userDetails?.designation == 4) {
+        menuItems[0].items.push({
+          label: 'Delete',
+          icon: 'fa fa-trash',
+          command: () => this.confirmDelete(interview.interviewId),
+        });
+      }
+    } else if (interview.interviewInternalStatus === 3) {
       menuItems[0].items.push({
-        label: 'Delete',
-        icon: 'fa fa-trash',
-        command: () => this.confirmDelete(interview.interviewId),
+        label: 'Pending',
+        icon: 'fa fa-clock-rotate-left',
+        command: () => this.pendingInterview(interview),
       });
-    } else if (interview.interviewInternalStatus === 2) {
       menuItems[0].items.push({
-        label: 'Active',
-        icon: 'fa fa-right-to-bracket',
-        command: () => this.activateInterview(interview),
+        label: 'Slected',
+        icon: 'fa fa-circle-check',
+        command: () => this.selectedInterview(interview),
       });
+      menuItems[0].items.push({
+        label: 'Update',
+        icon: 'fa fa-pen-to-square',
+        command: () => this.updateInterview(interview.interviewId),
+      });
+      if (this.userDetails?.designation == 4) {
+        menuItems[0].items.push({
+          label: 'Delete',
+          icon: 'fa fa-trash',
+          command: () => this.confirmDelete(interview.interviewId),
+        });
+      }
     }
     return menuItems;
   }
 
-  inactiveInterview(interview) {
+  inputValueChangeEvent(dataType, value) {
+    if (value == '') {
+      this.searchFilter = {};
+      console.log(this.currentTableEvent);
+      this.loadInterviews(this.currentTableEvent);
+    }
+  }
+  filterWithCandidateName() {
+    let searchFilter = { 'candidateName-like': this.candidateNameToSearch };
+    this.applyFilters(searchFilter);
+  }
+  applyFilters(searchFilter = {}) {
+    this.searchFilter = searchFilter;
+    console.log(this.currentTableEvent);
+    this.loadInterviews(this.currentTableEvent);
+  }
+  statusChange(event) {
+    this.loadInterviews(this.currentTableEvent);
+  }
+  applyConfigFilters(event) {
+    let api_filter = event;
+    if (api_filter['reset']) {
+      delete api_filter['reset'];
+      this.appliedFilter = {};
+    } else {
+      this.appliedFilter = api_filter;
+    }
+    this.loadInterviews(this.currentTableEvent);
+  }
+  sendToEmployee(interview) {
+    this.loading = true;
+    const formData: any = {
+      employeeName: interview.candidateName,
+      primaryPhone: interview.primaryPhone,
+      dateOfBirth: interview.dateOfBirth,
+      currentAddress: interview.currentAddress,
+      permanentAddress: interview.permanentAddress,
+    };
+    console.log('Form Data:', formData);
+    this.employeesService.createEmployeeFromInterview(formData).subscribe(
+      (employeeData: any) => {
+        if (employeeData?.id) {
+          console.log('Created Employee ID:', employeeData.id);
+          this.toastService.showSuccess('Employee Created Successfully');
+          this.routingService.handleRoute(
+            `employees/update/${employeeData.id}`,
+            null
+          );
+          const interviewFormData = {
+            candidateName: interview.candidateName,
+            referenceNo: employeeData.id,
+          };
+          console.log('interviewFormData', interviewFormData);
+          this.employeesService
+            .updateInterview(interview.interviewId, interviewFormData)
+            .subscribe(
+              (updateResponse: any) => {
+                this.loading = false;
+                console.log('Update Response:', updateResponse);
+              },
+              (error: any) => {
+                this.loading = false;
+                console.error('Interview Update Error:', error);
+                this.toastService.showError(error);
+              }
+            );
+        }
+      },
+      (error: any) => {
+        this.loading = false;
+        console.error('Employee Creation Error:', error);
+        this.toastService.showError(error);
+      }
+    );
+  }
+  selectedInterview(interview) {
     this.changeInterviewStatus(interview.interviewId, 2);
   }
 
-  activateInterview(interview) {
+  rejectedInterview(interview) {
+    this.changeInterviewStatus(interview.interviewId, 3);
+  }
+  pendingInterview(interview) {
     this.changeInterviewStatus(interview.interviewId, 1);
   }
   changeInterviewStatus(interviewId, statusId) {
@@ -119,7 +487,22 @@ export class InterviewsComponent {
   loadInterviews(event) {
     this.currentTableEvent = event;
     let api_filter = this.employeesService.setFiltersFromPrimeTable(event);
-    api_filter = Object.assign({}, api_filter);
+    api_filter = Object.assign(
+      {},
+      api_filter,
+      this.searchFilter,
+      this.appliedFilter
+    );
+    if (this.selectedInterviewStatus) {
+      if (this.selectedInterviewStatus && this.selectedInterviewStatus.name) {
+        if (this.selectedInterviewStatus.name != 'all') {
+          api_filter['interviewInternalStatus-eq'] =
+            this.selectedInterviewStatus.id;
+        } else {
+          api_filter['lastInterviewInternalStatus-or'] = '1,2,3';
+        }
+      }
+    }
     if (api_filter) {
       this.getInterviewCount(api_filter);
       this.getInterviews(api_filter);
@@ -143,6 +526,8 @@ export class InterviewsComponent {
       (response) => {
         this.interviews = response;
         console.log('Interviews', this.interviews);
+        this.interviewStatusCount = this.countInterviewInternalStatus(response);
+        this.updateCountsAnalytics();
         this.loading = false;
       },
       (error: any) => {
@@ -152,6 +537,16 @@ export class InterviewsComponent {
     );
   }
 
+  countInterviewInternalStatus(interviews) {
+    const statusCount = { 1: 0, 2: 0, 3: 0 };
+    interviews.forEach((interview) => {
+      if (interview.interviewInternalStatus in statusCount) {
+        statusCount[interview.interviewInternalStatus]++;
+      }
+    });
+
+    return statusCount;
+  }
   getStatusName(statusId) {
     if (
       this.interviewInternalStatusList &&
@@ -175,10 +570,12 @@ export class InterviewsComponent {
     backgroundColor: string;
   } {
     switch (status) {
-      case 'new':
-        return { textColor: '#0F006D', backgroundColor: '#DED3FF' };
-      case 'archived':
+      case 'selected':
+        return { textColor: '#5DCC0B', backgroundColor: '#E4F7D6' };
+      case 'pending':
         return { textColor: '#FFBA15', backgroundColor: '#FFF3D6' };
+      case 'rejected':
+        return { textColor: '#FF555A', backgroundColor: '#FFE2E3' };
       default:
         return { textColor: 'black', backgroundColor: 'white' };
     }

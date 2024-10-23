@@ -1,29 +1,42 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { RoutingService } from 'src/app/services/routing-service';
 import { EmployeesService } from './employees.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { ConfirmationService, MenuItem } from 'primeng/api';
 import { projectConstantsLocal } from 'src/app/constants/project-constants';
+import { LocalStorageService } from 'src/app/services/local-storage.service';
+import { Table } from 'primeng/table';
 @Component({
   selector: 'app-employees',
   templateUrl: './employees.component.html',
   styleUrls: ['./employees.component.scss'],
 })
-export class EmployeesComponent {
+export class EmployeesComponent implements OnInit {
   breadCrumbItems: any = [];
   currentTableEvent: any;
+  filterConfig: any[] = [];
   totalEmployeesCount: any = 0;
   loading: any;
+  appliedFilter: {};
+  userDetails: any;
+  searchFilter: any = {};
+  employeeNameToSearch: any;
+  @ViewChild('employeesTable') employeesTable!: Table;
   employees: any = [];
+  designationDetails: any = projectConstantsLocal.DEPARTMENT_ENTITIES;
+  branchDetails: any = projectConstantsLocal.BRANCH_ENTITIES;
+  genderDetails: any = projectConstantsLocal.GENDER_ENTITIES;
   employeeInternalStatusList: any = projectConstantsLocal.EMPLOYEE_STATUS;
+  selectedEmployeeStatus = this.employeeInternalStatusList[1];
 
   constructor(
     private employeesService: EmployeesService,
     private location: Location,
     private confirmationService: ConfirmationService,
     private toastService: ToastService,
-    private routingService: RoutingService
+    private routingService: RoutingService,
+    private localStorageService: LocalStorageService
   ) {
     this.breadCrumbItems = [
       {
@@ -35,6 +48,16 @@ export class EmployeesComponent {
     ];
   }
 
+  ngOnInit(): void {
+    const userDetails =
+      this.localStorageService.getItemFromLocalStorage('userDetails');
+    if (userDetails) {
+      this.userDetails = userDetails.user;
+      console.log(this.userDetails);
+    }
+
+    this.setFilterConfig();
+  }
   actionItems(employee: any): MenuItem[] {
     const menuItems: any = [{ label: 'Actions', items: [] }];
 
@@ -54,11 +77,13 @@ export class EmployeesComponent {
         icon: 'fa fa-eye',
         command: () => this.employeeProfile(employee.employeeId),
       });
-      menuItems[0].items.push({
-        label: 'Delete',
-        icon: 'fa fa-trash',
-        command: () => this.confirmDelete(employee.employeeId),
-      });
+      if (this.userDetails?.designation == 4) {
+        menuItems[0].items.push({
+          label: 'Delete',
+          icon: 'fa fa-trash',
+          command: () => this.confirmDelete(employee.employeeId),
+        });
+      }
     } else if (employee.employeeInternalStatus === 2) {
       menuItems[0].items.push({
         label: 'Active',
@@ -67,6 +92,296 @@ export class EmployeesComponent {
       });
     }
     return menuItems;
+  }
+
+  setFilterConfig() {
+    this.filterConfig = [
+      {
+        header: 'Employee Id',
+        data: [
+          {
+            field: 'employeeId',
+            title: 'Employee Id',
+            type: 'text',
+            filterType: 'like',
+          },
+        ],
+      },
+      {
+        header: 'Employee Name',
+        data: [
+          {
+            field: 'employeeName',
+            title: 'Employee Name',
+            type: 'text',
+            filterType: 'like',
+          },
+        ],
+      },
+      {
+        header: 'Created Date Range',
+        data: [
+          {
+            field: 'createdOn',
+            title: 'From',
+            type: 'date',
+            filterType: 'gte',
+          },
+          { field: 'createdOn', title: 'To', type: 'date', filterType: 'lte' },
+        ],
+      },
+      {
+        header: 'Phone Number',
+        data: [
+          {
+            field: 'primaryPhone',
+            title: 'Phone Number',
+            type: 'text',
+            filterType: 'like',
+          },
+        ],
+      },
+
+      {
+        header: 'Secondary Number',
+        data: [
+          {
+            field: 'secondaryPhone',
+            title: 'Secondary Number',
+            type: 'text',
+            filterType: 'like',
+          },
+        ],
+      },
+
+      {
+        header: 'Designation',
+        data: [
+          {
+            field: 'designation',
+            title: 'Designation',
+            type: 'dropdown',
+            filterType: 'like',
+            options: this.designationDetails.map((entity) => ({
+              label: entity.displayName,
+              value: entity.id,
+            })),
+          },
+        ],
+      },
+
+      {
+        header: 'Joining Date',
+        data: [
+          {
+            field: 'joiningDate',
+            title: 'Joining Date',
+            type: 'date',
+            filterType: 'like',
+          },
+        ],
+      },
+
+      {
+        header: 'Office Branch',
+        data: [
+          {
+            field: 'ofcBranch',
+            title: 'Branch',
+            type: 'dropdown',
+            filterType: 'like',
+            options: this.branchDetails.map((entity) => ({
+              label: entity.displayName,
+              value: entity.id,
+            })),
+          },
+        ],
+      },
+      {
+        header: 'Salary',
+        data: [
+          {
+            field: 'salary',
+            title: 'Salary',
+            type: 'text',
+            filterType: 'like',
+          },
+        ],
+      },
+      {
+        header: 'Email',
+        data: [
+          {
+            field: 'emailAddress',
+            title: 'Email',
+            type: 'text',
+            filterType: 'like',
+          },
+        ],
+      },
+      {
+        header: 'Date Of Birth',
+        data: [
+          {
+            field: 'dateOfBirth',
+            title: 'Date Of Birth',
+            type: 'date',
+            filterType: 'like',
+          },
+        ],
+      },
+      {
+        header: 'City',
+        data: [
+          {
+            field: 'city',
+            title: 'City Name',
+            type: 'text',
+            filterType: 'like',
+          },
+        ],
+      },
+
+      {
+        header: 'Gender',
+        data: [
+          {
+            field: 'gender',
+            title: 'Gender',
+            type: 'dropdown',
+            filterType: 'like',
+            options: this.genderDetails.map((entity) => ({
+              label: entity.displayName,
+              value: entity.id,
+            })),
+          },
+        ],
+      },
+
+      {
+        header: 'created On  ',
+        data: [
+          {
+            field: 'createdOn',
+            title: 'Date ',
+            type: 'date',
+            filterType: 'like',
+          },
+        ],
+      },
+
+      {
+        header: 'Pan Number',
+        data: [
+          {
+            field: 'panNumber',
+            title: 'Pan Number',
+            type: 'text',
+            filterType: 'like',
+          },
+        ],
+      },
+
+      {
+        header: 'Aadhar Number',
+        data: [
+          {
+            field: 'aadharNumber',
+            title: 'Aadhar Number',
+            type: 'text',
+            filterType: 'like',
+          },
+        ],
+      },
+      {
+        header: 'Current Address',
+        data: [
+          {
+            field: 'currentAddress',
+            title: 'Current Address',
+            type: 'text',
+            filterType: 'like',
+          },
+        ],
+      },
+      {
+        header: 'Permanent Address',
+        data: [
+          {
+            field: 'permanentAddress',
+            title: 'Permanent Address',
+            type: 'text',
+            filterType: 'like',
+          },
+        ],
+      },
+
+      {
+        header: 'Account Holder Name',
+        data: [
+          {
+            field: 'accountHolderName',
+            title: 'Account Holder Name',
+            type: 'text',
+            filterType: 'like',
+          },
+        ],
+      },
+      {
+        header: 'Bank Name',
+        data: [
+          {
+            field: 'bankName',
+            title: 'Bank Name',
+            type: 'text',
+            filterType: 'like',
+          },
+        ],
+      },
+      {
+        header: 'Bank Branch',
+        data: [
+          {
+            field: 'bankBranch',
+            title: 'Bank Branch',
+            type: 'text',
+            filterType: 'like',
+          },
+        ],
+      },
+      {
+        header: 'IFSC Code',
+        data: [
+          {
+            field: 'ifscCode',
+            title: 'IFSC Code',
+            type: 'text',
+            filterType: 'like',
+          },
+        ],
+      },
+      {
+        header: 'Account Number',
+        data: [
+          {
+            field: 'accountNumber',
+            title: 'Account Number',
+            type: 'text',
+            filterType: 'like',
+          },
+        ],
+      },
+    ];
+  }
+  applyConfigFilters(event) {
+    let api_filter = event;
+    if (api_filter['reset']) {
+      delete api_filter['reset'];
+      this.appliedFilter = {};
+    } else {
+      this.appliedFilter = api_filter;
+    }
+    this.loadEmployees(this.currentTableEvent);
   }
 
   inactiveEmployee(employee) {
@@ -116,10 +431,47 @@ export class EmployeesComponent {
       }
     );
   }
+
+  statusChange(event) {
+    this.loadEmployees(this.currentTableEvent);
+  }
+
+  inputValueChangeEvent(dataType, value) {
+    if (value == '') {
+      this.searchFilter = {};
+      console.log(this.currentTableEvent);
+      this.loadEmployees(this.currentTableEvent);
+    }
+  }
+  filterWithEmployeeName() {
+    let searchFilter = { 'employeeName-like': this.employeeNameToSearch };
+    this.applyFilters(searchFilter);
+  }
+
+  applyFilters(searchFilter = {}) {
+    this.searchFilter = searchFilter;
+    console.log(this.currentTableEvent);
+    this.loadEmployees(this.currentTableEvent);
+  }
   loadEmployees(event) {
     this.currentTableEvent = event;
     let api_filter = this.employeesService.setFiltersFromPrimeTable(event);
-    api_filter = Object.assign({}, api_filter);
+    if (this.selectedEmployeeStatus) {
+      if (this.selectedEmployeeStatus && this.selectedEmployeeStatus.name) {
+        if (this.selectedEmployeeStatus.name != 'all') {
+          api_filter['employeeInternalStatus-eq'] =
+            this.selectedEmployeeStatus.id;
+        } else {
+          api_filter['employeeInternalStatus-or'] = '1,2';
+        }
+      }
+    }
+    api_filter = Object.assign(
+      {},
+      api_filter,
+      this.searchFilter,
+      this.appliedFilter
+    );
     console.log(api_filter);
     if (api_filter) {
       this.getEmployeesCount(api_filter);

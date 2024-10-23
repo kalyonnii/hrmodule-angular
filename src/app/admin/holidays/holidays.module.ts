@@ -10,6 +10,9 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { TooltipModule } from 'primeng/tooltip';
 import { PreloaderModule } from 'src/app/preloader/preloader.module';
+import { FormsModule } from '@angular/forms';
+import { FilterModule } from 'src/app/filter/filter.module';
+import { InputTextModule } from 'primeng/inputtext';
 
 const routes: Routes = [
   { path: '', component: HolidaysComponent },
@@ -35,7 +38,10 @@ const routes: Routes = [
     TooltipModule,
     ConfirmDialogModule,
     PreloaderModule,
+    InputTextModule,
+    FormsModule,
     CapitalizeFirstPipe,
+    FilterModule,
     [RouterModule.forChild(routes)],
   ],
   providers: [ConfirmationService],

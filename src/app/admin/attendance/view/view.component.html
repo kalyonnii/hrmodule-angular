@@ -36,7 +36,7 @@
   <div class="row">
     <div class="d-flex flex-wrap justify-content-start">
       <ng-container *ngFor="let item of countsAnalytics">
-        <div class="col-lg-3 col-md-6 col-sm-6 col-12 mt-2">
+        <div class="col-lg-2 col-md-2 col-sm-4 col-6 mt-2">
           <div class="card p-3 shadow-sm pointer-cursor m-2 cards">
             <div class="d-flex">
               <div
@@ -158,6 +158,12 @@
               pTooltip="Half-day"
               class="fa fa-star-half-stroke text-warning"
               title="Half-day"
+            ></i>
+            <i
+              *ngSwitchCase="'Late'"
+              pTooltip="Late"
+              class="fa fa-circle-exclamation text-primary"
+              title="Late"
             ></i>
             <span *ngSwitchDefault>{{ employee.status }}</span>
           </ng-container>

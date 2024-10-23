@@ -68,9 +68,62 @@
     styleClass="p-datatable-customers"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Employees"
   >
-    <ng-template pTemplate="caption"> </ng-template>
+    <ng-template pTemplate="caption">
+      <div class="row">
+        <div class="col-md-4 mt-1 mb-1 no-padding-small">
+          <div class="p-inputgroup">
+            <input
+              type="text"
+              pInputText
+              placeholder="Search with Employee Name"
+              [(ngModel)]="employeeNameToSearch"
+              (ngModelChange)="
+                inputValueChangeEvent('employeeId', employeeNameToSearch)
+              "
+              (keyup.enter)="filterWithEmployeeName()"
+            />
+            <button
+              type="button"
+              pButton
+              icon="pi pi-search"
+              class="p-button-primary"
+              [disabled]="!employeeNameToSearch"
+              (click)="filterWithEmployeeName()"
+            ></button>
+          </div>
+        </div>
+        <div class="col-md-4 mt-1 mb-1 no-padding-small"></div>
+        <div class="col-md-4 mt-1 mb-1 no-padding-small text-right">
+          <div class="d-flex">
+            <div class="flex-grow-1 me-2">
+              <p-dropdown
+                styleClass="text-left"
+                [style]="{ width: '100%' }"
+                [options]="employeeInternalStatusList"
+                (onChange)="statusChange($event)"
+                [dropdownIcon]="'fa fa-caret-down'"
+                [(ngModel)]="selectedEmployeeStatus"
+                optionLabel="displayName"
+                dataKey="name"
+              >
+              </p-dropdown>
+            </div>
+            <div class="d-flex align-items-center pointer-cursor">
+              <app-filter
+                [position]="'right'"
+                [iconColor]="'#33009C'"
+                [iconSize]="'28px!important'"
+                (filterEvent)="applyConfigFilters($event)"
+                [filterConfig]="filterConfig"
+                [showFilterIndication]="appliedFilter"
+              >
+              </app-filter>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
     <ng-template pTemplate="header" let-columns>
-      <tr>
       <tr>
         <th pSortableColumn="employeeId">
           Id <p-sortIcon [field]="'employeeId'"></p-sortIcon>

@@ -64,12 +64,12 @@
                       autocomplete="off"
                       [readonly]="field.controlName === 'day'"
                     />
-
                     <p-calendar
                       *ngSwitchCase="'calendar'"
                       [formControlName]="field.controlName"
                       [placeholder]="'Select ' + field.label"
                       [showIcon]="true"
+                      dateFormat="yy-mm-dd"
                       appendTo="body"
                       [showButtonBar]="true"
                       (onSelect)="onDateSelect($event)"

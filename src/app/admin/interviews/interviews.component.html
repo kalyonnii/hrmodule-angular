@@ -40,6 +40,40 @@
 <div *ngIf="loading">
   <app-preloader></app-preloader>
 </div>
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-flex flex-wrap justify-content-start">
+      <ng-container *ngFor="let item of countsAnalytics">
+        <div class="col-lg-3 col-md-3 col-sm-6 col-6 mt-2">
+          <div class="card p-3 shadow-sm pointer-cursor m-2 cards">
+            <div class="d-flex">
+              <div
+                class="me-4 cardicons"
+                [ngStyle]="{
+                  color: item.textcolor,
+                  'background-color': item.backgroundcolor
+                }"
+              >
+                <i class="fa fa-{{ item.name }}"></i>
+              </div>
+
+              <div class="d-flex align-items-center">
+                <div>
+                  <div class="count-sub-title">
+                    {{ item.displayName }}
+                  </div>
+                  <div class="count-title">
+                    {{ item.count }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>
 <div class="text-capitalize table-card">
   <p-table
     #interviewsTable
@@ -67,7 +101,61 @@
     styleClass="p-datatable-customers"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Interviews"
   >
-    <ng-template pTemplate="caption"> </ng-template>
+    <ng-template pTemplate="caption">
+      <div class="row">
+        <div class="col-md-4 mt-1 mb-1 no-padding-small">
+          <div class="p-inputgroup">
+            <input
+              type="text"
+              pInputText
+              placeholder="Search with Candidate Name"
+              [(ngModel)]="candidateNameToSearch"
+              (ngModelChange)="
+                inputValueChangeEvent('interviewId', candidateNameToSearch)
+              "
+              (keyup.enter)="filterWithCandidateName()"
+            />
+            <button
+              type="button"
+              pButton
+              icon="pi pi-search"
+              class="p-button-primary"
+              [disabled]="!candidateNameToSearch"
+              (click)="filterWithCandidateName()"
+            ></button>
+          </div>
+        </div>
+        <div class="col-md-4 mt-1 mb-1 no-padding-small"></div>
+        <div class="col-md-4 mt-1 mb-1 no-padding-small text-right">
+          <div class="d-flex">
+            <div class="flex-grow-1 me-2">
+              <p-dropdown
+                styleClass="text-left"
+                [style]="{ width: '100%' }"
+                [options]="interviewInternalStatusList"
+                (onChange)="statusChange($event)"
+                [dropdownIcon]="'fa fa-caret-down'"
+                [(ngModel)]="selectedInterviewStatus"
+                optionLabel="displayName"
+                dataKey="name"
+              >
+              </p-dropdown>
+            </div>
+            <div class="d-flex align-items-center pointer-cursor">
+              <app-filter
+                [position]="'right'"
+                [iconColor]="'#33009C'"
+                [iconSize]="'28px!important'"
+                (filterEvent)="applyConfigFilters($event)"
+                [filterConfig]="filterConfig"
+                [showFilterIndication]="appliedFilter"
+              >
+              </app-filter>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
     <ng-template pTemplate="header" let-columns>
       <tr>
         <th pSortableColumn="interviewId">
@@ -87,9 +175,7 @@
           Attended Interview
           <p-sortIcon field="attendedInterviewName"></p-sortIcon>
         </th>
-        <th pSortableColumn="interviewStatusName">
-          Interview Status <p-sortIcon field="interviewStatusName"></p-sortIcon>
-        </th>
+
         <th pSortableColumn="createdOn">
           Created Date <p-sortIcon field="createdOn"></p-sortIcon>
         </th>
@@ -132,13 +218,6 @@
             >{{ interview.attendedInterviewName }}</span
           >
         </td>
-        <td>
-          <span
-            class="table-column-data"
-            *ngIf="interview.interviewStatusName"
-            >{{ interview.interviewStatusName }}</span
-          >
-        </td>
 
         <td>
           <span class="table-column-data" *ngIf="interview.createdOn">{{
@@ -148,6 +227,11 @@
         <td>
           <span
             class="table-column-data fw-bold statusdata"
+            [pTooltip]="
+              interview?.referenceNo
+                ? 'Employee Id: ' + interview.referenceNo
+                : ''
+            "
             *ngIf="interview.interviewInternalStatus"
             [ngStyle]="{
               color: getStatusColor(

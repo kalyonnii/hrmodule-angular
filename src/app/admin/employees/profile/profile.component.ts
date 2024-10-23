@@ -14,7 +14,7 @@ export class ProfileComponent implements OnInit {
   loading: boolean = false;
   employees: any = null;
   employeeId: string | null = null;
-  activeSection: string = 'employeeDetails'; 
+  activeSection: string = 'employeeDetails';
 
   constructor(
     private location: Location,
@@ -37,7 +37,7 @@ export class ProfileComponent implements OnInit {
   ngOnInit(): void {
     this.employeeId = this.route.snapshot.paramMap.get('id');
     if (this.employeeId) {
-      this.getLeadById(this.employeeId);
+      this.getEmployeeById(this.employeeId);
     }
   }
 
@@ -56,7 +56,7 @@ export class ProfileComponent implements OnInit {
   getFileIcon(fileType) {
     return this.employeesService.getFileIcon(fileType);
   }
-  getLeadById(id: string) {
+  getEmployeeById(id: string) {
     this.loading = true;
     this.employeesService.getEmployeeById(id).subscribe(
       (response) => {

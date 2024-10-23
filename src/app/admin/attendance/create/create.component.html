@@ -35,8 +35,9 @@
   <div class="selecteddate mb-3">
     <p-calendar
       [(ngModel)]="selectedDate"
-      dateFormat="mm/dd/yy"
+      dateFormat="yy-mm-dd"
       [showIcon]="true"
+      [style]="{ width: '300px' }"
       appendTo="body"
       [showButtonBar]="true"
       placeholder="Select a date"
@@ -129,7 +130,6 @@
           <ng-container
             *ngIf="employee.status === 'Absent'; else editableCheckIn"
           >
-            <!-- No Check-in time for Absent -->
           </ng-container>
           <ng-template #editableCheckIn>
             <input
@@ -147,7 +147,6 @@
           <ng-container
             *ngIf="employee.status === 'Absent'; else editableCheckOut"
           >
-            <!-- No Check-out time for Absent -->
           </ng-container>
           <ng-template #editableCheckOut>
             <input

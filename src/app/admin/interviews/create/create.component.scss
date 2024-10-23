@@ -40,3 +40,45 @@ label {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
 }
+
+.file-wrapper {
+  display: inline-block;
+  position: relative;
+  margin-right: 12px;
+}
+
+.file-link {
+  text-decoration: none;
+}
+
+.file-icon {
+  font-size: 40px;
+  transition: color 0.3s;
+}
+
+.file-icon:hover {
+  color: #000;
+}
+
+.delete-btn {
+  position: absolute;
+  top: -5px;
+  right: -3px;
+  padding: 4px;
+  border-radius: 50%;
+  box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.delete-btn i {
+  font-size: 12px;
+}
+
+.delete-btn:hover {
+  background-color: #ff4d4d;
+}

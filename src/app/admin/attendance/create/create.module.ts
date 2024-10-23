@@ -26,7 +26,6 @@ const routes: Routes = [{ path: '', component: CreateComponent }];
     PreloaderModule,
     InputTextModule,
     CapitalizeFirstPipe,
-    
     CalendarModule,
     [RouterModule.forChild(routes)],
   ],

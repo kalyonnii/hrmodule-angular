@@ -49,7 +49,7 @@ export class CreateComponent implements OnInit {
               holidayName: this.holidayData?.holidayName,
               day: this.holidayData?.day,
               description: this.holidayData?.description,
-              date: this.moment(this.holidayData?.date).format('MM/DD/YYYY'),
+              date: this.holidayData?.date,
             });
           }
         });
@@ -130,7 +130,9 @@ export class CreateComponent implements OnInit {
   onSubmit(formValues) {
     let formData: any = {
       holidayName: formValues.holidayName,
-      date: formValues.date,
+      date: formValues.date
+        ? this.moment(formValues.date).format('YYYY-MM-DD')
+        : null,
       day: formValues.day,
       description: formValues.description,
     };

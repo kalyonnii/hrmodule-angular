@@ -14,6 +14,7 @@ import { projectConstantsLocal } from 'src/app/constants/project-constants';
 import { DialogService } from 'primeng/dynamicdialog';
 import { FileUploadComponent } from '../../file-upload/file-upload.component';
 import { ConfirmationService } from 'primeng/api';
+import { LocalStorageService } from 'src/app/services/local-storage.service';
 @Component({
   selector: 'app-create',
   templateUrl: './create.component.html',
@@ -40,19 +41,20 @@ export class CreateComponent {
   genderEntities: any = projectConstantsLocal.GENDER_ENTITIES;
   designationEntities: any = projectConstantsLocal.DEPARTMENT_ENTITIES;
   loading: any;
-  otherAttachments: any = [
-    {
-      name: '',
-      otherAttachments: [],
-    },
-  ];
+  userDetails: any;
   selectedFiles: any = {
     panCard: { filesData: [], links: [], uploadedFiles: [] },
     aadharCard: { filesData: [], links: [], uploadedFiles: [] },
     passPhoto: { filesData: [], links: [], uploadedFiles: [] },
-    otherAttachments: [{ filesData: [], links: [], uploadedFiles: [] }],
+    otherDocuments: [{ filesData: [], links: [], uploadedFiles: [] }],
   };
 
+  otherDocuments: any = [
+    {
+      name: '',
+      otherDocuments: [],
+    },
+  ];
   constructor(
     private location: Location,
     private confirmationService: ConfirmationService,
@@ -60,6 +62,7 @@ export class CreateComponent {
     private toastService: ToastService,
     private employeesService: EmployeesService,
     private routingService: RoutingService,
+    private localStorageService: LocalStorageService,
     private activatedRoute: ActivatedRoute,
     private dialogService: DialogService,
     private dateTimeProcessor: DateTimeProcessorService
@@ -85,15 +88,11 @@ export class CreateComponent {
               customEmployeeId: this.employeeData?.customEmployeeId,
               careOf: this.employeeData?.careOf,
               careOfName: this.employeeData?.careOfName,
-              dateOfBirth: this.moment(this.employeeData?.dateOfBirth).format(
-                'MM/DD/YYYY'
-              ),
+              dateOfBirth: this.employeeData?.dateOfBirth,
               gender: this.employeeData?.gender,
               ofcBranch: this.employeeData?.ofcBranch,
               designation: this.employeeData?.designation,
-              joiningDate: this.moment(this.employeeData?.joiningDate).format(
-                'MM/DD/YYYY'
-              ),
+              joiningDate: this.employeeData?.joiningDate,
               primaryPhone: this.employeeData?.primaryPhone,
               emailAddress: this.employeeData?.emailAddress,
               salary: this.employeeData?.salary,
@@ -128,16 +127,16 @@ export class CreateComponent {
               this.employeeData.otherDocuments &&
               this.employeeData.otherDocuments.length > 0
             ) {
-              this.otherAttachments = [];
-              this.selectedFiles['otherAttachments'] = [];
+              this.otherDocuments = [];
+              this.selectedFiles['otherDocuments'] = [];
               this.employeeData.otherDocuments.forEach((statement, index) => {
                 let fileData = {
                   filesData: [],
                   links: [],
-                  uploadedFiles: statement['otherAttachments'],
+                  uploadedFiles: statement['otherDocuments'],
                 };
-                this.selectedFiles['otherAttachments'].push(fileData);
-                this.otherAttachments.push(statement);
+                this.selectedFiles['otherDocuments'].push(fileData);
+                this.otherDocuments.push(statement);
               });
             }
             console.log(this.selectedFiles);
@@ -160,292 +159,32 @@ export class CreateComponent {
     this.createForm();
     this.setEmployeesList();
     // this.createPayslip();
-  }
-
-  addOtherAttachmentsRow() {
-    const attachmentFormGroup = this.formBuilder.group({
-      name: [''],
-      otherAttachments: this.formBuilder.array([]),
-    });
-
-    this.otherAttachments.push(attachmentFormGroup);
-
-    const fileData = { filesData: [], links: [], uploadedFiles: [] };
-    this.selectedFiles.otherAttachments.push(fileData);
-  }
-
-  deleteOtherAttachmentsRow(index: number) {
-    if (this.otherAttachments.length > 1) {
-      this.otherAttachments.removeAt(index);
-
-      if (
-        this.selectedFiles['otherAttachments'] &&
-        this.selectedFiles['otherAttachments'][index]
-      ) {
-        this.selectedFiles['otherAttachments'].splice(index, 1);
-      }
+    const userDetails =
+      this.localStorageService.getItemFromLocalStorage('userDetails');
+    if (userDetails) {
+      this.userDetails = userDetails.user;
+      console.log(this.userDetails);
     }
   }
 
-  createPayslip() {
-    const payslipData = {
-      employeeId: 23,
-      employeeName: 'Mudhiiguubba Kalyonnii',
-      designation: 'Web developer',
-      basicSalary: 21666,
-      dateOfJoining: '04/13/2024',
-      totalDays: 27,
-      workedDays: 27,
-      employeePan: 'WDERS3454T',
-      employeeAc: '2343151353',
-      employeeIfsc: 'DAGDAG45235',
-      hra: 0,
-      allowances: 0,
-      grossEarnings: 21666,
-      tds: 0,
-      pf: 0,
-      otherDeductions: 0,
-      totalDeductions: 0,
-      netPay: 21666,
-      month: 'October',
-      year: '2024',
+  addotherDocumentsRow() {
+    let data = {
+      name: '',
+      otherDocuments: [],
     };
-
-    this.employeesService.generatePdf(payslipData).subscribe(
-      (response: any) => {
-        const url = window.URL.createObjectURL(response);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${payslipData.employeeId}_payslip.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-      },
-      (error) => {
-        console.error('Error generating payslip:', error);
-      }
-    );
+    let fileData = { filesData: [], links: [], uploadedFiles: [] };
+    this.otherDocuments.push(data);
+    this.selectedFiles.otherDocuments.push(fileData);
   }
 
-  setEmployeesList() {
-    this.personalFields = [
-      {
-        label: 'Employee Name',
-        controlName: 'employeeName',
-        type: 'text',
-        required: true,
-      },
-      {
-        label: 'Employee Id',
-        controlName: 'customEmployeeId',
-        type: 'text',
-        required: true,
-      },
-      {
-        label: 'Care Of',
-        controlName: 'careOf',
-        type: 'dropdown',
-        options: 'careOfEntities',
-        required: true,
-        optionLabel: 'displayName',
-        optionValue: 'name',
-      },
-      {
-        label: 'Care Of Name',
-        controlName: 'careOfName',
-        type: 'text',
-        required: true,
-      },
-      {
-        label: 'Date Of Birth',
-        controlName: 'dateOfBirth',
-        type: 'calendar',
-        required: true,
-      },
-      {
-        label: 'Gender',
-        controlName: 'gender',
-        type: 'dropdown',
-        options: 'genderEntities',
-        required: true,
-        optionLabel: 'displayName',
-        optionValue: 'name',
-      },
-      {
-        label: 'Office Branch',
-        controlName: 'ofcBranch',
-        type: 'dropdown',
-        options: 'branchEntities',
-        required: true,
-        optionLabel: 'displayName',
-        optionValue: 'id',
-      },
-      {
-        label: 'Designation',
-        controlName: 'designation',
-        type: 'dropdown',
-        options: 'designationEntities',
-        required: true,
-        optionLabel: 'displayName',
-        optionValue: 'id',
-      },
-      {
-        label: 'Joining Date',
-        controlName: 'joiningDate',
-        type: 'calendar',
-        required: true,
-      },
-      {
-        label: 'Phone',
-        controlName: 'primaryPhone',
-        type: 'text',
-        maxLength: 10,
-        required: true,
-      },
-      {
-        label: 'Email',
-        controlName: 'emailAddress',
-        type: 'email',
-      },
-      {
-        label: 'City',
-        controlName: 'city',
-        type: 'text',
-        required: true,
-      },
-      {
-        label: 'Salary',
-        controlName: 'salary',
-        type: 'text',
-        required: true,
-      },
-    ];
-
-    this.addressFields = [
-      {
-        label: 'Current Address',
-        controlName: 'currentAddress',
-        type: 'text',
-        required: false,
-      },
-      {
-        label: 'Permanent Address',
-        controlName: 'permanentAddress',
-        type: 'text',
-        required: false,
-      },
-      {
-        label: 'Secondary Phone',
-        controlName: 'secondaryPhone',
-        type: 'text',
-        maxLength: 10,
-        required: false,
-      },
-    ];
-
-    this.experienceFields = [
-      {
-        label: 'Previous Company Name',
-        controlName: 'prevCompanyName',
-        type: 'text',
-        required: false,
-      },
-      {
-        label: 'Previous Employer Name',
-        controlName: 'prevEmployerName',
-        type: 'text',
-        required: false,
-      },
-      {
-        label: 'Previous Employer Contact',
-        controlName: 'prevEmployerContact',
-        type: 'text',
-        required: false,
-        maxLength: 10,
-      },
-    ];
-    this.kycFields = [
-      {
-        label: 'Employee Name',
-        controlName: 'employeeName',
-        type: 'text',
-        required: true,
-      },
-      {
-        label: 'Pan Number',
-        controlName: 'panNumber',
-        type: 'text',
-        required: false,
-        pattern: '[A-Z]{5}[0-9]{4}[A-Z]{1}',
-        maxLength: 10,
-      },
-      {
-        label: 'Aadhar Number',
-        controlName: 'aadharNumber',
-        type: 'text',
-        required: false,
-        pattern: '[0-9]{12}',
-        maxLength: 12,
-      },
-      {
-        label: 'Employee Photo',
-        controlName: 'passPhoto',
-        type: 'file',
-        required: false,
-        uploadFunction: 'uploadFiles',
-        acceptedFileTypes: 'image/*',
-      },
-      {
-        label: 'Pan Card',
-        controlName: 'panCard',
-        type: 'file',
-        required: true,
-        uploadFunction: 'uploadFiles',
-        acceptedFileTypes: 'image/*',
-      },
-      {
-        label: 'Aadhar Card',
-        controlName: 'aadharCard',
-        type: 'file',
-        required: true,
-        uploadFunction: 'uploadFiles',
-        acceptedFileTypes: 'image/*',
-      },
-    ];
-
-    this.salaryAccountFields = [
-      {
-        label: 'Account Holder Name',
-        controlName: 'accountHolderName',
-        type: 'text',
-        required: false,
-      },
-      {
-        label: 'Bank Name',
-        controlName: 'bankName',
-        type: 'text',
-        required: false,
-      },
-      {
-        label: 'Bank Branch',
-        controlName: 'bankBranch',
-        type: 'text',
-        required: false,
-      },
-      {
-        label: 'Account Number',
-        controlName: 'accountNumber',
-        type: 'text',
-        required: false,
-      },
-      {
-        label: 'IFSC Code',
-        controlName: 'ifscCode',
-        type: 'text',
-        required: false,
-      },
-    ];
+  deleteotherDocumentsRow(index) {
+    this.otherDocuments.splice(index, 1);
+    if (
+      this.selectedFiles['otherDocuments'] &&
+      this.selectedFiles['otherDocuments'][index]
+    ) {
+      this.selectedFiles['otherDocuments'].splice(index, 1);
+    }
   }
   createForm() {
     this.employeeForm = this.formBuilder.group({
@@ -475,7 +214,6 @@ export class CreateComponent {
       prevCompanyName: [''],
       prevEmployerName: [''],
       prevEmployerContact: [''],
-      otherAttachments: this.formBuilder.array([]),
     });
   }
 
@@ -485,13 +223,19 @@ export class CreateComponent {
       customEmployeeId: formValues.customEmployeeId,
       careOf: formValues.careOf,
       careOfName: formValues.careOfName,
-      dateOfBirth: formValues.dateOfBirth,
+
+      dateOfBirth: formValues.dateOfBirth
+        ? this.moment(formValues.dateOfBirth).format('YYYY-MM-DD')
+        : null,
       gender: formValues.gender,
+      genderName: this.getGenderName(formValues.gender),
       ofcBranch: formValues.ofcBranch,
       ofcBranchName: this.getOfcBranchName(formValues.ofcBranch),
       designation: formValues.designation,
       designationName: this.getDesignationName(formValues.designation),
-      joiningDate: formValues.joiningDate,
+      joiningDate: formValues.joiningDate
+        ? this.moment(formValues.joiningDate).format('YYYY-MM-DD')
+        : null,
       panNumber: formValues.panNumber,
       aadharNumber: formValues.aadharNumber,
       currentAddress: formValues.currentAddress,
@@ -574,35 +318,35 @@ export class CreateComponent {
         );
       }
     }
-    for (let index = 0; index < this.otherAttachments.length; index++) {
-      this.otherAttachments[index]['otherAttachments'] = [];
+    for (let index = 0; index < this.otherDocuments.length; index++) {
+      this.otherDocuments[index]['otherDocuments'] = [];
       if (
-        this.selectedFiles['otherAttachments'][index] &&
-        this.selectedFiles['otherAttachments'][index]['links']
+        this.selectedFiles['otherDocuments'][index] &&
+        this.selectedFiles['otherDocuments'][index]['links']
       ) {
         for (
           let i = 0;
-          i < this.selectedFiles['otherAttachments'][index]['links'].length;
+          i < this.selectedFiles['otherDocuments'][index]['links'].length;
           i++
         ) {
-          this.otherAttachments[index]['otherAttachments'].push(
-            this.selectedFiles['otherAttachments'][index]['links'][i]
+          this.otherDocuments[index]['otherDocuments'].push(
+            this.selectedFiles['otherDocuments'][index]['links'][i]
           );
         }
         for (
           let i = 0;
           i <
-          this.selectedFiles['otherAttachments'][index]['uploadedFiles'].length;
+          this.selectedFiles['otherDocuments'][index]['uploadedFiles'].length;
           i++
         ) {
-          this.otherAttachments[index]['otherAttachments'].push(
-            this.selectedFiles['otherAttachments'][index]['uploadedFiles'][i]
+          this.otherDocuments[index]['otherDocuments'].push(
+            this.selectedFiles['otherDocuments'][index]['uploadedFiles'][i]
           );
         }
       }
     }
-    formData['otherDocuments'] = this.otherAttachments;
-    console.log(this.otherAttachments);
+    formData['otherDocuments'] = this.otherDocuments;
+    console.log(this.otherDocuments);
     console.log('formData', formData);
     if (this.actionType == 'create') {
       this.loading = true;
@@ -639,6 +383,269 @@ export class CreateComponent {
     }
   }
 
+  createPayslip() {
+    const payslipData = {
+      employeeId: 23,
+      employeeName: 'Mudhiiguubba Kalyonnii',
+      designation: 'Web developer',
+      basicSalary: 21666,
+      dateOfJoining: '04/13/2024',
+      totalDays: 27,
+      workedDays: 27,
+      employeePan: 'WDERS3454T',
+      employeeAc: '2343151353',
+      employeeIfsc: 'DAGDAG45235',
+      hra: 0,
+      allowances: 0,
+      grossEarnings: 21666,
+      tds: 0,
+      pf: 0,
+      otherDeductions: 0,
+      totalDeductions: 0,
+      netPay: 21666,
+      month: 'October',
+      year: '2024',
+    };
+
+    this.employeesService.generatePdf(payslipData).subscribe(
+      (response: any) => {
+        const url = window.URL.createObjectURL(response);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${payslipData.employeeId}_payslip.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      },
+      (error) => {
+        console.error('Error generating payslip:', error);
+      }
+    );
+  }
+
+  setEmployeesList() {
+    this.personalFields = [
+      {
+        label: 'Employee Id',
+        controlName: 'customEmployeeId',
+        type: 'text',
+        required: true,
+      },
+      {
+        label: 'Employee Name',
+        controlName: 'employeeName',
+        type: 'text',
+        required: true,
+      },
+      {
+        label: 'Designation',
+        controlName: 'designation',
+        type: 'dropdown',
+        options: 'designationEntities',
+        required: true,
+        optionLabel: 'displayName',
+        optionValue: 'id',
+      },
+      {
+        label: 'Office Branch',
+        controlName: 'ofcBranch',
+        type: 'dropdown',
+        options: 'branchEntities',
+        required: true,
+        optionLabel: 'displayName',
+        optionValue: 'id',
+      },
+      {
+        label: 'Salary',
+        controlName: 'salary',
+        type: 'text',
+        required: true,
+      },
+      {
+        label: 'Joining Date',
+        controlName: 'joiningDate',
+        type: 'calendar',
+        required: true,
+      },
+      {
+        label: 'Gender',
+        controlName: 'gender',
+        type: 'dropdown',
+        options: 'genderEntities',
+        required: true,
+        optionLabel: 'displayName',
+        optionValue: 'id',
+      },
+
+      {
+        label: 'Gaurdian Type',
+        controlName: 'careOf',
+        type: 'dropdown',
+        options: 'careOfEntities',
+        required: false,
+        optionLabel: 'displayName',
+        optionValue: 'name',
+      },
+      {
+        label: 'Gaurdian Name',
+        controlName: 'careOfName',
+        type: 'text',
+        required: false,
+      },
+      {
+        label: 'Date Of Birth',
+        controlName: 'dateOfBirth',
+        type: 'calendar',
+        required: true,
+      },
+
+      {
+        label: 'Phone',
+        controlName: 'primaryPhone',
+        type: 'text',
+        maxLength: 10,
+        required: true,
+      },
+      {
+        label: 'Secondary Phone',
+        controlName: 'secondaryPhone',
+        type: 'text',
+        maxLength: 10,
+        required: false,
+      },
+      {
+        label: 'Email',
+        controlName: 'emailAddress',
+        type: 'email',
+      },
+      {
+        label: 'City',
+        controlName: 'city',
+        type: 'text',
+        required: true,
+      },
+    ];
+
+    this.addressFields = [
+      {
+        label: 'Current Address',
+        controlName: 'currentAddress',
+        type: 'text',
+        required: false,
+      },
+      {
+        label: 'Permanent Address',
+        controlName: 'permanentAddress',
+        type: 'text',
+        required: false,
+      },
+    ];
+
+    this.experienceFields = [
+      {
+        label: 'Previous Company Name',
+        controlName: 'prevCompanyName',
+        type: 'text',
+        required: false,
+      },
+      {
+        label: 'Previous Employer Name',
+        controlName: 'prevEmployerName',
+        type: 'text',
+        required: false,
+      },
+      {
+        label: 'Previous Employer Contact',
+        controlName: 'prevEmployerContact',
+        type: 'text',
+        required: false,
+        maxLength: 10,
+      },
+    ];
+    this.kycFields = [
+      {
+        label: 'Employee Name',
+        controlName: 'employeeName',
+        type: 'text',
+        required: true,
+      },
+      {
+        label: 'Pan Number',
+        controlName: 'panNumber',
+        type: 'text',
+        required: false,
+        pattern: '[A-Z]{5}[0-9]{4}[A-Z]{1}',
+        maxLength: 10,
+      },
+      {
+        label: 'Aadhar Number',
+        controlName: 'aadharNumber',
+        type: 'text',
+        required: false,
+        pattern: '[0-9]{12}',
+        maxLength: 12,
+      },
+      {
+        label: 'Employee Photo',
+        controlName: 'passPhoto',
+        type: 'file',
+        required: false,
+        uploadFunction: 'uploadFiles',
+        acceptedFileTypes: 'image/*',
+      },
+      {
+        label: 'Pan Card',
+        controlName: 'panCard',
+        type: 'file',
+        required: true,
+        uploadFunction: 'uploadFiles',
+        acceptedFileTypes: '*/*',
+      },
+      {
+        label: 'Aadhar Card',
+        controlName: 'aadharCard',
+        type: 'file',
+        required: true,
+        uploadFunction: 'uploadFiles',
+        acceptedFileTypes: '*/*',
+      },
+    ];
+
+    this.salaryAccountFields = [
+      {
+        label: 'Account Holder Name',
+        controlName: 'accountHolderName',
+        type: 'text',
+        required: false,
+      },
+      {
+        label: 'Bank Name',
+        controlName: 'bankName',
+        type: 'text',
+        required: false,
+      },
+      {
+        label: 'Bank Branch',
+        controlName: 'bankBranch',
+        type: 'text',
+        required: false,
+      },
+      {
+        label: 'Account Number',
+        controlName: 'accountNumber',
+        type: 'text',
+        required: false,
+      },
+      {
+        label: 'IFSC Code',
+        controlName: 'ifscCode',
+        type: 'text',
+        required: false,
+      },
+    ];
+  }
+
   getOfcBranchName(branchId) {
     if (this.ofcBranchNamesList && this.ofcBranchNamesList.length > 0) {
       let branchName = this.ofcBranchNamesList.filter(
@@ -659,6 +666,18 @@ export class CreateComponent {
           designationName[0] &&
           designationName[0].displayName) ||
         ''
+      );
+    }
+    return '';
+  }
+
+  getGenderName(genderId) {
+    if (this.genderEntities && this.genderEntities.length > 0) {
+      let gernderName = this.genderEntities.filter(
+        (gender) => gender.id == genderId
+      );
+      return (
+        (gernderName && gernderName[0] && gernderName[0].displayName) || ''
       );
     }
     return '';
@@ -693,6 +712,7 @@ export class CreateComponent {
           ? this.selectedFiles[fileType][index]['uploadedFiles']
           : this.selectedFiles[fileType]['uploadedFiles'],
     };
+    console.log(data);
     let fileUploadRef = this.dialogService.open(FileUploadComponent, {
       header: 'Select Files',
       width: '90%',
@@ -761,20 +781,24 @@ export class CreateComponent {
     }
   }
 
-  confirmDelete(file, controlName) {
+  confirmDelete(file, controlName, docIndex?, fileIndex?) {
+    console.log('Before Deletion:', this.selectedFiles);
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete this Employee?',
+      message: 'Are you sure you want to delete this File?',
       header: 'Confirm Deletion',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.deleteFile(file, controlName);
+        this.deleteFile(file, controlName, docIndex, fileIndex);
       },
     });
   }
-  deleteFile(fileUrl: string, fileType: string) {
+  deleteFile(
+    fileUrl: string,
+    fileType: string,
+    docIndex?: number,
+    fileIndex?: number
+  ) {
     const relativePath = fileUrl.substring(fileUrl.indexOf('/documents'));
-
-    console.log('Before Deletion:', this.selectedFiles);
 
     this.employeesService.deleteFile(relativePath).subscribe(
       (response: any) => {
@@ -786,12 +810,28 @@ export class CreateComponent {
               fileType
             ].uploadedFiles.filter((f: string) => f !== fileUrl);
             console.log('After Deletion:', this.selectedFiles);
-          } else {
+          } else if (Array.isArray(this.selectedFiles[fileType])) {
+            if (docIndex !== undefined && fileIndex !== undefined) {
+              const document = this.selectedFiles[fileType][docIndex];
+              if (Array.isArray(document?.uploadedFiles)) {
+                document.uploadedFiles.splice(fileIndex, 1);
+                console.log(
+                  `After Deletion from ${fileType}[${docIndex}]:`,
+                  document.uploadedFiles
+                );
+              }
+              console.log('After Deletion:', this.selectedFiles);
+            } else {
+              console.error('docIndex or fileIndex is missing.');
+            }
+          }
+          else {
             console.error(
               'No uploaded files found for the specified file type.'
             );
           }
-          this.toastService.showSuccess('Files Deleted Successfully');
+
+          this.toastService.showSuccess('File Deleted Successfully');
         } else {
           console.error('Error deleting file:', response.error);
           this.toastService.showError(response);

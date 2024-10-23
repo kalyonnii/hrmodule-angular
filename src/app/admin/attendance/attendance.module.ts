@@ -12,6 +12,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { FormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
+import { CalendarModule } from 'primeng/calendar';
 
 const routes: Routes = [
   { path: '', component: AttendanceComponent },
@@ -39,6 +40,7 @@ const routes: Routes = [
     PreloaderModule,
     DropdownModule,
     FormsModule,
+    CalendarModule,
     ButtonModule,
     MenuModule,
     DialogModule,

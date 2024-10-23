@@ -4,6 +4,10 @@ import { DashboardComponent } from './dashboard.component';
 import { RouterModule, Routes } from '@angular/router';
 import { PreloaderModule } from 'src/app/preloader/preloader.module';
 import { ApexChartsModule } from '../apex-charts/apex-charts.module';
+import { TableModule } from 'primeng/table';
+import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
+import { CalendarModule } from 'primeng/calendar';
+import { FormsModule } from '@angular/forms';
 
 const routes: Routes = [{ path: '', component: DashboardComponent }];
 
@@ -12,7 +16,11 @@ const routes: Routes = [{ path: '', component: DashboardComponent }];
   imports: [
     CommonModule,
     ApexChartsModule,
+    TableModule,
+    CapitalizeFirstPipe,
     PreloaderModule,
+    CalendarModule,
+    FormsModule,
     [RouterModule.forChild(routes)],
   ],
 })

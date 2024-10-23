@@ -10,7 +10,6 @@ import { DateTimeProcessorService } from 'src/app/services/date-time-processor.s
   styleUrls: ['./view.component.scss'],
 })
 export class ViewComponent implements OnInit {
-  // Existing variables
   breadCrumbItems: any = [];
   currentTableEvent: any;
   countsAnalytics: any[] = [];
@@ -22,11 +21,10 @@ export class ViewComponent implements OnInit {
   selectedDate: Date;
   employeeDetails: any[] = [];
   totalEmployeesCount: number = 0;
-
-  // New variables for counts
   totalPresentCount: number = 0;
   totalAbsentCount: number = 0;
   totalHalfDayCount: number = 0;
+  totalLateCount: number = 0;
 
   constructor(
     private location: Location,
@@ -48,7 +46,6 @@ export class ViewComponent implements OnInit {
               ).format('MM/DD/YYYY');
               console.log('Attendance Data', this.attendanceData);
 
-              // Calculate the counts after fetching attendance data
               this.calculateAttendanceCounts();
             }
           })
@@ -90,6 +87,13 @@ export class ViewComponent implements OnInit {
         backgroundcolor: '#F0F9E8',
       },
       {
+        name: 'circle-exclamation',
+        displayName: 'Total Late',
+        count: this.totalLateCount,
+        textcolor: '#0D6EFD',
+        backgroundcolor: '#E0F3FF',
+      },
+      {
         name: 'star-half-stroke',
         displayName: 'Total Half Day',
         count: this.totalHalfDayCount,
@@ -107,27 +111,32 @@ export class ViewComponent implements OnInit {
   }
 
   calculateAttendanceCounts() {
-    // Reset counts before calculating
-    this.totalPresentCount = 0;
-    this.totalAbsentCount = 0;
-    this.totalHalfDayCount = 0;
+    this.totalPresentCount =
+      this.totalAbsentCount =
+      this.totalHalfDayCount =
+      this.totalLateCount =
+        0;
 
-    // Loop through attendance data and count statuses
     this.attendanceData?.attendanceData.forEach((attendance) => {
-      if (attendance.status === 'Present') {
-        this.totalPresentCount++;
-      } else if (attendance.status === 'Absent') {
-        this.totalAbsentCount++;
-      } else if (attendance.status === 'Half-day') {
-        this.totalHalfDayCount++;
+      switch (attendance.status) {
+        case 'Present':
+          this.totalPresentCount++;
+          break;
+        case 'Absent':
+          this.totalAbsentCount++;
+          break;
+        case 'Late':
+          this.totalLateCount++;
+          break;
+        case 'Half-day':
+          this.totalHalfDayCount++;
+          break;
       }
     });
 
     console.log(
-      `Present: ${this.totalPresentCount}, Absent: ${this.totalAbsentCount}, Half-day: ${this.totalHalfDayCount}`
+      `Present: ${this.totalPresentCount}, Absent: ${this.totalAbsentCount}, Half-day: ${this.totalHalfDayCount}, Late: ${this.totalLateCount}`
     );
-
-    // Update the analytics after calculating counts
     this.updateCountsAnalytics();
   }
 
@@ -155,19 +164,24 @@ export class ViewComponent implements OnInit {
       }
     );
   }
-
   setDefaultAttendanceData() {
-    this.employeeDetails = this.employees.map((employee) => {
-      const attendance = this.attendanceData?.attendanceData.find(
-        (att) => att.employeeId === employee.employeeId
-      );
-      return {
-        ...employee,
-        status: attendance?.status,
-        checkInTime: attendance?.checkInTime,
-        checkOutTime: attendance?.checkOutTime,
-      };
-    });
+    this.employeeDetails = this.employees
+      .filter((employee) =>
+        this.attendanceData?.attendanceData.some(
+          (att) => att.employeeId === employee.employeeId
+        )
+      )
+      .map((employee) => {
+        const attendance = this.attendanceData?.attendanceData.find(
+          (att) => att.employeeId === employee.employeeId
+        );
+        return {
+          ...employee,
+          status: attendance?.status,
+          checkInTime: attendance?.checkInTime,
+          checkOutTime: attendance?.checkOutTime,
+        };
+      });
 
     console.log(
       'Employee Details with Attendance Data for Update:',

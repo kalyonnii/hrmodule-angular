@@ -12,6 +12,23 @@
   border: #2e4374;
   box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
 }
-.employeeImage{
-  border-radius: 50px;
+
+.p-inputtext {
+  color: #333;
+
+  padding: 10px;
+  font-size: 16px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.p-inputtext:hover {
+  border: 1px solid #33009c !important;
+}
+.p-inputtext:focus {
+  border: 1px solid #33009c !important;
+  box-shadow: 0 0 5px #9b8db5 !important;
+  outline: none;
+}
+
+.p-inputtext::placeholder {
+  color: #888;
 }
