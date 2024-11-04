@@ -2,7 +2,7 @@ export const projectConstantsLocal = {
   EMPLOYEE_STATUS: [
     { id: 0, name: 'all', displayName: 'All Employees' },
     { id: 1, name: 'Active', displayName: 'Active Employees' },
-    { id: 2, name: 'In Active', displayName: 'In Active Employees' },
+    { id: 2, name: 'InActive', displayName: 'In Active Employees' },
   ],
   BRANCH_ENTITIES: [
     { id: 1, displayName: 'Panjagutta', name: 'panjagutta' },
@@ -11,6 +11,17 @@ export const projectConstantsLocal = {
   CARE_OF_ENTITIES: [
     { displayName: 'Father', name: 'father' },
     { displayName: 'Spouse', name: 'spouse' },
+  ],
+
+  LEAVE_TYPE_ENTITIES: [
+    { displayName: 'Sick Leave', name: 'sick leave' },
+    { displayName: 'Casual Leave', name: 'casual leave' },
+    { displayName: 'Personal Leave', name: 'personal leave' },
+  ],
+
+  DURATION_TYPE_ENTITIES: [
+    { displayName: 'Half-Day', name: 'half-day' },
+    { displayName: 'Full-Day', name: 'full-day' },
   ],
   GENDER_ENTITIES: [
     { id: 1, displayName: 'Female', name: 'female' },
@@ -42,6 +53,13 @@ export const projectConstantsLocal = {
     { id: 1, name: 'pending', displayName: 'Pending Interviews' },
     { id: 2, name: 'selected', displayName: 'Selected Interviews' },
     { id: 3, name: 'rejected', displayName: 'Rejected Interviews' },
+  ],
+
+  LEAVE_STATUS: [
+    { id: 0, name: 'all', displayName: 'All Leaves' },
+    { id: 1, name: 'pending', displayName: 'Pending Leaves' },
+    { id: 2, name: 'approved', displayName: 'Approved Leaves' },
+    { id: 3, name: 'rejected', displayName: 'Rejected Leaves' },
   ],
 
   ATTENDANCE_OPTIONS: [

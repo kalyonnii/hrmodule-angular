@@ -88,38 +88,7 @@
   padding: 8px !important;
 }
 
-::ng-deep ngx-intl-tel-input .iti {
-  width: 100% !important;
-}
 
-::ng-deep ngx-intl-tel-input input::-webkit-input-placeholder {
-  color: #ddd !important;
-}
-
-::ng-deep ngx-intl-tel-input input:focus {
-  outline: none !important;
-  border-color: #e1e2e3 !important;
-}
-
-::ng-deep ngx-intl-tel-input input {
-  height: 40px !important;
-  width: 100% !important;
-  background: #ffff !important;
-  border: 1.39032px solid #e1e2e3 !important;
-  border-radius: 5px !important;
-  padding: 15px;
-  font-size: 15px;
-}
-::ng-deep .filter-sidebar ngx-intl-tel-input input.custom:focus {
-  color: #495057 !important;
-  background-color: #fff !important;
-  border-color: #3c8dbc !important;
-  outline: 0 !important;
-  box-shadow: 0 0 0 0 #fff !important;
-}
-::ng-deep .filter-sidebar ngx-intl-tel-input.ng-invalid.ng-touched input {
-  border: 1px solid #c0392b !important;
-}
 
 .p-inputtext {
   color: #333;
@@ -155,7 +124,8 @@
   .filter-sidebar
   .p-accordion
   .p-accordion-header:not(.p-disabled)
-  .p-accordion-header-link:focus,::ng-deep
+  .p-accordion-header-link:focus,
+::ng-deep
   .filter-sidebar
   .p-accordion
   .p-accordion-header:not(.p-disabled)
@@ -163,4 +133,20 @@
   outline: 0 none !important;
   outline-offset: 0 !important;
   box-shadow: 0 0 0 0.1rem #33009c !important;
+}
+
+.p-button.p-button-secondary {
+  color: #ffffff;
+  background: #ff4081;
+  border: 1px solid #ff4081;
+}
+
+.p-button.p-button-secondary:hover {
+  color: #ffffff;
+  background: #ff4081;
+  border: 1px solid #ff4081;
+}
+
+.p-button.p-button-secondary:enabled:focus, .p-buttonset.p-button-secondary > .p-button:enabled:focus, .p-splitbutton.p-button-secondary > .p-button:enabled:focus {
+  box-shadow: 0 0 0 0.2rem #f7a4bf;
 }

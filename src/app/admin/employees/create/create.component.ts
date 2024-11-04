@@ -25,6 +25,7 @@ export class CreateComponent {
   experienceFields: any = [];
   addressFields: any = [];
   kycFields: any = [];
+  otherFields: any = [];
   salaryAccountFields: any = [];
   breadCrumbItems: any = [];
   employeeData: any;
@@ -35,6 +36,7 @@ export class CreateComponent {
   activeIndex: number = 0;
   heading: any = 'Create Employee';
   actionType: any = 'create';
+  version = projectConstantsLocal.VERSION_DESKTOP;
   ofcBranchNamesList: any = projectConstantsLocal.BRANCH_ENTITIES;
   branchEntities: any = projectConstantsLocal.BRANCH_ENTITIES;
   careOfEntities: any = projectConstantsLocal.CARE_OF_ENTITIES;
@@ -44,6 +46,7 @@ export class CreateComponent {
   userDetails: any;
   selectedFiles: any = {
     panCard: { filesData: [], links: [], uploadedFiles: [] },
+    offerLetter: { filesData: [], links: [], uploadedFiles: [] },
     aadharCard: { filesData: [], links: [], uploadedFiles: [] },
     passPhoto: { filesData: [], links: [], uploadedFiles: [] },
     otherDocuments: [{ filesData: [], links: [], uploadedFiles: [] }],
@@ -73,6 +76,7 @@ export class CreateComponent {
       { label: 'Experience Details', icon: 'fa fa-briefcase' },
       { label: 'Kyc Details', icon: 'fa fa-address-card' },
       { label: 'Account Details', icon: 'fa fa-money-bill' },
+      { label: 'Other Details', icon: 'fa fa-folder-open' },
     ];
     this.moment = this.dateTimeProcessor.getMoment();
     this.activatedRoute.params.subscribe((params) => {
@@ -96,7 +100,12 @@ export class CreateComponent {
               primaryPhone: this.employeeData?.primaryPhone,
               emailAddress: this.employeeData?.emailAddress,
               salary: this.employeeData?.salary,
+              qualification: this.employeeData?.qualification,
               city: this.employeeData?.city,
+              district: this.employeeData?.district,
+
+              state: this.employeeData?.state,
+
               currentAddress: this.employeeData?.currentAddress,
               permanentAddress: this.employeeData?.permanentAddress,
               secondaryPhone: this.employeeData?.secondaryPhone,
@@ -110,10 +119,15 @@ export class CreateComponent {
               prevCompanyName: this.employeeData?.prevCompanyName,
               prevEmployerContact: this.employeeData?.prevEmployerContact,
               prevEmployerName: this.employeeData?.prevEmployerName,
+              experience: this.employeeData?.experience,
             });
             if (this.employeeData.panCard) {
               this.selectedFiles['panCard']['uploadedFiles'] =
                 this.employeeData.panCard;
+            }
+            if (this.employeeData.offerLetter) {
+              this.selectedFiles['offerLetter']['uploadedFiles'] =
+                this.employeeData.offerLetter;
             }
             if (this.employeeData.aadharCard) {
               this.selectedFiles['aadharCard']['uploadedFiles'] =
@@ -149,8 +163,13 @@ export class CreateComponent {
         icon: 'fa fa-house',
         label: ' Dashboard',
         routerLink: '/user/dashboard',
+        queryParams: { v: this.version },
       },
-      { label: 'Employees', routerLink: '/user/employees' },
+      {
+        label: 'Employees',
+        routerLink: '/user/employees',
+        queryParams: { v: this.version },
+      },
       { label: this.actionType == 'create' ? 'Create' : 'Update' },
     ];
   }
@@ -202,6 +221,11 @@ export class CreateComponent {
       city: ['', Validators.compose([Validators.required])],
       salary: ['', Validators.compose([Validators.required])],
       secondaryPhone: [''],
+      qualification: [''],
+      district: [''],
+
+      state: [''],
+
       permanentAddress: [''],
       currentAddress: [''],
       accountHolderName: [''],
@@ -214,8 +238,203 @@ export class CreateComponent {
       prevCompanyName: [''],
       prevEmployerName: [''],
       prevEmployerContact: [''],
+      experience: [''],
     });
   }
+
+  // onSubmit(formValues) {
+  //   let formData: any = {
+  //     employeeName: formValues.employeeName,
+  //     customEmployeeId: formValues.customEmployeeId,
+  //     careOf: formValues.careOf,
+  //     careOfName: formValues.careOfName,
+  //     dateOfBirth: formValues.dateOfBirth
+  //       ? this.moment(formValues.dateOfBirth).format('YYYY-MM-DD')
+  //       : null,
+  //     gender: formValues.gender,
+  //     genderName: this.getGenderName(formValues.gender),
+  //     ofcBranch: formValues.ofcBranch,
+  //     ofcBranchName: this.getOfcBranchName(formValues.ofcBranch),
+  //     designation: formValues.designation,
+  //     designationName: this.getDesignationName(formValues.designation),
+  //     joiningDate: formValues.joiningDate
+  //       ? this.moment(formValues.joiningDate).format('YYYY-MM-DD')
+  //       : null,
+  //     panNumber: formValues.panNumber,
+  //     aadharNumber: formValues.aadharNumber,
+  //     currentAddress: formValues.currentAddress,
+  //     permanentAddress: formValues.permanentAddress,
+  //     primaryPhone: formValues.primaryPhone,
+  //     secondaryPhone: formValues.secondaryPhone,
+  //     emailAddress: formValues.emailAddress,
+  //     salary: formValues.salary,
+  //     qualification: formValues.qualification,
+  //     city: formValues.city,
+  //     district: formValues.district,
+  //     state: formValues.state,
+  //     experience: formValues.experience,
+  //     prevCompanyName: formValues.prevCompanyName,
+  //     prevEmployerName: formValues.prevEmployerName,
+  //     prevEmployerContact: formValues.prevEmployerContact,
+  //     accountHolderName: formValues.accountHolderName,
+  //     bankName: formValues.bankName,
+  //     bankBranch: formValues.bankBranch,
+  //     ifscCode: formValues.ifscCode,
+  //     accountNumber: formValues.accountNumber,
+  //   };
+  //   formData['panCard'] = [];
+  //   if (
+  //     this.selectedFiles['panCard'] &&
+  //     this.selectedFiles['panCard']['links']
+  //   ) {
+  //     for (let i = 0; i < this.selectedFiles['panCard']['links'].length; i++) {
+  //       formData['panCard'].push(this.selectedFiles['panCard']['links'][i]);
+  //     }
+  //     for (
+  //       let i = 0;
+  //       i < this.selectedFiles['panCard']['uploadedFiles'].length;
+  //       i++
+  //     ) {
+  //       formData['panCard'].push(
+  //         this.selectedFiles['panCard']['uploadedFiles'][i]
+  //       );
+  //     }
+  //   }
+
+  //   formData['offerLetter'] = [];
+  //   if (
+  //     this.selectedFiles['offerLetter'] &&
+  //     this.selectedFiles['offerLetter']['links']
+  //   ) {
+  //     for (
+  //       let i = 0;
+  //       i < this.selectedFiles['offerLetter']['links'].length;
+  //       i++
+  //     ) {
+  //       formData['offerLetter'].push(
+  //         this.selectedFiles['offerLetter']['links'][i]
+  //       );
+  //     }
+  //     for (
+  //       let i = 0;
+  //       i < this.selectedFiles['offerLetter']['uploadedFiles'].length;
+  //       i++
+  //     ) {
+  //       formData['offerLetter'].push(
+  //         this.selectedFiles['offerLetter']['uploadedFiles'][i]
+  //       );
+  //     }
+  //   }
+  //   formData['aadharCard'] = [];
+  //   if (
+  //     this.selectedFiles['aadharCard'] &&
+  //     this.selectedFiles['aadharCard']['links']
+  //   ) {
+  //     for (
+  //       let i = 0;
+  //       i < this.selectedFiles['aadharCard']['links'].length;
+  //       i++
+  //     ) {
+  //       formData['aadharCard'].push(
+  //         this.selectedFiles['aadharCard']['links'][i]
+  //       );
+  //     }
+  //     for (
+  //       let i = 0;
+  //       i < this.selectedFiles['aadharCard']['uploadedFiles'].length;
+  //       i++
+  //     ) {
+  //       formData['aadharCard'].push(
+  //         this.selectedFiles['aadharCard']['uploadedFiles'][i]
+  //       );
+  //     }
+  //   }
+  //   formData['passPhoto'] = [];
+  //   if (
+  //     this.selectedFiles['passPhoto'] &&
+  //     this.selectedFiles['passPhoto']['links']
+  //   ) {
+  //     for (
+  //       let i = 0;
+  //       i < this.selectedFiles['passPhoto']['links'].length;
+  //       i++
+  //     ) {
+  //       formData['passPhoto'].push(this.selectedFiles['passPhoto']['links'][i]);
+  //     }
+  //     for (
+  //       let i = 0;
+  //       i < this.selectedFiles['passPhoto']['uploadedFiles'].length;
+  //       i++
+  //     ) {
+  //       formData['passPhoto'].push(
+  //         this.selectedFiles['passPhoto']['uploadedFiles'][i]
+  //       );
+  //     }
+  //   }
+  //   for (let index = 0; index < this.otherDocuments.length; index++) {
+  //     this.otherDocuments[index]['otherDocuments'] = [];
+  //     if (
+  //       this.selectedFiles['otherDocuments'][index] &&
+  //       this.selectedFiles['otherDocuments'][index]['links']
+  //     ) {
+  //       for (
+  //         let i = 0;
+  //         i < this.selectedFiles['otherDocuments'][index]['links'].length;
+  //         i++
+  //       ) {
+  //         this.otherDocuments[index]['otherDocuments'].push(
+  //           this.selectedFiles['otherDocuments'][index]['links'][i]
+  //         );
+  //       }
+  //       for (
+  //         let i = 0;
+  //         i <
+  //         this.selectedFiles['otherDocuments'][index]['uploadedFiles'].length;
+  //         i++
+  //       ) {
+  //         this.otherDocuments[index]['otherDocuments'].push(
+  //           this.selectedFiles['otherDocuments'][index]['uploadedFiles'][i]
+  //         );
+  //       }
+  //     }
+  //   }
+  //   formData['otherDocuments'] = this.otherDocuments;
+  //   console.log(this.otherDocuments);
+  //   console.log('formData', formData);
+  //   if (this.actionType == 'create') {
+  //     this.loading = true;
+  //     this.employeesService.createEmployee(formData).subscribe(
+  //       (data) => {
+  //         if (data) {
+  //           this.loading = false;
+  //           this.toastService.showSuccess('Employee Added Successfully');
+  //           this.routingService.handleRoute('employees', null);
+  //         }
+  //       },
+  //       (error: any) => {
+  //         this.loading = false;
+  //         console.log(error);
+  //         this.toastService.showError(error);
+  //       }
+  //     );
+  //   } else if (this.actionType == 'update') {
+  //     this.loading = true;
+  //     console.log(formData);
+  //     this.employeesService.updateEmployee(this.employeeId, formData).subscribe(
+  //       (data) => {
+  //         if (data) {
+  //           this.loading = false;
+  //           this.toastService.showSuccess('Employee Updated Successfully');
+  //           this.routingService.handleRoute('employees', null);
+  //         }
+  //       },
+  //       (error: any) => {
+  //         this.loading = false;
+  //         this.toastService.showError(error);
+  //       }
+  //     );
+  //   }
+  // }
 
   onSubmit(formValues) {
     let formData: any = {
@@ -223,7 +442,6 @@ export class CreateComponent {
       customEmployeeId: formValues.customEmployeeId,
       careOf: formValues.careOf,
       careOfName: formValues.careOfName,
-
       dateOfBirth: formValues.dateOfBirth
         ? this.moment(formValues.dateOfBirth).format('YYYY-MM-DD')
         : null,
@@ -244,7 +462,11 @@ export class CreateComponent {
       secondaryPhone: formValues.secondaryPhone,
       emailAddress: formValues.emailAddress,
       salary: formValues.salary,
+      qualification: formValues.qualification,
       city: formValues.city,
+      district: formValues.district,
+      state: formValues.state,
+      experience: formValues.experience,
       prevCompanyName: formValues.prevCompanyName,
       prevEmployerName: formValues.prevEmployerName,
       prevEmployerContact: formValues.prevEmployerContact,
@@ -253,103 +475,18 @@ export class CreateComponent {
       bankBranch: formValues.bankBranch,
       ifscCode: formValues.ifscCode,
       accountNumber: formValues.accountNumber,
+      panCard: this.getFileData('panCard'),
+      offerLetter: this.getFileData('offerLetter'),
+      aadharCard: this.getFileData('aadharCard'),
+      passPhoto: this.getFileData('passPhoto'),
+      otherDocuments: this.getOtherDocumentsData(),
     };
-    formData['panCard'] = [];
-    if (
-      this.selectedFiles['panCard'] &&
-      this.selectedFiles['panCard']['links']
-    ) {
-      for (let i = 0; i < this.selectedFiles['panCard']['links'].length; i++) {
-        formData['panCard'].push(this.selectedFiles['panCard']['links'][i]);
-      }
-      for (
-        let i = 0;
-        i < this.selectedFiles['panCard']['uploadedFiles'].length;
-        i++
-      ) {
-        formData['panCard'].push(
-          this.selectedFiles['panCard']['uploadedFiles'][i]
-        );
-      }
-    }
-    formData['aadharCard'] = [];
-    if (
-      this.selectedFiles['aadharCard'] &&
-      this.selectedFiles['aadharCard']['links']
-    ) {
-      for (
-        let i = 0;
-        i < this.selectedFiles['aadharCard']['links'].length;
-        i++
-      ) {
-        formData['aadharCard'].push(
-          this.selectedFiles['aadharCard']['links'][i]
-        );
-      }
-      for (
-        let i = 0;
-        i < this.selectedFiles['aadharCard']['uploadedFiles'].length;
-        i++
-      ) {
-        formData['aadharCard'].push(
-          this.selectedFiles['aadharCard']['uploadedFiles'][i]
-        );
-      }
-    }
-    formData['passPhoto'] = [];
-    if (
-      this.selectedFiles['passPhoto'] &&
-      this.selectedFiles['passPhoto']['links']
-    ) {
-      for (
-        let i = 0;
-        i < this.selectedFiles['passPhoto']['links'].length;
-        i++
-      ) {
-        formData['passPhoto'].push(this.selectedFiles['passPhoto']['links'][i]);
-      }
-      for (
-        let i = 0;
-        i < this.selectedFiles['passPhoto']['uploadedFiles'].length;
-        i++
-      ) {
-        formData['passPhoto'].push(
-          this.selectedFiles['passPhoto']['uploadedFiles'][i]
-        );
-      }
-    }
-    for (let index = 0; index < this.otherDocuments.length; index++) {
-      this.otherDocuments[index]['otherDocuments'] = [];
-      if (
-        this.selectedFiles['otherDocuments'][index] &&
-        this.selectedFiles['otherDocuments'][index]['links']
-      ) {
-        for (
-          let i = 0;
-          i < this.selectedFiles['otherDocuments'][index]['links'].length;
-          i++
-        ) {
-          this.otherDocuments[index]['otherDocuments'].push(
-            this.selectedFiles['otherDocuments'][index]['links'][i]
-          );
-        }
-        for (
-          let i = 0;
-          i <
-          this.selectedFiles['otherDocuments'][index]['uploadedFiles'].length;
-          i++
-        ) {
-          this.otherDocuments[index]['otherDocuments'].push(
-            this.selectedFiles['otherDocuments'][index]['uploadedFiles'][i]
-          );
-        }
-      }
-    }
-    formData['otherDocuments'] = this.otherDocuments;
+
     console.log(this.otherDocuments);
     console.log('formData', formData);
-    if (this.actionType == 'create') {
-      this.loading = true;
+
+    this.loading = true;
+    if (this.actionType === 'create') {
       this.employeesService.createEmployee(formData).subscribe(
         (data) => {
           if (data) {
@@ -364,9 +501,7 @@ export class CreateComponent {
           this.toastService.showError(error);
         }
       );
-    } else if (this.actionType == 'update') {
-      this.loading = true;
-      console.log(formData);
+    } else if (this.actionType === 'update') {
       this.employeesService.updateEmployee(this.employeeId, formData).subscribe(
         (data) => {
           if (data) {
@@ -381,6 +516,36 @@ export class CreateComponent {
         }
       );
     }
+  }
+
+  private getFileData(fileType: string): any[] | null {
+    if (this.selectedFiles[fileType]) {
+      const { links = [], uploadedFiles = [] } = this.selectedFiles[fileType];
+      if (links.length > 0 || uploadedFiles.length > 0) {
+        return [...links, ...uploadedFiles];
+      }
+    }
+    return null; // Return null if there are no files
+  }
+
+  private getOtherDocumentsData(): any[] | null {
+    const otherDocumentsData = this.otherDocuments.map((document, index) => {
+      const otherDocumentData: any = { ...document, otherDocuments: [] };
+      if (this.selectedFiles['otherDocuments'][index]) {
+        const { links = [], uploadedFiles = [] } =
+          this.selectedFiles['otherDocuments'][index];
+        if (links.length > 0 || uploadedFiles.length > 0) {
+          otherDocumentData['otherDocuments'] = [...links, ...uploadedFiles];
+        }
+      }
+      return otherDocumentData;
+    });
+
+    // Filter out any documents without files and return null if none have files
+    const filteredDocuments = otherDocumentsData.filter(
+      (doc) => doc.otherDocuments.length > 0
+    );
+    return filteredDocuments.length > 0 ? filteredDocuments : null; // Return null if no documents have files
   }
 
   createPayslip() {
@@ -427,7 +592,7 @@ export class CreateComponent {
   setEmployeesList() {
     this.personalFields = [
       {
-        label: 'Employee Id',
+        label: 'Custom Employee Id',
         controlName: 'customEmployeeId',
         type: 'text',
         required: true,
@@ -459,7 +624,7 @@ export class CreateComponent {
       {
         label: 'Salary',
         controlName: 'salary',
-        type: 'text',
+        type: 'number',
         required: true,
       },
       {
@@ -505,6 +670,7 @@ export class CreateComponent {
         controlName: 'primaryPhone',
         type: 'text',
         maxLength: 10,
+
         required: true,
       },
       {
@@ -512,6 +678,12 @@ export class CreateComponent {
         controlName: 'secondaryPhone',
         type: 'text',
         maxLength: 10,
+        required: false,
+      },
+      {
+        label: 'Qualification',
+        controlName: 'qualification',
+        type: 'text',
         required: false,
       },
       {
@@ -529,6 +701,18 @@ export class CreateComponent {
 
     this.addressFields = [
       {
+        label: 'District',
+        controlName: 'district',
+        type: 'text',
+        required: false,
+      },
+      {
+        label: 'State',
+        controlName: 'state',
+        type: 'text',
+        required: false,
+      },
+      {
         label: 'Current Address',
         controlName: 'currentAddress',
         type: 'text',
@@ -543,6 +727,12 @@ export class CreateComponent {
     ];
 
     this.experienceFields = [
+      {
+        label: 'Experience',
+        controlName: 'experience',
+        type: 'text',
+        required: false,
+      },
       {
         label: 'Previous Company Name',
         controlName: 'prevCompanyName',
@@ -598,7 +788,7 @@ export class CreateComponent {
         label: 'Pan Card',
         controlName: 'panCard',
         type: 'file',
-        required: true,
+        required: false,
         uploadFunction: 'uploadFiles',
         acceptedFileTypes: '*/*',
       },
@@ -606,7 +796,7 @@ export class CreateComponent {
         label: 'Aadhar Card',
         controlName: 'aadharCard',
         type: 'file',
-        required: true,
+        required: false,
         uploadFunction: 'uploadFiles',
         acceptedFileTypes: '*/*',
       },
@@ -642,6 +832,17 @@ export class CreateComponent {
         controlName: 'ifscCode',
         type: 'text',
         required: false,
+      },
+    ];
+
+    this.otherFields = [
+      {
+        label: 'Offer Letter (signed)',
+        controlName: 'offerLetter',
+        type: 'file',
+        required: false,
+        uploadFunction: 'uploadFiles',
+        acceptedFileTypes: '*/*',
       },
     ];
   }
@@ -824,8 +1025,7 @@ export class CreateComponent {
             } else {
               console.error('docIndex or fileIndex is missing.');
             }
-          }
-          else {
+          } else {
             console.error(
               'No uploaded files found for the specified file type.'
             );

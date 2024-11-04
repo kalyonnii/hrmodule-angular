@@ -34,6 +34,7 @@ export class DashboardComponent implements OnInit {
   totalLateCount: number = 0;
   attendanceData: any;
   totalUsersCount: any = 0;
+  totalLeavesCount: any = 0;
   employees: any[] = [];
   totalInterviewsCount: any = 0;
   employeeDetails: any[] = [];
@@ -66,6 +67,10 @@ export class DashboardComponent implements OnInit {
     console.log(this.userDetails);
     this.selectedDate = this.moment().format('YYYY-MM-DD');
     this.setChartOptions();
+    this.initializeDashboardData();
+  }
+
+  initializeDashboardData() {
     this.fetchCounts();
     this.updateCountsAnalytics();
     this.getGenderCounts();
@@ -73,15 +78,20 @@ export class DashboardComponent implements OnInit {
     this.getAttendanceByDate();
     this.getDepartmentCounts();
   }
-
   onDateChange(event: any) {
     console.log(event);
     this.selectedDate = this.moment(event).format('YYYY-MM-DD');
     this.attendanceData = [];
     this.employeeDetails = [];
     this.employees = [];
-    this.getAttendanceByDate();
-    this.employeesTable.reset();
+    this.getAttendanceByDate()
+      .then(() => {
+        this.employeesTable.reset();
+      })
+      .catch((error) => {
+        console.error('Failed to get attendance data:', error);
+        this.toastService.showError('Failed to load attendance data.');
+      });
   }
   updateCountsAnalytics() {
     this.countsAnalytics = [
@@ -92,18 +102,20 @@ export class DashboardComponent implements OnInit {
         routerLink: 'employees',
         condition: true,
       },
-      {
-        name: 'users',
-        displayName: 'Users',
-        count: this.totalUsersCount,
-        routerLink: 'users',
-        condition: true,
-      },
+
       {
         name: 'interviews',
         displayName: 'Interviews',
         count: this.totalInterviewsCount,
         routerLink: 'interviews',
+        condition: true,
+      },
+
+      {
+        name: 'attendance',
+        displayName: 'Attendance',
+        count: 0,
+        routerLink: 'attendance',
         condition: true,
       },
       {
@@ -114,10 +126,10 @@ export class DashboardComponent implements OnInit {
         condition: true,
       },
       {
-        name: 'attendance',
-        displayName: 'Attendance',
-        count: 0,
-        routerLink: 'attendance',
+        name: 'leaves',
+        displayName: 'Leave Management',
+        count: this.totalLeavesCount,
+        routerLink: 'leaves',
         condition: true,
       },
       {
@@ -132,6 +144,14 @@ export class DashboardComponent implements OnInit {
         displayName: 'Events',
         count: 0,
         routerLink: 'events',
+        condition: true,
+      },
+
+      {
+        name: 'users',
+        displayName: 'Users',
+        count: this.totalUsersCount,
+        routerLink: 'users',
         condition: true,
       },
       {
@@ -212,37 +232,48 @@ export class DashboardComponent implements OnInit {
 
   getEmployees(filter = {}) {
     this.loading = true;
-    this.employeesService.getEmployees(filter).subscribe(
-      (response: any) => {
-        this.employees = response;
-        console.log('employees', this.employees);
+    this.employeesService.getEmployees(filter).subscribe({
+      next: (response: any) => {
+        if (response) {
+          this.employees = response;
+          console.log('employees', this.employees);
+          this.setDefaultAttendanceData();
+        } else {
+          console.warn('No employees data received');
+        }
         this.loading = false;
-        this.setDefaultAttendanceData();
       },
-      (error: any) => {
+      error: (error: any) => {
         this.loading = false;
-        this.toastService.showError(error);
-      }
-    );
+        this.toastService.showError(
+          'Failed to load employees: ' + error.message
+        );
+      },
+    });
   }
 
-  getAttendanceByDate(filter = {}) {
+  getAttendanceByDate(filter = {}): Promise<void> {
     this.loading = true;
     filter['attendanceDate-eq'] = this.selectedDate;
-    this.employeesService.getAttendance(filter).subscribe(
-      (response: any) => {
-        console.log(this.attendanceData);
-        this.attendanceData = response;
-        console.log('attendanceData', this.attendanceData);
-        this.loading = false;
-        this.calculateAttendanceCounts();
-      },
-      (error: any) => {
-        this.loading = false;
-        this.toastService.showError(error);
-      }
-    );
+
+    return new Promise((resolve, reject) => {
+      this.employeesService.getAttendance(filter).subscribe(
+        (response: any) => {
+          console.log('attendanceData:', response);
+          this.attendanceData = response;
+          this.loading = false;
+          this.calculateAttendanceCounts();
+          resolve();
+        },
+        (error: any) => {
+          this.loading = false;
+          this.toastService.showError('Failed to load attendance data');
+          reject(error);
+        }
+      );
+    });
   }
+
   fetchCounts(filter = {}) {
     this.loading = true;
     const employeefilter = { ...filter, 'employeeInternalStatus-eq': 1 };
@@ -252,12 +283,21 @@ export class DashboardComponent implements OnInit {
       this.employeesService?.getUsersCount(filter),
       this.employeesService?.getHolidaysCount(filter),
       this.employeesService?.getInterviewCount(filter),
+      this.employeesService?.getLeavesCount(filter),
     ]).subscribe(
-      ([employeesCount, usersCount, holidaysCount, interviewCount]) => {
+      ([
+        employeesCount,
+        usersCount,
+        holidaysCount,
+        interviewCount,
+        leavesCount,
+      ]) => {
         this.totalEmployeesCount = employeesCount;
         this.totalUsersCount = usersCount;
         this.totalHolidaysCount = holidaysCount;
         this.totalInterviewsCount = interviewCount;
+        this.totalLeavesCount = leavesCount;
+
         this.updateCountsAnalytics();
         this.loading = false;
       },
@@ -274,8 +314,8 @@ export class DashboardComponent implements OnInit {
     const femaleFilter = { ...filter, 'gender-eq': 1 };
     this.loading = true;
     forkJoin({
-      maleCount: this.employeesService.getEmployeesCount(maleFilter),
-      femaleCount: this.employeesService.getEmployeesCount(femaleFilter),
+      maleCount: this.employeesService?.getEmployeesCount(maleFilter),
+      femaleCount: this.employeesService?.getEmployeesCount(femaleFilter),
     }).subscribe(
       (response: any) => {
         this.maleCount = response.maleCount;

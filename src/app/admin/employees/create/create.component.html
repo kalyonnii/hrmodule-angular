@@ -83,6 +83,17 @@
                   [formControlName]="field.controlName"
                   [placeholder]="'Enter ' + field.label"
                   class="rounded-lg"
+                  [pattern]="field.pattern"
+                  [maxlength]="field.maxLength"
+                />
+                <input
+                  *ngSwitchCase="'number'"
+                  pInputText
+                  type="number"
+                  class="custom-input"
+                  [formControlName]="field.controlName"
+                  [placeholder]="'Enter ' + field.label"
+                  class="rounded-lg"
                   [maxlength]="field.maxLength"
                 />
                 <input
@@ -136,6 +147,18 @@
                   [formControlName]="field.controlName"
                   [placeholder]="'Enter ' + field.label"
                   class="rounded-lg"
+                  [pattern]="field.pattern"
+                  [maxlength]="field.maxLength"
+                />
+                <input
+                  *ngSwitchCase="'number'"
+                  pInputText
+                  type="number"
+                  class="custom-input"
+                  [formControlName]="field.controlName"
+                  [placeholder]="'Enter ' + field.label"
+                  class="rounded-lg"
+                  [pattern]="field.pattern"
                   [maxlength]="field.maxLength"
                 />
                 <input
@@ -191,6 +214,18 @@
                   [placeholder]="'Enter ' + field.label"
                   class="rounded-lg"
                   [maxlength]="field.maxLength"
+                  [pattern]="field.pattern"
+                />
+                <input
+                  *ngSwitchCase="'number'"
+                  pInputText
+                  type="number"
+                  class="custom-input"
+                  [formControlName]="field.controlName"
+                  [placeholder]="'Enter ' + field.label"
+                  class="rounded-lg"
+                  [pattern]="field.pattern"
+                  [maxlength]="field.maxLength"
                 />
               </ng-container>
             </div>
@@ -215,7 +250,7 @@
                 color: rgba(2, 5, 129, 0.91);
               "
             >
-              Other Documents
+              Education / Experience Documents
             </h3>
             <div
               class="row"
@@ -247,11 +282,12 @@
                     <button
                       pButton
                       pRipple
+                      icon="fa fa-cloud-arrow-up"
                       type="button"
                       class="p-button-info me-2"
                       (click)="uploadFiles('otherDocuments', '*/*', i)"
                     >
-                      <i class="pi pi-upload"></i>&nbsp;Upload Files
+                      &nbsp;Upload Files
                     </button>
                     <button
                       pButton
@@ -330,6 +366,16 @@
                   class="rounded-lg"
                   [maxlength]="field.maxLength"
                   [pattern]="field.pattern"
+                />
+                <input
+                  *ngSwitchCase="'number'"
+                  pInputText
+                  type="number"
+                  class="custom-input"
+                  [formControlName]="field.controlName"
+                  [placeholder]="'Enter ' + field.label"
+                  class="rounded-lg"
+                  [maxlength]="field.maxLength"
                 />
                 <ng-container *ngSwitchCase="'file'">
                   <div *ngIf="field.controlName === 'passPhoto'">
@@ -457,6 +503,17 @@
                   [formControlName]="field.controlName"
                   [placeholder]="'Enter ' + field.label"
                   class="rounded-lg"
+                  [pattern]="field.pattern"
+                  [maxlength]="field.maxLength"
+                />
+                <input
+                  *ngSwitchCase="'number'"
+                  pInputText
+                  type="number"
+                  class="custom-input"
+                  [formControlName]="field.controlName"
+                  [placeholder]="'Enter ' + field.label"
+                  class="rounded-lg"
                   [maxlength]="field.maxLength"
                 />
                 <input
@@ -487,6 +544,91 @@
                   appendTo="body"
                   [showButtonBar]="true"
                 ></p-calendar>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="activeIndex === 5">
+          <h3 style="font-weight: bold; color: rgba(2, 5, 129, 0.91)">
+            Other Details
+          </h3>
+          <div class="row mt-3" *ngIf="otherFields">
+            <div *ngFor="let field of otherFields" class="col-md-4 mt-2">
+              <div class="my-1">
+                <label
+                  >{{ field.label }}
+                  <sup *ngIf="field.required" class="text-danger">*</sup></label
+                >
+              </div>
+              <ng-container [ngSwitch]="field.type">
+                <input
+                  *ngSwitchCase="'text'"
+                  pInputText
+                  [formControlName]="field.controlName"
+                  [placeholder]="'Enter ' + field.label"
+                  class="rounded-lg"
+                  [maxlength]="field.maxLength"
+                  [pattern]="field.pattern"
+                />
+                <input
+                  *ngSwitchCase="'number'"
+                  pInputText
+                  type="number"
+                  class="custom-input"
+                  [formControlName]="field.controlName"
+                  [placeholder]="'Enter ' + field.label"
+                  class="rounded-lg"
+                  [maxlength]="field.maxLength"
+                />
+                <ng-container *ngSwitchCase="'file'">
+                  <ng-container>
+                    <button
+                      pButton
+                      type="button"
+                      icon="fa fa-cloud-arrow-up"
+                      class="p-button-info me-2"
+                      (click)="
+                        uploadFiles(field.controlName, field.acceptedFileTypes)
+                      "
+                    >
+                      &nbsp;Upload {{ field.label }}
+                    </button>
+
+                    <div
+                      *ngIf="
+                        employeeData &&
+                        employeeData[field.controlName] &&
+                        employeeData[field.controlName].length > 0
+                      "
+                      class="mt-2"
+                    >
+                      <span
+                        *ngFor="let file of employeeData[field.controlName]"
+                        class="file-wrapper"
+                      >
+                        <a
+                          [href]="'//' + file"
+                          target="_blank"
+                          class="file-link"
+                        >
+                          <i
+                            [ngClass]="getFileIcon(file.split('.').pop())"
+                            class="file-icon me-2"
+                          ></i>
+                        </a>
+                        <button
+                          pButton
+                          *ngIf="this.userDetails?.designation == 4"
+                          type="button"
+                          class="delete-btn p-button-danger p-button-sm"
+                          (click)="confirmDelete(file, field.controlName)"
+                        >
+                          <i class="pi pi-times"></i>
+                        </button>
+                      </span>
+                    </div>
+                  </ng-container>
+                </ng-container>
               </ng-container>
             </div>
           </div>
@@ -543,3 +685,12 @@
     </form>
   </div>
 </div>
+
+<footer class="p-2 text-center text-lg-start mt-3" style="color: #878a99">
+  <div class="text-center mb-3 fw-bold">
+    © 2024 <span style="color: #1e4079">The</span>&nbsp;<b
+      style="color: #51c297"
+      >Fintalk</b
+    >. | All Rights Reserved
+  </div>
+</footer>

@@ -1,4 +1,6 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { DateTimeProcessorService } from 'src/app/services/date-time-processor.service';
 import { ServiceMeta } from 'src/app/services/service-meta';
 
@@ -7,12 +9,59 @@ import { ServiceMeta } from 'src/app/services/service-meta';
 })
 export class EmployeesService {
   moment: any;
+  private url = 'https://s3.thefintalk.in/offerletterformat/index.html';
+
   constructor(
     private serviceMeta: ServiceMeta,
+    private http: HttpClient,
     private dateTimeProcessor: DateTimeProcessorService
   ) {
     this.moment = this.dateTimeProcessor.getMoment();
   }
+
+  getOfferLetterContent() {
+    const url = 'https://s3.thefintalk.in/offerletterformat/index.html';
+    return this.serviceMeta.httpGet(url, null);
+  }
+
+  getOfferLetterTemplateHtml(
+    templateName: string,
+    data: any
+  ): Promise<string | boolean> {
+    return new Promise((resolve, reject) => {
+      const url = 'https://s3.thefintalk.in/offerletterformat/index.html';
+      this.serviceMeta.httpGetText(url).subscribe(
+        (htmlContent: any) => {
+          console.log(htmlContent);
+          let renderedTemplateData = this.renderTemplate(htmlContent, data);
+          resolve(renderedTemplateData);
+        },
+        (error) => {
+          console.error('Failed to fetch HTML:', error);
+          resolve(false);
+        }
+      );
+    });
+  }
+
+  renderTemplate(htmlString: string, data: any): string {
+    const processedHtml = htmlString.replace(/{{(.*?)}}/g, (match, key) => {
+      const value = data[key.trim()];
+      return value !== undefined && value !== null ? value : '';
+    });
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = processedHtml;
+    const elements = tempDiv.querySelectorAll('[data-key]');
+    elements.forEach((element) => {
+      const key = element.getAttribute('data-key');
+      if (key && data[key] === undefined) {
+        element.remove();
+      }
+    });
+
+    return tempDiv.innerHTML;
+  }
+
   //employee
   createEmployee(data) {
     const url = 'employees';
@@ -105,6 +154,60 @@ export class EmployeesService {
     return this.serviceMeta.httpGet(url, null, filter);
   }
 
+  //EXPORTS
+
+  exportEmployees(filter = {}) {
+    const url = 'reports/employees';
+    return this.serviceMeta.httpGet(url, null, filter);
+  }
+
+  exportInterviews(filter = {}) {
+    const url = 'reports/interviews';
+    return this.serviceMeta.httpGet(url, null, filter);
+  }
+
+  exportSalarySheet(filter = {}) {
+    const url = 'reports/salarysheet';
+    return this.serviceMeta.httpGet(url, null, filter);
+  }
+
+  exportLeaves(filter = {}) {
+    const url = 'reports/leaves';
+    return this.serviceMeta.httpGet(url, null, filter);
+  }
+
+  exportHolidays(filter = {}) {
+    const url = 'reports/holidays';
+    return this.serviceMeta.httpGet(url, null, filter);
+  }
+  //PAYROLL
+  createPayroll(data) {
+    const url = 'payroll';
+    return this.serviceMeta.httpPost(url, data);
+  }
+
+  updatePayroll(payslipId, data) {
+    const url = 'payroll/' + payslipId;
+    return this.serviceMeta.httpPut(url, data);
+  }
+  getPayroll(filter = {}) {
+    const url = 'payroll';
+    return this.serviceMeta.httpGet(url, null, filter);
+  }
+
+  getPayrollById(payslipId, filter = {}) {
+    const url = 'payroll/' + payslipId;
+    return this.serviceMeta.httpGet(url, null, filter);
+  }
+  deletePayroll(payslipId, filter = {}) {
+    const url = 'payroll/' + payslipId;
+    return this.serviceMeta.httpDelete(url, null, filter);
+  }
+  getPayrollCount(filter = {}) {
+    const url = 'payroll/total';
+    return this.serviceMeta.httpGet(url, null, filter);
+  }
+
   //Interviews
   createInterview(data) {
     const url = 'interviews';
@@ -133,6 +236,37 @@ export class EmployeesService {
   }
   getInterviewCount(filter = {}) {
     const url = 'interviews/total';
+    return this.serviceMeta.httpGet(url, null, filter);
+  }
+
+  //Leaves
+  createLeave(data) {
+    const url = 'leaves';
+    return this.serviceMeta.httpPost(url, data);
+  }
+
+  updateLeave(leaveId, data) {
+    const url = 'leaves/' + leaveId;
+    return this.serviceMeta.httpPut(url, data);
+  }
+  getLeaves(filter = {}) {
+    const url = 'leaves';
+    return this.serviceMeta.httpGet(url, null, filter);
+  }
+  changeLeaveStatus(leaveId, statusId) {
+    const url = `leaves/${leaveId}/changestatus/${statusId}`;
+    return this.serviceMeta.httpPut(url, null);
+  }
+  getLeaveById(leaveId, filter = {}) {
+    const url = 'leaves/' + leaveId;
+    return this.serviceMeta.httpGet(url, null, filter);
+  }
+  deleteLeave(leaveId, filter = {}) {
+    const url = 'leaves/' + leaveId;
+    return this.serviceMeta.httpDelete(url, null, filter);
+  }
+  getLeavesCount(filter = {}) {
+    const url = 'leaves/total';
     return this.serviceMeta.httpGet(url, null, filter);
   }
 

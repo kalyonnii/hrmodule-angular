@@ -21,9 +21,13 @@ export class EmployeesComponent implements OnInit {
   appliedFilter: {};
   userDetails: any;
   searchFilter: any = {};
+  employeeStatusCount: { [key: number]: number } = { 1: 0, 2: 0 };
+
   employeeNameToSearch: any;
+  countsAnalytics: any[] = [];
   @ViewChild('employeesTable') employeesTable!: Table;
   employees: any = [];
+  version = projectConstantsLocal.VERSION_DESKTOP;
   designationDetails: any = projectConstantsLocal.DEPARTMENT_ENTITIES;
   branchDetails: any = projectConstantsLocal.BRANCH_ENTITIES;
   genderDetails: any = projectConstantsLocal.GENDER_ENTITIES;
@@ -43,6 +47,7 @@ export class EmployeesComponent implements OnInit {
         icon: 'fa fa-house',
         label: '  Dashboard',
         routerLink: '/user/dashboard',
+        queryParams: { v: this.version },
       },
       { label: 'Employees' },
     ];
@@ -55,17 +60,45 @@ export class EmployeesComponent implements OnInit {
       this.userDetails = userDetails.user;
       console.log(this.userDetails);
     }
-
+    this.updateCountsAnalytics();
     this.setFilterConfig();
+    this.getEmployeesStatusCount();
+  }
+
+  updateCountsAnalytics() {
+    this.countsAnalytics = [
+      {
+        name: 'user',
+        displayName: 'Employees',
+        count: this.employeeStatusCount[1] + this.employeeStatusCount[2],
+        textcolor: '#6C5FFC',
+        backgroundcolor: '#F0EFFF',
+      },
+
+      {
+        name: 'check-circle',
+        displayName: 'Active Employees',
+        count: this.employeeStatusCount[1],
+        textcolor: '#2ECC71',
+        backgroundcolor: '#F0F9E8',
+      },
+      {
+        name: 'circle-xmark',
+        displayName: 'In Active Employees',
+        count: this.employeeStatusCount[2],
+        textcolor: '#DC3545',
+        backgroundcolor: '#F8D7DA',
+      },
+    ];
   }
   actionItems(employee: any): MenuItem[] {
     const menuItems: any = [{ label: 'Actions', items: [] }];
 
     if (employee.employeeInternalStatus === 1) {
       menuItems[0].items.push({
-        label: 'In Active',
-        icon: 'fa fa-right-to-bracket',
-        command: () => this.inactiveEmployee(employee),
+        label: 'Profile',
+        icon: 'fa fa-eye',
+        command: () => this.employeeProfile(employee.employeeId),
       });
       menuItems[0].items.push({
         label: 'Update',
@@ -73,9 +106,9 @@ export class EmployeesComponent implements OnInit {
         command: () => this.updateEmployee(employee.employeeId),
       });
       menuItems[0].items.push({
-        label: 'Profile',
-        icon: 'fa fa-eye',
-        command: () => this.employeeProfile(employee.employeeId),
+        label: 'In Active',
+        icon: 'fa fa-right-to-bracket',
+        command: () => this.inactiveEmployee(employee),
       });
       if (this.userDetails?.designation == 4) {
         menuItems[0].items.push({
@@ -411,6 +444,9 @@ export class EmployeesComponent implements OnInit {
       message: 'Are you sure you want to delete this Employee?',
       header: 'Confirm Deletion',
       icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Yes',
+      rejectLabel: 'No',
+
       accept: () => {
         this.deleteEmployee(employeeId);
       },
@@ -466,6 +502,7 @@ export class EmployeesComponent implements OnInit {
         }
       }
     }
+    console.log(api_filter);
     api_filter = Object.assign(
       {},
       api_filter,
@@ -489,6 +526,15 @@ export class EmployeesComponent implements OnInit {
       }
     );
   }
+  countEmployeeInternalStatus(employees) {
+    const statusCount = { 1: 0, 2: 0 };
+    employees.forEach((employee) => {
+      if (employee.employeeInternalStatus in statusCount) {
+        statusCount[employee.employeeInternalStatus]++;
+      }
+    });
+    return statusCount;
+  }
 
   getEmployees(filter = {}) {
     this.loading = true;
@@ -505,6 +551,20 @@ export class EmployeesComponent implements OnInit {
     );
   }
 
+  getEmployeesStatusCount() {
+    this.loading = true;
+    this.employeesService.getEmployees().subscribe(
+      (response) => {
+        this.employeeStatusCount = this.countEmployeeInternalStatus(response);
+        this.updateCountsAnalytics();
+        this.loading = false;
+      },
+      (error: any) => {
+        this.loading = false;
+        this.toastService.showError(error);
+      }
+    );
+  }
   getStatusName(statusId) {
     if (
       this.employeeInternalStatusList &&
@@ -529,8 +589,8 @@ export class EmployeesComponent implements OnInit {
   } {
     switch (status) {
       case 'Active':
-        return { textColor: '#0F006D', backgroundColor: '#DED3FF' };
-      case 'In Active':
+        return { textColor: '#5DCC0B', backgroundColor: '#E4F7D6' };
+      case 'InActive':
         return { textColor: '#FFBA15', backgroundColor: '#FFF3D6' };
       default:
         return { textColor: 'black', backgroundColor: 'white' };
@@ -545,6 +605,13 @@ export class EmployeesComponent implements OnInit {
   }
   employeeProfile(employeeId) {
     this.routingService.handleRoute('employees/profile/' + employeeId, null);
+  }
+
+  ViewOfferletter(employeeId) {
+    this.routingService.handleRoute(
+      'employees/offerletter/' + employeeId,
+      null
+    );
   }
   goBack() {
     this.location.back();

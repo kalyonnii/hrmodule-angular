@@ -22,6 +22,7 @@ export class CreateComponent {
   attendanceData: any;
   totalEmployeesCount: number = 0;
   loading: boolean = false;
+  version = projectConstantsLocal.VERSION_DESKTOP;
 
   employees: any[] = [];
   employeeDetails: any[] = [];
@@ -58,10 +59,15 @@ export class CreateComponent {
     this.breadCrumbItems = [
       {
         icon: 'fa fa-house',
-        label: 'Dashboard',
+        label: ' Dashboard',
         routerLink: '/user/dashboard',
+        queryParams: { v: this.version },
       },
-      { label: 'Attendance', routerLink: '/user/attendance' },
+      {
+        label: 'Attendance',
+        routerLink: '/user/attendance',
+        queryParams: { v: this.version },
+      },
       { label: this.actionType === 'create' ? 'Create' : 'Update' },
     ];
   }

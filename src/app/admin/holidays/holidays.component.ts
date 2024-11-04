@@ -5,6 +5,7 @@ import { EmployeesService } from '../employees/employees.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { ConfirmationService } from 'primeng/api';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
+import { projectConstantsLocal } from 'src/app/constants/project-constants';
 @Component({
   selector: 'app-holidays',
   templateUrl: './holidays.component.html',
@@ -21,6 +22,7 @@ export class HolidaysComponent implements OnInit {
   searchFilter: any = {};
   userDetails: any;
   filterConfig: any[] = [];
+  version = projectConstantsLocal.VERSION_DESKTOP;
   constructor(
     private employeesService: EmployeesService,
     private location: Location,
@@ -34,6 +36,7 @@ export class HolidaysComponent implements OnInit {
         icon: 'fa fa-house',
         label: '  Dashboard',
         routerLink: '/user/dashboard',
+        queryParams: { v: this.version },
       },
       { label: 'Holidays' },
     ];

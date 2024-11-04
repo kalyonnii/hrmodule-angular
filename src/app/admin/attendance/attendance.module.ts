@@ -13,6 +13,7 @@ import { FormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { CalendarModule } from 'primeng/calendar';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 const routes: Routes = [
   { path: '', component: AttendanceComponent },
@@ -41,9 +42,11 @@ const routes: Routes = [
     DropdownModule,
     FormsModule,
     CalendarModule,
+    LazyLoadImageModule,
     ButtonModule,
     MenuModule,
     DialogModule,
+    DropdownModule,
     InputTextModule,
     BreadcrumbModule,
     [RouterModule.forChild(routes)],

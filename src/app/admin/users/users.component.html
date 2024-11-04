@@ -69,51 +69,49 @@
     styleClass="p-datatable-customers"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Users"
   >
-  <ng-template pTemplate="caption">
-    <div class="row">
-      <div class="col-md-4 mt-1 mb-1 no-padding-small">
-        <div class="p-inputgroup">
-          <input
-            type="text"
-            pInputText
-            placeholder="Search with User Name"
-            [(ngModel)]="userNameToSearch"
-            (ngModelChange)="
-              inputValueChangeEvent('userId', userNameToSearch)
-            "
-            (keyup.enter)="filterWithUserName()"
-          />
-          <button
-            type="button"
-            pButton
-            icon="pi pi-search"
-            class="p-button-primary"
-            [disabled]="!userNameToSearch"
-            (click)="filterWithUserName()"
-          ></button>
-        </div>
-      </div>
-      <div class="col-md-4 mt-1 mb-1 no-padding-small"></div>
-      <div class="col-md-4 mt-1 mb-1 no-padding-small text-right">
-        <div class="d-flex">
-          <div class="flex-grow-1 me-2">
-
-          </div>
-          <div class="d-flex align-items-center pointer-cursor">
-            <app-filter
-              [position]="'right'"
-              [iconColor]="'#33009C'"
-              [iconSize]="'28px!important'"
-              (filterEvent)="applyConfigFilters($event)"
-              [filterConfig]="filterConfig"
-              [showFilterIndication]="appliedFilter"
-            >
-            </app-filter>
+    <ng-template pTemplate="caption">
+      <div class="row">
+        <div class="col-md-4 mt-1 mb-1 no-padding-small">
+          <div class="p-inputgroup">
+            <input
+              type="text"
+              pInputText
+              placeholder="Search with User Name"
+              [(ngModel)]="userNameToSearch"
+              (ngModelChange)="
+                inputValueChangeEvent('userId', userNameToSearch)
+              "
+              (keyup.enter)="filterWithUserName()"
+            />
+            <button
+              type="button"
+              pButton
+              icon="pi pi-search"
+              class="p-button-primary"
+              [disabled]="!userNameToSearch"
+              (click)="filterWithUserName()"
+            ></button>
           </div>
         </div>
+        <div class="col-md-4 mt-1 mb-1 no-padding-small"></div>
+        <div class="col-md-4 mt-1 mb-1 no-padding-small text-right">
+          <div class="d-flex">
+            <div class="flex-grow-1 me-2"></div>
+            <div class="d-flex align-items-center pointer-cursor">
+              <app-filter
+                [position]="'right'"
+                [iconColor]="'#33009C'"
+                [iconSize]="'28px!important'"
+                (filterEvent)="applyConfigFilters($event)"
+                [filterConfig]="filterConfig"
+                [showFilterIndication]="appliedFilter"
+              >
+              </app-filter>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </ng-template>
+    </ng-template>
     <ng-template pTemplate="header" let-columns>
       <tr>
         <th pSortableColumn="userId">
@@ -137,21 +135,23 @@
     <ng-template pTemplate="body" let-user>
       <tr>
         <td>
-          <span class="table-column-data" *ngIf="user.userId">{{
+          <span class="table-column-data" *ngIf="user.userId; else noData">{{
             user.userId
           }}</span>
         </td>
         <td>
           <b>
-            <span class="table-column-data" *ngIf="user.username">{{
-              user.username | capitalizeFirst
-            }}</span>
+            <span
+              class="table-column-data"
+              *ngIf="user.username; else noData"
+              >{{ user.username | capitalizeFirst }}</span
+            >
           </b>
         </td>
         <td>
           <span
             class="table-column-data designationstatus"
-            *ngIf="user.designationName"
+            *ngIf="user.designationName; else noData"
             [ngStyle]="{
               color: getStatusColor(user.designationName).textColor,
               'background-color': getStatusColor(user.designationName)
@@ -161,13 +161,13 @@
           >
         </td>
         <td>
-          <span class="table-column-data" *ngIf="user.phoneNumber">
-            +91 {{ user.phoneNumber }}</span
+          <span class="table-column-data" *ngIf="user.phoneNumber; else noData">
+            <i class="fa fa-phone"></i> &nbsp;{{ user.phoneNumber }}</span
           >
         </td>
 
         <td>
-          <span class="table-column-data" *ngIf="user.createdOn">{{
+          <span class="table-column-data" *ngIf="user.createdOn; else noData">{{
             user.createdOn | date : "mediumDate"
           }}</span>
         </td>
@@ -212,3 +212,12 @@
     </ng-template>
   </p-table>
 </div>
+<ng-template #noData> - </ng-template>
+<footer class="p-2 text-center text-lg-start mt-3" style="color: #878a99">
+  <div class="text-center mb-3 fw-bold">
+    © 2024 <span style="color: #1e4079">The</span>&nbsp;<b
+      style="color: #51c297"
+      >Fintalk</b
+    >. | All Rights Reserved
+  </div>
+</footer>

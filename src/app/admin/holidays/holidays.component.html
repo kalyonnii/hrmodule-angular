@@ -126,29 +126,29 @@
     <ng-template pTemplate="body" let-holiday>
       <tr>
         <td>
-          <span class="table-column-data" *ngIf="holiday.holidayId">{{
+          <span class="table-column-data" *ngIf="holiday.holidayId; else noData">{{
             holiday.holidayId
           }}</span>
         </td>
         <td>
           <b>
-            <span class="table-column-data" *ngIf="holiday.holidayName">{{
+            <span class="table-column-data" *ngIf="holiday.holidayName; else noData">{{
               holiday.holidayName | capitalizeFirst
             }}</span>
           </b>
         </td>
         <td>
-          <span class="table-column-data" *ngIf="holiday.date">{{
+          <span class="table-column-data" *ngIf="holiday.date; else noData">{{
             holiday.date | date
           }}</span>
         </td>
         <td>
-          <span class="table-column-data" *ngIf="holiday.day">{{
+          <span class="table-column-data" *ngIf="holiday.day; else noData">{{
             holiday.day | capitalizeFirst
           }}</span>
         </td>
         <td>
-          <span class="table-column-data" *ngIf="holiday.description">{{
+          <span class="table-column-data" *ngIf="holiday.description; else noData">{{
             holiday.description | capitalizeFirst
           }}</span>
         </td>
@@ -193,3 +193,14 @@
     </ng-template>
   </p-table>
 </div>
+<ng-template #noData>
+  -
+</ng-template>
+<footer class="p-2 text-center text-lg-start mt-3 " style="color: #878A99;">
+  <div class="text-center mb-3 fw-bold">
+    © 2024 <span style="color: #1e4079">The</span>&nbsp;<b
+      style="color: #51c297"
+      >Fintalk</b
+    >. | All Rights Reserved
+  </div>
+</footer>

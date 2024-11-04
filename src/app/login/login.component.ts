@@ -10,6 +10,7 @@ import { AuthService } from '../auth.service';
 import { LocalStorageService } from '../services/local-storage.service';
 import { ToastService } from '../services/toast.service';
 import { Router } from '@angular/router';
+import { projectConstantsLocal } from '../constants/project-constants';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +19,8 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
-
+  clicked = false;
+  version = projectConstantsLocal.VERSION_DESKTOP;
   api_loading: any = false;
   isPasswordVisible: boolean = false;
   carousalImages: any = [
@@ -26,16 +28,13 @@ export class LoginComponent implements OnInit {
       url: 'assets/images/slider/slider1',
     },
     {
-      url: 'assets/images/slider/slider2.jpg',
-    },
-    {
-      url: 'assets/images/slider/slider3.jpg',
-    },
-    {
       url: 'assets/images/slider/slider4.png',
     },
     {
       url: 'assets/images/slider/slider5.jpg',
+    },
+    {
+      url: 'assets/images/slider/slider3.jpg',
     },
     {
       url: 'assets/images/slider/slider6.jpg',
@@ -61,6 +60,12 @@ export class LoginComponent implements OnInit {
       encryptedPassword: ['', Validators.compose([Validators.required])],
     });
   }
+  onSignIn() {
+    if (this.loginForm.valid) {
+      this.clicked = true;
+      this.onSubmit(this.loginForm.value);
+    }
+  }
   onSubmit(loginData) {
     let payload = {
       username: loginData.username,
@@ -81,11 +86,14 @@ export class LoginComponent implements OnInit {
             'userDetails',
             jwtDecode(data['accessToken'])
           );
-          this.router.navigate(['user', 'dashboard']);
+          this.router.navigate(['user', 'dashboard'], {
+            queryParams: { v: this.version },
+          });
         }
       },
       (error) => {
         this.api_loading = false;
+        this.clicked = false;
         this.toastService.showError(error);
       }
     );

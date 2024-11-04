@@ -24,4 +24,263 @@
       </div>
     </div>
   </div>
+  <div class="d-flex justify-content-end mt-3">
+    <button
+      pButton
+      pRipple
+      type="button"
+      class="p-button-primary me-2"
+      icon="fa fa-plus"
+      (click)="createPayroll()"
+    >
+      &nbsp;Add Payroll
+    </button>
+  </div>
 </div>
+<div *ngIf="loading">
+  <app-preloader></app-preloader>
+</div>
+<div class="text-capitalize table-card">
+  <p-table
+    #payrollTable
+    [value]="payroll"
+    [sortOrder]="-1"
+    [sortField]="'createdOn'"
+    [lazy]="true"
+    (onLazyLoad)="loadPayslips($event)"
+    dataKey="id"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [paginator]="true"
+    [rows]="10"
+    class="p-datatable-striped table"
+    [totalRecords]="totalPayrollCount"
+    [loading]="loading"
+    responsiveLayout="scroll"
+    scrollHeight="flex"
+    [globalFilterFields]="[
+      'referenceNo',
+      'customer.firstName',
+      'partner.partnerName',
+      'status'
+    ]"
+    styleClass="p-datatable-customers"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Payroll"
+  >
+    <ng-template pTemplate="caption">
+      <div class="row">
+        <div class="col-md-4 mt-1 mb-1 no-padding-small">
+          <p-calendar
+            [(ngModel)]="selectedDate"
+            [showIcon]="true"
+            view="month"
+            [monthNavigator]="true"
+            [yearNavigator]="true"
+            [yearRange]="'-10:+10'"
+            dateFormat="mm/yy"
+            appendTo="body"
+            (ngModelChange)="onDateChange($event)"
+            [placeholder]="'Select Month and Year'"
+          ></p-calendar>
+        </div>
+        <div class="col-md-4 mt-1 mb-1 no-padding-small"></div>
+        <div class="col-md-4 mt-1 mb-1 no-padding-small text-right">
+          <div class="d-flex">
+            <div class="flex-grow-1 me-2">
+              <p-dropdown
+                styleClass="text-left"
+                [style]="{ width: '100%' }"
+                [options]="employees"
+                (onChange)="statusChange($event)"
+                [dropdownIcon]="'fa fa-caret-down'"
+                [(ngModel)]="selectedEmployee"
+                optionLabel="employeeName"
+                [filter]="true"
+                [showClear]="true"
+                filterPlaceholder="Search..."
+                dataKey="name"
+              >
+              </p-dropdown>
+            </div>
+            <div class="d-flex align-items-center pointer-cursor">
+              <app-filter
+                [position]="'right'"
+                [iconColor]="'#33009C'"
+                [iconSize]="'28px!important'"
+                (filterEvent)="applyConfigFilters($event)"
+                [filterConfig]="filterConfig"
+                [showFilterIndication]="appliedFilter"
+              >
+              </app-filter>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th pSortableColumn="payslipId">
+          Payslip Id <p-sortIcon field="payslipId"></p-sortIcon>
+        </th>
+        <th pSortableColumn="employeeName">
+          Employee Name <p-sortIcon field="employeeName"></p-sortIcon>
+        </th>
+        <th pSortableColumn="joiningDate">
+          Date of Joining <p-sortIcon field="joiningDate"></p-sortIcon>
+        </th>
+        <th pSortableColumn="salary">
+          Salary <p-sortIcon field="salary"></p-sortIcon>
+        </th>
+        <th pSortableColumn="deductions">
+          Deductions <p-sortIcon field="deductions"></p-sortIcon>
+        </th>
+        <th pSortableColumn="netSalaryWithoutDoubleLop">
+          Net Salary <p-sortIcon field="netSalaryWithoutDoubleLop"></p-sortIcon>
+        </th>
+        <th pSortableColumn="createdOn">
+          Created Date <p-sortIcon field="createdOn"></p-sortIcon>
+        </th>
+        <th>Payslip</th>
+
+        <th>Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-payslip>
+      <tr>
+        <td>
+          <span class="table-column-data" *ngIf="payslip.payslipId; else noData">{{
+            payslip.payslipId
+          }}</span>
+        </td>
+        <td>
+          <div class="d-flex align-items-center">
+            <span class="me-2">
+              <ng-container
+                *ngIf="
+                  payslip && payslip.passPhoto && payslip.passPhoto.length > 0;
+                  else defaultImage
+                "
+              >
+                <a [href]="'//' + payslip.passPhoto[0]" target="_blank">
+                  <img
+                    [src]="'//' + payslip.passPhoto[0]"
+                    alt="Image"
+                    class="employeeImage"
+                    style="height: 40px; width: 40px"
+                  />
+                </a>
+              </ng-container>
+              <ng-template #defaultImage>
+                <img
+                  src="../../../assets/images/profile/user.png"
+                  alt="Default Image"
+                  class="employeeImage"
+                  style="height: 40px; width: 40px"
+                />
+              </ng-template>
+            </span>
+            <b>
+              <span *ngIf="payslip.employeeName; else noData" class="table-column-data">
+                {{ payslip.employeeName | capitalizeFirst }}
+              </span>
+            </b>
+          </div>
+        </td>
+        <td>
+          <span class="table-column-data" *ngIf="payslip.joiningDate; else noData">{{
+            payslip.joiningDate | date
+          }}</span>
+        </td>
+        <td>
+          <span class="table-column-data" *ngIf="payslip.salary; else noData">{{
+            payslip.salary
+          }}</span>
+        </td>
+        <td>
+          <span class="table-column-data">
+            {{ payslip.deductions }}
+          </span>
+        </td>
+        <td>
+          <span
+            class="table-column-data"
+            *ngIf="payslip.netSalaryWithoutDoubleLop; else noData"
+          >
+            {{ payslip.netSalaryWithoutDoubleLop }}</span
+          >
+        </td>
+
+        <td>
+          <span class="table-column-data" *ngIf="payslip.createdOn; else noData">{{
+            payslip.createdOn | date : "mediumDate"
+          }}</span>
+        </td>
+        <td>
+          <div class="text-center">
+            <div class="d-flex">
+              <button
+                pButton
+                pRipple
+                type="button"
+                pTooltip="Payslip"
+                class="p-button-primary me-2 view-btn"
+                icon="fa fa-eye"
+                (click)="ViewPayslip(payslip.payslipId)"
+              ></button>
+            </div>
+          </div>
+        </td>
+        <td>
+          <div class="text-center">
+            <div class="d-flex">
+
+              <button
+                pButton
+                pRipple
+                type="button"
+                pTooltip="Update"
+                class="p-button-info me-2 update-btn"
+                icon="fa fa-pen-to-square"
+                (click)="updateUser(payslip.payslipId)"
+              ></button>
+              <button
+                *ngIf="userDetails?.designation == 4"
+                pButton
+                type="button"
+                icon="fa fa-trash"
+                pTooltip="Delete"
+                class="p-button-danger me-2 delete-btn"
+                (click)="confirmDelete(payslip.payslipId)"
+              ></button>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr class="text-center">
+        <td colspan="10" class="text-center fw-bold">
+          <img
+            src="../../../assets/images/menu/nodata.gif"
+            width="200"
+            height="200"
+          />
+          <p>No Payroll Found</p>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<ng-template #noData>
+  -
+</ng-template>
+
+<footer class="p-2 text-center text-lg-start mt-3" style="color: #878a99">
+  <div class="text-center mb-3 fw-bold">
+    © 2024 <span style="color: #1e4079">The</span>&nbsp;<b
+      style="color: #51c297"
+      >Fintalk</b
+    >. | All Rights Reserved
+  </div>
+</footer>

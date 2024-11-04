@@ -188,41 +188,49 @@
     <ng-template pTemplate="body" let-interview>
       <tr>
         <td>
-          <span class="table-column-data" *ngIf="interview.interviewId">{{
-            interview.interviewId
-          }}</span>
+          <span
+            class="table-column-data"
+            *ngIf="interview.interviewId; else noData"
+            >{{ interview.interviewId }}</span
+          >
         </td>
         <td>
           <b>
-            <span class="table-column-data" *ngIf="interview.candidateName">{{
-              interview.candidateName | capitalizeFirst
-            }}</span>
+            <span
+              class="table-column-data"
+              *ngIf="interview.candidateName; else noData"
+              >{{ interview.candidateName | capitalizeFirst }}</span
+            >
           </b>
         </td>
         <td>
           <span
             class="table-column-data"
-            *ngIf="interview.scheduledLocationName"
+            *ngIf="interview.scheduledLocationName; else noData"
             >{{ interview.scheduledLocationName | capitalizeFirst }}</span
           >
         </td>
         <td>
-          <span class="table-column-data" *ngIf="interview.scheduledDate">{{
-            interview.scheduledDate | date : "mediumDate"
-          }}</span>
+          <span
+            class="table-column-data"
+            *ngIf="interview.scheduledDate; else noData"
+            >{{ interview.scheduledDate | date : "mediumDate" }}</span
+          >
         </td>
         <td>
           <span
             class="table-column-data"
-            *ngIf="interview.attendedInterviewName"
+            *ngIf="interview.attendedInterviewName; else noData"
             >{{ interview.attendedInterviewName }}</span
           >
         </td>
 
         <td>
-          <span class="table-column-data" *ngIf="interview.createdOn">{{
-            interview.createdOn | date : "mediumDate"
-          }}</span>
+          <span
+            class="table-column-data"
+            *ngIf="interview.createdOn; else noData"
+            >{{ interview.createdOn | date : "mediumDate" }}</span
+          >
         </td>
         <td>
           <span
@@ -280,3 +288,14 @@
     </ng-template>
   </p-table>
 </div>
+
+<ng-template #noData> - </ng-template>
+
+<footer class="p-2 text-center text-lg-start mt-3" style="color: #878a99">
+  <div class="text-center mb-3 fw-bold">
+    © 2024 <span style="color: #1e4079">The</span>&nbsp;<b
+      style="color: #51c297"
+      >Fintalk</b
+    >. | All Rights Reserved
+  </div>
+</footer>

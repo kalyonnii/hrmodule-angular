@@ -64,20 +64,21 @@
   padding: 8px;
   display: inline-flex;
   justify-content: center;
-  align-items: center;
+  align-items: center;  
 }
 .editicon {
-  background-color: #f2f7fe;
   border-radius: 50%;
   padding: 4px;
-  border-color: #ffffff;
-  color: #31425e;
-}
 
-.editicon:hover {
   background-color: #31425e;
   color: #f2f7fe;
   border-color: #31425e;
+}
+
+.editicon:hover {
+  border-color: #31425e;
+  color: #31425e;
+  background-color: #f2f7fe;
 }
 .info-line {
   display: flex;
@@ -93,6 +94,7 @@
 .value {
   color: grey;
   flex: 1;
+  margin-left: 5px;
 }
 .files-container {
   display: flex;

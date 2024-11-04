@@ -1,16 +1,31 @@
-::ng-deep .p-menu .p-submenu-header {
-  background-color: #2e4374 !important;
-  color: #ffffff;
-}
-::ng-deep .p-menu .p-menuitem-link .p-menuitem-icon {
-  color: #8cb5ff !important;
-}
+
 
 .custom-btn {
   height: 30px;
   background-color: #2e4374 !important;
   border: #2e4374;
   box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
+}
+.cardicons .fa {
+  font-size: 25px;
+  padding: 10px;
+}
+.cardicons {
+  border-radius: 70px;
+}
+.card {
+  border: none;
+  box-shadow: 0 0 10px 1px rgba(80, 82, 106, 0.25);
+}
+.count-sub-title {
+  font-size: 15px;
+  font-weight: bold;
+  color: #878a99;
+}
+.count-title {
+  font-size: 17px;
+  color: #31425e;
+  font-weight: bold;
 }
 
 .p-inputtext {
@@ -32,3 +47,15 @@
 .p-inputtext::placeholder {
   color: #888;
 }
+
+.p-button:focus {
+  outline: 0 none;
+  outline-offset: 0;
+  box-shadow: 0 0 0 0.2rem #abc6f7;
+}
+.view-btn{
+  height: 30px;
+  border-radius: 90px;
+  box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
+}
+

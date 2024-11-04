@@ -28,6 +28,7 @@ export class InterviewsComponent implements OnInit {
   scheduledloactionDetails = projectConstantsLocal.BRANCH_ENTITIES;
   attendedinterviewDetails = projectConstantsLocal.ATTENDED_INTERVIEW_ENTITIES;
   selectedInterviewStatus: any;
+  version = projectConstantsLocal.VERSION_DESKTOP;
 
   constructor(
     private employeesService: EmployeesService,
@@ -42,6 +43,7 @@ export class InterviewsComponent implements OnInit {
         icon: 'fa fa-house',
         label: '  Dashboard',
         routerLink: '/user/dashboard',
+        queryParams: { v: this.version },
       },
       { label: 'Interviews' },
     ];
@@ -53,6 +55,7 @@ export class InterviewsComponent implements OnInit {
     this.userDetails = userDetails.user;
     this.updateCountsAnalytics();
     this.setFilterConfig();
+    this.getInterviewsStatusCount();
   }
 
   setFilterConfig() {
@@ -245,7 +248,10 @@ export class InterviewsComponent implements OnInit {
       {
         name: 'user',
         displayName: 'Interviews',
-        count: this.totalInterviewsCount,
+        count:
+          this.interviewStatusCount[1] +
+          this.interviewStatusCount[2] +
+          this.interviewStatusCount[3],
         textcolor: '#6C5FFC',
         backgroundcolor: '#F0EFFF',
       },
@@ -391,6 +397,8 @@ export class InterviewsComponent implements OnInit {
       primaryPhone: interview.primaryPhone,
       dateOfBirth: interview.dateOfBirth,
       currentAddress: interview.currentAddress,
+      experience: interview.experience,
+      qualification: interview.qualification,
       permanentAddress: interview.permanentAddress,
     };
     console.log('Form Data:', formData);
@@ -526,6 +534,20 @@ export class InterviewsComponent implements OnInit {
       (response) => {
         this.interviews = response;
         console.log('Interviews', this.interviews);
+
+        this.loading = false;
+      },
+      (error: any) => {
+        this.loading = false;
+        this.toastService.showError(error);
+      }
+    );
+  }
+
+  getInterviewsStatusCount() {
+    this.loading = true;
+    this.employeesService.getInterviews().subscribe(
+      (response) => {
         this.interviewStatusCount = this.countInterviewInternalStatus(response);
         this.updateCountsAnalytics();
         this.loading = false;
@@ -536,7 +558,6 @@ export class InterviewsComponent implements OnInit {
       }
     );
   }
-
   countInterviewInternalStatus(interviews) {
     const statusCount = { 1: 0, 2: 0, 3: 0 };
     interviews.forEach((interview) => {
@@ -544,7 +565,6 @@ export class InterviewsComponent implements OnInit {
         statusCount[interview.interviewInternalStatus]++;
       }
     });
-
     return statusCount;
   }
   getStatusName(statusId) {

@@ -7,10 +7,8 @@
     <style>
       body {
         font-family: Arial, sans-serif;
-        margin: 35px;
-        line-height: 1.6;
-        font-size: 12px;
-        padding: 35px;
+        margin: 13px;
+        padding: 30px;
       }
       .header {
         display: flex;
@@ -22,10 +20,7 @@
       }
       .details {
         margin-top: 20px;
-        font-size: 12px;
-        display: flex;
-        align-items: center;
-        flex-direction: column;
+        font-size: 15px;
         margin-bottom: 20px;
       }
       .info-line {
@@ -68,6 +63,7 @@
         justify-content: center;
         text-decoration: underline;
         font-weight: bold;
+        font-size: 18px;
         margin-top: 50px;
         margin-bottom: 30px;
       }
@@ -75,11 +71,12 @@
         text-align: justify;
         text-align-last: left;
         margin: 0;
-        line-height: 2;
+        font-size: 15px;
+        line-height: 1.5;
       }
       .policysubHeading {
         font-weight: bold;
-        padding: 10px;
+        padding: 5px;
       }
       .indented-paragraph {
         text-indent: 30px;
@@ -88,6 +85,9 @@
         margin-top: 20px;
       }
       .thirdpage {
+        margin-top: 50px;
+      }
+      .fourthpage {
         margin-top: 50px;
       }
     </style>
@@ -103,14 +103,16 @@
         />
       </div>
       <div class="offerletter-title">Offer Letter</div>
-      <div class="offerletter-date">Date : {{date}}</div>
+      <div class="offerletter-date">
+        Date : {{ employees.createdOn | date }}
+      </div>
       <div class="fromdetails">
         <p>To,</p>
-        <p>{{name}}</p>
-        <p>{{city}}</p>
-        <p>{{address}}</p>
+        <b> <p>{{ employees.employeeName | capitalizeFirst }}</p></b>
+        <p>{{ employees.city | capitalizeFirst }}</p>
+        <p>{{ employees.currentAddress | capitalizeFirst }}</p>
       </div>
-      <div>Dear {{name}}</div>
+      <div>Dear <b>{{ employees.employeeName | capitalizeFirst }}</b></div>
       <div>
         <p class="para firstpara indented-paragraph">
           This is a reference to your application and subsequent interview you
@@ -123,20 +125,26 @@
             <div class="label d-flex justify-content-between">
               Designation <b>:&nbsp;</b>
             </div>
-            <div class="value">{{designation}}</div>
+            <div class="value">{{ employees.designationName }}</div>
           </div>
           <div class="info-line">
             <div class="label d-flex justify-content-between">
               Date of Joining <b>:&nbsp;</b>
             </div>
-            <div class="value">{{dateOfJ}}</div>
+            <div class="value">{{ employees.joiningDate | date }}</div>
+          </div>
+          <div class="info-line">
+            <div class="label d-flex justify-content-between">
+              Salary<b>:&nbsp;</b>
+            </div>
+            <div class="value">{{ employees.salary }}</div>
           </div>
         </div>
         <p class="para firstpara indented-paragraph">
           Any kind of damage caused by you to the company assests you will be
           responsible for it and the amount will be deducted from your salary.
         </p>
-        <p class="para firstpara indented-paragraph">
+        <p class="para indented-paragraph">
           Please carry the below mentioned documents on the date of your joining
           and submit the same to the Company Human Resource Manager
         </p>
@@ -159,8 +167,8 @@
       <div>
         IF ANY EXPERIENCE
         <li>
-          Relieving letter & latest month pay slips of previousjob
-          previousjobmanager name & number
+          Relieving letter & latest month pay slips of previousjob previous job
+          manager name & number
         </li>
       </div>
       <p>We are happy to welcome you to Winway Creators India Pvt Ltd.</p>
@@ -178,6 +186,19 @@
       </div>
 
       <ol>
+        <li class="policysubHeading">Probation:</li>
+        <ul>
+          <li>
+            <p class="para">
+              You will be under probation period of Three months from the date
+              of joining. Winway Creators India Pvt Ltd will monitor your daily
+              activities. After the successful completion of probation period
+              you will be considered as a Regular employee of Winway Creators
+              India Pvt Ltd.
+            </p>
+          </li>
+        </ul>
+
         <li class="policysubHeading">Timings:</li>
         <ul>
           <li>
@@ -274,6 +295,10 @@
             </p>
           </li>
         </ul>
+      </ol>
+    </div>
+    <div class="page thirdpage">
+      <ol start="4">
         <li class="policysubHeading">Discipline:</li>
         <ul>
           <li>
@@ -294,10 +319,7 @@
             </p>
           </li>
         </ul>
-      </ol>
-    </div>
-    <div class="page thirdpage">
-      <ol start="4">
+
         <ul>
           <li>
             <p class="para">
@@ -313,6 +335,50 @@
               data to anyone outside the office, He/she will have to face legal
               proceedings and will be terminated immediately and will not be
               entitled for any kind of salary or incentive.
+            </p>
+          </li>
+        </ul>
+        <li class="policysubHeading">Salary:</li>
+        <ul>
+          <li>
+            <p class="para">
+              Company will process the salaries on 10th of every month to all
+              the staff members.
+            </p>
+          </li>
+          <li>
+            <p class="para">
+              Salary hikes will be decided by the management as and when it is
+              seemed to be required by the management.
+            </p>
+          </li>
+          <li>
+            <p class="para">
+              If any candidate claims that he/she has experience and the salary
+              offered or demanded is based on their previous employment package
+              and experience, should and must prove their experience in their
+              role at the company. By failing to do so, management will have the
+              right to reduce their salary package from the salary offered at
+              the time of joining as and how much it is felt appropriate.
+            </p>
+          </li>
+          <li>
+            <p class="para">
+              Candidate is entitled for the salary and Incentives, only if
+              He/She has worked in the company for a whole month I.e 31 days.
+              Company will not encourage DAILY WAGES.Any candidate who resign or
+              gets terminated from their services before 31 days from the date
+              of their joining will not be entitled for any salary and
+              Incentives for the duration they worked in the company.
+            </p>
+          </li>
+          <li>
+            <p class="para">
+              Your increments/promotion and demotions will depend at the sole
+              discretion of the management depending upon your efficiency,
+              intelligence, regular attendance, sense of discipline, loyalty and
+              good behaviour and also subject to the prosperity of the
+              organization.
             </p>
           </li>
         </ul>
@@ -345,41 +411,36 @@
             </p>
           </li>
         </ul>
-        <li class="policysubHeading">Salary:</li>
-        <ul>
-          <li>
-            <p class="para">
-              Company will process the salaries on 10th of every month to all
-              the staff members.
-            </p>
-          </li>
-          <li>
-            <p class="para">
-              Salary hikes will be decided by the management as and when it is
-              seemed to be required by the management.
-            </p>
-          </li>
-          <li>
-            <p class="para">
-              If any candidate claims that he/she has experience and the salary
-              offered or demanded is based on their previous employment package
-              and experience, should and must prove their experience in their
-              role at the company. By failing to do so, management will have the
-              right to reduce their salary package from the salary offered at
-              the time of joining as and how much it is felt appropriate.
-            </p>
-          </li>
-        </ul>
+      </ol>
+    </div>
+    <div class="page fourthpage">
+      <ol start="7">
         <li class="policysubHeading">Termination Policy</li>
         <ul>
           <li>
             <p class="para">
               If any candidate’s performance seems unsatisfactory to their
               assigned roles, or if the candidate presence in the office seems
-              irregular, or if any of the above policies (Para 1 to 5) has not
+              irregular, or if any of the above policies (Para 2 to 6) has not
               been followed by the candidate, He/she will be terminated
               immediately and will not be entitled for any kind of salary or
               Incentive.
+            </p>
+          </li>
+        </ul>
+        <li class="policysubHeading">Declaration</li>
+        <ul>
+          <li>
+            <p class="para">
+              I have read and understood the above mentioned terms & conditions
+              and accept the terms and conditions of employment agreement of
+              Winway Creators India Pvt Ltd.
+            </p>
+          </li>
+          <li>
+            <p class="para">
+              Please signify your acceptance of the above terms and conditions
+              of this offer by signing the duplicate copy of this letter.
             </p>
           </li>
         </ul>
@@ -390,7 +451,7 @@
           treat all the candidates equally without any difference and to run the
           business operations smoothly. Hence it applicable to all the
           candidates who had acknowledge the above policies. For any Details
-          please contact our human resource Team at hr@winwaycreators.com
+          please contact our Human Resource Team at hr@winwaycreators.com
         </p>
       </div>
       <div>
@@ -398,15 +459,16 @@
         <br />
         <b> Regards,</b>
       </div>
-      <div><b>{{hrname}}</b></div>
+      <div>
+        <b>{{ employees.createdBy }}</b>
+      </div>
       <div>(HR Executive)</div>
-      <div>Mobile: +91 {{9030227331}}</div>
+      <div>Mobile: +91 {{ 9030227331 }}</div>
       <div><b>WINWAY CREATORS INDIA PRIVATE LIMITED</b></div>
       <div>#506, 5th Floor,</div>
-      <div>MGR Estates, Dwarakapuri</div>
-      <div>Colony, Punjagutta, Hyderabad</div>
-      <div>- 82 www.winwaycreators.com</div>
+      <div>MGR Estates, Dwarakapuri Colony,</div>
+      <div>Punjagutta, Hyderabad- 82</div>
+      <div>www.winwaycreators.com</div>
     </div>
-    <div class="page"></div>
   </body>
 </html>

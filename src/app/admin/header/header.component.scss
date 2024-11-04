@@ -38,7 +38,8 @@
 }
 
 .smaller-button {
-  font-size: 15px;
+  font-size: 18px;
+  border-radius: 50px;
 }
 
 .hide-on-desktop {
@@ -54,3 +55,9 @@
   }
 }
 
+.header-card {
+  border: none;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;
+  // border-bottom: #5b0888 !important;
+  // border: 2px solid #1e4079 !important;
+}

@@ -1,0 +1,90 @@
+
+
+.offerletter-card {
+  margin: 13px;
+  padding: 30px;
+  border: none !important;
+  border-radius: 5px;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 10px;
+  font-size: 14px;
+}
+.details {
+  margin-top: 20px;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+.info-line {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+.label {
+  flex: 0 0 150px;
+  text-align: left;
+  font-weight: bold;
+}
+.value {
+  flex: 1;
+}
+.d-flex {
+  display: flex;
+  justify-content: space-between;
+}
+.offerletter-title {
+  text-align: center;
+  font-size: 18px;
+  margin: 20px 0;
+  font-weight: bold;
+}
+.offerletter-date {
+  text-align: right;
+}
+.fromdetails {
+  text-align: left;
+}
+.page {
+  page-break-after: always;
+}
+.page:last-child {
+  page-break-after: auto;
+}
+.policyheading {
+  display: flex;
+  justify-content: center;
+  text-decoration: underline;
+  font-weight: bold;
+  font-size: 18px;
+  margin-top: 50px;
+  margin-bottom: 30px;
+}
+.para {
+  text-align: justify;
+  text-align-last: left;
+  margin: 0;
+  line-height: 1.5;
+  font-size: 15px;
+}
+.policysubHeading {
+  font-weight: bold;
+  padding: 5px;
+}
+.indented-paragraph {
+  text-indent: 30px;
+}
+.firstpara {
+  margin-top: 20px;
+}
+.thirdpage {
+  margin-top: 50px;
+}
+.fourthpage{
+  margin-top: 50px;
+}
+

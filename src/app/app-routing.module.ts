@@ -16,11 +16,11 @@ const routes: Routes = [
     loadChildren: () =>
       import('./login/login.module').then((m) => m.LoginModule),
   },
-  {
-    path: '**',
-    redirectTo: 'not-found',
-    pathMatch: 'full',
-  },
+  // {
+  //   path: '**',
+  //   redirectTo: 'not-found',
+  //   pathMatch: 'full',
+  // },
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

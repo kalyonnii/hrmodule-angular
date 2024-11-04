@@ -22,6 +22,7 @@ export class UsersComponent implements OnInit {
   filterConfig: any[] = [];
   userDetails: any;
   designationDetails = projectConstantsLocal.DESIGNATION_ENTITIES;
+  version = projectConstantsLocal.VERSION_DESKTOP;
   users: any = [];
   constructor(
     private location: Location,
@@ -36,6 +37,7 @@ export class UsersComponent implements OnInit {
         icon: 'fa fa-house',
         label: '  Dashboard',
         routerLink: '/user/dashboard',
+        queryParams: { v: this.version },
       },
       { label: 'Users' },
     ];

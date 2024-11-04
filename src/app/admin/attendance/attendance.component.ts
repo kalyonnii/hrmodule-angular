@@ -6,6 +6,7 @@ import { EmployeesService } from '../employees/employees.service';
 import { ConfirmationService } from 'primeng/api';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { DateTimeProcessorService } from 'src/app/services/date-time-processor.service';
+import { projectConstantsLocal } from 'src/app/constants/project-constants';
 @Component({
   selector: 'app-attendance',
   templateUrl: './attendance.component.html',
@@ -22,29 +23,12 @@ export class AttendanceComponent implements OnInit {
   selectedDate: any;
   displayDialog = false;
   attendance: any = [];
+  month = 10;
+  year = 2024;
+  employeeId = 2635633454;
 
-  months = [
-    { label: 'January', value: 0 },
-    { label: 'February', value: 1 },
-    { label: 'March', value: 2 },
-    { label: 'April', value: 3 },
-    { label: 'May', value: 4 },
-    { label: 'June', value: 5 },
-    { label: 'July', value: 6 },
-    { label: 'August', value: 7 },
-    { label: 'September', value: 8 },
-    { label: 'October', value: 9 },
-    { label: 'November', value: 10 },
-    { label: 'December', value: 11 },
-  ];
-
-  selectedYear: number = new Date().getFullYear();
-  selectedMonth: number = new Date().getMonth(); // Current month (0-indexed)
-  minDate!: Date;
-  maxDate!: Date;
-  defaultDate: Date = new Date(); // Used to display the calendar's view to the correct month/year initially
-
-  years: any[] = [];
+  version = projectConstantsLocal.VERSION_DESKTOP;
+  filteredData: any[] = [];
   constructor(
     private location: Location,
     private confirmationService: ConfirmationService,
@@ -60,6 +44,7 @@ export class AttendanceComponent implements OnInit {
         icon: 'fa fa-house',
         label: '  Dashboard',
         routerLink: '/user/dashboard',
+        queryParams: { v: this.version },
       },
       { label: 'Attendance' },
     ];
@@ -69,23 +54,6 @@ export class AttendanceComponent implements OnInit {
     let userDetails =
       this.localStorageService.getItemFromLocalStorage('userDetails');
     this.userDetails = userDetails.user;
-    this.initializeYears();
-    const today = new Date();
-    this.selectedMonth = today.getMonth();
-    this.selectedYear = today.getFullYear();
-  }
-
-  initializeYears() {
-    const currentYear = new Date().getFullYear();
-    for (let i = currentYear - 10; i <= currentYear + 10; i++) {
-      this.years.push({ label: i.toString(), value: i });
-    }
-  }
-
-  onYearOrMonthChange() {
-    this.minDate = new Date(this.selectedYear, this.selectedMonth, 1); // First day of the selected month
-    this.maxDate = new Date(this.selectedYear, this.selectedMonth + 1, 0); // Last day of the selected month
-    this.defaultDate = new Date(this.selectedYear, this.selectedMonth, 1); // Set calendar view to selected month/year
   }
 
   loadAttendance(event) {
@@ -136,6 +104,12 @@ export class AttendanceComponent implements OnInit {
         console.log('attendance', this.attendance);
         this.loading = false;
         this.attendencecount();
+        this.getAttendanceCountsByMonth(
+          this.attendance,
+          this.month,
+          this.year,
+          this.employeeId
+        );
       },
       (error: any) => {
         this.loading = false;
@@ -205,6 +179,33 @@ export class AttendanceComponent implements OnInit {
       }
     });
     console.log(attendanceCount);
+  }
+
+  getAttendanceCountsByMonth(attendanceRecords, month, year, employeeId) {
+    const statusCounts = {
+      Present: 0,
+      Absent: 0,
+      Late: 0,
+      'Half-day': 0,
+    };
+    attendanceRecords.forEach((record) => {
+      const attendanceDate = new Date(record.attendanceDate);
+      const recordMonth = attendanceDate.getMonth() + 1; // getMonth is 0-indexed
+      const recordYear = attendanceDate.getFullYear();
+      if (recordMonth === month && recordYear === year) {
+        const employeeAttendance = record.attendanceData.find(
+          (data) => data.employeeId === employeeId
+        );
+        if (
+          employeeAttendance &&
+          statusCounts[employeeAttendance.status] !== undefined
+        ) {
+          statusCounts[employeeAttendance.status]++;
+        }
+      }
+    });
+    console.log(statusCounts);
+    return statusCounts;
   }
 
   goBack() {

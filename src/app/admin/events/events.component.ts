@@ -3,6 +3,7 @@ import { Location } from '@angular/common';
 import { CalendarOptions } from '@fullcalendar/core';
 import interactionPlugin from '@fullcalendar/interaction'; // For dateClick and eventClick
 import dayGridPlugin from '@fullcalendar/daygrid';
+import { projectConstantsLocal } from 'src/app/constants/project-constants';
 @Component({
   selector: 'app-events',
   templateUrl: './events.component.html',
@@ -10,12 +11,14 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 })
 export class EventsComponent {
   breadCrumbItems: any = [];
+  version = projectConstantsLocal.VERSION_DESKTOP;
   constructor(private location: Location) {
     this.breadCrumbItems = [
       {
         icon: 'fa fa-house',
         label: '  Dashboard',
         routerLink: '/user/dashboard',
+        queryParams: { v: this.version },
       },
       { label: 'Events' },
     ];
@@ -26,17 +29,17 @@ export class EventsComponent {
     headerToolbar: {
       left: 'prev,next today',
       center: 'title',
-      right: 'dayGridMonth,timeGridWeek,timeGridDay'
+      right: 'dayGridMonth,timeGridWeek,timeGridDay',
     },
     editable: true,
     selectable: true,
     events: [
       { title: 'Event 1', date: '2024-10-01' },
-      { title: 'Event 2', date: '2024-10-05' }
+      { title: 'Event 2', date: '2024-10-05' },
     ],
     // Use functions for event handling
     dateClick: this.handleDateClick.bind(this),
-    eventClick: this.handleEventClick.bind(this)
+    eventClick: this.handleEventClick.bind(this),
   };
 
   handleDateClick(arg: any) {

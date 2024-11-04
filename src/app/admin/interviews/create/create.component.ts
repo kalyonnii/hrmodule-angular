@@ -29,6 +29,7 @@ export class CreateComponent {
   locationEntities: any = projectConstantsLocal.BRANCH_ENTITIES;
   attendedInterviewEntities: any =
     projectConstantsLocal.ATTENDED_INTERVIEW_ENTITIES;
+  version = projectConstantsLocal.VERSION_DESKTOP;
   userDetails: any;
   interviewId: any;
   interviewsForm: UntypedFormGroup;
@@ -88,8 +89,13 @@ export class CreateComponent {
         icon: 'fa fa-house',
         label: ' Dashboard',
         routerLink: '/user/dashboard',
+        queryParams: { v: this.version },
       },
-      { label: 'Interviews', routerLink: '/user/interviews' },
+      {
+        label: 'Interviews',
+        routerLink: '/user/interviews',
+        queryParams: { v: this.version },
+      },
       { label: this.actionType == 'create' ? 'Create' : 'Update' },
     ];
   }

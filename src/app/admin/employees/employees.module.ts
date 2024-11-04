@@ -30,6 +30,13 @@ const routes: Routes = [
     loadChildren: () =>
       import('./profile/profile.module').then((m) => m.ProfileModule),
   },
+  {
+    path: 'offerletter/:id',
+    loadChildren: () =>
+      import('./offerletter/offerletter.module').then(
+        (m) => m.OfferletterModule
+      ),
+  },
 ];
 
 @NgModule({

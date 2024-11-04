@@ -1,0 +1,313 @@
+<div class="container-fluid mt-2">
+  <div class="card heading-card p-3">
+    <div class="row align-items-center">
+      <div class="col-md-10">
+        <div class="d-flex justify-content-start align-items-center mb-2">
+          <div
+            class="d-flex align-items-center pointer-cursor"
+            (click)="goBack()"
+          >
+            <i class="pi pi-arrow-left fw-bold back-btn-icon"></i>
+            <span class="back-btn-text ms-2 text-capitalize"
+              >Leave Management</span
+            >
+          </div>
+        </div>
+        <div class="bread-crumb mt-3">
+          <p-breadcrumb [model]="breadCrumbItems"></p-breadcrumb>
+        </div>
+      </div>
+      <div class="col-md-2 text-end">
+        <img
+          src="../../../assets/images/menu/leaves.png"
+          width="100"
+          class="heading-image"
+        />
+      </div>
+    </div>
+  </div>
+  <div class="d-flex justify-content-end mt-3">
+    <button
+      pButton
+      pRipple
+      type="button"
+      class="p-button-primary me-2"
+      icon="fa fa-plus"
+      (click)="createLeave()"
+    >
+      &nbsp;Add Leave
+    </button>
+  </div>
+</div>
+<div *ngIf="loading">
+  <app-preloader></app-preloader>
+</div>
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-flex flex-wrap justify-content-start">
+      <ng-container *ngFor="let item of countsAnalytics">
+        <div class="col-lg-3 col-md-3 col-sm-6 col-6 mt-2">
+          <div class="card p-3 shadow-sm pointer-cursor m-2 cards">
+            <div class="d-flex">
+              <div
+                class="me-4 cardicons"
+                [ngStyle]="{
+                  color: item.textcolor,
+                  'background-color': item.backgroundcolor
+                }"
+              >
+                <i class="fa fa-{{ item.name }}"></i>
+              </div>
+
+              <div class="d-flex align-items-center">
+                <div>
+                  <div class="count-sub-title">
+                    {{ item.displayName }}
+                  </div>
+                  <div class="count-title">
+                    {{ item.count }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>
+<div class="text-capitalize table-card">
+  <p-table
+    #leavesTable
+    [value]="leaves"
+    [sortOrder]="-1"
+    [sortField]="'createdOn'"
+    [lazy]="true"
+    (onLazyLoad)="loadLeaves($event)"
+    dataKey="id"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [paginator]="true"
+    [rows]="10"
+    class="p-datatable-striped table"
+    [totalRecords]="totalLeavesCount"
+    [loading]="loading"
+    responsiveLayout="scroll"
+    scrollHeight="flex"
+    [globalFilterFields]="[
+      'referenceNo',
+      'customer.firstName',
+      'partner.partnerName',
+      'status'
+    ]"
+    styleClass="p-datatable-customers"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Leaves"
+  >
+    <ng-template pTemplate="caption">
+      <div class="row">
+        <div class="col-md-4 mt-1 mb-1 no-padding-small">
+          <p-dropdown
+            styleClass="text-left"
+            [style]="{ width: '100%' }"
+            [options]="employees"
+            (onChange)="statusChange($event)"
+            [dropdownIcon]="'fa fa-caret-down'"
+            [(ngModel)]="selectedEmployee"
+            optionLabel="employeeName"
+            [filter]="true"
+            [showClear]="true"
+            filterPlaceholder="Search..."
+            dataKey="name"
+          >
+          </p-dropdown>
+        </div>
+        <div class="col-md-4 mt-1 mb-1 no-padding-small"></div>
+        <div class="col-md-4 mt-1 mb-1 no-padding-small text-right">
+          <div class="d-flex">
+            <div class="flex-grow-1 me-2">
+              <p-dropdown
+                styleClass="text-left"
+                [style]="{ width: '100%' }"
+                [options]="leavesInternalStatusList"
+                (onChange)="statusChange($event)"
+                [dropdownIcon]="'fa fa-caret-down'"
+                [(ngModel)]="selectedLeavesStatus"
+                optionLabel="displayName"
+                dataKey="name"
+              >
+              </p-dropdown>
+            </div>
+            <div class="d-flex align-items-center pointer-cursor">
+              <app-filter
+                [position]="'right'"
+                [iconColor]="'#33009C'"
+                [iconSize]="'28px!important'"
+                (filterEvent)="applyConfigFilters($event)"
+                [filterConfig]="filterConfig"
+                [showFilterIndication]="appliedFilter"
+              >
+              </app-filter>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th pSortableColumn="leaveId">
+          Leave Id <p-sortIcon field="leaveId"></p-sortIcon>
+        </th>
+        <th pSortableColumn="employeeName">
+          Employee Name <p-sortIcon field="employeeName"></p-sortIcon>
+        </th>
+        <!-- <th pSortableColumn="employeeId">
+          Employee Id <p-sortIcon field="employeeId"></p-sortIcon>
+        </th> -->
+        <th pSortableColumn="leaveType">
+          Leave Type
+          <p-sortIcon field="leaveType"></p-sortIcon>
+        </th>
+        <th pSortableColumn="leaveFrom">
+          Leave From
+          <p-sortIcon field="leaveFrom"></p-sortIcon>
+        </th>
+        <th pSortableColumn="leaveTo">
+          Leave To <p-sortIcon field="leaveTo"></p-sortIcon>
+        </th>
+        <th pSortableColumn="noOfDays">
+          No Of Days<p-sortIcon field="noOfDays"></p-sortIcon>
+        </th>
+        <th pSortableColumn="durationType">
+          Duration Type<p-sortIcon field="durationType"></p-sortIcon>
+        </th>
+        <th pSortableColumn="reason">
+          Reason
+          <p-sortIcon field="reason"></p-sortIcon>
+        </th>
+
+        <th pSortableColumn="createdOn">
+          Created Date <p-sortIcon field="createdOn"></p-sortIcon>
+        </th>
+        <th pSortableColumn="leaveInternalStatus">
+          Status <p-sortIcon field="leaveInternalStatus"></p-sortIcon>
+        </th>
+        <th>Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-leave>
+      <tr>
+        <td>
+          <span class="table-column-data" *ngIf="leave.leaveId; else noData">{{
+            leave.leaveId
+          }}</span>
+        </td>
+        <td>
+          <b>
+            <span class="table-column-data" *ngIf="leave.employeeName; else noData">{{
+              leave.employeeName | capitalizeFirst
+            }}</span>
+          </b>
+        </td>
+        <!-- <td>
+          <span class="table-column-data" *ngIf="leave.employeeId">{{
+            leave.employeeId | capitalizeFirst
+          }}</span>
+        </td> -->
+        <td>
+          <span class="table-column-data" *ngIf="leave.leaveType; else noData">{{
+            leave.leaveType | capitalizeFirst
+          }}</span>
+        </td>
+        <td>
+          <span class="table-column-data" *ngIf="leave.leaveFrom; else noData">{{
+            leave.leaveFrom | date
+          }}</span>
+        </td>
+        <td>
+          <span class="table-column-data" *ngIf="leave.leaveTo; else noData">{{
+            leave.leaveTo | date : "mediumDate"
+          }}</span>
+        </td>
+        <td>
+          <span class="table-column-data" *ngIf="leave.noOfDays; else noData">{{
+            leave.noOfDays
+          }}</span>
+        </td>
+        <td>
+          <span class="table-column-data" *ngIf="leave.durationType; else noData">{{
+            leave.durationType
+          }}</span>
+        </td>
+        <td>
+          <span class="table-column-data" *ngIf="leave.reason; else noData">{{
+            leave.reason
+          }}</span>
+        </td>
+        <td>
+          <span class="table-column-data" *ngIf="leave.createdOn; else noData">{{
+            leave.createdOn | date : "mediumDate"
+          }}</span>
+        </td>
+        <td>
+          <span
+            class="table-column-data fw-bold statusdata"
+            *ngIf="leave.leaveInternalStatus; else noData"
+            [ngStyle]="{
+              color: getStatusColor(getStatusName(leave.leaveInternalStatus))
+                .textColor,
+              'background-color': getStatusColor(
+                getStatusName(leave.leaveInternalStatus)
+              ).backgroundColor
+            }"
+          >
+            {{ getStatusName(leave.leaveInternalStatus) }}
+          </span>
+        </td>
+        <td>
+          <div class="text-center">
+            <div class="d-flex">
+              <p-menu
+                appendTo="body"
+                #menu
+                [model]="actionItems(leave)"
+                [popup]="true"
+              ></p-menu>
+              <button
+                pButton
+                type="button"
+                class="custom-btn"
+                (click)="menu.toggle($event)"
+                icon="pi pi-ellipsis-h"
+              ></button>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr class="text-center">
+        <td colspan="10" class="text-center fw-bold">
+          <img
+            src="../../../assets/images/menu/nodata.gif"
+            width="200"
+            height="200"
+          />
+          <p>No Leaves Found</p>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<ng-template #noData>
+  -
+</ng-template>
+
+<footer class="p-2 text-center text-lg-start mt-3" style="color: #878a99">
+  <div class="text-center mb-3 fw-bold">
+    © 2024 <span style="color: #1e4079">The</span>&nbsp;<b
+      style="color: #51c297"
+      >Fintalk</b
+    >. | All Rights Reserved
+  </div>
+</footer>

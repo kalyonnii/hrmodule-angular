@@ -6,21 +6,18 @@ import { SidebarModule } from 'primeng/sidebar';
 import { TooltipModule } from 'primeng/tooltip';
 import { ButtonModule } from 'primeng/button';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 @NgModule({
-  declarations: [
-    SidebarMenuComponent
-  ],
+  declarations: [SidebarMenuComponent],
   imports: [
     CommonModule,
     RouterModule,
     SidebarModule,
     TooltipModule,
+    LazyLoadImageModule,
     ButtonModule,
-
   ],
-  exports:[
-    SidebarMenuComponent
-  ]
+  exports: [SidebarMenuComponent],
 })
-export class SidebarMenuModule { }
+export class SidebarMenuModule {}

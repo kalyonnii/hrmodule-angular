@@ -26,6 +26,7 @@ export class CreateComponent {
   actionType: any = 'create';
   loading: any;
   userId: any;
+  version = projectConstantsLocal.VERSION_DESKTOP;
   userForm: UntypedFormGroup;
   designationEntities: any = projectConstantsLocal.DESIGNATION_ENTITIES;
   moment: any;
@@ -66,8 +67,13 @@ export class CreateComponent {
         icon: 'fa fa-house',
         label: ' Dashboard',
         routerLink: '/user/dashboard',
+        queryParams: { v: this.version },
       },
-      { label: 'Users', routerLink: '/user/users' },
+      {
+        label: 'Users',
+        routerLink: '/user/users',
+        queryParams: { v: this.version },
+      },
       { label: this.actionType == 'create' ? 'Create' : 'Update' },
     ];
   }

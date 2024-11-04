@@ -59,10 +59,10 @@
   margin-left: 70px !important;
 }
 
-::ng-deep .body-section::-webkit-scrollbar {
+.body-section::-webkit-scrollbar {
   width: 8px !important;
 }
 
-::ng-deep .body-section::-webkit-scrollbar-thumb {
+.body-section::-webkit-scrollbar-thumb {
   background: #51C295 !important;
 }

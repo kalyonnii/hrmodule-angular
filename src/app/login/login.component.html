@@ -100,13 +100,15 @@
                 </span>
               </div>
             </div>
+
             <button
               pButton
               pRipple
               style="width: 100%"
               type="submit"
-              [disabled]="!loginForm.valid"
               class="p-button-primary center-button"
+              [disabled]="!loginForm.valid || clicked"
+              (click)="onSignIn()"
             >
               Sign In
             </button>

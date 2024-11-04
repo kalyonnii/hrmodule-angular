@@ -27,7 +27,9 @@
     </div>
   </div>
 </div>
-
+<div *ngIf="loading">
+  <app-preloader></app-preloader>
+</div>
 <div class="container-fluid mt-3 text-capitalize" *ngIf="employees">
   <div class="row">
     <div class="col-md-4">
@@ -60,7 +62,7 @@
               </a>
             </ng-container>
           </div>
-          <div *ngIf="employees && employees.passPhoto.length == 0">
+          <div *ngIf="employees && employees.passPhoto == null">
             <tr class="text-center">
               <img
                 class="profile-img"
@@ -75,7 +77,7 @@
             {{ employees.employeeName | capitalizeFirst }}
           </h5>
         </div>
-        <div
+        <!-- <div
           class="card tabcard"
           [ngClass]="{ 'active-card': activeSection === 'employeeDetails' }"
           (click)="selectSection('employeeDetails')"
@@ -125,11 +127,31 @@
 
         <div
           class="card tabcard"
+          [ngClass]="{ 'active-card': activeSection === 'attendance' }"
+          (click)="selectSection('attendance')"
+        >
+          <div class="">
+            <h5 class="card-name">Attendance Details</h5>
+          </div>
+        </div>
+        <div
+          class="card tabcard"
           [ngClass]="{ 'active-card': activeSection === 'otherDetails' }"
           (click)="selectSection('otherDetails')"
         >
           <div class="">
             <h5 class="card-name">Other Details</h5>
+          </div>
+        </div> -->
+
+        <div
+          *ngFor="let section of sections"
+          class="card tabcard"
+          [ngClass]="{ 'active-card': activeSection === section.id }"
+          (click)="selectSection(section.id)"
+        >
+          <div>
+            <h5 class="card-name">{{ section.label }}</h5>
           </div>
         </div>
       </div>
@@ -161,7 +183,11 @@
                     Name<b>:&nbsp;</b>
                   </div>
                   <div class="value">
-                    {{ employees.employeeName | capitalizeFirst }}
+                    {{
+                      employees.employeeName
+                        ? (employees.employeeName | capitalizeFirst)
+                        : "-"
+                    }}
                   </div>
                 </div>
                 <div class="info-line">
@@ -169,28 +195,50 @@
                   <div class="label d-flex justify-content-between">
                     Employee Id<b>:&nbsp;</b>
                   </div>
-                  <div class="value">{{ employees.customEmployeeId }}</div>
+                  <div class="value">
+                    {{
+                      employees.customEmployeeId
+                        ? employees.customEmployeeId
+                        : "-"
+                    }}
+                  </div>
                 </div>
                 <div class="info-line">
                   <span class="icon"><i class="fas fa-building"></i></span>
                   <div class="label d-flex justify-content-between">
                     Department<b>:&nbsp;</b>
                   </div>
-                  <div class="value">{{ employees.designationName }}</div>
+                  <div class="value">
+                    {{
+                      employees.designationName
+                        ? employees.designationName
+                        : "-"
+                    }}
+                  </div>
                 </div>
                 <div class="info-line">
                   <span class="icon"><i class="fas fa-calendar-alt"></i></span>
                   <div class="label d-flex justify-content-between">
                     Date Of Joining<b>:&nbsp;</b>
                   </div>
-                  <div class="value">{{ employees.joiningDate | date }}</div>
+                  <div class="value">
+                    {{
+                      employees.joiningDate
+                        ? (employees.joiningDate | date)
+                        : "-"
+                    }}
+                  </div>
                 </div>
                 <div class="info-line">
                   <span class="icon"><i class="fas fa-briefcase"></i></span>
                   <div class="label d-flex justify-content-between">
                     Office Branch<b>:&nbsp;</b>
                   </div>
-                  <div class="value">{{ employees.ofcBranchName }}</div>
+                  <div class="value">
+                    {{
+                      employees.ofcBranchName ? employees.ofcBranchName : "-"
+                    }}
+                  </div>
                 </div>
                 <div class="info-line">
                   <span class="icon"
@@ -200,17 +248,35 @@
                     Salary<b>:&nbsp;</b>
                   </div>
                   <div class="value">
-                    {{ employees.salary | capitalizeFirst }}
+                    {{
+                      employees.salary
+                        ? (employees.salary | capitalizeFirst)
+                        : "-"
+                    }}
+                  </div>
+                </div>
+
+                <div class="info-line">
+                  <span class="icon"><i class="fas fa-user-graduate"></i></span>
+                  <div class="label d-flex justify-content-between">
+                    Qualification<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">
+                    {{
+                      employees.qualification
+                        ? (employees.qualification | capitalizeFirst)
+                        : "-"
+                    }}
                   </div>
                 </div>
 
                 <div class="info-line">
                   <span class="icon"><i class="fas fa-envelope"></i></span>
                   <div class="label d-flex justify-content-between">
-                    Email Id<b>:&nbsp;</b>
+                    Email Address<b>:&nbsp;</b>
                   </div>
                   <div class="value text-lowercase">
-                    {{ employees.emailAddress }}
+                    {{ employees.emailAddress ? employees.emailAddress : "-" }}
                   </div>
                 </div>
                 <div class="info-line">
@@ -219,7 +285,11 @@
                     Gender<b>:&nbsp;</b>
                   </div>
                   <div class="value">
-                    {{ employees.genderName | capitalizeFirst }}
+                    {{
+                      employees.genderName
+                        ? (employees.genderName | capitalizeFirst)
+                        : "-"
+                    }}
                   </div>
                 </div>
                 <div class="info-line">
@@ -227,14 +297,20 @@
                   <div class="label d-flex justify-content-between">
                     Primary Phone<b>:&nbsp;</b>
                   </div>
-                  <div class="value">{{ employees.primaryPhone }}</div>
+                  <div class="value">
+                    {{ employees.primaryPhone ? employees.primaryPhone : "-" }}
+                  </div>
                 </div>
                 <div class="info-line">
                   <span class="icon"><i class="fas fa-phone-alt"></i></span>
                   <div class="label d-flex justify-content-between">
                     Secondary Phone<b>:&nbsp;</b>
                   </div>
-                  <div class="value">{{ employees.secondaryPhone }}</div>
+                  <div class="value">
+                    {{
+                      employees.secondaryPhone ? employees.secondaryPhone : "-"
+                    }}
+                  </div>
                 </div>
                 <div class="info-line">
                   <span class="icon"><i class="fas fa-user-friends"></i></span>
@@ -242,8 +318,15 @@
                     Guardian<b>:&nbsp;</b>
                   </div>
                   <div class="value">
-                    {{ employees.careOfName | capitalizeFirst }} ({{
-                      employees.careOf | capitalizeFirst
+                    {{
+                      employees.careOfName
+                        ? (employees.careOfName | capitalizeFirst)
+                        : "-"
+                    }}
+                    ({{
+                      employees.careOf
+                        ? (employees.careOf | capitalizeFirst)
+                        : "-"
                     }})
                   </div>
                 </div>
@@ -252,7 +335,13 @@
                   <div class="label d-flex justify-content-between">
                     Date Of Birth<b>:&nbsp;</b>
                   </div>
-                  <div class="value">{{ employees.dateOfBirth | date }}</div>
+                  <div class="value">
+                    {{
+                      employees.dateOfBirth
+                        ? (employees.dateOfBirth | date)
+                        : "-"
+                    }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -277,12 +366,42 @@
             <div class="card-body">
               <div class="row">
                 <div class="info-line">
-                  <span class="icon"><i class="fas fa-map-location"></i></span>
+                  <span class="icon"><i class="fas fa-city"></i></span>
                   <div class="label d-flex justify-content-between">
                     City<b>:&nbsp;</b>
                   </div>
                   <div class="value">
-                    {{ employees.city | capitalizeFirst }}
+                    {{
+                      employees.city ? (employees.city | capitalizeFirst) : "-"
+                    }}
+                  </div>
+                </div>
+                <div class="info-line">
+                  <span class="icon"><i class="fas fa-map-location"></i></span>
+                  <div class="label d-flex justify-content-between">
+                    District<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">
+                    {{
+                      employees.district
+                        ? (employees.district | capitalizeFirst)
+                        : "-"
+                    }}
+                  </div>
+                </div>
+                <div class="info-line">
+                  <span class="icon">
+                    <i class="fas fa-flag"></i>
+                  </span>
+                  <div class="label d-flex justify-content-between">
+                    State<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">
+                    {{
+                      employees.state
+                        ? (employees.state | capitalizeFirst)
+                        : "-"
+                    }}
                   </div>
                 </div>
                 <div class="info-line">
@@ -293,7 +412,11 @@
                     Present Address<b>:&nbsp;</b>
                   </div>
                   <div class="value">
-                    {{ employees.currentAddress | capitalizeFirst }}
+                    {{
+                      employees.currentAddress
+                        ? (employees.currentAddress | capitalizeFirst)
+                        : "-"
+                    }}
                   </div>
                 </div>
                 <div class="info-line">
@@ -302,7 +425,11 @@
                     Permanent Address<b>:&nbsp;</b>
                   </div>
                   <div class="value">
-                    {{ employees.permanentAddress | capitalizeFirst }}
+                    {{
+                      employees.permanentAddress
+                        ? (employees.permanentAddress | capitalizeFirst)
+                        : "-"
+                    }}
                   </div>
                 </div>
               </div>
@@ -329,12 +456,29 @@
             <div class="card-body">
               <div class="row">
                 <div class="info-line">
+                  <span class="icon"><i class="fas fa-business-time"></i></span>
+                  <div class="label d-flex justify-content-between">
+                    Job Experience<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">
+                    {{
+                      employees.experience
+                        ? (employees.experience | capitalizeFirst)
+                        : "-"
+                    }}
+                  </div>
+                </div>
+                <div class="info-line">
                   <span class="icon"><i class="fas fa-building"></i></span>
                   <div class="label d-flex justify-content-between">
                     Previous Company Name<b>:&nbsp;</b>
                   </div>
                   <div class="value">
-                    {{ employees.prevCompanyName | capitalizeFirst }}
+                    {{
+                      employees.prevCompanyName
+                        ? (employees.prevCompanyName | capitalizeFirst)
+                        : "-"
+                    }}
                   </div>
                 </div>
                 <div class="info-line">
@@ -343,7 +487,11 @@
                     Previous Employer Name<b>:&nbsp;</b>
                   </div>
                   <div class="value">
-                    {{ employees.prevEmployerName | capitalizeFirst }}
+                    {{
+                      employees.prevEmployerName
+                        ? (employees.prevEmployerName | capitalizeFirst)
+                        : "-"
+                    }}
                   </div>
                 </div>
                 <div class="info-line">
@@ -352,7 +500,11 @@
                     Previous Employer Contact<b>:&nbsp;</b>
                   </div>
                   <div class="value">
-                    {{ employees.prevEmployerContact | capitalizeFirst }}
+                    {{
+                      employees.prevEmployerContact
+                        ? (employees.prevEmployerContact | capitalizeFirst)
+                        : "-"
+                    }}
                   </div>
                 </div>
                 <ng-container>
@@ -405,6 +557,18 @@
                       </div>
                     </div>
                   </ng-container>
+                  <div *ngIf="employees?.otherDocuments == null">
+                    <div class="text-center">
+                      <div colspan="10" class="fw-bold">
+                        <img
+                          src="../../../../assets/images/menu/nodata.gif"
+                          width="150"
+                          height="150"
+                        />
+                        <p>No Files Uploaded</p>
+                      </div>
+                    </div>
+                  </div>
                 </ng-container>
               </div>
             </div>
@@ -433,18 +597,22 @@
                   <div class="label d-flex justify-content-between">
                     Pan Number<b>:&nbsp;</b>
                   </div>
-                  <div class="value">{{ employees.panNumber }}</div>
+                  <div class="value">
+                    {{ employees.panNumber ? employees.panNumber : "-" }}
+                  </div>
                 </div>
                 <div class="info-line">
                   <span class="icon"><i class="fas fa-fingerprint"></i></span>
                   <div class="label d-flex justify-content-between">
                     Aadhar Number<b>:&nbsp;</b>
                   </div>
-                  <div class="value">{{ employees.aadharNumber }}</div>
+                  <div class="value">
+                    {{ employees.aadharNumber ? employees.aadharNumber : "-" }}
+                  </div>
                 </div>
                 <div class="">
                   <div class="label">Pan Card<b>:&nbsp;</b></div>
-                  <div class="value">
+                  <div class="value m-2">
                     <div
                       *ngIf="
                         employees &&
@@ -478,12 +646,25 @@
                         </ng-template>
                       </div>
                     </div>
+
+                    <div *ngIf="employees?.panCard == null">
+                      <div class="text-center">
+                        <div colspan="10" class="fw-bold">
+                          <img
+                            src="../../../../assets/images/menu/nodata.gif"
+                            width="150"
+                            height="150"
+                          />
+                          <p>No Files Uploaded</p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
                 <div class="">
                   <div class="label">Aadhar Card<b>:&nbsp;</b></div>
-                  <div class="value">
+                  <div class="value m-2">
                     <div
                       *ngIf="
                         employees &&
@@ -517,6 +698,18 @@
                         </ng-template>
                       </div>
                     </div>
+                    <div *ngIf="employees?.aadharCard == null">
+                      <div class="text-center">
+                        <div colspan="10" class="fw-bold">
+                          <img
+                            src="../../../../assets/images/menu/nodata.gif"
+                            width="150"
+                            height="150"
+                          />
+                          <p>No Files Uploaded</p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -548,7 +741,11 @@
                     Account Holder Name<b>:&nbsp;</b>
                   </div>
                   <div class="value">
-                    {{ employees.accountHolderName | capitalizeFirst }}
+                    {{
+                      employees.accountHolderName
+                        ? (employees.accountHolderName | capitalizeFirst)
+                        : "-"
+                    }}
                   </div>
                 </div>
                 <div class="info-line">
@@ -558,7 +755,9 @@
                   <div class="label d-flex justify-content-between">
                     Bank Name<b>:&nbsp;</b>
                   </div>
-                  <div class="value">{{ employees.bankName }}</div>
+                  <div class="value">
+                    {{ employees.bankName ? employees.bankName : "-" }}
+                  </div>
                 </div>
                 <div class="info-line">
                   <span class="icon"><i class="fas fa-briefcase"></i></span>
@@ -566,7 +765,11 @@
                     Branch<b>:&nbsp;</b>
                   </div>
                   <div class="value">
-                    {{ employees.bankBranch | capitalizeFirst }}
+                    {{
+                      employees.bankBranch
+                        ? (employees.bankBranch | capitalizeFirst)
+                        : "-"
+                    }}
                   </div>
                 </div>
                 <div class="info-line">
@@ -574,14 +777,20 @@
                   <div class="label d-flex justify-content-between">
                     Account Number<b>:&nbsp;</b>
                   </div>
-                  <div class="value">{{ employees.accountNumber }}</div>
+                  <div class="value">
+                    {{
+                      employees.accountNumber ? employees.accountNumber : "-"
+                    }}
+                  </div>
                 </div>
                 <div class="info-line">
                   <span class="icon"><i class="fas fa-key"></i></span>
                   <div class="label d-flex justify-content-between">
                     IFSC Code<b>:&nbsp;</b>
                   </div>
-                  <div class="value">{{ employees.ifscCode }}</div>
+                  <div class="value">
+                    {{ employees.ifscCode ? employees.ifscCode : "-" }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -612,7 +821,11 @@
                     Created By<b>:&nbsp;</b>
                   </div>
                   <div class="value">
-                    {{ employees.createdBy | capitalizeFirst }}
+                    {{
+                      employees.createdBy
+                        ? (employees.createdBy | capitalizeFirst)
+                        : "-"
+                    }}
                   </div>
                 </div>
                 <div class="info-line">
@@ -621,7 +834,124 @@
                     Created On<b>:&nbsp;</b>
                   </div>
                   <div class="value">
-                    {{ employees.createdOn | date }}
+                    {{
+                      employees.createdOn ? (employees.createdOn | date) : "-"
+                    }}
+                  </div>
+                </div>
+
+                <div class="">
+                  <div class="label">Offer Letter (Signed)<b>:&nbsp;</b></div>
+                  <div class="value m-2">
+                    <div
+                      *ngIf="
+                        employees &&
+                        employees.offerLetter &&
+                        employees.offerLetter.length > 0
+                      "
+                      class="files-container"
+                    >
+                      <div
+                        *ngFor="let file of employees.offerLetter"
+                        class="file-item"
+                      >
+                        <ng-container
+                          *ngIf="isImageFile(file); else otherFileTemplate"
+                        >
+                          <a [href]="'//' + file" target="_blank">
+                            <img
+                              [src]="'//' + file"
+                              alt="Aadhar Image"
+                              class="kycimage"
+                            />
+                          </a>
+                        </ng-container>
+                        <ng-template #otherFileTemplate>
+                          <a [href]="'//' + file" target="_blank">
+                            <i
+                              [class]="getFileIcon(file.split('.').pop())"
+                              class="file-icon"
+                            ></i>
+                          </a>
+                        </ng-template>
+                      </div>
+                    </div>
+                    <div *ngIf="employees?.offerLetter == null">
+                      <div class="text-center">
+                        <div colspan="10" class="fw-bold">
+                          <img
+                            src="../../../../assets/images/menu/nodata.gif"
+                            width="150"
+                            height="150"
+                          />
+                          <p>No Files Uploaded</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngSwitchCase="'attendanceDetails'">
+          <div class="card detailscard">
+            <div
+              class="card-header d-flex justify-content-between align-items-center"
+            >
+              <span>Attendance Details</span>
+            </div>
+            <div class="card-body" *ngIf="attendanceStatusCounts">
+              <div class="row">
+                <div class="col-md-12 text-end mb-4">
+                  <p-calendar
+                    [(ngModel)]="selectedDate"
+                    [showIcon]="true"
+                    view="month"
+                    [monthNavigator]="true"
+                    [yearNavigator]="true"
+                    [yearRange]="'-10:+10'"
+                    dateFormat="mm/yy"
+                    appendTo="body"
+                    (ngModelChange)="onDateChange($event)"
+                    [placeholder]="'Select Month and Year'"
+                  ></p-calendar>
+                </div>
+                <div class="info-line">
+                  <span class="icon"><i class="fas fa-user"></i></span>
+                  <div class="label d-flex justify-content-between">
+                    Present<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">
+                    {{ attendanceStatusCounts["Present"] }}
+                  </div>
+                </div>
+                <div class="info-line">
+                  <span class="icon"><i class="fas fa-user"></i></span>
+                  <div class="label d-flex justify-content-between">
+                    Absent<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">
+                    {{ attendanceStatusCounts["Absent"] }}
+                  </div>
+                </div>
+                <div class="info-line">
+                  <span class="icon"><i class="fas fa-user"></i></span>
+                  <div class="label d-flex justify-content-between">
+                    Late<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">
+                    {{ attendanceStatusCounts["Late"] }}
+                  </div>
+                </div>
+                <div class="info-line">
+                  <span class="icon"><i class="fas fa-user"></i></span>
+                  <div class="label d-flex justify-content-between">
+                    Half-day<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">
+                    {{ attendanceStatusCounts["Half-day"] }}
                   </div>
                 </div>
               </div>
@@ -632,3 +962,12 @@
     </div>
   </div>
 </div>
+
+<footer class="p-2 text-center text-lg-start mt-3" style="color: #878a99">
+  <div class="text-center mb-3 fw-bold">
+    © 2024 <span style="color: #1e4079">The</span>&nbsp;<b
+      style="color: #51c297"
+      >Fintalk</b
+    >. | All Rights Reserved
+  </div>
+</footer>

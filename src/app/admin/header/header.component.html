@@ -1,4 +1,4 @@
-<div class="shadow-sm p-3">
+<div class="card header-card p-3">
   <div class="d-flex justify-content-between">
     <div>
       <div class="d-flex">
@@ -32,6 +32,9 @@
                   <div class="text-primary fw-bold text-capitalize">
                     {{ userDetails.username }}
                   </div>
+                  <div class="text-capitalize">
+                    {{ userDetails.designationName }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -50,19 +53,23 @@
           class="d-flex profile1 align-items-center justify-content-center"
           (click)="sidebarVisible = true"
         >
-          <p class="profile text-capitalize">
-            {{ userDetails.username }}
-          </p>
           <button
             pButton
             pRipple
             type="button"
             p-button-rounded
-            class="p-button-primary fw-bold smaller-button text-capitalize"
+            class="p-button-primary me-2 fw-bold smaller-button text-capitalize"
             rounded="true"
           >
-            {{ userDetails.username ? userDetails.username.charAt(0) : "" }}
+            {{
+              userDetails.username
+                ? (userDetails.username.charAt(0) | capitalizeFirst)
+                : ""
+            }}
           </button>
+          <p class="profile text-capitalize">
+            {{ userDetails.username }}
+          </p>
         </div>
       </div>
     </div>

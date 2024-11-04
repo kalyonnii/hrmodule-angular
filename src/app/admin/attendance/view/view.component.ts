@@ -4,6 +4,7 @@ import { EmployeesService } from '../../employees/employees.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { ActivatedRoute } from '@angular/router';
 import { DateTimeProcessorService } from 'src/app/services/date-time-processor.service';
+import { projectConstantsLocal } from 'src/app/constants/project-constants';
 @Component({
   selector: 'app-view',
   templateUrl: './view.component.html',
@@ -25,7 +26,7 @@ export class ViewComponent implements OnInit {
   totalAbsentCount: number = 0;
   totalHalfDayCount: number = 0;
   totalLateCount: number = 0;
-
+  version = projectConstantsLocal.VERSION_DESKTOP;
   constructor(
     private location: Location,
     private employeesService: EmployeesService,
@@ -58,10 +59,15 @@ export class ViewComponent implements OnInit {
     this.breadCrumbItems = [
       {
         icon: 'fa fa-house',
-        label: 'Dashboard',
+        label: ' Dashboard',
         routerLink: '/user/dashboard',
+        queryParams: { v: this.version },
       },
-      { label: 'Attendance', routerLink: '/user/attendance' },
+      {
+        label: 'Attendance',
+        routerLink: '/user/attendance',
+        queryParams: { v: this.version },
+      },
       { label: 'View Attendance' },
     ];
   }
@@ -75,7 +81,11 @@ export class ViewComponent implements OnInit {
       {
         name: 'user',
         displayName: 'Employees',
-        count: this.totalEmployeesCount,
+        count:
+          this.totalPresentCount +
+          this.totalAbsentCount +
+          this.totalHalfDayCount +
+          this.totalLateCount,
         textcolor: '#6C5FFC',
         backgroundcolor: '#F0EFFF',
       },
@@ -146,6 +156,9 @@ export class ViewComponent implements OnInit {
     let api_filter = this.employeesService.setFiltersFromPrimeTable(event);
     api_filter['employeeInternalStatus-eq'] = 1;
     api_filter = Object.assign({}, api_filter);
+    if ('from' in api_filter) {
+      delete api_filter.from;
+    }
     console.log(api_filter);
     if (api_filter) {
       this.getEmployeesCount(api_filter);
@@ -184,7 +197,7 @@ export class ViewComponent implements OnInit {
       });
 
     console.log(
-      'Employee Details with Attendance Data for Update:',
+      'Employee Details with Attendance Data for View:',
       this.employeeDetails
     );
   }

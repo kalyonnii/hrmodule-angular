@@ -104,14 +104,6 @@ export class SidebarMenuComponent implements OnChanges {
         thumbnail: 'employees.png',
         showOutside: true,
       },
-      {
-        name: 'Users',
-        condition: true,
-        routerLink: 'users',
-        image: 'users.gif',
-        thumbnail: 'users.png',
-        showOutside: true,
-      },
 
       {
         name: 'Interviews',
@@ -122,6 +114,14 @@ export class SidebarMenuComponent implements OnChanges {
         showOutside: true,
       },
       {
+        name: 'Attendance',
+        condition: true,
+        routerLink: 'attendance',
+        image: 'attendance.gif',
+        thumbnail: 'attendance.png',
+        showOutside: true,
+      },
+      {
         name: 'Payroll',
         condition: true,
         routerLink: 'payroll',
@@ -129,12 +129,13 @@ export class SidebarMenuComponent implements OnChanges {
         thumbnail: 'payroll.png',
         showOutside: true,
       },
+
       {
-        name: 'Attendance',
+        name: 'Leave Management',
         condition: true,
-        routerLink: 'attendance',
-        image: 'attendance.gif',
-        thumbnail: 'attendance.png',
+        routerLink: 'leaves',
+        image: 'leaves.gif',
+        thumbnail: 'leaves.png',
         showOutside: true,
       },
       {
@@ -151,6 +152,15 @@ export class SidebarMenuComponent implements OnChanges {
         routerLink: 'events',
         image: 'events.gif',
         thumbnail: 'events.png',
+        showOutside: true,
+      },
+
+      {
+        name: 'Users',
+        condition: true,
+        routerLink: 'users',
+        image: 'users.gif',
+        thumbnail: 'users.png',
         showOutside: true,
       },
       {

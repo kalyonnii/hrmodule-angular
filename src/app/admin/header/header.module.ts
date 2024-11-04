@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SidebarModule } from 'primeng/sidebar';
 import { HeaderComponent } from './header.component';
 import { ButtonModule } from 'primeng/button';
-
+import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
 
 
 @NgModule({
@@ -13,6 +13,7 @@ import { ButtonModule } from 'primeng/button';
   imports: [
     CommonModule,
     SidebarModule,
+    CapitalizeFirstPipe,
     ButtonModule
   ],
   exports:[

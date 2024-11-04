@@ -10,6 +10,7 @@ import { EmployeesService } from '../../employees/employees.service';
 import { RoutingService } from 'src/app/services/routing-service';
 import { ActivatedRoute } from '@angular/router';
 import { DateTimeProcessorService } from 'src/app/services/date-time-processor.service';
+import { projectConstantsLocal } from 'src/app/constants/project-constants';
 @Component({
   selector: 'app-create',
   templateUrl: './create.component.html',
@@ -20,6 +21,7 @@ export class CreateComponent implements OnInit {
   breadCrumbItems: any = [];
   holidayData: any;
   moment: any;
+  version = projectConstantsLocal.VERSION_DESKTOP;
   holidayId: any;
   holidayForm: UntypedFormGroup;
   activeIndex: number = 0;
@@ -60,8 +62,13 @@ export class CreateComponent implements OnInit {
         icon: 'fa fa-house',
         label: ' Dashboard',
         routerLink: '/user/dashboard',
+        queryParams: { v: this.version },
       },
-      { label: 'Holidays', routerLink: '/user/holidays' },
+      {
+        label: 'Holidays',
+        routerLink: '/user/holidays',
+        queryParams: { v: this.version },
+      },
       { label: this.actionType == 'create' ? 'Create' : 'Update' },
     ];
   }

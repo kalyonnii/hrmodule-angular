@@ -70,54 +70,27 @@
   >
     <ng-template pTemplate="caption">
       <div class="row">
-        <div class="col-md-1 mt-1 mb-1 no-padding-small">
-          <div class="p-inputgroup">
-            <p-dropdown
-              [options]="years"
-              [style]="{ width: '120px' }"
-              [(ngModel)]="selectedYear"
-              placeholder="Select Year"
-              (onChange)="onYearOrMonthChange()"
-            ></p-dropdown>
-          </div>
-        </div>
-
-        <div class="col-md-1 mt-1 mb-1 no-padding-small">
-          <div class="p-inputgroup">
-            <p-dropdown
-              [options]="months"
-              [style]="{ width: '120px' }"
-              [(ngModel)]="selectedMonth"
-              placeholder="Select Month"
-              (onChange)="onYearOrMonthChange()"
-            ></p-dropdown>
-          </div>
-        </div>
-
+        <!-- Calendar Input -->
         <div class="col-md-4 mt-1 mb-1 no-padding-small">
           <div class="p-inputgroup">
             <p-calendar
               [(ngModel)]="selectedDate"
               [showIcon]="true"
               dateFormat="mm/dd/yy"
-              [style]="{ width: '300px' }"
-              appendTo="body"
               placeholder="Select Date"
+              appendTo="body"
               [showButtonBar]="true"
-              [minDate]="minDate"
-              [maxDate]="maxDate"
               (ngModelChange)="filterByDate()"
-              [defaultDate]="defaultDate"
-            ></p-calendar>
+            >
+            </p-calendar>
           </div>
         </div>
       </div>
-
     </ng-template>
     <ng-template pTemplate="header">
       <tr>
         <th pSortableColumn="attendanceId">
-          Id <p-sortIcon [field]="'attendanceId'"></p-sortIcon>
+          Attendance Id <p-sortIcon [field]="'attendanceId'"></p-sortIcon>
         </th>
         <th pSortableColumn="attendanceDate">
           Attendance Date <p-sortIcon [field]="'attendanceDate'"></p-sortIcon>
@@ -194,3 +167,11 @@
     </ng-template>
   </p-table>
 </div>
+<footer class="p-2 text-center text-lg-start mt-3" style="color: #878a99">
+  <div class="text-center mb-3 fw-bold">
+    © 2024 <span style="color: #1e4079">The</span>&nbsp;<b
+      style="color: #51c297"
+      >Fintalk</b
+    >. | All Rights Reserved
+  </div>
+</footer>

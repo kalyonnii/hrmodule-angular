@@ -57,6 +57,13 @@ const routes: Routes = [
           import('./events/events.module').then((m) => m.EventsModule),
       },
       {
+        path: 'leaves',
+        loadChildren: () =>
+          import('./leavemanagement/leavemanagement.module').then(
+            (m) => m.LeavemanagementModule
+          ),
+      },
+      {
         path: 'reports',
         loadChildren: () =>
           import('./reports/reports.module').then((m) => m.ReportsModule),

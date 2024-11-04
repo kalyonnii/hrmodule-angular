@@ -8,6 +8,7 @@
               src="../../../assets/images/logo.png"
               alt="Business Logo"
               width="50"
+              loading="lazy"
               height="40"
               class="rounded-circle"
             />
@@ -57,14 +58,17 @@
                 <div class="d-flex">
                   <div class="me-3">
                     <img
-                      src="assets/images/menu/{{ item.image }}"
+                      [lazyLoad]="'assets/images/menu/' + item.image"
                       width="30"
                       height="30"
                     />
+                    <!-- <img
+                      src="assets/images/menu/{{ item.image }}"
+                      width="30"
+                      height="30"
+                    /> -->
                   </div>
-                  <div
-                    class="menu-subfeatures-text mt-1 text-capitalize"
-                  >
+                  <div class="menu-subfeatures-text mt-1 text-capitalize">
                     {{ item.name }}
                   </div>
                 </div>
