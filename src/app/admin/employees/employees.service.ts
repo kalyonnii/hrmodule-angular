@@ -62,6 +62,13 @@ export class EmployeesService {
     return tempDiv.innerHTML;
   }
 
+  //NODE MAILER
+
+  sendTerminationmail(data) {
+    const url = 'mail/terminationmail';
+    return this.serviceMeta.httpPost(url, data);
+  }
+
   //employee
   createEmployee(data) {
     const url = 'employees';
@@ -154,7 +161,7 @@ export class EmployeesService {
     return this.serviceMeta.httpGet(url, null, filter);
   }
 
-  //EXPORTS
+  //REPORTS
 
   exportEmployees(filter = {}) {
     const url = 'reports/employees';
@@ -180,6 +187,27 @@ export class EmployeesService {
     const url = 'reports/holidays';
     return this.serviceMeta.httpGet(url, null, filter);
   }
+
+  exportAttendance(filter = {}) {
+    const url = 'reports/attendance';
+    return this.serviceMeta.httpGet(url, null, filter);
+  }
+
+  getReports(filter = {}) {
+    const url = 'reports/reportsdata';
+    return this.serviceMeta.httpGet(url, null, filter);
+  }
+
+  getReportsCount(filter = {}) {
+    const url = 'reports/reportsCount';
+    return this.serviceMeta.httpGet(url, null, filter);
+  }
+
+  deleteReport(reportId, filter = {}) {
+    const url = 'reports/' + reportId;
+    return this.serviceMeta.httpDelete(url, null, filter);
+  }
+
   //PAYROLL
   createPayroll(data) {
     const url = 'payroll';
@@ -427,7 +455,6 @@ export class EmployeesService {
       }
       if (filterValue) {
         api_filter['sort'] = event.sortField + `,${filterValue}`;
-        console.log(api_filter);
       }
     }
     return api_filter;

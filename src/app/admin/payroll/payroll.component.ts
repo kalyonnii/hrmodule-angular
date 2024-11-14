@@ -37,7 +37,10 @@ export class PayrollComponent {
     private dateTimeProcessor: DateTimeProcessorService
   ) {
     this.moment = this.dateTimeProcessor.getMoment();
-    this.selectedDate = this.moment(new Date()).format('MM/YYYY');
+    this.selectedDate = this.moment(new Date())
+      .subtract(1, 'month')
+      .format('MM/YYYY');
+
     this.breadCrumbItems = [
       {
         icon: 'fa fa-house',

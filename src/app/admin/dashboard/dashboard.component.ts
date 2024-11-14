@@ -39,18 +39,11 @@ export class DashboardComponent implements OnInit {
   totalInterviewsCount: any = 0;
   employeeDetails: any[] = [];
   totalHolidaysCount: any = 0;
+  lastMonthpayrollCount: any = 0;
   currentTableEvent: any;
   countsAnalytics: any[] = [];
   designationCounts: any[] = [];
-  absentEmployees = [
-    { id: 1, name: 'John Doe' },
-    { id: 2, name: 'Jane Smith' },
-    { id: 1, name: 'John Doe' },
-    { id: 2, name: 'Jane Smith' },
-    { id: 1, name: 'John Doe' },
-    { id: 2, name: 'Jane Smith' },
-  ];
-
+  selectedDateforPayroll: Date;
   constructor(
     private localStorageService: LocalStorageService,
     private routingService: RoutingService,
@@ -59,12 +52,16 @@ export class DashboardComponent implements OnInit {
     private dateTimeProcessor: DateTimeProcessorService
   ) {
     this.moment = this.dateTimeProcessor.getMoment();
+    this.selectedDateforPayroll = this.moment(new Date())
+      .subtract(1, 'month')
+      .format('MM/YYYY');
   }
   ngOnInit(): void {
-    this.userDetails =
+    const userDetails =
       this.localStorageService.getItemFromLocalStorage('userDetails');
-    this.userDetails = this.userDetails.user;
-    console.log(this.userDetails);
+    if (userDetails) {
+      this.userDetails = userDetails.user;
+    }
     this.selectedDate = this.moment().format('YYYY-MM-DD');
     this.setChartOptions();
     this.initializeDashboardData();
@@ -102,7 +99,6 @@ export class DashboardComponent implements OnInit {
         routerLink: 'employees',
         condition: true,
       },
-
       {
         name: 'interviews',
         displayName: 'Interviews',
@@ -110,7 +106,6 @@ export class DashboardComponent implements OnInit {
         routerLink: 'interviews',
         condition: true,
       },
-
       {
         name: 'attendance',
         displayName: 'Attendance',
@@ -121,7 +116,7 @@ export class DashboardComponent implements OnInit {
       {
         name: 'payroll',
         displayName: 'Payroll',
-        count: 0,
+        count: this.lastMonthpayrollCount,
         routerLink: 'payroll',
         condition: true,
       },
@@ -146,7 +141,6 @@ export class DashboardComponent implements OnInit {
         routerLink: 'events',
         condition: true,
       },
-
       {
         name: 'users',
         displayName: 'Users',
@@ -170,7 +164,6 @@ export class DashboardComponent implements OnInit {
       this.totalHalfDayCount =
       this.totalLateCount =
         0;
-
     this.attendanceData[0]?.attendanceData.forEach((attendance) => {
       switch (attendance.status) {
         case 'Present':
@@ -187,7 +180,6 @@ export class DashboardComponent implements OnInit {
           break;
       }
     });
-
     console.log(
       `Present: ${this.totalPresentCount}, Absent: ${this.totalAbsentCount}, Half-day: ${this.totalHalfDayCount}, Late: ${this.totalLateCount}`
     );
@@ -226,7 +218,6 @@ export class DashboardComponent implements OnInit {
           checkOutTime: attendance?.checkOutTime,
         };
       });
-
     console.log('Absent Employee Details:', this.employeeDetails);
   }
 
@@ -255,7 +246,6 @@ export class DashboardComponent implements OnInit {
   getAttendanceByDate(filter = {}): Promise<void> {
     this.loading = true;
     filter['attendanceDate-eq'] = this.selectedDate;
-
     return new Promise((resolve, reject) => {
       this.employeesService.getAttendance(filter).subscribe(
         (response: any) => {
@@ -277,6 +267,10 @@ export class DashboardComponent implements OnInit {
   fetchCounts(filter = {}) {
     this.loading = true;
     const employeefilter = { ...filter, 'employeeInternalStatus-eq': 1 };
+    const payrollfilter = {
+      ...filter,
+      'payrollMonth-eq': this.selectedDateforPayroll,
+    };
 
     forkJoin([
       this.employeesService?.getEmployeesCount(employeefilter),
@@ -284,6 +278,7 @@ export class DashboardComponent implements OnInit {
       this.employeesService?.getHolidaysCount(filter),
       this.employeesService?.getInterviewCount(filter),
       this.employeesService?.getLeavesCount(filter),
+      this.employeesService?.getPayrollCount(payrollfilter),
     ]).subscribe(
       ([
         employeesCount,
@@ -291,13 +286,14 @@ export class DashboardComponent implements OnInit {
         holidaysCount,
         interviewCount,
         leavesCount,
+        payrollCount,
       ]) => {
         this.totalEmployeesCount = employeesCount;
         this.totalUsersCount = usersCount;
         this.totalHolidaysCount = holidaysCount;
         this.totalInterviewsCount = interviewCount;
         this.totalLeavesCount = leavesCount;
-
+        this.lastMonthpayrollCount = payrollCount;
         this.updateCountsAnalytics();
         this.loading = false;
       },

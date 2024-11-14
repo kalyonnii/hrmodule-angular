@@ -75,7 +75,7 @@
               appendTo="body"
               [showIcon]="true"
               [style]="{ width: field.fieldWidth ? field.fieldWidth : '100%' }"
-              [dateFormat]="field.dateFormat ? field.dateFormat : 'dd/mm/yy'"
+              [dateFormat]="field.dateFormat ? field.dateFormat : 'yy-mm-dd'"
               [(ngModel)]="reportData[field.field + '-' + field.filterType]"
               [readonlyInput]="true"
               [showButtonBar]="true"
@@ -83,18 +83,18 @@
           </span>
           <span *ngIf="field && field.type == 'month'">
             <p-calendar
-            [(ngModel)]="reportData[field.field + '-' + field.filterType]"
-            [showIcon]="true"
-            view="month"
-            [monthNavigator]="true"
-            [yearNavigator]="true"
-            [yearRange]="'-10:+10'"
-            [style]="{ width: field.fieldWidth ? field.fieldWidth : '100%' }"
-            dateFormat="mm/yy"
-            appendTo="body"
-            [showButtonBar]="true"
-            [placeholder]="'Select ' + field.title"
-          ></p-calendar>
+              [(ngModel)]="reportData[field.field + '-' + field.filterType]"
+              [showIcon]="true"
+              view="month"
+              [monthNavigator]="true"
+              [yearNavigator]="true"
+              [yearRange]="'-10:+10'"
+              [style]="{ width: field.fieldWidth ? field.fieldWidth : '100%' }"
+              dateFormat="mm/yy"
+              appendTo="body"
+              [showButtonBar]="true"
+              [placeholder]="'Select ' + field.title"
+            ></p-calendar>
           </span>
           <span *ngIf="field && field.type == 'dropdown'">
             <p-dropdown
@@ -115,7 +115,6 @@
             >
             </p-dropdown>
           </span>
-
         </div>
       </ng-container>
     </div>

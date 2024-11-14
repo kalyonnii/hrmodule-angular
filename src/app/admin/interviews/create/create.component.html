@@ -81,7 +81,6 @@
                     [dropdownIcon]="'fa fa-caret-down'"
                     styleClass="w-100"
                   ></p-dropdown>
-
                   <ng-container *ngSwitchCase="'file'">
                     <div>
                       <button
@@ -98,7 +97,6 @@
                       >
                         &nbsp;Upload {{ field.label }}
                       </button>
-
                       <div
                         *ngIf="
                           interviewsData &&
@@ -121,7 +119,6 @@
                               class="file-icon me-2"
                             ></i>
                           </a>
-
                           <button
                             pButton
                             *ngIf="this.userDetails?.designation == 4"

@@ -24,18 +24,6 @@
       </div>
     </div>
   </div>
-  <div class="d-flex justify-content-end mt-3">
-    <button
-      pButton
-      pRipple
-      type="button"
-      class="p-button-primary me-2"
-      icon="fa fa-plus"
-      (click)="createInterview()"
-    >
-      &nbsp;Add Interview
-    </button>
-  </div>
 </div>
 <div *ngIf="loading">
   <app-preloader></app-preloader>
@@ -146,11 +134,24 @@
                 [position]="'right'"
                 [iconColor]="'#33009C'"
                 [iconSize]="'28px!important'"
+                class="me-2"
                 (filterEvent)="applyConfigFilters($event)"
                 [filterConfig]="filterConfig"
                 [showFilterIndication]="appliedFilter"
               >
               </app-filter>
+              <button
+              pButton
+              pRipple
+              pTooltip="Add Interview"
+              tooltipPosition="top"
+              type="button"
+              class="p-button-primary "
+              icon="fa fa-plus"
+              (click)="createInterview()"
+            >
+              &nbsp;Add
+            </button>
             </div>
           </div>
         </div>

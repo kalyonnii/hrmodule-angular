@@ -103,9 +103,7 @@ export class CreateComponent {
               qualification: this.employeeData?.qualification,
               city: this.employeeData?.city,
               district: this.employeeData?.district,
-
               state: this.employeeData?.state,
-
               currentAddress: this.employeeData?.currentAddress,
               permanentAddress: this.employeeData?.permanentAddress,
               secondaryPhone: this.employeeData?.secondaryPhone,
@@ -182,7 +180,6 @@ export class CreateComponent {
       this.localStorageService.getItemFromLocalStorage('userDetails');
     if (userDetails) {
       this.userDetails = userDetails.user;
-      console.log(this.userDetails);
     }
   }
 
@@ -223,9 +220,7 @@ export class CreateComponent {
       secondaryPhone: [''],
       qualification: [''],
       district: [''],
-
       state: [''],
-
       permanentAddress: [''],
       currentAddress: [''],
       accountHolderName: [''],
@@ -241,200 +236,6 @@ export class CreateComponent {
       experience: [''],
     });
   }
-
-  // onSubmit(formValues) {
-  //   let formData: any = {
-  //     employeeName: formValues.employeeName,
-  //     customEmployeeId: formValues.customEmployeeId,
-  //     careOf: formValues.careOf,
-  //     careOfName: formValues.careOfName,
-  //     dateOfBirth: formValues.dateOfBirth
-  //       ? this.moment(formValues.dateOfBirth).format('YYYY-MM-DD')
-  //       : null,
-  //     gender: formValues.gender,
-  //     genderName: this.getGenderName(formValues.gender),
-  //     ofcBranch: formValues.ofcBranch,
-  //     ofcBranchName: this.getOfcBranchName(formValues.ofcBranch),
-  //     designation: formValues.designation,
-  //     designationName: this.getDesignationName(formValues.designation),
-  //     joiningDate: formValues.joiningDate
-  //       ? this.moment(formValues.joiningDate).format('YYYY-MM-DD')
-  //       : null,
-  //     panNumber: formValues.panNumber,
-  //     aadharNumber: formValues.aadharNumber,
-  //     currentAddress: formValues.currentAddress,
-  //     permanentAddress: formValues.permanentAddress,
-  //     primaryPhone: formValues.primaryPhone,
-  //     secondaryPhone: formValues.secondaryPhone,
-  //     emailAddress: formValues.emailAddress,
-  //     salary: formValues.salary,
-  //     qualification: formValues.qualification,
-  //     city: formValues.city,
-  //     district: formValues.district,
-  //     state: formValues.state,
-  //     experience: formValues.experience,
-  //     prevCompanyName: formValues.prevCompanyName,
-  //     prevEmployerName: formValues.prevEmployerName,
-  //     prevEmployerContact: formValues.prevEmployerContact,
-  //     accountHolderName: formValues.accountHolderName,
-  //     bankName: formValues.bankName,
-  //     bankBranch: formValues.bankBranch,
-  //     ifscCode: formValues.ifscCode,
-  //     accountNumber: formValues.accountNumber,
-  //   };
-  //   formData['panCard'] = [];
-  //   if (
-  //     this.selectedFiles['panCard'] &&
-  //     this.selectedFiles['panCard']['links']
-  //   ) {
-  //     for (let i = 0; i < this.selectedFiles['panCard']['links'].length; i++) {
-  //       formData['panCard'].push(this.selectedFiles['panCard']['links'][i]);
-  //     }
-  //     for (
-  //       let i = 0;
-  //       i < this.selectedFiles['panCard']['uploadedFiles'].length;
-  //       i++
-  //     ) {
-  //       formData['panCard'].push(
-  //         this.selectedFiles['panCard']['uploadedFiles'][i]
-  //       );
-  //     }
-  //   }
-
-  //   formData['offerLetter'] = [];
-  //   if (
-  //     this.selectedFiles['offerLetter'] &&
-  //     this.selectedFiles['offerLetter']['links']
-  //   ) {
-  //     for (
-  //       let i = 0;
-  //       i < this.selectedFiles['offerLetter']['links'].length;
-  //       i++
-  //     ) {
-  //       formData['offerLetter'].push(
-  //         this.selectedFiles['offerLetter']['links'][i]
-  //       );
-  //     }
-  //     for (
-  //       let i = 0;
-  //       i < this.selectedFiles['offerLetter']['uploadedFiles'].length;
-  //       i++
-  //     ) {
-  //       formData['offerLetter'].push(
-  //         this.selectedFiles['offerLetter']['uploadedFiles'][i]
-  //       );
-  //     }
-  //   }
-  //   formData['aadharCard'] = [];
-  //   if (
-  //     this.selectedFiles['aadharCard'] &&
-  //     this.selectedFiles['aadharCard']['links']
-  //   ) {
-  //     for (
-  //       let i = 0;
-  //       i < this.selectedFiles['aadharCard']['links'].length;
-  //       i++
-  //     ) {
-  //       formData['aadharCard'].push(
-  //         this.selectedFiles['aadharCard']['links'][i]
-  //       );
-  //     }
-  //     for (
-  //       let i = 0;
-  //       i < this.selectedFiles['aadharCard']['uploadedFiles'].length;
-  //       i++
-  //     ) {
-  //       formData['aadharCard'].push(
-  //         this.selectedFiles['aadharCard']['uploadedFiles'][i]
-  //       );
-  //     }
-  //   }
-  //   formData['passPhoto'] = [];
-  //   if (
-  //     this.selectedFiles['passPhoto'] &&
-  //     this.selectedFiles['passPhoto']['links']
-  //   ) {
-  //     for (
-  //       let i = 0;
-  //       i < this.selectedFiles['passPhoto']['links'].length;
-  //       i++
-  //     ) {
-  //       formData['passPhoto'].push(this.selectedFiles['passPhoto']['links'][i]);
-  //     }
-  //     for (
-  //       let i = 0;
-  //       i < this.selectedFiles['passPhoto']['uploadedFiles'].length;
-  //       i++
-  //     ) {
-  //       formData['passPhoto'].push(
-  //         this.selectedFiles['passPhoto']['uploadedFiles'][i]
-  //       );
-  //     }
-  //   }
-  //   for (let index = 0; index < this.otherDocuments.length; index++) {
-  //     this.otherDocuments[index]['otherDocuments'] = [];
-  //     if (
-  //       this.selectedFiles['otherDocuments'][index] &&
-  //       this.selectedFiles['otherDocuments'][index]['links']
-  //     ) {
-  //       for (
-  //         let i = 0;
-  //         i < this.selectedFiles['otherDocuments'][index]['links'].length;
-  //         i++
-  //       ) {
-  //         this.otherDocuments[index]['otherDocuments'].push(
-  //           this.selectedFiles['otherDocuments'][index]['links'][i]
-  //         );
-  //       }
-  //       for (
-  //         let i = 0;
-  //         i <
-  //         this.selectedFiles['otherDocuments'][index]['uploadedFiles'].length;
-  //         i++
-  //       ) {
-  //         this.otherDocuments[index]['otherDocuments'].push(
-  //           this.selectedFiles['otherDocuments'][index]['uploadedFiles'][i]
-  //         );
-  //       }
-  //     }
-  //   }
-  //   formData['otherDocuments'] = this.otherDocuments;
-  //   console.log(this.otherDocuments);
-  //   console.log('formData', formData);
-  //   if (this.actionType == 'create') {
-  //     this.loading = true;
-  //     this.employeesService.createEmployee(formData).subscribe(
-  //       (data) => {
-  //         if (data) {
-  //           this.loading = false;
-  //           this.toastService.showSuccess('Employee Added Successfully');
-  //           this.routingService.handleRoute('employees', null);
-  //         }
-  //       },
-  //       (error: any) => {
-  //         this.loading = false;
-  //         console.log(error);
-  //         this.toastService.showError(error);
-  //       }
-  //     );
-  //   } else if (this.actionType == 'update') {
-  //     this.loading = true;
-  //     console.log(formData);
-  //     this.employeesService.updateEmployee(this.employeeId, formData).subscribe(
-  //       (data) => {
-  //         if (data) {
-  //           this.loading = false;
-  //           this.toastService.showSuccess('Employee Updated Successfully');
-  //           this.routingService.handleRoute('employees', null);
-  //         }
-  //       },
-  //       (error: any) => {
-  //         this.loading = false;
-  //         this.toastService.showError(error);
-  //       }
-  //     );
-  //   }
-  // }
 
   onSubmit(formValues) {
     let formData: any = {
@@ -525,7 +326,7 @@ export class CreateComponent {
         return [...links, ...uploadedFiles];
       }
     }
-    return null; // Return null if there are no files
+    return null;
   }
 
   private getOtherDocumentsData(): any[] | null {
@@ -541,11 +342,10 @@ export class CreateComponent {
       return otherDocumentData;
     });
 
-    // Filter out any documents without files and return null if none have files
     const filteredDocuments = otherDocumentsData.filter(
       (doc) => doc.otherDocuments.length > 0
     );
-    return filteredDocuments.length > 0 ? filteredDocuments : null; // Return null if no documents have files
+    return filteredDocuments.length > 0 ? filteredDocuments : null;
   }
 
   createPayslip() {
@@ -1000,12 +800,10 @@ export class CreateComponent {
     fileIndex?: number
   ) {
     const relativePath = fileUrl.substring(fileUrl.indexOf('/documents'));
-
     this.employeesService.deleteFile(relativePath).subscribe(
       (response: any) => {
         if (response.message === 'File deleted successfully.') {
           console.log('File deleted successfully.');
-
           if (this.selectedFiles[fileType]?.uploadedFiles) {
             this.selectedFiles[fileType].uploadedFiles = this.selectedFiles[
               fileType

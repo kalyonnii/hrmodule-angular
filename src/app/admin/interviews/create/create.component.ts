@@ -107,7 +107,6 @@ export class CreateComponent {
       this.localStorageService.getItemFromLocalStorage('userDetails');
     if (userDetails) {
       this.userDetails = userDetails.user;
-      console.log(this.userDetails);
     }
   }
 
@@ -238,9 +237,7 @@ export class CreateComponent {
 
   deleteFile(fileUrl: string, fileType: string) {
     const relativePath = fileUrl.substring(fileUrl.indexOf('/documents'));
-
     console.log('Before Deletion:', this.selectedFiles);
-
     this.employeesService.deleteFile(relativePath).subscribe(
       (response: any) => {
         if (response.message === 'File deleted successfully.') {

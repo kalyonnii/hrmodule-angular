@@ -8,7 +8,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { CalendarModule } from 'primeng/calendar';
 import { DropdownModule } from 'primeng/dropdown';
-
+import { RadioButtonModule } from 'primeng/radiobutton';
 const routes: Routes = [{ path: '', component: CreateComponent }];
 
 @NgModule({
@@ -21,6 +21,7 @@ const routes: Routes = [{ path: '', component: CreateComponent }];
     InputTextModule,
     CalendarModule,
     ReactiveFormsModule,
+    RadioButtonModule,
     DropdownModule,
     [RouterModule.forChild(routes)],
   ],

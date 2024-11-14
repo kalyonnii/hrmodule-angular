@@ -56,7 +56,6 @@ export class ReportsComponent {
         reportType: 'SALARYSHEET',
         condition: true,
       },
-
       {
         reportName: 'Leaves',
         name: 'leaves',
@@ -81,13 +80,11 @@ export class ReportsComponent {
         reportType: reportType,
       },
     };
-    this.routingService.setFeatureRoute('user/reports');
-    this.routingService.handleRoute('create', navigationExtras);
+    this.routingService.handleRoute('reports/create', navigationExtras);
   }
 
   viewAllReports() {
-    this.routingService.setFeatureRoute('user/reports');
-    this.routingService.handleRoute('report-list', null);
+    this.routingService.handleRoute('reports/report-list', null);
   }
 
   goBack() {

@@ -32,17 +32,19 @@
   <app-preloader></app-preloader>
 </div>
 <div class="text-capitalize table-card mt-3">
-  <div class="selecteddate mb-3">
-    <p-calendar
-      [(ngModel)]="selectedDate"
-      dateFormat="yy-mm-dd"
-      [showIcon]="true"
-      [style]="{ width: '300px' }"
-      appendTo="body"
-      [showButtonBar]="true"
-      placeholder="Select a date"
-    >
-    </p-calendar>
+  <div class="row">
+    <div class="col-md-4 mb-3">
+      <p-calendar
+        [(ngModel)]="selectedDate"
+        dateFormat="yy-mm-dd"
+        [showIcon]="true"
+        [style]="{ width: '100%' }"
+        appendTo="body"
+        [showButtonBar]="true"
+        placeholder="Select a date"
+      >
+      </p-calendar>
+    </div>
   </div>
   <p-table
     #employeesTable
@@ -159,6 +161,18 @@
               [style]="{ width: '150px' }"
             />
           </ng-template>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="10" class="text-center fw-bold">
+          <img
+            src="../../../assets/images/menu/nodata.gif"
+            width="200"
+            height="200"
+          />
+          <p>No Data Found</p>
         </td>
       </tr>
     </ng-template>

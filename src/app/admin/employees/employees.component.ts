@@ -21,8 +21,10 @@ export class EmployeesComponent implements OnInit {
   appliedFilter: {};
   userDetails: any;
   searchFilter: any = {};
-  employeeStatusCount: { [key: number]: number } = { 1: 0, 2: 0 };
-
+  employeeStatusCount = {
+    statusCount: { 1: 0, 2: 0 },
+    newEmployeeCount: { new: 0, old: 0 },
+  };
   employeeNameToSearch: any;
   countsAnalytics: any[] = [];
   @ViewChild('employeesTable') employeesTable!: Table;
@@ -58,7 +60,6 @@ export class EmployeesComponent implements OnInit {
       this.localStorageService.getItemFromLocalStorage('userDetails');
     if (userDetails) {
       this.userDetails = userDetails.user;
-      console.log(this.userDetails);
     }
     this.updateCountsAnalytics();
     this.setFilterConfig();
@@ -68,24 +69,32 @@ export class EmployeesComponent implements OnInit {
   updateCountsAnalytics() {
     this.countsAnalytics = [
       {
-        name: 'user',
+        name: 'user-group',
         displayName: 'Employees',
-        count: this.employeeStatusCount[1] + this.employeeStatusCount[2],
+        count:
+          this.employeeStatusCount.statusCount['1'] +
+          this.employeeStatusCount.statusCount['2'],
         textcolor: '#6C5FFC',
         backgroundcolor: '#F0EFFF',
       },
-
+      {
+        name: 'circle-user',
+        displayName: 'New Employees',
+        count: this.employeeStatusCount.newEmployeeCount['new'],
+        textcolor: '#2980B9',
+        backgroundcolor: '#D5E8F7',
+      },
       {
         name: 'check-circle',
         displayName: 'Active Employees',
-        count: this.employeeStatusCount[1],
+        count: this.employeeStatusCount.statusCount['1'],
         textcolor: '#2ECC71',
         backgroundcolor: '#F0F9E8',
       },
       {
         name: 'circle-xmark',
         displayName: 'In Active Employees',
-        count: this.employeeStatusCount[2],
+        count: this.employeeStatusCount.statusCount['2'],
         textcolor: '#DC3545',
         backgroundcolor: '#F8D7DA',
       },
@@ -135,6 +144,18 @@ export class EmployeesComponent implements OnInit {
           {
             field: 'employeeId',
             title: 'Employee Id',
+            type: 'text',
+            filterType: 'like',
+          },
+        ],
+      },
+
+      {
+        header: 'Custom Employee Id',
+        data: [
+          {
+            field: 'customEmployeeId',
+            title: 'Custom Employee Id',
             type: 'text',
             filterType: 'like',
           },
@@ -268,13 +289,34 @@ export class EmployeesComponent implements OnInit {
         data: [
           {
             field: 'city',
-            title: 'City Name',
+            title: 'City',
             type: 'text',
             filterType: 'like',
           },
         ],
       },
-
+      {
+        header: 'District',
+        data: [
+          {
+            field: 'district',
+            title: 'District',
+            type: 'text',
+            filterType: 'like',
+          },
+        ],
+      },
+      {
+        header: 'State',
+        data: [
+          {
+            field: 'state',
+            title: 'State',
+            type: 'text',
+            filterType: 'like',
+          },
+        ],
+      },
       {
         header: 'Gender',
         data: [
@@ -304,6 +346,29 @@ export class EmployeesComponent implements OnInit {
       },
 
       {
+        header: 'Qualification',
+        data: [
+          {
+            field: 'qualification',
+            title: 'Qualification',
+            type: 'text',
+            filterType: 'like',
+          },
+        ],
+      },
+
+      {
+        header: 'Experience',
+        data: [
+          {
+            field: 'experience',
+            title: 'Experience',
+            type: 'text',
+            filterType: 'like',
+          },
+        ],
+      },
+      {
         header: 'Pan Number',
         data: [
           {
@@ -321,28 +386,6 @@ export class EmployeesComponent implements OnInit {
           {
             field: 'aadharNumber',
             title: 'Aadhar Number',
-            type: 'text',
-            filterType: 'like',
-          },
-        ],
-      },
-      {
-        header: 'Current Address',
-        data: [
-          {
-            field: 'currentAddress',
-            title: 'Current Address',
-            type: 'text',
-            filterType: 'like',
-          },
-        ],
-      },
-      {
-        header: 'Permanent Address',
-        data: [
-          {
-            field: 'permanentAddress',
-            title: 'Permanent Address',
             type: 'text',
             filterType: 'like',
           },
@@ -399,6 +442,29 @@ export class EmployeesComponent implements OnInit {
           {
             field: 'accountNumber',
             title: 'Account Number',
+            type: 'text',
+            filterType: 'like',
+          },
+        ],
+      },
+
+      {
+        header: 'Current Address',
+        data: [
+          {
+            field: 'currentAddress',
+            title: 'Current Address',
+            type: 'text',
+            filterType: 'like',
+          },
+        ],
+      },
+      {
+        header: 'Permanent Address',
+        data: [
+          {
+            field: 'permanentAddress',
+            title: 'Permanent Address',
             type: 'text',
             filterType: 'like',
           },
@@ -526,14 +592,30 @@ export class EmployeesComponent implements OnInit {
       }
     );
   }
-  countEmployeeInternalStatus(employees) {
+
+  countEmployeeInternalStatus(employees: any[]) {
     const statusCount = { 1: 0, 2: 0 };
+    const newEmployeeCount = { new: 0, old: 0 };
+
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 2); // Set the date to 3 months ago
+
     employees.forEach((employee) => {
       if (employee.employeeInternalStatus in statusCount) {
         statusCount[employee.employeeInternalStatus]++;
       }
+
+      if (employee.employeeInternalStatus !== 2) {
+        const joiningDate = new Date(employee.joiningDate);
+        if (joiningDate > threeMonthsAgo) {
+          newEmployeeCount.new++;
+        } else {
+          newEmployeeCount.old++;
+        }
+      }
     });
-    return statusCount;
+
+    return { statusCount, newEmployeeCount };
   }
 
   getEmployees(filter = {}) {
@@ -554,8 +636,9 @@ export class EmployeesComponent implements OnInit {
   getEmployeesStatusCount() {
     this.loading = true;
     this.employeesService.getEmployees().subscribe(
-      (response) => {
+      (response: any) => {
         this.employeeStatusCount = this.countEmployeeInternalStatus(response);
+        console.log(this.employeeStatusCount);
         this.updateCountsAnalytics();
         this.loading = false;
       },
@@ -591,7 +674,7 @@ export class EmployeesComponent implements OnInit {
       case 'Active':
         return { textColor: '#5DCC0B', backgroundColor: '#E4F7D6' };
       case 'InActive':
-        return { textColor: '#FFBA15', backgroundColor: '#FFF3D6' };
+        return { textColor: '#FF555A', backgroundColor: '#FFE2E3' };
       default:
         return { textColor: 'black', backgroundColor: 'white' };
     }

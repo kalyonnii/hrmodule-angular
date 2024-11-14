@@ -6,6 +6,7 @@ import { ToastService } from 'src/app/services/toast.service';
 import { ConfirmationService } from 'primeng/api';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { projectConstantsLocal } from 'src/app/constants/project-constants';
+import { DateTimeProcessorService } from 'src/app/services/date-time-processor.service';
 @Component({
   selector: 'app-holidays',
   templateUrl: './holidays.component.html',
@@ -16,12 +17,16 @@ export class HolidaysComponent implements OnInit {
   loading: any;
   appliedFilter: {};
   holidays: any = [];
+  moment: any;
   totalHolidaysCount: any = 0;
   holidayNameToSearch: any;
   currentTableEvent: any;
   searchFilter: any = {};
   userDetails: any;
   filterConfig: any[] = [];
+  years: { label: string; value: number }[] = [];
+  selectedYear: number;
+
   version = projectConstantsLocal.VERSION_DESKTOP;
   constructor(
     private employeesService: EmployeesService,
@@ -29,8 +34,11 @@ export class HolidaysComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private toastService: ToastService,
     private routingService: RoutingService,
-    private localStorageService: LocalStorageService
+    private localStorageService: LocalStorageService,
+    private dateTimeProcessor: DateTimeProcessorService
   ) {
+    this.moment = this.dateTimeProcessor.getMoment();
+
     this.breadCrumbItems = [
       {
         icon: 'fa fa-house',
@@ -47,6 +55,8 @@ export class HolidaysComponent implements OnInit {
       this.localStorageService.getItemFromLocalStorage('userDetails');
     this.userDetails = userDetails.user;
     this.setFilterConfig();
+    this.generateYears();
+    this.selectedYear = new Date().getFullYear();
   }
 
   setFilterConfig() {
@@ -186,9 +196,29 @@ export class HolidaysComponent implements OnInit {
     });
   }
 
+  generateYears() {
+    const currentYear = new Date().getFullYear();
+    for (let year = currentYear; year >= currentYear - 10; year--) {
+      this.years.push({ label: `${year}`, value: year });
+    }
+  }
+
+  loadHolidaysByYear() {
+    this.loadHolidays(this.currentTableEvent);
+  }
   loadHolidays(event) {
     this.currentTableEvent = event;
     let api_filter = this.employeesService.setFiltersFromPrimeTable(event);
+    if (this.selectedYear) {
+      const startOfYear = this.moment(`${this.selectedYear}-01-01`).format(
+        'YYYY-MM-DD'
+      );
+      const endOfYear = this.moment(`${this.selectedYear}-12-31`).format(
+        'YYYY-MM-DD'
+      );
+      api_filter['date-gte'] = startOfYear;
+      api_filter['date-lte'] = endOfYear;
+    }
     api_filter = Object.assign(
       {},
       api_filter,

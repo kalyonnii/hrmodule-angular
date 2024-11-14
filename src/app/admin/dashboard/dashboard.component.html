@@ -11,11 +11,14 @@
             <h4>
               Welcome Back,
               <span style="color: #8cb5fe"
-                ><b>{{ userDetails.username }}!</b></span
+                ><b
+                  >{{ userDetails.firstName }} {{ userDetails.lastName }}!</b
+                ></span
               >
             </h4>
             <p>
-              Get Familier with the dashboard, here are some ways to get Started.
+              Get Familier with the dashboard, here are some ways to get
+              Started.
             </p>
           </div>
           <img
@@ -103,7 +106,7 @@
           <div class="col-md-6">
             <div class="info-line">
               <span class="icon text-warning"
-                ><i class="fas fa-star-half-stroke"></i
+                ><i class="fas fa-circle-half-stroke"></i
               ></span>
               <div class="label d-flex justify-content-between">
                 Half-day<b>:&nbsp;</b>
@@ -122,7 +125,7 @@
           </div>
         </div>
         <h5>Absent Employees:</h5>
-        <div class="">
+        <div class="custom-scroll-container">
           <p-table
             #employeesTable
             [value]="employeeDetails"
@@ -136,8 +139,6 @@
             [totalRecords]="totalEmployeesCount"
             [loading]="loading"
             responsiveLayout="scroll"
-            [scrollable]="true"
-            [scrollHeight]="'330px'"
             [globalFilterFields]="[
               'referenceNo',
               'customer.firstName',

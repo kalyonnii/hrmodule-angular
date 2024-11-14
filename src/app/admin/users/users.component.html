@@ -24,18 +24,6 @@
       </div>
     </div>
   </div>
-  <div class="d-flex justify-content-end mt-3">
-    <button
-      pButton
-      pRipple
-      type="button"
-      class="p-button-primary me-2"
-      icon="fa fa-plus"
-      (click)="createUser()"
-    >
-      &nbsp;Add User
-    </button>
-  </div>
 </div>
 
 <div *ngIf="loading">
@@ -101,12 +89,25 @@
               <app-filter
                 [position]="'right'"
                 [iconColor]="'#33009C'"
+                class="me-2"
                 [iconSize]="'28px!important'"
                 (filterEvent)="applyConfigFilters($event)"
                 [filterConfig]="filterConfig"
                 [showFilterIndication]="appliedFilter"
               >
               </app-filter>
+              <button
+                pButton
+                pRipple
+                type="button"
+                pTooltip="Add User"
+                tooltipPosition="top"
+                class="p-button-primary"
+                icon="fa fa-plus"
+                (click)="createUser()"
+              >
+                &nbsp;Add
+              </button>
             </div>
           </div>
         </div>

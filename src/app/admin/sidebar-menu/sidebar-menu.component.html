@@ -25,26 +25,6 @@
       <div class="row">
         <ng-container *ngFor="let item of subFeatureMenuItems">
           <div class="pointer-cursor" *ngIf="item.condition">
-            <!-- <div
-              class="card shadow-lg text-center mt-3"
-              (click)="showMenuSection()"
-              routerLink="{{ item.routerLink }}"
-              [queryParams]="{ v: version }"
-            >
-              <div routerLinkActive="active-menu-sidebar">
-                <div>
-                  <img
-                    src="assets/images/menu/{{ item.image }}"
-                    width="30"
-                    height="30"
-                  />
-                </div>
-                <div class="menu-subfeatures-text mt-1 text-capitalize">
-                  {{ item.name }}
-                </div>
-              </div>
-            </div> -->
-
             <div
               class="card shadow-lg text-start mt-2"
               (click)="showMenuSection()"
@@ -62,11 +42,6 @@
                       width="30"
                       height="30"
                     />
-                    <!-- <img
-                      src="assets/images/menu/{{ item.image }}"
-                      width="30"
-                      height="30"
-                    /> -->
                   </div>
                   <div class="menu-subfeatures-text mt-1 text-capitalize">
                     {{ item.name }}

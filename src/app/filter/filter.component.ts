@@ -23,13 +23,11 @@ export class FilterComponent {
   expandedAccordions: boolean[] = [];
   separateDialCode = true;
 
-
   constructor(DateTimeProcessorService: DateTimeProcessorService) {
     this.moment = DateTimeProcessorService.getMoment();
   }
 
   ngOnInit(): void {
-    console.log('showFilterIndication', this.showFilterIndication);
     if (
       this.filterConfig &&
       this.filterConfig.length > 0 &&
@@ -69,7 +67,6 @@ export class FilterComponent {
   }
 
   ngOnChanges(changes) {
-    console.log('Changes:', changes);
     if (this.showFilterIndication) {
       if (
         changes['showFilterIndication'] &&
@@ -141,8 +138,7 @@ export class FilterComponent {
                 ).format('YYYY-MM-DD');
               }
             }
-          }
-          else if (data.type == 'multiselect') {
+          } else if (data.type == 'multiselect') {
             if (data.suffix) {
               let finalValue = '';
               this.filter[data.field + '-' + data.filterType].forEach(

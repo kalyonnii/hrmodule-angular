@@ -38,7 +38,6 @@ export class ViewComponent implements OnInit {
     this.activatedRoute.params.subscribe((params) => {
       if (params && params['id']) {
         this.attendanceId = params['id'];
-
         this.getAttendanceById(this.attendanceId)
           .then((data) => {
             if (data) {
@@ -46,7 +45,6 @@ export class ViewComponent implements OnInit {
                 this.attendanceData?.attendanceDate
               ).format('MM/DD/YYYY');
               console.log('Attendance Data', this.attendanceData);
-
               this.calculateAttendanceCounts();
             }
           })
@@ -79,7 +77,7 @@ export class ViewComponent implements OnInit {
   updateCountsAnalytics() {
     this.countsAnalytics = [
       {
-        name: 'user',
+        name: 'circle-user',
         displayName: 'Employees',
         count:
           this.totalPresentCount +
@@ -104,7 +102,7 @@ export class ViewComponent implements OnInit {
         backgroundcolor: '#E0F3FF',
       },
       {
-        name: 'star-half-stroke',
+        name: 'circle-half-stroke',
         displayName: 'Total Half Day',
         count: this.totalHalfDayCount,
         textcolor: '#FFC107',
@@ -126,7 +124,6 @@ export class ViewComponent implements OnInit {
       this.totalHalfDayCount =
       this.totalLateCount =
         0;
-
     this.attendanceData?.attendanceData.forEach((attendance) => {
       switch (attendance.status) {
         case 'Present':
@@ -143,7 +140,6 @@ export class ViewComponent implements OnInit {
           break;
       }
     });
-
     console.log(
       `Present: ${this.totalPresentCount}, Absent: ${this.totalAbsentCount}, Half-day: ${this.totalHalfDayCount}, Late: ${this.totalLateCount}`
     );
@@ -195,7 +191,6 @@ export class ViewComponent implements OnInit {
           checkOutTime: attendance?.checkOutTime,
         };
       });
-
     console.log(
       'Employee Details with Attendance Data for View:',
       this.employeeDetails

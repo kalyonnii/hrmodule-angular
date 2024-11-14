@@ -77,73 +77,6 @@
             {{ employees.employeeName | capitalizeFirst }}
           </h5>
         </div>
-        <!-- <div
-          class="card tabcard"
-          [ngClass]="{ 'active-card': activeSection === 'employeeDetails' }"
-          (click)="selectSection('employeeDetails')"
-        >
-          <div class="">
-            <h5 class="card-name">Employee Details</h5>
-          </div>
-        </div>
-
-        <div
-          class="card tabcard"
-          [ngClass]="{ 'active-card': activeSection === 'addressDetails' }"
-          (click)="selectSection('addressDetails')"
-        >
-          <div class="">
-            <h5 class="card-name">Address Details</h5>
-          </div>
-        </div>
-        <div
-          class="card tabcard"
-          [ngClass]="{ 'active-card': activeSection === 'experienceDetails' }"
-          (click)="selectSection('experienceDetails')"
-        >
-          <div class="">
-            <h5 class="card-name">Experience Details</h5>
-          </div>
-        </div>
-        <div
-          class="card tabcard"
-          [ngClass]="{ 'active-card': activeSection === 'kycDetails' }"
-          (click)="selectSection('kycDetails')"
-        >
-          <div class="">
-            <h5 class="card-name">KYC Details</h5>
-          </div>
-        </div>
-
-        <div
-          class="card tabcard"
-          [ngClass]="{ 'active-card': activeSection === 'accountDetails' }"
-          (click)="selectSection('accountDetails')"
-        >
-          <div class="">
-            <h5 class="card-name">Account Details</h5>
-          </div>
-        </div>
-
-        <div
-          class="card tabcard"
-          [ngClass]="{ 'active-card': activeSection === 'attendance' }"
-          (click)="selectSection('attendance')"
-        >
-          <div class="">
-            <h5 class="card-name">Attendance Details</h5>
-          </div>
-        </div>
-        <div
-          class="card tabcard"
-          [ngClass]="{ 'active-card': activeSection === 'otherDetails' }"
-          (click)="selectSection('otherDetails')"
-        >
-          <div class="">
-            <h5 class="card-name">Other Details</h5>
-          </div>
-        </div> -->
-
         <div
           *ngFor="let section of sections"
           class="card tabcard"
@@ -256,6 +189,78 @@
                   </div>
                 </div>
 
+                <div class="">
+                  <div class="label">Offer Letter (Signed)<b>:&nbsp;</b></div>
+                  <div class="value m-2">
+                    <div
+                      *ngIf="
+                        employees &&
+                        employees.offerLetter &&
+                        employees.offerLetter.length > 0
+                      "
+                      class="files-container"
+                    >
+                      <div
+                        *ngFor="let file of employees.offerLetter"
+                        class="file-item"
+                      >
+                        <ng-container
+                          *ngIf="isImageFile(file); else otherFileTemplate"
+                        >
+                          <a [href]="'//' + file" target="_blank">
+                            <img
+                              [src]="'//' + file"
+                              alt="Aadhar Image"
+                              class="kycimage"
+                            />
+                          </a>
+                        </ng-container>
+                        <ng-template #otherFileTemplate>
+                          <a [href]="'//' + file" target="_blank">
+                            <i
+                              [class]="getFileIcon(file.split('.').pop())"
+                              class="file-icon"
+                            ></i>
+                          </a>
+                        </ng-template>
+                      </div>
+                    </div>
+                    <div *ngIf="employees?.offerLetter == null">
+                      <div class="text-center">
+                        <div colspan="10" class="fw-bold">
+                          <img
+                            src="../../../../assets/images/menu/nodata.gif"
+                            width="150"
+                            height="150"
+                          />
+                          <p>No Files Uploaded</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngSwitchCase="'personalDetails'">
+          <div class="card detailscard">
+            <div
+              class="card-header d-flex justify-content-between align-items-center"
+            >
+              <span>Personal Details</span>
+              <button
+                pButton
+                pRipple
+                type="button"
+                pTooltip="Update"
+                class="editicon"
+                icon="fa fa-pen-to-square"
+                (click)="updateEmployee(employees.employeeId)"
+              ></button>
+            </div>
+            <div class="card-body">
+              <div class="row">
                 <div class="info-line">
                   <span class="icon"><i class="fas fa-user-graduate"></i></span>
                   <div class="label d-flex justify-content-between">
@@ -269,7 +274,6 @@
                     }}
                   </div>
                 </div>
-
                 <div class="info-line">
                   <span class="icon"><i class="fas fa-envelope"></i></span>
                   <div class="label d-flex justify-content-between">
@@ -343,28 +347,6 @@
                     }}
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div *ngSwitchCase="'addressDetails'">
-          <div class="card detailscard">
-            <div
-              class="card-header d-flex justify-content-between align-items-center"
-            >
-              <span>Address Details</span>
-              <button
-                pButton
-                pRipple
-                type="button"
-                pTooltip="Update"
-                class="editicon"
-                icon="fa fa-pen-to-square"
-                (click)="updateEmployee(employees.employeeId)"
-              ></button>
-            </div>
-            <div class="card-body">
-              <div class="row">
                 <div class="info-line">
                   <span class="icon"><i class="fas fa-city"></i></span>
                   <div class="label d-flex justify-content-between">
@@ -840,61 +822,370 @@
                   </div>
                 </div>
 
-                <div class="">
-                  <div class="label">Offer Letter (Signed)<b>:&nbsp;</b></div>
-                  <div class="value m-2">
-                    <div
-                      *ngIf="
-                        employees &&
-                        employees.offerLetter &&
-                        employees.offerLetter.length > 0
-                      "
-                      class="files-container"
-                    >
-                      <div
-                        *ngFor="let file of employees.offerLetter"
-                        class="file-item"
+                <p-accordion class="custom-accordion">
+                  <p-accordionTab header="Resignation">
+                    <div class="content">
+                      <form
+                        class="login-form"
+                        [formGroup]="resignationForm"
+                        novalidate
+                        (ngSubmit)="onSubmit(resignationForm.value)"
                       >
-                        <ng-container
-                          *ngIf="isImageFile(file); else otherFileTemplate"
-                        >
-                          <a [href]="'//' + file" target="_blank">
-                            <img
-                              [src]="'//' + file"
-                              alt="Aadhar Image"
-                              class="kycimage"
-                            />
-                          </a>
-                        </ng-container>
-                        <ng-template #otherFileTemplate>
-                          <a [href]="'//' + file" target="_blank">
-                            <i
-                              [class]="getFileIcon(file.split('.').pop())"
-                              class="file-icon"
-                            ></i>
-                          </a>
-                        </ng-template>
-                      </div>
-                    </div>
-                    <div *ngIf="employees?.offerLetter == null">
-                      <div class="text-center">
-                        <div colspan="10" class="fw-bold">
-                          <img
-                            src="../../../../assets/images/menu/nodata.gif"
-                            width="150"
-                            height="150"
-                          />
-                          <p>No Files Uploaded</p>
+                        <div class=" ">
+                          <div class="py-2 px-2">
+                            <div class="row">
+                              <div class="col-md-12">
+                                <div class="row" *ngIf="resignationformFields">
+                                  <div
+                                    *ngFor="let field of resignationformFields"
+                                    [class.col-md-12]="
+                                      field.type === 'textarea'
+                                    "
+                                    [class.col-md-4]="field.type !== 'textarea'"
+                                    class="mt-2"
+                                  >
+                                    <div>
+                                      <div class="my-1">
+                                        <label>
+                                          {{ field.label }}
+                                          <span *ngIf="field.required"
+                                            >&nbsp;<sup class="text-danger"
+                                              >*</sup
+                                            ></span
+                                          >
+                                        </label>
+                                      </div>
+                                      <ng-container [ngSwitch]="field.type">
+                                        <input
+                                          *ngSwitchCase="'text'"
+                                          pInputText
+                                          [formControlName]="field.controlName"
+                                          [placeholder]="'Enter ' + field.label"
+                                          [maxlength]="field.maxLength"
+                                          [pattern]="field.pattern"
+                                          class="rounded-lg"
+                                          autocomplete="off"
+                                        />
+                                        <p-calendar
+                                          *ngSwitchCase="'calendar'"
+                                          [formControlName]="field.controlName"
+                                          [placeholder]="
+                                            'Select ' + field.label
+                                          "
+                                          [showIcon]="true"
+                                          dateFormat="yy-mm-dd"
+                                          appendTo="body"
+                                          [showButtonBar]="true"
+                                        ></p-calendar>
+                                        <textarea
+                                          *ngSwitchCase="'textarea'"
+                                          pInputTextarea
+                                          [formControlName]="field.controlName"
+                                          [placeholder]="'Enter ' + field.label"
+                                          rows="5"
+                                          class="rounded-lg w-100 custom-textarea"
+                                          [maxlength]="field.maxLength"
+                                        ></textarea>
+                                        <p-dropdown
+                                          *ngSwitchCase="'dropdown'"
+                                          [options]="this[field.options]"
+                                          [formControlName]="field.controlName"
+                                          [optionLabel]="field.optionLabel"
+                                          [optionValue]="field.optionValue"
+                                          [showClear]="true"
+                                          [placeholder]="
+                                            'Select ' + field.label
+                                          "
+                                          [dropdownIcon]="'fa fa-caret-down'"
+                                          styleClass="w-100"
+                                        ></p-dropdown>
+                                        <ng-container *ngSwitchCase="'file'">
+                                          <button
+                                            pButton
+                                            type="button"
+                                            icon="fa fa-cloud-arrow-up"
+                                            class="p-button-info me-2"
+                                            (click)="
+                                              uploadFiles(
+                                                field.controlName,
+                                                field.acceptedFileTypes
+                                              )
+                                            "
+                                          >
+                                            &nbsp;Upload
+                                          </button>
+                                          <div
+                                            *ngIf="
+                                              employees &&
+                                              employees[field.controlName] &&
+                                              employees[field.controlName]
+                                                .length > 0
+                                            "
+                                            class="mt-2"
+                                          >
+                                            <span
+                                              *ngFor="
+                                                let file of employees[
+                                                  field.controlName
+                                                ]
+                                              "
+                                              class="file-wrapper"
+                                            >
+                                              <a
+                                                [href]="'//' + file"
+                                                target="_blank"
+                                                class="file-link"
+                                              >
+                                                <i
+                                                  [ngClass]="
+                                                    getFileIcon(
+                                                      file.split('.').pop()
+                                                    )
+                                                  "
+                                                  class="file-icon me-2"
+                                                ></i>
+                                              </a>
+                                              <button
+                                                pButton
+                                                *ngIf="
+                                                  this.userDetails
+                                                    ?.designation == 4
+                                                "
+                                                type="button"
+                                                class="delete-btn p-button-danger p-button-sm"
+                                                (click)="
+                                                  confirmDelete(
+                                                    file,
+                                                    field.controlName
+                                                  )
+                                                "
+                                              >
+                                                <i class="pi pi-times"></i>
+                                              </button>
+                                            </span>
+                                          </div>
+                                        </ng-container>
+                                      </ng-container>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                      </div>
+                        <div class="d-flex justify-content-center">
+                          <div class="d-flex mt-3 mb-5">
+                            <button
+                              pButton
+                              pRipple
+                              type="button"
+                              class="p-button-info goback-button p-button-raised me-2"
+                              (click)="goBack()"
+                            >
+                              Go Back
+                            </button>
+                            <button
+                              pButton
+                              pRipple
+                              type="submit"
+                              [disabled]="!resignationForm.valid"
+                              class="p-button-primary p-button-raised"
+                            >
+                              Save
+                            </button>
+                          </div>
+                        </div>
+                      </form>
                     </div>
-                  </div>
-                </div>
+                  </p-accordionTab>
+
+                  <p-accordionTab header="Termination">
+                    <div class="content">
+                      <button
+                        pButton
+                        pRipple
+                        type="button"
+                        icon="fa fa-pen-to-square"
+                        (click)="sendEmail()"
+                      ></button>
+                      <form
+                        class="login-form"
+                        [formGroup]="terminationForm"
+                        novalidate
+                        (ngSubmit)="onSubmit(terminationForm.value)"
+                      >
+                        <div class=" ">
+                          <div class="py-2 px-2">
+                            <div class="row">
+                              <div class="col-md-12">
+                                <div class="row" *ngIf="terminationFormFields">
+                                  <div
+                                    *ngFor="let field of terminationFormFields"
+                                    [class.col-md-12]="
+                                      field.type === 'textarea'
+                                    "
+                                    [class.col-md-4]="field.type !== 'textarea'"
+                                    class="mt-2"
+                                  >
+                                    <div>
+                                      <div class="my-1">
+                                        <label>
+                                          {{ field.label }}
+                                          <span *ngIf="field.required"
+                                            >&nbsp;<sup class="text-danger"
+                                              >*</sup
+                                            ></span
+                                          >
+                                        </label>
+                                      </div>
+                                      <ng-container [ngSwitch]="field.type">
+                                        <input
+                                          *ngSwitchCase="'text'"
+                                          pInputText
+                                          [formControlName]="field.controlName"
+                                          [placeholder]="'Enter ' + field.label"
+                                          [maxlength]="field.maxLength"
+                                          [pattern]="field.pattern"
+                                          class="rounded-lg"
+                                          autocomplete="off"
+                                        />
+                                        <p-calendar
+                                          *ngSwitchCase="'calendar'"
+                                          [formControlName]="field.controlName"
+                                          [placeholder]="
+                                            'Select ' + field.label
+                                          "
+                                          [showIcon]="true"
+                                          dateFormat="yy-mm-dd"
+                                          appendTo="body"
+                                          [showButtonBar]="true"
+                                        ></p-calendar>
+                                        <textarea
+                                          *ngSwitchCase="'textarea'"
+                                          pInputTextarea
+                                          [formControlName]="field.controlName"
+                                          [placeholder]="'Enter ' + field.label"
+                                          rows="5"
+                                          class="rounded-lg w-100 custom-textarea"
+                                          [maxlength]="field.maxLength"
+                                        ></textarea>
+                                        <p-dropdown
+                                          *ngSwitchCase="'dropdown'"
+                                          [options]="this[field.options]"
+                                          [formControlName]="field.controlName"
+                                          [optionLabel]="field.optionLabel"
+                                          [optionValue]="field.optionValue"
+                                          [showClear]="true"
+                                          [placeholder]="
+                                            'Select ' + field.label
+                                          "
+                                          [dropdownIcon]="'fa fa-caret-down'"
+                                          styleClass="w-100"
+                                        ></p-dropdown>
+                                        <ng-container *ngSwitchCase="'file'">
+                                          <button
+                                            pButton
+                                            type="button"
+                                            icon="fa fa-cloud-arrow-up"
+                                            class="p-button-info me-2"
+                                            (click)="
+                                              uploadFiles(
+                                                field.controlName,
+                                                field.acceptedFileTypes
+                                              )
+                                            "
+                                          >
+                                            &nbsp;Upload
+                                          </button>
+                                          <div
+                                            *ngIf="
+                                              employees &&
+                                              employees[field.controlName] &&
+                                              employees[field.controlName]
+                                                .length > 0
+                                            "
+                                            class="mt-2"
+                                          >
+                                            <span
+                                              *ngFor="
+                                                let file of employees[
+                                                  field.controlName
+                                                ]
+                                              "
+                                              class="file-wrapper"
+                                            >
+                                              <a
+                                                [href]="'//' + file"
+                                                target="_blank"
+                                                class="file-link"
+                                              >
+                                                <i
+                                                  [ngClass]="
+                                                    getFileIcon(
+                                                      file.split('.').pop()
+                                                    )
+                                                  "
+                                                  class="file-icon me-2"
+                                                ></i>
+                                              </a>
+                                              <button
+                                                pButton
+                                                *ngIf="
+                                                  this.userDetails
+                                                    ?.designation == 4
+                                                "
+                                                type="button"
+                                                class="delete-btn p-button-danger p-button-sm"
+                                                (click)="
+                                                  confirmDelete(
+                                                    file,
+                                                    field.controlName
+                                                  )
+                                                "
+                                              >
+                                                <i class="pi pi-times"></i>
+                                              </button>
+                                            </span>
+                                          </div>
+                                        </ng-container>
+                                      </ng-container>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                          <div class="d-flex mt-3 mb-5">
+                            <button
+                              pButton
+                              pRipple
+                              type="button"
+                              class="p-button-info goback-button p-button-raised me-2"
+                              (click)="goBack()"
+                            >
+                              Go Back
+                            </button>
+                            <button
+                              pButton
+                              pRipple
+                              type="submit"
+                              [disabled]="!terminationForm.valid"
+                              class="p-button-primary p-button-raised"
+                            >
+                              Save
+                            </button>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </p-accordionTab>
+                </p-accordion>
               </div>
             </div>
           </div>
         </div>
-
         <div *ngSwitchCase="'attendanceDetails'">
           <div class="card detailscard">
             <div
@@ -909,6 +1200,7 @@
                     [(ngModel)]="selectedDate"
                     [showIcon]="true"
                     view="month"
+                    [style]="{ width: '300px' }"
                     [monthNavigator]="true"
                     [yearNavigator]="true"
                     [yearRange]="'-10:+10'"
@@ -919,7 +1211,9 @@
                   ></p-calendar>
                 </div>
                 <div class="info-line">
-                  <span class="icon"><i class="fas fa-user"></i></span>
+                  <span class="icon text-success"
+                    ><i class="fas fa-check"></i
+                  ></span>
                   <div class="label d-flex justify-content-between">
                     Present<b>:&nbsp;</b>
                   </div>
@@ -927,17 +1221,11 @@
                     {{ attendanceStatusCounts["Present"] }}
                   </div>
                 </div>
+
                 <div class="info-line">
-                  <span class="icon"><i class="fas fa-user"></i></span>
-                  <div class="label d-flex justify-content-between">
-                    Absent<b>:&nbsp;</b>
-                  </div>
-                  <div class="value">
-                    {{ attendanceStatusCounts["Absent"] }}
-                  </div>
-                </div>
-                <div class="info-line">
-                  <span class="icon"><i class="fas fa-user"></i></span>
+                  <span class="icon text-warning"
+                    ><i class="fas fa-circle-half-stroke"></i
+                  ></span>
                   <div class="label d-flex justify-content-between">
                     Late<b>:&nbsp;</b>
                   </div>
@@ -946,12 +1234,25 @@
                   </div>
                 </div>
                 <div class="info-line">
-                  <span class="icon"><i class="fas fa-user"></i></span>
+                  <span class="icon text-primary"
+                    ><i class="fas fa-circle-exclamation"></i
+                  ></span>
                   <div class="label d-flex justify-content-between">
                     Half-day<b>:&nbsp;</b>
                   </div>
                   <div class="value">
                     {{ attendanceStatusCounts["Half-day"] }}
+                  </div>
+                </div>
+                <div class="info-line">
+                  <span class="icon text-danger"
+                    ><i class="fas fa-xmark"></i
+                  ></span>
+                  <div class="label d-flex justify-content-between">
+                    Absent<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">
+                    {{ attendanceStatusCounts["Absent"] }}
                   </div>
                 </div>
               </div>

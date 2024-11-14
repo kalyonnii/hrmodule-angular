@@ -88,8 +88,6 @@
   padding: 8px !important;
 }
 
-
-
 .p-inputtext {
   color: #333;
   border-radius: 5px;
@@ -147,6 +145,8 @@
   border: 1px solid #ff4081;
 }
 
-.p-button.p-button-secondary:enabled:focus, .p-buttonset.p-button-secondary > .p-button:enabled:focus, .p-splitbutton.p-button-secondary > .p-button:enabled:focus {
+.p-button.p-button-secondary:enabled:focus,
+.p-buttonset.p-button-secondary > .p-button:enabled:focus,
+.p-splitbutton.p-button-secondary > .p-button:enabled:focus {
   box-shadow: 0 0 0 0.2rem #f7a4bf;
 }

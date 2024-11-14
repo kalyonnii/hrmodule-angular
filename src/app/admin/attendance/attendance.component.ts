@@ -23,9 +23,6 @@ export class AttendanceComponent implements OnInit {
   selectedDate: any;
   displayDialog = false;
   attendance: any = [];
-  month = 10;
-  year = 2024;
-  employeeId = 2635633454;
 
   version = projectConstantsLocal.VERSION_DESKTOP;
   filteredData: any[] = [];
@@ -103,13 +100,6 @@ export class AttendanceComponent implements OnInit {
         this.attendance = response;
         console.log('attendance', this.attendance);
         this.loading = false;
-        this.attendencecount();
-        this.getAttendanceCountsByMonth(
-          this.attendance,
-          this.month,
-          this.year,
-          this.employeeId
-        );
       },
       (error: any) => {
         this.loading = false;
@@ -150,63 +140,40 @@ export class AttendanceComponent implements OnInit {
   createAttendance() {
     this.routingService.handleRoute('attendance/create', null);
   }
+
+  monthAttendance() {
+    this.routingService.handleRoute('attendance/monthattendance', null);
+  }
   ViewAttendance(attendanceId) {
     this.routingService.handleRoute('attendance/view/' + attendanceId, null);
   }
 
-  attendencecount() {
-    const currentDate = new Date();
-    const currentMonth = currentDate.getMonth() + 1;
-    const currentYear = currentDate.getFullYear();
-    const attendanceCount = {};
-    this.attendance.forEach((record) => {
-      const attendanceDate = new Date(record.attendanceDate);
-      const attendanceMonth = attendanceDate.getMonth() + 1;
-      const attendanceYear = attendanceDate.getFullYear();
-      if (attendanceMonth === currentMonth && attendanceYear === currentYear) {
-        record.attendanceData.forEach((entry) => {
-          const { employeeId, status } = entry;
-          if (!attendanceCount[employeeId]) {
-            attendanceCount[employeeId] = {
-              Present: 0,
-              Absent: 0,
-              'Half-day': 0,
-              Late: 0,
-            };
-          }
-          attendanceCount[employeeId][status]++;
-        });
-      }
-    });
-    console.log(attendanceCount);
-  }
-
-  getAttendanceCountsByMonth(attendanceRecords, month, year, employeeId) {
-    const statusCounts = {
-      Present: 0,
-      Absent: 0,
-      Late: 0,
-      'Half-day': 0,
-    };
-    attendanceRecords.forEach((record) => {
-      const attendanceDate = new Date(record.attendanceDate);
-      const recordMonth = attendanceDate.getMonth() + 1; // getMonth is 0-indexed
-      const recordYear = attendanceDate.getFullYear();
-      if (recordMonth === month && recordYear === year) {
-        const employeeAttendance = record.attendanceData.find(
-          (data) => data.employeeId === employeeId
-        );
-        if (
-          employeeAttendance &&
-          statusCounts[employeeAttendance.status] !== undefined
-        ) {
-          statusCounts[employeeAttendance.status]++;
-        }
-      }
-    });
-    console.log(statusCounts);
-    return statusCounts;
-  }
+  // attendencecount() {
+  //   const currentDate = new Date();
+  //   const currentMonth = currentDate.getMonth() + 1;
+  //   const currentYear = currentDate.getFullYear();
+  //   const attendanceCount = {};
+  //   this.attendance.forEach((record) => {
+  //     const attendanceDate = new Date(record.attendanceDate);
+  //     const attendanceMonth = attendanceDate.getMonth() + 1;
+  //     const attendanceYear = attendanceDate.getFullYear();
+  //     if (attendanceMonth === currentMonth && attendanceYear === currentYear) {
+  //       record.attendanceData.forEach((entry) => {
+  //         const { employeeId, status } = entry;
+  //         if (!attendanceCount[employeeId]) {
+  //           attendanceCount[employeeId] = {
+  //             Present: 0,
+  //             Absent: 0,
+  //             'Half-day': 0,
+  //             Late: 0,
+  //           };
+  //         }
+  //         attendanceCount[employeeId][status]++;
+  //       });
+  //     }
+  //   });
+  //   console.log(attendanceCount);
+  // }
 
   goBack() {
     this.location.back();

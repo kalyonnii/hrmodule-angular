@@ -301,6 +301,32 @@ export class CreateComponent {
           },
         ],
       },
+      {
+        reportName: 'Attendance',
+        reportType: 'ATTENDANCE',
+        condition: true,
+        fields: [
+          {
+            field: 'attendanceDate',
+            title: 'Day Wise Attendance',
+            type: 'date',
+            filterType: 'eq',
+          },
+
+          {
+            field: 'createdOn',
+            title: 'From Date',
+            type: 'date',
+            filterType: 'gte',
+          },
+          {
+            field: 'createdOn',
+            title: 'To Date',
+            type: 'date',
+            filterType: 'lte',
+          },
+        ],
+      },
     ];
     this.selectedReportConfig = reportsListConfig.filter(
       (report) => report.condition && report.reportType == this.reportType
@@ -343,6 +369,11 @@ export class CreateComponent {
         this.reportData['payrollMonth-eq']
       ).format('MM/YYYY');
     }
+    if (this.reportData['attendanceDate-eq']) {
+      apiFilter['attendanceDate-eq'] = this.moment(
+        this.reportData['attendanceDate-eq']
+      ).format('YYYY-MM-DD');
+    }
 
     Object.assign(selectedReportData, apiFilter);
     console.log(reportType);
@@ -355,6 +386,9 @@ export class CreateComponent {
       SALARYSHEET: () =>
         this.employeesService.exportSalarySheet(selectedReportData),
       LEAVES: () => this.employeesService.exportLeaves(selectedReportData),
+      HOLIDAYS: () => this.employeesService.exportHolidays(selectedReportData),
+      ATTENDANCE: () =>
+        this.employeesService.exportAttendance(selectedReportData),
     };
     const serviceCall = reportServiceMap[reportType];
     if (!serviceCall) {
@@ -373,9 +407,7 @@ export class CreateComponent {
         }
       },
       (error: any) => {
-        this.toastService.showError(
-          'Error: ' + (error.message || 'Unknown error')
-        );
+        this.toastService.showError(error);
         this.loading = false;
       }
     );

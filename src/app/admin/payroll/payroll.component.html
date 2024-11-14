@@ -24,18 +24,6 @@
       </div>
     </div>
   </div>
-  <div class="d-flex justify-content-end mt-3">
-    <button
-      pButton
-      pRipple
-      type="button"
-      class="p-button-primary me-2"
-      icon="fa fa-plus"
-      (click)="createPayroll()"
-    >
-      &nbsp;Add Payroll
-    </button>
-  </div>
 </div>
 <div *ngIf="loading">
   <app-preloader></app-preloader>
@@ -79,6 +67,7 @@
             [yearRange]="'-10:+10'"
             dateFormat="mm/yy"
             appendTo="body"
+            [style]="{ width: '100%' }"
             (ngModelChange)="onDateChange($event)"
             [placeholder]="'Select Month and Year'"
           ></p-calendar>
@@ -106,12 +95,25 @@
               <app-filter
                 [position]="'right'"
                 [iconColor]="'#33009C'"
+                class="me-2"
                 [iconSize]="'28px!important'"
                 (filterEvent)="applyConfigFilters($event)"
                 [filterConfig]="filterConfig"
                 [showFilterIndication]="appliedFilter"
               >
               </app-filter>
+              <button
+                pButton
+                pRipple
+                type="button"
+                pTooltip="Add Payroll"
+                tooltipPosition="top"
+                class="p-button-primary"
+                icon="fa fa-plus"
+                (click)="createPayroll()"
+              >
+                &nbsp;Add
+              </button>
             </div>
           </div>
         </div>
@@ -134,8 +136,8 @@
         <th pSortableColumn="deductions">
           Deductions <p-sortIcon field="deductions"></p-sortIcon>
         </th>
-        <th pSortableColumn="netSalaryWithoutDoubleLop">
-          Net Salary <p-sortIcon field="netSalaryWithoutDoubleLop"></p-sortIcon>
+        <th pSortableColumn="netSalary">
+          Net Salary <p-sortIcon field="netSalary"></p-sortIcon>
         </th>
         <th pSortableColumn="createdOn">
           Created Date <p-sortIcon field="createdOn"></p-sortIcon>
@@ -148,9 +150,11 @@
     <ng-template pTemplate="body" let-payslip>
       <tr>
         <td>
-          <span class="table-column-data" *ngIf="payslip.payslipId; else noData">{{
-            payslip.payslipId
-          }}</span>
+          <span
+            class="table-column-data"
+            *ngIf="payslip.payslipId; else noData"
+            >{{ payslip.payslipId }}</span
+          >
         </td>
         <td>
           <div class="d-flex align-items-center">
@@ -180,16 +184,21 @@
               </ng-template>
             </span>
             <b>
-              <span *ngIf="payslip.employeeName; else noData" class="table-column-data">
+              <span
+                *ngIf="payslip.employeeName; else noData"
+                class="table-column-data"
+              >
                 {{ payslip.employeeName | capitalizeFirst }}
               </span>
             </b>
           </div>
         </td>
         <td>
-          <span class="table-column-data" *ngIf="payslip.joiningDate; else noData">{{
-            payslip.joiningDate | date
-          }}</span>
+          <span
+            class="table-column-data"
+            *ngIf="payslip.joiningDate; else noData"
+            >{{ payslip.joiningDate | date }}</span
+          >
         </td>
         <td>
           <span class="table-column-data" *ngIf="payslip.salary; else noData">{{
@@ -204,16 +213,18 @@
         <td>
           <span
             class="table-column-data"
-            *ngIf="payslip.netSalaryWithoutDoubleLop; else noData"
+            *ngIf="payslip.netSalary; else noData"
           >
-            {{ payslip.netSalaryWithoutDoubleLop }}</span
+            {{ payslip.netSalary }}</span
           >
         </td>
 
         <td>
-          <span class="table-column-data" *ngIf="payslip.createdOn; else noData">{{
-            payslip.createdOn | date : "mediumDate"
-          }}</span>
+          <span
+            class="table-column-data"
+            *ngIf="payslip.createdOn; else noData"
+            >{{ payslip.createdOn | date : "mediumDate" }}</span
+          >
         </td>
         <td>
           <div class="text-center">
@@ -233,7 +244,6 @@
         <td>
           <div class="text-center">
             <div class="d-flex">
-
               <button
                 pButton
                 pRipple
@@ -272,9 +282,7 @@
   </p-table>
 </div>
 
-<ng-template #noData>
-  -
-</ng-template>
+<ng-template #noData> - </ng-template>
 
 <footer class="p-2 text-center text-lg-start mt-3" style="color: #878a99">
   <div class="text-center mb-3 fw-bold">

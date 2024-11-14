@@ -24,18 +24,6 @@
       </div>
     </div>
   </div>
-  <div class="d-flex justify-content-end mt-3">
-    <button
-      pButton
-      pRipple
-      type="button"
-      class="p-button-primary me-2"
-      icon="fa fa-plus"
-      (click)="createAttendance()"
-    >
-      &nbsp;Add Attendance
-    </button>
-  </div>
 </div>
 
 <div *ngIf="loading">
@@ -70,19 +58,49 @@
   >
     <ng-template pTemplate="caption">
       <div class="row">
-        <!-- Calendar Input -->
         <div class="col-md-4 mt-1 mb-1 no-padding-small">
           <div class="p-inputgroup">
             <p-calendar
               [(ngModel)]="selectedDate"
               [showIcon]="true"
-              dateFormat="mm/dd/yy"
+              dateFormat="yy-mm-dd"
+              [style]="{ width: '100%' }"
               placeholder="Select Date"
               appendTo="body"
               [showButtonBar]="true"
               (ngModelChange)="filterByDate()"
             >
             </p-calendar>
+          </div>
+        </div>
+        <div class="col-md-4 mt-1 mb-1 no-padding-small"></div>
+        <div class="col-md-4 mt-1 mb-1 no-padding-small text-right">
+          <div class="d-flex">
+            <div class="flex-grow-1 me-2"></div>
+            <div class="d-flex align-items-center pointer-cursor">
+              <button
+                pButton
+                pRipple
+                type="button"
+                class="p-button-primary me-2"
+                icon="fa fa-eye"
+                (click)="monthAttendance()"
+              >
+                &nbsp;Monthly Attendance
+              </button>
+              <button
+                pButton
+                pRipple
+                type="button"
+                pTooltip="Add Attendance"
+                tooltipPosition="top"
+                class="p-button-primary"
+                icon="fa fa-plus"
+                (click)="createAttendance()"
+              >
+                &nbsp;Add
+              </button>
+            </div>
           </div>
         </div>
       </div>

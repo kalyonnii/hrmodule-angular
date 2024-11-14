@@ -12,6 +12,7 @@ import { EmployeesService } from '../../employees/employees.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { RoutingService } from 'src/app/services/routing-service';
 import { projectConstantsLocal } from 'src/app/constants/project-constants';
+import { ConfirmationService } from 'primeng/api';
 @Component({
   selector: 'app-create',
   templateUrl: './create.component.html',
@@ -22,6 +23,7 @@ export class CreateComponent {
   breadCrumbItems: any = [];
   moment: any;
   formFields: any = [];
+  holidays: any = [];
   payslipId: any;
   payrollData: any;
   payrollForm: UntypedFormGroup;
@@ -30,6 +32,7 @@ export class CreateComponent {
   employees: any = [];
   heading: any = 'Create Payroll';
   actionType: any = 'create';
+
   constructor(
     private location: Location,
     private routingService: RoutingService,
@@ -37,6 +40,7 @@ export class CreateComponent {
     private formBuilder: UntypedFormBuilder,
     private employeesService: EmployeesService,
     private activatedRoute: ActivatedRoute,
+    private confirmationService: ConfirmationService,
     private localStorageService: LocalStorageService,
     private dateTimeProcessor: DateTimeProcessorService
   ) {
@@ -58,14 +62,21 @@ export class CreateComponent {
               workingDays: this.payrollData.workingDays,
               presentDays: this.payrollData.presentDays,
               absentDays: this.payrollData.absentDays,
-              paidDays: this.payrollData.paidDays,
+              paidDaysWithoutDLOP: this.payrollData.paidDaysWithoutDLOP,
+              paidDaysWithDLOP: this.payrollData.paidDaysWithDLOP,
+              lopOption: this.payrollData.lopOption,
+
               casualDays: this.payrollData.casualDays,
               totalAbsentDays: this.payrollData.totalAbsentDays,
               doubleLopDays: this.payrollData.doubleLopDays,
               lateLopDays: this.payrollData.lateLopDays,
-              totalDeductedDays: this.payrollData.totalDeductedDays,
+              totalDeductedDaysWithoutDLOP:
+                this.payrollData.totalDeductedDaysWithoutDLOP,
+              totalDeductedDaysWithDLOP:
+                this.payrollData.totalDeductedDaysWithDLOP,
               salary: this.payrollData.salary,
-              deductions: this.payrollData.deductions,
+              deductionsWithoutDLOP: this.payrollData.deductionsWithoutDLOP,
+              deductionsWithDLOP: this.payrollData.deductionsWithDLOP,
               daySalary: this.payrollData.daySalary,
               netSalaryWithoutDoubleLop:
                 this.payrollData.netSalaryWithoutDoubleLop,
@@ -99,16 +110,14 @@ export class CreateComponent {
   ngOnInit() {
     this.createForm();
     this.setPayrollList();
+    this.getHolidays();
     const userDetails =
       this.localStorageService.getItemFromLocalStorage('userDetails');
     if (userDetails) {
       this.userDetails = userDetails.user;
-      console.log(this.userDetails);
     }
 
     this.getEmployees();
-
-    // Subscribe to employeeName changes and auto-fill employee details
     this.payrollForm
       .get('employeeName')
       ?.valueChanges.subscribe((selectedName) => {
@@ -126,89 +135,145 @@ export class CreateComponent {
             ifscCode: selectedEmployee.ifscCode,
             bankBranch: selectedEmployee.bankBranch,
           });
+
+          const missingFields: any = [];
+          if (!selectedEmployee.accountNumber)
+            missingFields.push('Account Number');
+          if (!selectedEmployee.ifscCode) missingFields.push('IFSC Code');
+          if (!selectedEmployee.bankBranch) missingFields.push('Bank Branch');
+
+          if (!selectedEmployee.customEmployeeId)
+            missingFields.push('Custom Employee Id');
+          if (!selectedEmployee.joiningDate) missingFields.push('Joining Date');
+          if (!selectedEmployee.salary) missingFields.push('Salary');
+
+          if (missingFields.length > 0) {
+            const missingFieldsMessage = `The following fields are missing: ${missingFields.join(
+              ', '
+            )}`;
+
+            this.confirmationService.confirm({
+              message: `${missingFieldsMessage}. Please update your information.`,
+              header: 'Incomplete Employee Details',
+              icon: 'pi pi-exclamation-triangle',
+              acceptLabel: 'Update',
+              accept: () => {
+                this.updateEmployee(selectedEmployee.employeeId);
+              },
+            });
+          }
         }
       });
 
-    // Subscribe to absentDays changes and calculate casual days and total absent days
     this.payrollForm.get('absentDays')?.valueChanges.subscribe((absentDays) => {
       this.handleAbsentDays(absentDays);
     });
 
-    // Subscribe to workingDays and petrolExpenses changes to update net salary
+    this.payrollForm
+      .get('joiningDate')
+      ?.valueChanges.subscribe((joiningDate) => {
+        if (joiningDate) {
+          this.handleCasualDays(joiningDate);
+        }
+      });
     this.payrollForm
       .get('workingDays')
       ?.valueChanges.subscribe(() => this.calculatedaySalary());
 
     this.payrollForm
-      .get('totalDeductedDays')
-      ?.valueChanges.subscribe(() => this.calculateNetSalary());
+      .get('payrollMonth')
+      ?.valueChanges.subscribe((payrollMonth) =>
+        this.calculateWorkingDays(payrollMonth)
+      );
   }
 
-  // Handle calculation for casual days and total absent days
-  handleAbsentDays(absentDays: number | null) {
-    const joiningDateString = this.payrollForm.get('joiningDate')?.value;
-    if (!joiningDateString) return; // Ensure joiningDate is available
-
-    const joiningDate = new Date(joiningDateString);
-    const today = new Date();
-
-    const threeMonthsLater = new Date(joiningDate);
-    threeMonthsLater.setMonth(joiningDate.getMonth() + 3);
-
-    let casualDays = 0;
-
-    const validAbsentDays = absentDays ?? 0; // Handle null/undefined absentDays
-    let totalAbsentDays = validAbsentDays;
-    if (validAbsentDays === 0) {
-      casualDays = 0;
-      totalAbsentDays = 0;
-    } else if (today >= threeMonthsLater) {
-      casualDays = 1; // After 3 months, assign 1 casual day
-      totalAbsentDays = validAbsentDays - casualDays;
+  updateEmployee(employeeId) {
+    this.routingService.handleRoute('employees/update/' + employeeId, null);
+  }
+  handleCasualDays(joiningDate: Date): void {
+    const payrollMonth = this.payrollForm.get('payrollMonth')?.value;
+    const joining = new Date(joiningDate);
+    const payroll = new Date(this.moment(payrollMonth, 'MM/YYYY').toDate());
+    let eligibleCasualMonth;
+    if (joining.getDate() < 4) {
+      eligibleCasualMonth = new Date(
+        joining.getFullYear(),
+        joining.getMonth() + 3,
+        1
+      );
+    } else {
+      eligibleCasualMonth = new Date(
+        joining.getFullYear(),
+        joining.getMonth() + 4,
+        1
+      );
     }
+    const casualDays = payroll >= eligibleCasualMonth ? 1 : 0;
+    this.payrollForm.patchValue({
+      casualDays,
+    });
+  }
 
+  calculateWorkingDays(payrollMonth: string): void {
+    if (!payrollMonth) {
+      return;
+    }
+    const startOfMonth = this.moment(payrollMonth, 'YYYY-MM').startOf('month');
+    const endOfMonth = this.moment(payrollMonth, 'YYYY-MM').endOf('month');
+    let workingDaysCount = 0;
+    for (
+      let day = startOfMonth;
+      day.isBefore(endOfMonth) || day.isSame(endOfMonth, 'day');
+      day.add(1, 'days')
+    ) {
+      if (day.isoWeekday() !== 7 && !this.isHoliday(day)) {
+        workingDaysCount++;
+      }
+    }
+    console.log(`Working days in ${payrollMonth}: ${workingDaysCount}`);
+    this.payrollForm.get('workingDays')?.setValue(workingDaysCount);
+  }
+
+  isHoliday(day: any): boolean {
+    const dayStr = day.format('YYYY-MM-DD');
+    return this.holidays.some((holiday) => holiday.date == dayStr);
+  }
+
+  getHolidays(filter = {}) {
+    this.loading = true;
+    this.employeesService.getHolidays(filter).subscribe(
+      (response) => {
+        this.holidays = response;
+        console.log('holidays', this.holidays);
+        this.loading = false;
+      },
+      (error: any) => {
+        this.loading = false;
+        this.toastService.showError(error);
+      }
+    );
+  }
+
+  handleAbsentDays(absentDays: number | null) {
+    const casualDays = this.payrollForm.get('casualDays')?.value;
+    const totalAbsentDays =
+      casualDays > 0 && absentDays ? absentDays - casualDays : absentDays || 0;
     this.payrollForm.patchValue({
       casualDays,
       totalAbsentDays,
     });
   }
+
   calculatedaySalary() {
     const workingDays = this.payrollForm.get('workingDays')?.value;
     const salary = this.payrollForm.get('salary')?.value;
     if (salary && workingDays > 0) {
       const daySalary = salary / workingDays;
-      // Patch daySalary and netSalaryWithoutDoubleLop to the form
       this.payrollForm.patchValue({
         daySalary: daySalary.toFixed(),
       });
     }
   }
-
-  // Calculate net salary based on form inputs
-  calculateNetSalary() {
-    const workingDays = this.payrollForm.get('workingDays')?.value;
-    const totalDeductedDays = this.payrollForm.get('totalDeductedDays')?.value;
-    const daySalary = this.payrollForm.get('daySalary')?.value;
-
-    if (workingDays && totalDeductedDays > 0) {
-      const netSalaryWithoutDoubleLop =
-        (workingDays - totalDeductedDays) * daySalary;
-      this.payrollForm.patchValue({
-        netSalaryWithoutDoubleLop: netSalaryWithoutDoubleLop.toFixed(),
-      });
-    }
-  }
-
-  // calculateWithPetrol() {
-  //   const netSalaryWithoutDoubleLop = +this.payrollForm.get('netSalaryWithoutDoubleLop')?.value || 0;
-  //   const petrolExpensesValue = this.payrollForm.get('petrolExpenses')?.value;
-  //   const petrolExpenses = petrolExpensesValue ? +petrolExpensesValue : 0;
-  //   const netSalary = netSalaryWithoutDoubleLop + petrolExpenses;
-  //   console.log('Updated Net Salary:', netSalary);
-  //   this.payrollForm.patchValue({
-  //     netSalaryWithoutDoubleLop: netSalary.toFixed(), // Ensure two decimal points
-  //   });
-  // }
 
   getEmployees(filter = {}) {
     this.loading = true;
@@ -273,6 +338,7 @@ export class CreateComponent {
         type: 'text',
         required: true,
       },
+
       {
         label: 'Working Days',
         controlName: 'workingDays',
@@ -316,26 +382,8 @@ export class CreateComponent {
         required: true,
       },
       {
-        label: 'Total Deducted Days',
-        controlName: 'totalDeductedDays',
-        type: 'number',
-        required: true,
-      },
-      {
-        label: 'Paid Days',
-        controlName: 'paidDays',
-        type: 'number',
-        required: true,
-      },
-      {
         label: 'Salary',
         controlName: 'salary',
-        type: 'number',
-        required: true,
-      },
-      {
-        label: 'Day Salary',
-        controlName: 'daySalary',
         type: 'number',
         required: true,
       },
@@ -344,30 +392,6 @@ export class CreateComponent {
         controlName: 'petrolExpenses',
         type: 'number',
         required: false,
-      },
-      {
-        label: 'Deductions',
-        controlName: 'deductions',
-        type: 'number',
-        required: true,
-      },
-      {
-        label: 'Net Salary Without Double LOP',
-        controlName: 'netSalaryWithoutDoubleLop',
-        type: 'number',
-        required: true,
-      },
-      {
-        label: 'Net Salary with Double LOP',
-        controlName: 'netSalaryWithDoubleLop',
-        type: 'number',
-        required: true,
-      },
-      {
-        label: 'Net Salary',
-        controlName: 'netSalary',
-        type: 'number',
-        required: true,
       },
     ];
   }
@@ -381,59 +405,130 @@ export class CreateComponent {
       joiningDate: ['', Validators.required],
       workingDays: ['', Validators.required],
       presentDays: ['', Validators.required],
-
       absentDays: ['', Validators.required],
-      paidDays: ['', Validators.required],
+      paidDaysWithoutDLOP: [''],
+      paidDaysWithDLOP: [''],
       casualDays: ['', Validators.required],
       totalAbsentDays: ['', Validators.required],
       doubleLopDays: ['', Validators.required],
       lateLopDays: ['', Validators.required],
-      totalDeductedDays: ['', Validators.required],
+      totalDeductedDaysWithoutDLOP: [''],
+      totalDeductedDaysWithDLOP: [''],
       salary: ['', Validators.required],
-      daySalary: ['', Validators.required],
-      netSalaryWithoutDoubleLop: ['', Validators.required],
-      netSalaryWithDoubleLop: ['', Validators.required],
-      netSalary: ['', Validators.required],
+      daySalary: [''],
+      netSalaryWithoutDoubleLop: [''],
+      netSalaryWithDoubleLop: [''],
+      netSalary: [''],
       petrolExpenses: ['', Validators.required],
       accountNumber: ['', Validators.required],
       ifscCode: ['', Validators.required],
       bankBranch: ['', Validators.required],
-      deductions: ['', Validators.required],
+      deductionsWithoutDLOP: [''],
+      deductionsWithDLOP: [''],
+      lopOption: ['withoutDoubleLOP', Validators.required],
     });
   }
 
   onSubmit(formValues) {
     console.log(formValues.payrollMonth);
-    let formData: any = {
-      payrollMonth: this.moment(formValues.payrollMonth, [
-        'MM-YYYY',
-        'YYYY-MM-DD',
-        'MM/YYYY',
-      ]).format('MM/YYYY'),
+    const {
+      payrollMonth,
+      employeeName,
+      employeeId,
+      customEmployeeId,
+      joiningDate,
+      workingDays,
+      presentDays,
+      absentDays,
+      casualDays,
+      totalAbsentDays,
+      doubleLopDays,
+      lateLopDays,
+      salary,
 
-      employeeName: formValues.employeeName,
-      employeeId: formValues.employeeId,
-      customEmployeeId: formValues.customEmployeeId,
-      joiningDate: formValues.joiningDate,
-      workingDays: formValues.workingDays,
-      presentDays: formValues.presentDays,
-      absentDays: formValues.absentDays,
-      casualDays: formValues.casualDays,
-      totalAbsentDays: formValues.totalAbsentDays,
-      doubleLopDays: formValues.doubleLopDays,
-      lateLopDays: formValues.lateLopDays,
-      totalDeductedDays: formValues.totalDeductedDays,
-      salary: formValues.salary,
-      daySalary: formValues.daySalary,
-      netSalaryWithoutDoubleLop: formValues.netSalaryWithoutDoubleLop,
-      netSalaryWithDoubleLop: formValues.netSalaryWithDoubleLop,
-      netSalary: formValues.netSalary,
-      petrolExpenses: formValues.petrolExpenses,
-      accountNumber: formValues.accountNumber,
-      ifscCode: formValues.ifscCode,
-      bankBranch: formValues.bankBranch,
-      deductions: formValues.deductions,
-      paidDays: formValues.paidDays,
+      petrolExpenses,
+      accountNumber,
+      ifscCode,
+      bankBranch,
+      lopOption,
+    } = formValues;
+
+    const monthFormatted = this.moment(payrollMonth, [
+      'MM-YYYY',
+      'YYYY-MM-DD',
+      'MM/YYYY',
+    ]).format('MM/YYYY');
+    const daySalary = Number((salary / workingDays).toFixed());
+    const absentAndLate =
+      absentDays > 0 || lateLopDays > 0
+        ? absentDays + lateLopDays - casualDays
+        : absentDays + lateLopDays;
+    const totalDeductedDaysWithoutDLOP = absentAndLate;
+    const totalDeductedDaysWithDLOP = absentAndLate + doubleLopDays;
+    const paidDaysWithoutDLOP = workingDays - totalDeductedDaysWithoutDLOP;
+    const paidDaysWithDLOP = workingDays - totalDeductedDaysWithDLOP;
+    const baseNetSalaryWithoutDLOP = Number(
+      (paidDaysWithoutDLOP * daySalary).toFixed()
+    );
+    const baseNetSalaryWithDLOP = Number(
+      (paidDaysWithDLOP * daySalary).toFixed()
+    );
+    const baseDeductionsWithoutDLOP = salary - baseNetSalaryWithoutDLOP;
+    const baseDeductionsWithDLOP = salary - baseNetSalaryWithDLOP;
+    const netSalaryWithoutDoubleLop =
+      totalDeductedDaysWithoutDLOP === 0 ? salary : baseNetSalaryWithoutDLOP;
+    const netSalaryWithDoubleLop =
+      totalDeductedDaysWithDLOP === 0 ? salary : baseNetSalaryWithDLOP;
+
+    const deductionsWithoutDLOP =
+      totalDeductedDaysWithoutDLOP === 0 ? 0 : baseDeductionsWithoutDLOP;
+    const deductionsWithDLOP =
+      totalDeductedDaysWithDLOP === 0 ? 0 : baseDeductionsWithDLOP;
+
+    const netSalary =
+      lopOption === 'withoutDoubleLOP'
+        ? netSalaryWithoutDoubleLop + petrolExpenses
+        : netSalaryWithDoubleLop + petrolExpenses;
+
+    const deductions =
+      lopOption === 'withoutDoubleLOP'
+        ? deductionsWithoutDLOP
+        : deductionsWithDLOP;
+
+    const paidDays =
+      lopOption === 'withoutDoubleLOP' ? paidDaysWithoutDLOP : paidDaysWithDLOP;
+
+    const formData = {
+      payrollMonth: monthFormatted,
+      employeeName,
+      employeeId,
+      customEmployeeId,
+      joiningDate,
+      workingDays,
+      presentDays,
+      absentDays,
+      casualDays,
+      totalAbsentDays,
+      doubleLopDays,
+      lateLopDays,
+      salary,
+      daySalary,
+      petrolExpenses,
+      accountNumber,
+      ifscCode,
+      bankBranch,
+      totalDeductedDaysWithoutDLOP,
+      totalDeductedDaysWithDLOP,
+      paidDaysWithoutDLOP,
+      paidDaysWithDLOP,
+      netSalaryWithoutDoubleLop,
+      netSalaryWithDoubleLop,
+      deductionsWithoutDLOP,
+      deductionsWithDLOP,
+      lopOption,
+      netSalary,
+      deductions,
+      paidDays,
     };
 
     console.log('formData', formData);

@@ -24,18 +24,6 @@
       </div>
     </div>
   </div>
-  <div class="d-flex justify-content-end mt-3">
-    <button
-      pButton
-      pRipple
-      type="button"
-      class="p-button-primary me-2"
-      icon="fa fa-plus"
-      (click)="createEmployee()"
-    >
-      &nbsp;Add Employee
-    </button>
-  </div>
 </div>
 <div *ngIf="loading">
   <app-preloader></app-preloader>
@@ -147,11 +135,24 @@
                 [position]="'right'"
                 [iconColor]="'#33009C'"
                 [iconSize]="'28px!important'"
+                class="me-2"
                 (filterEvent)="applyConfigFilters($event)"
                 [filterConfig]="filterConfig"
                 [showFilterIndication]="appliedFilter"
               >
               </app-filter>
+              <button
+                pButton
+                pRipple
+                type="button"
+                pTooltip="Add Employee"
+                tooltipPosition="top"
+                class="p-button-primary"
+                icon="fa fa-plus"
+                (click)="createEmployee()"
+              >
+                &nbsp;Add
+              </button>
             </div>
           </div>
         </div>
@@ -231,9 +232,11 @@
           </div>
         </td>
         <td>
-          <span class="table-column-data" *ngIf="employee.designationName; else noData">{{
-            employee.designationName
-          }}</span>
+          <span
+            class="table-column-data"
+            *ngIf="employee.designationName; else noData"
+            >{{ employee.designationName }}</span
+          >
         </td>
         <td>
           <span
@@ -244,19 +247,25 @@
           >
         </td>
         <td>
-          <span class="table-column-data" *ngIf="employee.joiningDate; else noData">{{
-            employee.joiningDate | date : "mediumDate"
-          }}</span>
+          <span
+            class="table-column-data"
+            *ngIf="employee.joiningDate; else noData"
+            >{{ employee.joiningDate | date : "mediumDate" }}</span
+          >
         </td>
         <td>
-          <span class="table-column-data" *ngIf="employee.ofcBranchName; else noData">{{
-            employee.ofcBranchName
-          }}</span>
+          <span
+            class="table-column-data"
+            *ngIf="employee.ofcBranchName; else noData"
+            >{{ employee.ofcBranchName }}</span
+          >
         </td>
         <td>
-          <span class="table-column-data" *ngIf="employee.createdOn; else noData">{{
-            employee.createdOn | date : "mediumDate"
-          }}</span>
+          <span
+            class="table-column-data"
+            *ngIf="employee.createdOn; else noData"
+            >{{ employee.createdOn | date : "mediumDate" }}</span
+          >
         </td>
         <td>
           <span

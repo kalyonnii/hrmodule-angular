@@ -1,11 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { RoutingService } from 'src/app/services/routing-service';
 import { ToastService } from 'src/app/services/toast.service';
 import { EmployeesService } from '../../employees/employees.service';
 import { Location } from '@angular/common';
 import { DateTimeProcessorService } from 'src/app/services/date-time-processor.service';
 import { projectConstantsLocal } from 'src/app/constants/project-constants';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 @Component({
   selector: 'app-payslip',
   templateUrl: './payslip.component.html',
@@ -13,6 +14,7 @@ import { projectConstantsLocal } from 'src/app/constants/project-constants';
 })
 export class PayslipComponent {
   breadCrumbItems: any = [];
+  @ViewChild('pdfContent', { static: false }) pdfContent!: ElementRef;
   payroll: any = [];
   moment: any;
   payslipId: string | null = null;
@@ -24,7 +26,6 @@ export class PayslipComponent {
     private location: Location,
     private route: ActivatedRoute,
     private toastService: ToastService,
-    private routingService: RoutingService,
     private employeesService: EmployeesService,
     private dateTimeProcessor: DateTimeProcessorService
   ) {
@@ -50,6 +51,20 @@ export class PayslipComponent {
     if (this.payslipId) {
       this.getPayrollById(this.payslipId);
     }
+  }
+
+  generatePDF() {
+    this.loading = true;
+    const pdfContent = this.pdfContent.nativeElement;
+    html2canvas(pdfContent).then((canvas) => {
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const imgWidth = 190;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+      pdf.save('payslip.pdf');
+      this.loading = false;
+    });
   }
 
   getPayrollById(id: string) {
@@ -89,8 +104,8 @@ export class PayslipComponent {
   }
 
   getMonthNameAndYear(dateString: string): string {
-    const date = this.moment(dateString, 'MM/YYYY'); // Parse input date
-    return date.format('MMMM YYYY'); // Format as "October 2024"
+    const date = this.moment(dateString, 'MM/YYYY');
+    return date.format('MMMM YYYY');
   }
 
   convertAmountToWords(amount: number): string {

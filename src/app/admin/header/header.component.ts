@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { DialogService } from 'primeng/dynamicdialog';
 import { AuthService } from 'src/app/auth.service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { SubscriptionService } from 'src/app/services/subscription.service';
@@ -25,7 +24,6 @@ export class HeaderComponent implements OnInit {
     private authService: AuthService,
     private toastService: ToastService,
     private router: Router,
-    private dialogService: DialogService,
     private localStorageService: LocalStorageService,
     private subscriptionService: SubscriptionService
   ) {}

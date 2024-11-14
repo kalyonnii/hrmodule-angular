@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { RoutingService } from 'src/app/services/routing-service';
@@ -6,6 +6,8 @@ import { ToastService } from 'src/app/services/toast.service';
 import { EmployeesService } from '../employees.service';
 import { DateTimeProcessorService } from 'src/app/services/date-time-processor.service';
 import { projectConstantsLocal } from 'src/app/constants/project-constants';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 @Component({
   selector: 'app-offerletter',
@@ -15,6 +17,7 @@ import { projectConstantsLocal } from 'src/app/constants/project-constants';
 export class OfferletterComponent {
   breadCrumbItems: any = [];
   moment: any;
+  @ViewChild('pdfContent', { static: false }) pdfContent!: ElementRef;
   loading: boolean = false;
   version = projectConstantsLocal.VERSION_DESKTOP;
   employees: any = null;
@@ -46,16 +49,43 @@ export class OfferletterComponent {
   }
 
   ngOnInit(): void {
-    // this.employeesService.getOfferLetterContent().subscribe(
-    //   (data:any) => (this.offerLetterContent = data),
-    //   (error) => console.error('Error fetching offer letter:', error)
-    // );
-
     this.employeeId = this.route.snapshot.paramMap.get('id');
     if (this.employeeId) {
       this.getEmployeeById(this.employeeId);
     }
   }
+
+  generatePDF() {
+    this.loading = true;
+    const pageElements = document.querySelectorAll('.page');
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const imgWidth = 190;
+    const pageHeight = 297;
+    const addPagesToPDF = async () => {
+      for (let i = 0; i < pageElements.length; i++) {
+        const pageElement = pageElements[i];
+        await html2canvas(pageElement as HTMLElement).then((canvas) => {
+          const imgData = canvas.toDataURL('image/png');
+          const imgHeight = (canvas.height * imgWidth) / canvas.width;
+          pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+          if (i < pageElements.length - 1) {
+            pdf.addPage();
+          }
+        });
+      }
+    };
+
+    addPagesToPDF()
+      .then(() => {
+        pdf.save('document.pdf');
+        this.loading = false;
+      })
+      .catch((error) => {
+        console.error('Error generating PDF:', error);
+        this.loading = false;
+      });
+  }
+
   getEmployeeById(id: string) {
     this.loading = true;
     this.employeesService.getEmployeeById(id).subscribe(

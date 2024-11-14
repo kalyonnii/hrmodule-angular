@@ -130,7 +130,6 @@ export class UsersComponent implements OnInit {
           },
         ],
       },
-
       {
         header: 'Designation',
         data: [
@@ -146,7 +145,6 @@ export class UsersComponent implements OnInit {
           },
         ],
       },
-
       {
         header: 'created On  ',
         data: [

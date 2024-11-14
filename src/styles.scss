@@ -194,7 +194,7 @@ body {
 
 .statusdata {
   padding: 4px 10px;
-  border-radius: 20px;
+  border-radius: 10px;
 }
 
 .p-dropdown-items-wrapper::-webkit-scrollbar {
@@ -249,11 +249,39 @@ body {
   background-color: #ffffff !important;
 }
 
-
 .p-menu .p-submenu-header {
   background-color: #2e4374 !important;
   color: #ffffff !important;
 }
 .p-menu .p-menuitem-link .p-menuitem-icon {
   color: #8cb5ff !important;
+}
+
+.custom-accordion .p-accordion-header {
+  padding-bottom: 10px !important;
+}
+
+.custom-accordion .p-accordion-header-link {
+  background-color: #ffcccc !important;
+  color: red !important;
+  border: 1px solid red !important;
+}
+
+.custom-accordion .p-accordion-header-link.p-highlight {
+  background-color: #ff9999 !important;
+  color: darkred !important;
+  border-color: darkred !important;
+}
+
+.custom-accordion
+  .p-accordion-header:not(.p-disabled)
+  .p-accordion-header-link:focus {
+  outline: 0 none;
+  outline-offset: 0;
+  box-shadow: 0 0 0 0.2rem #ff9999 !important;
+}
+
+.absenttable .p-datatable-tbody > tr > td {
+  padding: 8px !important;
+  height: 10px !important;
 }

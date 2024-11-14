@@ -189,7 +189,7 @@ export class LeavemanagementComponent {
         backgroundcolor: '#F0EFFF',
       },
       {
-        name: 'star-half-stroke',
+        name: 'circle-half-stroke',
         displayName: 'Pending',
         count: this.leavesStatusCount[1],
         textcolor: '#FFC107',

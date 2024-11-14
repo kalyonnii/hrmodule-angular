@@ -7,24 +7,30 @@ import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
 import { ButtonModule } from 'primeng/button';
 import { PreloaderModule } from 'src/app/preloader/preloader.module';
 import { CalendarModule } from 'primeng/calendar';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AccordionModule } from 'primeng/accordion';
+import { InputTextModule } from 'primeng/inputtext';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { DropdownModule } from 'primeng/dropdown';
 
 const routes: Routes = [{ path: '', component: ProfileComponent }];
 
-
 @NgModule({
-  declarations: [
-    ProfileComponent
-  ],
+  declarations: [ProfileComponent],
   imports: [
     CommonModule,
     BreadcrumbModule,
     PreloaderModule,
     CalendarModule,
+    InputTextareaModule,
+    AccordionModule,
+    DropdownModule,
+    ReactiveFormsModule,
+    InputTextModule,
     FormsModule,
     CapitalizeFirstPipe,
     ButtonModule,
     [RouterModule.forChild(routes)],
-  ]
+  ],
 })
-export class ProfileModule { }
+export class ProfileModule {}

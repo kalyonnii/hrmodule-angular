@@ -246,7 +246,7 @@ export class InterviewsComponent implements OnInit {
   updateCountsAnalytics() {
     this.countsAnalytics = [
       {
-        name: 'user',
+        name: 'circle-user',
         displayName: 'Interviews',
         count:
           this.interviewStatusCount[1] +
@@ -256,7 +256,7 @@ export class InterviewsComponent implements OnInit {
         backgroundcolor: '#F0EFFF',
       },
       {
-        name: 'star-half-stroke',
+        name: 'circle-half-stroke',
         displayName: 'Pending',
         count: this.interviewStatusCount[1],
         textcolor: '#FFC107',

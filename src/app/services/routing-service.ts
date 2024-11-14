@@ -26,7 +26,6 @@ export class RoutingService {
       params['queryParams']['v'] = this.getVersion();
       this.router.navigate([relativeRoute + '/' + activeRoute], params);
     } else {
-      console.log('else');
       this.router.navigate([relativeRoute + '/' + activeRoute], {
         queryParams: { v: this.getVersion() },
       });

@@ -49,7 +49,6 @@
         [ngClass]="{ active: activeIndex === i }"
       >
         <span class="pi" [ngClass]="step.icon"></span>
-        <!-- <span class="p-steps-num">{{ i + 1 }}</span> -->
         <span class="p-steps-title">{{ step.label }}</span>
         <div *ngIf="i < steps.length - 1" class="connector">
           <i class="fa fa-angle-right"></i>
@@ -319,15 +318,12 @@
                     "
                     class="file-wrapper"
                   >
-                    <!-- File Link -->
                     <a [href]="'//' + file" target="_blank" class="file-link">
                       <i
                         [class]="getFileIcon(file.split('.').pop())"
                         class="file-icon me-2"
                       ></i>
                     </a>
-
-                    <!-- Delete Button -->
                     <button
                       pButton
                       *ngIf="this.userDetails?.designation == 4"

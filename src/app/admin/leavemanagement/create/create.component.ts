@@ -7,9 +7,7 @@ import {
 import { Location } from '@angular/common';
 import { ToastService } from 'src/app/services/toast.service';
 import { EmployeesService } from '../../employees/employees.service';
-import { ConfirmationService } from 'primeng/api';
 import { RoutingService } from 'src/app/services/routing-service';
-import { DialogService } from 'primeng/dynamicdialog';
 import { ActivatedRoute } from '@angular/router';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { DateTimeProcessorService } from 'src/app/services/date-time-processor.service';
@@ -95,7 +93,6 @@ export class CreateComponent {
       this.localStorageService.getItemFromLocalStorage('userDetails');
     if (userDetails) {
       this.userDetails = userDetails.user;
-      console.log(this.userDetails);
     }
     this.getEmployees();
     this.leavesForm

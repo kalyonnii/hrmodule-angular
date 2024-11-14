@@ -24,18 +24,6 @@
       </div>
     </div>
   </div>
-  <div class="d-flex justify-content-end mt-3">
-    <button
-      pButton
-      pRipple
-      type="button"
-      class="p-button-primary me-2"
-      icon="fa fa-plus"
-      (click)="addHoliday()"
-    >
-      &nbsp;Add Holiday
-    </button>
-  </div>
 </div>
 <p-confirmDialog></p-confirmDialog>
 <div *ngIf="loading">
@@ -89,17 +77,39 @@
         <div class="col-md-4 mt-1 mb-1 no-padding-small"></div>
         <div class="col-md-4 mt-1 mb-1 no-padding-small text-right">
           <div class="d-flex">
-            <div class="flex-grow-1 me-2"></div>
+            <div class="flex-grow-1 me-2">
+              <p-dropdown
+                [options]="years"
+                [(ngModel)]="selectedYear"
+                [style]="{ width: '100%' }"
+                (onChange)="loadHolidaysByYear()"
+                placeholder="Select Year"
+              >
+              </p-dropdown>
+            </div>
             <div class="d-flex align-items-center pointer-cursor">
               <app-filter
                 [position]="'right'"
                 [iconColor]="'#33009C'"
+                class="me-2"
                 [iconSize]="'28px!important'"
                 (filterEvent)="applyConfigFilters($event)"
                 [filterConfig]="filterConfig"
                 [showFilterIndication]="appliedFilter"
               >
               </app-filter>
+              <button
+                pButton
+                pRipple
+                type="button"
+                pTooltip="Add Holiday"
+                tooltipPosition="top"
+                class="p-button-primary"
+                icon="fa fa-plus"
+                (click)="addHoliday()"
+              >
+                &nbsp;Add
+              </button>
             </div>
           </div>
         </div>
@@ -126,15 +136,19 @@
     <ng-template pTemplate="body" let-holiday>
       <tr>
         <td>
-          <span class="table-column-data" *ngIf="holiday.holidayId; else noData">{{
-            holiday.holidayId
-          }}</span>
+          <span
+            class="table-column-data"
+            *ngIf="holiday.holidayId; else noData"
+            >{{ holiday.holidayId }}</span
+          >
         </td>
         <td>
           <b>
-            <span class="table-column-data" *ngIf="holiday.holidayName; else noData">{{
-              holiday.holidayName | capitalizeFirst
-            }}</span>
+            <span
+              class="table-column-data"
+              *ngIf="holiday.holidayName; else noData"
+              >{{ holiday.holidayName | capitalizeFirst }}</span
+            >
           </b>
         </td>
         <td>
@@ -148,9 +162,11 @@
           }}</span>
         </td>
         <td>
-          <span class="table-column-data" *ngIf="holiday.description; else noData">{{
-            holiday.description | capitalizeFirst
-          }}</span>
+          <span
+            class="table-column-data"
+            *ngIf="holiday.description; else noData"
+            >{{ holiday.description | capitalizeFirst }}</span
+          >
         </td>
 
         <td>
@@ -193,10 +209,8 @@
     </ng-template>
   </p-table>
 </div>
-<ng-template #noData>
-  -
-</ng-template>
-<footer class="p-2 text-center text-lg-start mt-3 " style="color: #878A99;">
+<ng-template #noData> - </ng-template>
+<footer class="p-2 text-center text-lg-start mt-3" style="color: #878a99">
   <div class="text-center mb-3 fw-bold">
     © 2024 <span style="color: #1e4079">The</span>&nbsp;<b
       style="color: #51c297"

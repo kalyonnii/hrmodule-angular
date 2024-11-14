@@ -223,7 +223,7 @@ export class CreateComponent {
         },
         (error: any) => {
           this.loading = false;
-          this.toastService.showError('Failed to add attendance.');
+          this.toastService.showError(error);
         }
       );
     } else if (this.actionType == 'update') {

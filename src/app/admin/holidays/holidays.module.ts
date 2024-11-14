@@ -13,6 +13,7 @@ import { PreloaderModule } from 'src/app/preloader/preloader.module';
 import { FormsModule } from '@angular/forms';
 import { FilterModule } from 'src/app/filter/filter.module';
 import { InputTextModule } from 'primeng/inputtext';
+import { DropdownModule } from 'primeng/dropdown';
 
 const routes: Routes = [
   { path: '', component: HolidaysComponent },
@@ -35,6 +36,7 @@ const routes: Routes = [
     BreadcrumbModule,
     ButtonModule,
     TableModule,
+    DropdownModule,
     TooltipModule,
     ConfirmDialogModule,
     PreloaderModule,

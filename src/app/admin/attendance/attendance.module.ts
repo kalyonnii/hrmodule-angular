@@ -31,6 +31,13 @@ const routes: Routes = [
     path: 'view/:id',
     loadChildren: () => import('./view/view.module').then((m) => m.ViewModule),
   },
+  {
+    path: 'monthattendance',
+    loadChildren: () =>
+      import('./monthattendance/monthattendance.module').then(
+        (m) => m.MonthattendanceModule
+      ),
+  },
 ];
 @NgModule({
   declarations: [AttendanceComponent],

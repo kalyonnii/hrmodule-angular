@@ -5,6 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { PreloaderModule } from 'src/app/preloader/preloader.module';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
+import { ButtonModule } from 'primeng/button';
 
 
 const routes: Routes = [{ path: '', component: PayslipComponent }];
@@ -18,6 +19,7 @@ const routes: Routes = [{ path: '', component: PayslipComponent }];
     CommonModule,
     BreadcrumbModule,
     PreloaderModule,
+    ButtonModule,
     CapitalizeFirstPipe,
     RouterModule.forChild(routes)
   ]

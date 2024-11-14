@@ -68,6 +68,10 @@ export const projectConstantsLocal = {
     { label: 'Half-day', value: 'Half-day' },
     { label: 'Late', value: 'Late' },
   ],
+  ISSUED_PAYSLIPS: [
+    { label: 'Yes', value: 'Yes' },
+    { label: 'No', value: 'No' },
+  ],
   BASE_URL: 'http://localhost:5001/',
   VERSION_DESKTOP: '0.0.0',
 };

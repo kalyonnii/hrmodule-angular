@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { EmployeesService } from '../employees/employees.service';
 
-
 interface UploadEvent {
   originalEvent: Event;
   files: File[];
@@ -10,10 +9,8 @@ interface UploadEvent {
 @Component({
   selector: 'app-file-upload',
   templateUrl: './file-upload.component.html',
-  styleUrls: ['./file-upload.component.scss']
+  styleUrls: ['./file-upload.component.scss'],
 })
-
-
 export class FileUploadComponent {
   uploadedFiles: any[] = [];
   previouslyUploadedFiles: any[] = [];

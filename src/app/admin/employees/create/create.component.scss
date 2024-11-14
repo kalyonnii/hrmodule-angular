@@ -49,13 +49,11 @@ label {
 
 .custom-steps {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
-
-  border-radius: 5px !important;
-  cursor: pointer;
-  background: #f1f6f9;
   padding: 20px;
+  border-radius: 5px !important;
+  background: #f1f6f9;
 }
 
 .step {
@@ -64,7 +62,7 @@ label {
   align-items: center;
   position: relative;
   cursor: pointer;
-
+  width: 300px;
   transition: color 0.3s ease-in-out;
 }
 
@@ -77,15 +75,9 @@ label {
     rgba(132, 116, 254, 1) 100%
   );
   padding: 20px;
-  border-radius: 50px;
-
+  border-radius: 50%;
+  color: white;
   transition: color 0.3s ease-in-out;
-}
-
-.p-steps-num {
-  font-weight: bold;
-  font-size: 18px;
-  margin-top: 5px;
 }
 
 .p-steps-title {
@@ -95,15 +87,18 @@ label {
   text-align: center;
 }
 
-.connector .fa {
-  width: 100px;
-  height: 2px;
-
+.connector {
   position: absolute;
-  top: 30%;
-  left: 130%;
-  z-index: 1;
+  top: 50%;
+  left: 100%;
   transform: translateY(-50%);
+  display: flex;
+  justify-content: center;
+}
+
+.connector .fa {
+  font-size: 20px;
+  color: #543ed6;
   transition: background-color 0.3s ease-in-out;
 }
 
@@ -116,7 +111,7 @@ label {
 
 .step.active .p-steps-title,
 .step.active .p-steps-num {
-  color: #543ed6;    
+  color: #543ed6;
   font-weight: bold;
 }
 

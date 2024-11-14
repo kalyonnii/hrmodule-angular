@@ -1,0 +1,223 @@
+<div class="container-fluid mt-2">
+  <div class="card heading-card p-3">
+    <div class="row align-items-center">
+      <div class="col-md-10">
+        <div class="d-flex justify-content-start align-items-center mb-2">
+          <div
+            class="d-flex align-items-center pointer-cursor"
+            (click)="goBack()"
+          >
+            <i class="pi pi-arrow-left fw-bold back-btn-icon"></i>
+            <span class="back-btn-text ms-2 text-capitalize">
+              Monthly Attendance
+            </span>
+          </div>
+        </div>
+        <div class="bread-crumb mt-3">
+          <p-breadcrumb [model]="breadCrumbItems"></p-breadcrumb>
+        </div>
+      </div>
+      <div class="col-md-2 text-end">
+        <img
+          src="../../../../assets/images/menu/createattendance.png"
+          width="100"
+          class="heading-image"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+<div class="d-flex justify-content-between m-3">
+  <div class="selecteddate">
+    <p-calendar
+      [(ngModel)]="selectedDate"
+      [showIcon]="true"
+      view="month"
+      [monthNavigator]="true"
+      [yearNavigator]="true"
+      [yearRange]="'-10:+10'"
+      dateFormat="mm/yy"
+      appendTo="body"
+      [style]="{ width: '300px' }"
+      (ngModelChange)="onDateChange($event)"
+      [placeholder]="'Select Month and Year'"
+    ></p-calendar>
+  </div>
+  <div class="btn-container">
+    <button
+      pButton
+      type="button"
+      label="Export Monthly Attendance"
+      icon="fa fa-download"
+      class="download-btn"
+      (click)="exportToExcel()"
+    ></button>
+  </div>
+</div>
+<div *ngIf="loading">
+  <app-preloader></app-preloader>
+</div>
+
+<div class="text-capitalize table-card">
+  <p-table
+    #employeesTable
+    [value]="employees"
+    [sortOrder]="1"
+    [sortField]="'createdOn'"
+    [lazy]="true"
+    (onLazyLoad)="loadEmployees($event)"
+    dataKey="id"
+    [showCurrentPageReport]="true"
+    class="p-datatable-striped table"
+    [totalRecords]="totalEmployeesCount"
+    [loading]="loading"
+    responsiveLayout="scroll"
+    scrollHeight="flex"
+    [globalFilterFields]="[
+      'referenceNo',
+      'customer.firstName',
+      'partner.partnerName',
+      'status'
+    ]"
+    styleClass="p-datatable-customers"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Employees"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Employee Id</th>
+        <th>Employee Name</th>
+        <th>Total Present</th>
+        <th>Half Day</th>
+        <th>Late</th>
+        <th>Absent</th>
+        <ng-container *ngFor="let date of monthDates">
+          <th>{{ date | date : "dd" }}</th>
+        </ng-container>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-employee>
+      <tr>
+        <td>{{ employee.employeeId }}</td>
+        <td>
+          <div class="d-flex align-items-center">
+            <span class="me-2">
+              <ng-container
+                *ngIf="
+                  employee && employee.passPhoto?.length > 0;
+                  else defaultImage
+                "
+              >
+                <a [href]="'//' + employee.passPhoto[0]" target="_blank">
+                  <img
+                    [src]="'//' + employee.passPhoto[0]"
+                    alt="Image"
+                    class="employeeImage"
+                    style="height: 40px; width: 40px"
+                  />
+                </a>
+              </ng-container>
+              <ng-template #defaultImage>
+                <img
+                  src="../../../assets/images/profile/user.png"
+                  alt="Default Image"
+                  class="employeeImage"
+                  style="height: 40px; width: 40px"
+                />
+              </ng-template>
+            </span>
+            <b>
+              <span *ngIf="employee.employeeName" class="table-column-data">
+                {{ employee.employeeName | capitalizeFirst }}
+              </span>
+            </b>
+          </div>
+        </td>
+        <td>{{ countAttendanceStatus(employee.employeeId, "Present") }}</td>
+        <td>{{ countAttendanceStatus(employee.employeeId, "Half-day") }}</td>
+        <td>{{ countAttendanceStatus(employee.employeeId, "Late") }}</td>
+        <td>{{ countAttendanceStatus(employee.employeeId, "Absent") }}</td>
+
+        <ng-container *ngFor="let date of monthDates">
+          <td *ngIf="isAttendanceMatched(employee.employeeId, date)">
+            <ng-container
+              [ngSwitch]="getAttendanceForDate(employee.employeeId, date)"
+            >
+              <i
+                *ngSwitchCase="'Present'"
+                pTooltip="Present"
+                class="fa fa-check-circle text-success"
+                title="Present"
+              ></i>
+              <i
+                *ngSwitchCase="'Absent'"
+                pTooltip="Absent"
+                class="fa fa-circle-xmark text-danger"
+                title="Absent"
+              ></i>
+              <ng-container *ngSwitchCase="'Half-day'">
+                <i
+                  pTooltip="{{
+                    getCheckinTimeCheckOutTime(employee.employeeId, date)
+                  }}"
+                  pTooltipPosition="top"
+                  class="fa fa-circle-half-stroke text-warning"
+                  title="Half-day"
+                ></i>
+              </ng-container>
+              <ng-container *ngSwitchCase="'Late'">
+                <i
+                  pTooltip="{{
+                    getCheckinTimeCheckOutTime(employee.employeeId, date)
+                  }}"
+                  pTooltipPosition="top"
+                  class="fa fa-circle-exclamation text-primary"
+                  title="Late"
+                ></i>
+              </ng-container>
+              <span *ngSwitchDefault>{{
+                getAttendanceForDate(employee.employeeId, date)
+              }}</span>
+            </ng-container>
+          </td>
+          <td *ngIf="!isAttendanceMatched(employee.employeeId, date)">
+            <i
+              pTooltip="Holiday"
+              class="fa fa-star text-muted"
+              title="Holiday"
+            ></i>
+          </td>
+        </ng-container>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr class="text-center">
+        <td colspan="10" class="text-center fw-bold">
+          <img
+            src="../../../assets/images/menu/nodata.gif"
+            width="200"
+            height="200"
+          />
+          <p>No Employees Found</p>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+<div class="status-legend m-3">
+  <u>Note:</u>
+  <i class="fa fa-star text-muted" title="Holiday"></i> Holiday |
+  <i class="fa fa-check-circle text-success" title="Present"></i> Present |
+  <i class="fa fa-circle-half-stroke text-warning" title="Half-day"></i>
+  Half-Day |
+  <i class="fa fa-circle-exclamation text-primary" title="Late"></i> Late |
+  <i class="fa fa-circle-xmark text-danger" title="Absent"></i> Absent
+</div>
+<footer class="p-2 text-center text-lg-start mt-3" style="color: #878a99">
+  <div class="text-center mb-3 fw-bold">
+    © 2024 <span style="color: #1e4079">The</span>&nbsp;<b
+      style="color: #51c297"
+      >Fintalk</b
+    >. | All Rights Reserved
+  </div>
+</footer>
