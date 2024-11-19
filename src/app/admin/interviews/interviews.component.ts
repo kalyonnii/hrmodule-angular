@@ -19,6 +19,8 @@ export class InterviewsComponent implements OnInit {
   userDetails: any;
   appliedFilter: {};
   filterConfig: any[] = [];
+  selectedInterviewDetails: any = null;
+  isDialogVisible = false;
   searchFilter: any = {};
   interviews: any = [];
   candidateNameToSearch: any;
@@ -280,7 +282,11 @@ export class InterviewsComponent implements OnInit {
   }
   actionItems(interview: any): MenuItem[] {
     const menuItems: any = [{ label: 'Actions', items: [] }];
-
+    menuItems[0].items.push({
+      label: 'Interview Details',
+      icon: 'fa fa-eye',
+      command: () => this.showInterviewDetails(interview),
+    });
     if (interview.interviewInternalStatus === 1) {
       menuItems[0].items.push({
         label: 'Slected',
@@ -309,7 +315,7 @@ export class InterviewsComponent implements OnInit {
       menuItems[0].items.push({
         label: 'Send To Employee',
         icon: 'fa fa-right-to-bracket',
-        command: () => this.sendToEmployee(interview),
+        command: () => this.confirmSendtoEmployee(interview),
       });
 
       menuItems[0].items.push({
@@ -359,6 +365,15 @@ export class InterviewsComponent implements OnInit {
       }
     }
     return menuItems;
+  }
+
+  showInterviewDetails(user: any): void {
+    this.selectedInterviewDetails = user;
+    this.isDialogVisible = true;
+  }
+  clearDialog(): void {
+    this.selectedInterviewDetails = null;
+    this.isDialogVisible = false;
   }
 
   inputValueChangeEvent(dataType, value) {
@@ -477,6 +492,18 @@ export class InterviewsComponent implements OnInit {
       },
     });
   }
+
+  confirmSendtoEmployee(interview) {
+    this.confirmationService.confirm({
+      message:
+        'Are you sure you want to convert this candidate into an employee?',
+      header: 'Confirm Employment Conversion',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.sendToEmployee(interview);
+      },
+    });
+  }
   deleteInterview(interviewId) {
     this.loading = true;
     this.employeesService.deleteInterview(interviewId).subscribe(
@@ -534,7 +561,6 @@ export class InterviewsComponent implements OnInit {
       (response) => {
         this.interviews = response;
         console.log('Interviews', this.interviews);
-
         this.loading = false;
       },
       (error: any) => {
@@ -583,6 +609,10 @@ export class InterviewsComponent implements OnInit {
       );
     }
     return '';
+  }
+
+  getFileIcon(fileType) {
+    return this.employeesService.getFileIcon(fileType);
   }
 
   getStatusColor(status: string): {

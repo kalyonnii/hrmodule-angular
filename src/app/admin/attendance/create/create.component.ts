@@ -42,7 +42,6 @@ export class CreateComponent {
         this.attendanceId = params['id'];
         this.actionType = 'update';
         this.heading = 'Update Attendance';
-
         this.getAttendanceById(this.attendanceId)
           .then((data) => {
             if (data) {
@@ -138,8 +137,8 @@ export class CreateComponent {
     );
   }
   setDefaultAttendanceData() {
-    const defaultCheckInTime = this.formatTime(new Date(0, 0, 0, 10, 5)); // 10:05 AM
-    const defaultCheckOutTime = this.formatTime(new Date(0, 0, 0, 18, 30)); // 6:30 PM
+    const defaultCheckInTime = this.formatTime(new Date(0, 0, 0, 10, 5));
+    const defaultCheckOutTime = this.formatTime(new Date(0, 0, 0, 18, 30));
     console.log(this.actionType);
     if (this.actionType === 'create') {
       this.employeeDetails = this.employees.map((employee) => ({
@@ -150,7 +149,6 @@ export class CreateComponent {
         checkInTime: defaultCheckInTime,
         checkOutTime: defaultCheckOutTime,
       }));
-
       console.log(
         'Employee Details with Default Data for Create:',
         this.employeeDetails
@@ -186,7 +184,6 @@ export class CreateComponent {
     console.log(
       `Attendance status for employee ID ${employee.employeeId} updated to ${employee.status}`
     );
-
     if (employee.status === 'Absent') {
       employee.checkInTime = '';
       employee.checkOutTime = '';

@@ -22,6 +22,7 @@ export class CreateComponent {
   loading: any;
   breadCrumbItems: any = [];
   moment: any;
+  attendance: any = [];
   formFields: any = [];
   holidays: any = [];
   payslipId: any;
@@ -33,6 +34,7 @@ export class CreateComponent {
   heading: any = 'Create Payroll';
   actionType: any = 'create';
 
+  presentDaysCount = 0;
   constructor(
     private location: Location,
     private routingService: RoutingService,
@@ -65,7 +67,6 @@ export class CreateComponent {
               paidDaysWithoutDLOP: this.payrollData.paidDaysWithoutDLOP,
               paidDaysWithDLOP: this.payrollData.paidDaysWithDLOP,
               lopOption: this.payrollData.lopOption,
-
               casualDays: this.payrollData.casualDays,
               totalAbsentDays: this.payrollData.totalAbsentDays,
               doubleLopDays: this.payrollData.doubleLopDays,
@@ -124,7 +125,6 @@ export class CreateComponent {
         const selectedEmployee = this.employees.find(
           (employee) => employee.employeeName === selectedName
         );
-
         if (selectedEmployee) {
           this.payrollForm.patchValue({
             employeeId: selectedEmployee.employeeId,
@@ -135,23 +135,19 @@ export class CreateComponent {
             ifscCode: selectedEmployee.ifscCode,
             bankBranch: selectedEmployee.bankBranch,
           });
-
           const missingFields: any = [];
           if (!selectedEmployee.accountNumber)
             missingFields.push('Account Number');
           if (!selectedEmployee.ifscCode) missingFields.push('IFSC Code');
           if (!selectedEmployee.bankBranch) missingFields.push('Bank Branch');
-
           if (!selectedEmployee.customEmployeeId)
             missingFields.push('Custom Employee Id');
           if (!selectedEmployee.joiningDate) missingFields.push('Joining Date');
           if (!selectedEmployee.salary) missingFields.push('Salary');
-
           if (missingFields.length > 0) {
             const missingFieldsMessage = `The following fields are missing: ${missingFields.join(
               ', '
             )}`;
-
             this.confirmationService.confirm({
               message: `${missingFieldsMessage}. Please update your information.`,
               header: 'Incomplete Employee Details',
@@ -164,11 +160,14 @@ export class CreateComponent {
           }
         }
       });
-
-    this.payrollForm.get('absentDays')?.valueChanges.subscribe((absentDays) => {
-      this.handleAbsentDays(absentDays);
-    });
-
+    this.payrollForm
+      .get('payrollMonth')
+      ?.valueChanges.subscribe((payrollMonth) =>
+        this.calculateWorkingDays(payrollMonth)
+      );
+    // this.payrollForm.get('absentDays')?.valueChanges.subscribe((absentDays) => {
+    //   this.handleAbsentDays(absentDays);
+    // });
     this.payrollForm
       .get('joiningDate')
       ?.valueChanges.subscribe((joiningDate) => {
@@ -176,15 +175,33 @@ export class CreateComponent {
           this.handleCasualDays(joiningDate);
         }
       });
-    this.payrollForm
-      .get('workingDays')
-      ?.valueChanges.subscribe(() => this.calculatedaySalary());
+    this.payrollForm.get('employeeId')?.valueChanges.subscribe((employeeId) => {
+      if (employeeId) {
+        this.handlePresentDays();
+      }
+    });
+    //   this.payrollForm
+    //     .get('workingDays')
+    //     ?.valueChanges.subscribe(() => this.calculatedaySalary());
+  }
 
-    this.payrollForm
-      .get('payrollMonth')
-      ?.valueChanges.subscribe((payrollMonth) =>
-        this.calculateWorkingDays(payrollMonth)
+  getAttendance(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.loading = true;
+      this.employeesService.getAttendance().subscribe(
+        (response) => {
+          this.attendance = response;
+          console.log('Attendance:', this.attendance);
+          this.loading = false;
+          resolve();
+        },
+        (error: any) => {
+          this.loading = false;
+          this.toastService.showError(error);
+          reject(error);
+        }
       );
+    });
   }
 
   updateEmployee(employeeId) {
@@ -214,6 +231,71 @@ export class CreateComponent {
     });
   }
 
+  handlePresentDays(): void {
+    const payrollMonth = this.payrollForm.get('payrollMonth')?.value;
+    // const workingDays = this.payrollForm.get('workingDays')?.value;
+
+    const employeeId = this.payrollForm.get('employeeId')?.value;
+    const payroll = new Date(this.moment(payrollMonth, 'MM/YYYY').toDate());
+    this.loading = true;
+
+    this.getAttendance()
+      .then(() => {
+        const filteredAttendance = this.attendance.filter((record) => {
+          const attendanceDate = new Date(record.attendanceDate);
+          return (
+            attendanceDate.getMonth() === payroll.getMonth() &&
+            attendanceDate.getFullYear() === payroll.getFullYear()
+          );
+        });
+
+        console.log(filteredAttendance);
+        const presentDays = filteredAttendance.reduce((count, record) => {
+          const employeeRecord = record.attendanceData.find(
+            (emp) => emp.employeeId === employeeId
+          );
+
+          if (employeeRecord) {
+            if (
+              employeeRecord.status === 'Present' ||
+              employeeRecord.status === 'Late'
+            ) {
+              return count + 1;
+            }
+            if (employeeRecord.status === 'Half-day') {
+              return count + 0.5;
+            }
+          }
+          return count;
+        }, 0);
+        // const absentDays = filteredAttendance.reduce((count, record) => {
+        //   const employeeRecord = record.attendanceData.find(
+        //     (emp) => emp.employeeId === employeeId && emp.status === 'Absent'
+        //   );
+        //   return employeeRecord ? count + 1 : count;
+        // }, 0);
+
+        const lateDays = filteredAttendance.reduce((count, record) => {
+          const employeeRecord = record.attendanceData.find(
+            (emp) => emp.employeeId === employeeId && emp.status === 'Late'
+          );
+          return employeeRecord ? count + 1 : count;
+        }, 0);
+        const lateLopDays = Math.floor(lateDays / 3);
+        this.payrollForm.patchValue({
+          presentDays: presentDays,
+
+          lateLopDays: lateLopDays,
+        });
+      })
+      .catch((error) => {
+        console.error('Error retrieving attendance data:', error);
+      })
+      .finally(() => {
+        this.loading = false;
+      });
+  }
+
   calculateWorkingDays(payrollMonth: string): void {
     if (!payrollMonth) {
       return;
@@ -230,7 +312,6 @@ export class CreateComponent {
         workingDaysCount++;
       }
     }
-    console.log(`Working days in ${payrollMonth}: ${workingDaysCount}`);
     this.payrollForm.get('workingDays')?.setValue(workingDaysCount);
   }
 
@@ -254,26 +335,26 @@ export class CreateComponent {
     );
   }
 
-  handleAbsentDays(absentDays: number | null) {
-    const casualDays = this.payrollForm.get('casualDays')?.value;
-    const totalAbsentDays =
-      casualDays > 0 && absentDays ? absentDays - casualDays : absentDays || 0;
-    this.payrollForm.patchValue({
-      casualDays,
-      totalAbsentDays,
-    });
-  }
+  // handleAbsentDays(absentDays: number | null) {
+  //   const casualDays = this.payrollForm.get('casualDays')?.value;
+  //   const totalAbsentDays =
+  //     casualDays > 0 && absentDays ? absentDays - casualDays : absentDays || 0;
+  //   this.payrollForm.patchValue({
+  //     casualDays,
+  //     totalAbsentDays,
+  //   });
+  // }
 
-  calculatedaySalary() {
-    const workingDays = this.payrollForm.get('workingDays')?.value;
-    const salary = this.payrollForm.get('salary')?.value;
-    if (salary && workingDays > 0) {
-      const daySalary = salary / workingDays;
-      this.payrollForm.patchValue({
-        daySalary: daySalary.toFixed(),
-      });
-    }
-  }
+  // calculatedaySalary() {
+  //   const workingDays = this.payrollForm.get('workingDays')?.value;
+  //   const salary = this.payrollForm.get('salary')?.value;
+  //   if (salary && workingDays > 0) {
+  //     const daySalary = salary / workingDays;
+  //     this.payrollForm.patchValue({
+  //       daySalary: daySalary.toFixed(),
+  //     });
+  //   }
+  // }
 
   getEmployees(filter = {}) {
     this.loading = true;
@@ -351,24 +432,24 @@ export class CreateComponent {
         type: 'number',
         required: true,
       },
-      {
-        label: 'Absent Days',
-        controlName: 'absentDays',
-        type: 'number',
-        required: true,
-      },
+      // {
+      //   label: 'Absent Days',
+      //   controlName: 'absentDays',
+      //   type: 'number',
+      //   required: true,
+      // },
       {
         label: 'Casual Days',
         controlName: 'casualDays',
         type: 'number',
         required: true,
       },
-      {
-        label: 'Total Absent Days',
-        controlName: 'totalAbsentDays',
-        type: 'number',
-        required: true,
-      },
+      // {
+      //   label: 'Total Absent Days',
+      //   controlName: 'totalAbsentDays',
+      //   type: 'number',
+      //   required: true,
+      // },
       {
         label: 'Double LOP Days',
         controlName: 'doubleLopDays',
@@ -391,7 +472,7 @@ export class CreateComponent {
         label: 'Petrol Expenses',
         controlName: 'petrolExpenses',
         type: 'number',
-        required: false,
+        required: true,
       },
     ];
   }
@@ -405,11 +486,11 @@ export class CreateComponent {
       joiningDate: ['', Validators.required],
       workingDays: ['', Validators.required],
       presentDays: ['', Validators.required],
-      absentDays: ['', Validators.required],
+      absentDays: [''],
       paidDaysWithoutDLOP: [''],
       paidDaysWithDLOP: [''],
       casualDays: ['', Validators.required],
-      totalAbsentDays: ['', Validators.required],
+      totalAbsentDays: [''],
       doubleLopDays: ['', Validators.required],
       lateLopDays: ['', Validators.required],
       totalDeductedDaysWithoutDLOP: [''],
@@ -439,25 +520,27 @@ export class CreateComponent {
       joiningDate,
       workingDays,
       presentDays,
-      absentDays,
+      // absentDays,
       casualDays,
-      totalAbsentDays,
+      // totalAbsentDays,
       doubleLopDays,
       lateLopDays,
       salary,
-
       petrolExpenses,
       accountNumber,
       ifscCode,
       bankBranch,
       lopOption,
     } = formValues;
-
     const monthFormatted = this.moment(payrollMonth, [
       'MM-YYYY',
       'YYYY-MM-DD',
       'MM/YYYY',
     ]).format('MM/YYYY');
+    const absentDays =
+      presentDays > 0 && workingDays > 0 ? workingDays - presentDays : 0;
+    const totalAbsentDays =
+      casualDays > 0 && absentDays ? absentDays - casualDays : absentDays || 0;
     const daySalary = Number((salary / workingDays).toFixed());
     const absentAndLate =
       absentDays > 0 || lateLopDays > 0
@@ -479,25 +562,20 @@ export class CreateComponent {
       totalDeductedDaysWithoutDLOP === 0 ? salary : baseNetSalaryWithoutDLOP;
     const netSalaryWithDoubleLop =
       totalDeductedDaysWithDLOP === 0 ? salary : baseNetSalaryWithDLOP;
-
     const deductionsWithoutDLOP =
       totalDeductedDaysWithoutDLOP === 0 ? 0 : baseDeductionsWithoutDLOP;
     const deductionsWithDLOP =
       totalDeductedDaysWithDLOP === 0 ? 0 : baseDeductionsWithDLOP;
-
     const netSalary =
       lopOption === 'withoutDoubleLOP'
         ? netSalaryWithoutDoubleLop + petrolExpenses
         : netSalaryWithDoubleLop + petrolExpenses;
-
     const deductions =
       lopOption === 'withoutDoubleLOP'
         ? deductionsWithoutDLOP
         : deductionsWithDLOP;
-
     const paidDays =
       lopOption === 'withoutDoubleLOP' ? paidDaysWithoutDLOP : paidDaysWithDLOP;
-
     const formData = {
       payrollMonth: monthFormatted,
       employeeName,
@@ -530,7 +608,6 @@ export class CreateComponent {
       deductions,
       paidDays,
     };
-
     console.log('formData', formData);
     if (this.actionType == 'create') {
       this.loading = true;

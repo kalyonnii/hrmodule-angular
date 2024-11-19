@@ -128,6 +128,11 @@ export class EmployeesComponent implements OnInit {
       }
     } else if (employee.employeeInternalStatus === 2) {
       menuItems[0].items.push({
+        label: 'Profile',
+        icon: 'fa fa-eye',
+        command: () => this.employeeProfile(employee.employeeId),
+      });
+      menuItems[0].items.push({
         label: 'Active',
         icon: 'fa fa-right-to-bracket',
         command: () => this.activateEmployee(employee),
@@ -624,6 +629,7 @@ export class EmployeesComponent implements OnInit {
       (response) => {
         this.employees = response;
         console.log('employees', this.employees);
+        // window.dispatchEvent(new Event('resize'));
         this.loading = false;
       },
       (error: any) => {

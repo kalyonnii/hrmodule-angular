@@ -12,6 +12,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PreloaderModule } from 'src/app/preloader/preloader.module';
 import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
+import { DialogModule } from 'primeng/dialog';
+import { MenuModule } from 'primeng/menu';
 
 const routes: Routes = [
   { path: '', component: PayrollComponent },
@@ -38,6 +40,8 @@ const routes: Routes = [
     BreadcrumbModule,
     FormsModule,
     InputTextModule,
+    MenuModule,
+    DialogModule,
     TableModule,
     CapitalizeFirstPipe,
     FilterModule,

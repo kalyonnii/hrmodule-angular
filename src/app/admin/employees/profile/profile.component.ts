@@ -233,11 +233,12 @@ export class ProfileComponent implements OnInit {
       anyDues: ['', Validators.compose([Validators.required])],
     });
   }
-  sendEmail() {
+  sendEmail(employees) {
     this.loading = true;
     const emailData = {
       subject: 'Termination Letter',
-      body: 'Ireggular Behaviour',
+      body: employees?.terminationReason,
+      employeeName: employees.employeeName,
     };
 
     this.employeesService.sendTerminationmail(emailData).subscribe(
@@ -271,6 +272,8 @@ export class ProfileComponent implements OnInit {
       experienceLetter: this.getFileData('experienceLetter'),
       terminationLetter: this.getFileData('terminationLetter'),
     };
+
+    // this.sendEmail(formData);
 
     console.log('formData', formData);
     this.loading = true;

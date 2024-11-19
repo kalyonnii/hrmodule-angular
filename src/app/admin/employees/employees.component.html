@@ -33,7 +33,7 @@
   <div class="row">
     <div class="d-flex flex-wrap justify-content-start">
       <ng-container *ngFor="let item of countsAnalytics">
-        <div class="col-lg-3 col-md-3 col-sm-6 col-6 mt-2">
+        <div class="col-lg-3 col-md-3 col-sm-6 col-12 mt-2">
           <div class="card p-3 shadow-sm pointer-cursor m-2 cards">
             <div class="d-flex">
               <div
@@ -73,7 +73,7 @@
     (onLazyLoad)="loadEmployees($event)"
     dataKey="id"
     [showCurrentPageReport]="true"
-    [rowsPerPageOptions]="[10, 25, 50]"
+    [rowsPerPageOptions]="[5, 10, 25, 50]"
     [paginator]="true"
     [rows]="10"
     class="p-datatable-striped table"
@@ -114,22 +114,22 @@
             ></button>
           </div>
         </div>
-        <div class="col-md-4 mt-1 mb-1 no-padding-small"></div>
+        <div class="col-md-4 mt-1 mb-1 no-padding-small">
+          <p-dropdown
+            styleClass="text-left"
+            [style]="{ width: '100%' }"
+            [options]="employeeInternalStatusList"
+            (onChange)="statusChange($event)"
+            [dropdownIcon]="'fa fa-caret-down'"
+            [(ngModel)]="selectedEmployeeStatus"
+            optionLabel="displayName"
+            dataKey="name"
+          >
+          </p-dropdown>
+        </div>
         <div class="col-md-4 mt-1 mb-1 no-padding-small text-right">
           <div class="d-flex">
-            <div class="flex-grow-1 me-2">
-              <p-dropdown
-                styleClass="text-left"
-                [style]="{ width: '100%' }"
-                [options]="employeeInternalStatusList"
-                (onChange)="statusChange($event)"
-                [dropdownIcon]="'fa fa-caret-down'"
-                [(ngModel)]="selectedEmployeeStatus"
-                optionLabel="displayName"
-                dataKey="name"
-              >
-              </p-dropdown>
-            </div>
+            <div class="flex-grow-1 me-2"></div>
             <div class="d-flex align-items-center pointer-cursor">
               <app-filter
                 [position]="'right'"
@@ -151,7 +151,7 @@
                 icon="fa fa-plus"
                 (click)="createEmployee()"
               >
-                &nbsp;Add
+                &nbsp;Add Employee
               </button>
             </div>
           </div>

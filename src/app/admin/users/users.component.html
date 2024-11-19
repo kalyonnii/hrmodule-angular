@@ -30,6 +30,128 @@
   <app-preloader></app-preloader>
 </div>
 
+<p-dialog
+  [(visible)]="isDialogVisible"
+  [modal]="true"
+  [closable]="true"
+  [responsive]="true"
+  class="dialogbox"
+  [style]="{ width: '50vw' }"
+  header="User Details"
+  (onHide)="clearDialog()"
+>
+  <div *ngIf="selectedUser" class="text-capitalize">
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-id-badge"></i></span>
+      <div class="label d-flex justify-content-between">
+        User Id<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{ selectedUser.userId ? selectedUser.userId : "-" }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-user-alt"></i></span>
+      <div class="label d-flex justify-content-between">
+        First Name<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{
+          selectedUser.firstName
+            ? (selectedUser.firstName | capitalizeFirst)
+            : "-"
+        }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-user-tie"></i></span>
+      <div class="label d-flex justify-content-between">
+        Last Name<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{
+          selectedUser.lastName
+            ? (selectedUser.lastName | capitalizeFirst)
+            : "-"
+        }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-user-circle"></i></span>
+      <div class="label d-flex justify-content-between">
+        Username<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{
+          selectedUser.username
+            ? (selectedUser.username | capitalizeFirst)
+            : "-"
+        }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-building"></i></span>
+      <div class="label d-flex justify-content-between">
+        Designation<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        <span
+          class="designationstatus"
+          [ngStyle]="{
+            color: getStatusColor(selectedUser.designationName).textColor,
+            'background-color': getStatusColor(selectedUser.designationName)
+              .backgroundColor
+          }"
+        >
+          {{
+            selectedUser.designationName ? selectedUser.designationName : "-"
+          }}</span
+        >
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-phone"></i></span>
+      <div class="label d-flex justify-content-between">
+        Phone Number<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{ selectedUser.phoneNumber ? selectedUser.phoneNumber : "-" }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-envelope"></i></span>
+      <div class="label d-flex justify-content-between">
+        Email Address<b>:&nbsp;</b>
+      </div>
+      <div class="value text-lowercase">
+        {{ selectedUser.email ? selectedUser.email : "-" }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-user"></i></span>
+      <div class="label d-flex justify-content-between">
+        Created By<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{
+          selectedUser.createdBy
+            ? (selectedUser.createdBy | capitalizeFirst)
+            : "-"
+        }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-calendar-alt"></i></span>
+      <div class="label d-flex justify-content-between">
+        Created On<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{ selectedUser.createdOn ? (selectedUser.createdOn | date) : "-" }}
+      </div>
+    </div>
+  </div>
+</p-dialog>
+
 <div class="text-capitalize table-card">
   <p-table
     #usersTable
@@ -106,7 +228,7 @@
                 icon="fa fa-plus"
                 (click)="createUser()"
               >
-                &nbsp;Add
+                &nbsp;Add User
               </button>
             </div>
           </div>
@@ -180,8 +302,17 @@
                 pButton
                 pRipple
                 type="button"
+                pTooltip="View"
+                class="p-button-info me-2 view-btn"
+                icon="fa fa-eye"
+                (click)="showUserDetails(user)"
+              ></button>
+              <button
+                pButton
+                pRipple
+                type="button"
                 pTooltip="Update"
-                class="p-button-info me-2 update-btn"
+                class="p-button-success me-2 update-btn"
                 icon="fa fa-pen-to-square"
                 (click)="updateUser(user.userId)"
               ></button>

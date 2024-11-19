@@ -17,10 +17,12 @@
 }
 .cards {
   cursor: pointer;
+  border-left: 5px solid #31425e !important;
 }
 .count-title {
   font-size: 25px !important;
   font-weight: bold !important;
+  color: #31425e;
 }
 
 .count-sub-title {

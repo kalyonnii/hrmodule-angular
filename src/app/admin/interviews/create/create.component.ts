@@ -311,22 +311,23 @@ export class CreateComponent {
       postponedDate: formValues.postponedDate
         ? this.moment(formValues.postponedDate).format('YYYY-MM-DD')
         : null,
+      resume: this.getFileData('resume'),
     };
-    formData['resume'] = [];
-    if (this.selectedFiles['resume'] && this.selectedFiles['resume']['links']) {
-      for (let i = 0; i < this.selectedFiles['resume']['links'].length; i++) {
-        formData['resume'].push(this.selectedFiles['resume']['links'][i]);
-      }
-      for (
-        let i = 0;
-        i < this.selectedFiles['resume']['uploadedFiles'].length;
-        i++
-      ) {
-        formData['resume'].push(
-          this.selectedFiles['resume']['uploadedFiles'][i]
-        );
-      }
-    }
+    // formData['resume'] = [];
+    // if (this.selectedFiles['resume'] && this.selectedFiles['resume']['links']) {
+    //   for (let i = 0; i < this.selectedFiles['resume']['links'].length; i++) {
+    //     formData['resume'].push(this.selectedFiles['resume']['links'][i]);
+    //   }
+    //   for (
+    //     let i = 0;
+    //     i < this.selectedFiles['resume']['uploadedFiles'].length;
+    //     i++
+    //   ) {
+    //     formData['resume'].push(
+    //       this.selectedFiles['resume']['uploadedFiles'][i]
+    //     );
+    //   }
+    // }
     console.log('formData', formData);
     if (this.actionType == 'create') {
       this.loading = true;
@@ -363,6 +364,16 @@ export class CreateComponent {
           }
         );
     }
+  }
+
+  private getFileData(fileType: string): any[] | null {
+    if (this.selectedFiles[fileType]) {
+      const { links = [], uploadedFiles = [] } = this.selectedFiles[fileType];
+      if (links.length > 0 || uploadedFiles.length > 0) {
+        return [...links, ...uploadedFiles];
+      }
+    }
+    return null;
   }
 
   getInterviewById(filter = {}) {

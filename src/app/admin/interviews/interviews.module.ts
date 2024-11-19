@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { FilterModule } from 'src/app/filter/filter.module';
 import { InputTextModule } from 'primeng/inputtext';
+import { DialogModule } from 'primeng/dialog';
 
 const routes: Routes = [
   { path: '', component: InterviewsComponent },
@@ -36,6 +37,7 @@ const routes: Routes = [
     TableModule,
     MenuModule,
     FormsModule,
+    DialogModule,
     CapitalizeFirstPipe,
     DropdownModule,
     ButtonModule,

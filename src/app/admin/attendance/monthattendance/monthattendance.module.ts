@@ -8,6 +8,7 @@ import { TableModule } from 'primeng/table';
 import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
 import { CalendarModule } from 'primeng/calendar';
 import { FormsModule } from '@angular/forms';
+import { InputTextModule } from 'primeng/inputtext';
 
 const routes: Routes = [{ path: '', component: MonthattendanceComponent }];
 
@@ -19,6 +20,7 @@ const routes: Routes = [{ path: '', component: MonthattendanceComponent }];
     CapitalizeFirstPipe,
     TableModule,
     FormsModule,
+    InputTextModule,
     CalendarModule,
     PreloaderModule,
     [RouterModule.forChild(routes)],

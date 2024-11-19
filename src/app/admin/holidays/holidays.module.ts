@@ -6,7 +6,6 @@ import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { TooltipModule } from 'primeng/tooltip';
 import { PreloaderModule } from 'src/app/preloader/preloader.module';
@@ -38,7 +37,6 @@ const routes: Routes = [
     TableModule,
     DropdownModule,
     TooltipModule,
-    ConfirmDialogModule,
     PreloaderModule,
     InputTextModule,
     FormsModule,
@@ -46,6 +44,6 @@ const routes: Routes = [
     FilterModule,
     [RouterModule.forChild(routes)],
   ],
-  providers: [ConfirmationService],
+
 })
 export class HolidaysModule {}

@@ -73,7 +73,7 @@ export class AttendanceComponent implements OnInit {
       this.applyFilters(searchFilter);
     } else {
       this.searchFilter = {};
-      this.loadAttendance(event);
+      this.loadAttendance(this.currentTableEvent);
     }
   }
 

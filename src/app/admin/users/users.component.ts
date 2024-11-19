@@ -16,6 +16,8 @@ export class UsersComponent implements OnInit {
   currentTableEvent: any;
   userNameToSearch: any;
   totalUsersCount: any = 0;
+  selectedUser: any = null;
+  isDialogVisible = false;
   loading: any;
   appliedFilter: {};
   searchFilter: any = {};
@@ -50,6 +52,14 @@ export class UsersComponent implements OnInit {
     this.setFilterConfig();
   }
 
+  showUserDetails(user: any): void {
+    this.selectedUser = user;
+    this.isDialogVisible = true;
+  }
+  clearDialog(): void {
+    this.selectedUser = null;
+    this.isDialogVisible = false;
+  }
   setFilterConfig() {
     this.filterConfig = [
       {

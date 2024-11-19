@@ -12,9 +12,13 @@ import { DateTimeProcessorService } from 'src/app/services/date-time-processor.s
 })
 export class MonthattendanceComponent implements OnInit {
   breadCrumbItems: any = [];
+  searchFilter: any = {};
   version = projectConstantsLocal.VERSION_DESKTOP;
   currentTableEvent: any;
+  employeeNameToSearch: any;
   totalEmployeesCount: number = 0;
+  filteredEmployees: any[] = [];
+
   employees: any[] = [];
   selectedDate: Date;
   moment: any;
@@ -51,7 +55,7 @@ export class MonthattendanceComponent implements OnInit {
   ngOnInit(): void {}
 
   exportToExcel() {
-    const exportData = this.employees.map((employee) => {
+    const exportData = this.filteredEmployees.map((employee) => {
       const row: any = {
         'Employee ID': employee.employeeId,
         'Employee Name': employee.employeeName,
@@ -69,7 +73,6 @@ export class MonthattendanceComponent implements OnInit {
         );
 
         if (!attendanceEntry) {
-          // Set "Holiday" if there is no attendance entry for the date
           row[dateStr] = 'H';
         } else {
           const employeeData = attendanceEntry?.attendanceData.find(
@@ -78,7 +81,6 @@ export class MonthattendanceComponent implements OnInit {
 
           let status = employeeData?.status || '-';
 
-          // If status is "Late" or "Half-day," include check-in and check-out times
           if (status === 'Late' || status === 'Half-day') {
             const checkInTime = employeeData?.checkInTime || '-';
             const checkOutTime = employeeData?.checkOutTime || '-';
@@ -87,7 +89,6 @@ export class MonthattendanceComponent implements OnInit {
 
           row[dateStr] = status;
 
-          // Count each status
           switch (employeeData?.status) {
             case 'Present':
               presentCount++;
@@ -105,7 +106,6 @@ export class MonthattendanceComponent implements OnInit {
         }
       });
 
-      // Add total counts to the row
       row['Total Present'] = presentCount;
       row['Total Absent'] = absentCount;
       row['Total Late'] = lateCount;
@@ -114,12 +114,10 @@ export class MonthattendanceComponent implements OnInit {
       return row;
     });
 
-    // Create worksheet and workbook
     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Attendance Data');
 
-    // Export to Excel file
     XLSX.writeFile(wb, `Attendance_${this.selectedDate}.xlsx`);
   }
 
@@ -146,19 +144,33 @@ export class MonthattendanceComponent implements OnInit {
     return result;
   }
 
+  isAttendanceMatchedforemployee(employeeId: number, date: Date): boolean {
+    const formattedDate = this.moment(date).format('YYYY-MM-DD');
+    const attendanceEntry = this.attendance.find(
+      (entry) => entry.attendanceDate == formattedDate
+    );
+    return attendanceEntry?.attendanceData?.some(
+      (data) => data.employeeId == employeeId
+    );
+  }
+
+  isEmployeePresent(employeeId: number): boolean {
+    return this.attendance.some((entry) =>
+      entry?.attendanceData?.some((data) => data.employeeId === employeeId)
+    );
+  }
+
   getAttendanceForDate(employeeId: number, date: Date): string {
     const formattedDate = this.moment(date).format('YYYY-MM-DD');
     const attendanceEntry = this.attendance.find(
       (entry) => entry.attendanceDate == formattedDate
     );
-    // console.log('Attendance Entry:', attendanceEntry);
     if (!attendanceEntry) {
       return 'No Data';
     }
     const employeeAttendance = attendanceEntry.attendanceData.find(
       (data) => data.employeeId == employeeId
     );
-    // console.log('Employee Attendance:', employeeAttendance);
     return employeeAttendance ? employeeAttendance.status : '-';
   }
   getCheckinTimeCheckOutTime(employeeId: number, date: Date): string {
@@ -192,26 +204,45 @@ export class MonthattendanceComponent implements OnInit {
     }
   }
 
-  getAttendance() {
-    this.loading = true;
-    this.employeesService.getAttendance().subscribe(
-      (response) => {
-        this.attendance = response;
-        console.log('attendance', this.attendance);
-        this.loading = false;
-      },
-      (error: any) => {
-        this.loading = false;
-        this.toastService.showError(error);
-      }
-    );
+  // getAttendance() {
+  //   this.loading = true;
+  //   this.employeesService.getAttendance().subscribe(
+  //     (response) => {
+  //       this.attendance = response;
+  //       console.log('attendance', this.attendance);
+  //       this.loading = false;
+  //     },
+  //     (error: any) => {
+  //       this.loading = false;
+  //       this.toastService.showError(error);
+  //     }
+  //   );
+  // }
+  getAttendance(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.loading = true;
+      this.employeesService.getAttendance().subscribe(
+        (response) => {
+          this.attendance = response;
+          console.log('Attendance:', this.attendance);
+          this.loading = false;
+          resolve();
+        },
+        (error: any) => {
+          this.loading = false;
+          this.toastService.showError(error);
+          reject(error);
+        }
+      );
+    });
   }
+
   loadEmployees(event) {
     this.currentTableEvent = event;
     console.log(event.first);
     let api_filter = this.employeesService.setFiltersFromPrimeTable(event);
-    api_filter['employeeInternalStatus-eq'] = 1;
-    api_filter = Object.assign({}, api_filter);
+    // api_filter['employeeInternalStatus-eq'] = 1;
+    api_filter = Object.assign({}, api_filter, this.searchFilter);
     if ('from' in api_filter) {
       delete api_filter.from;
     }
@@ -232,21 +263,89 @@ export class MonthattendanceComponent implements OnInit {
       }
     );
   }
+  // getEmployees(filter = {}) {
+  //   this.loading = true;
+  //   this.employeesService.getEmployees(filter).subscribe(
+  //     (response: any) => {
+  //       this.employees = response;
+  //       console.log('Employees:', this.employees);
+  //       this.getAttendance()
+  //         .then(() => {
+  //           if (this.attendance && this.attendance.length > 0) {
+  //             this.filteredEmployees = this.employees.filter((employee) => {
+  //               const hasAttendance = this.isEmployeePresent(
+  //                 employee.employeeId
+  //               );
+  //               return hasAttendance;
+  //             });
+  //             console.log('Filtered Employees:', this.filteredEmployees);
+  //           } else {
+  //             console.log('No attendance data available');
+  //           }
+
+  //           this.loading = false;
+  //         })
+  //         .catch((error) => {
+  //           console.error('Error retrieving attendance data:', error);
+  //           this.loading = false;
+  //         });
+  //     },
+  //     (error: any) => {
+  //       this.loading = false;
+  //       this.toastService.showError(error);
+  //     }
+  //   );
+  // }
 
   getEmployees(filter = {}) {
     this.loading = true;
     this.employeesService.getEmployees(filter).subscribe(
       (response: any) => {
         this.employees = response;
-        console.log('employees', this.employees);
-        this.getAttendance();
-        this.loading = false;
+        console.log('Employees:', this.employees);
+
+        this.getAttendance()
+          .then(() => {
+            if (this.attendance && this.attendance.length > 0) {
+              this.filteredEmployees = this.employees.filter((employee) => {
+                return this.monthDates.some((date) =>
+                  this.isAttendanceMatchedforemployee(employee.employeeId, date)
+                );
+              });
+              console.log('Filtered Employees:', this.filteredEmployees);
+            } else {
+              console.log('No attendance data available');
+            }
+
+            this.loading = false;
+          })
+          .catch((error) => {
+            console.error('Error retrieving attendance data:', error);
+            this.loading = false;
+          });
       },
       (error: any) => {
         this.loading = false;
         this.toastService.showError(error);
       }
     );
+  }
+
+  filterWithEmployeeName() {
+    let searchFilter = { 'employeeName-like': this.employeeNameToSearch };
+    this.applyFilters(searchFilter);
+  }
+  applyFilters(searchFilter = {}) {
+    this.searchFilter = searchFilter;
+    console.log(this.currentTableEvent);
+    this.loadEmployees(this.currentTableEvent);
+  }
+  inputValueChangeEvent(dataType, value) {
+    if (value == '') {
+      this.searchFilter = {};
+      console.log(this.currentTableEvent);
+      this.loadEmployees(this.currentTableEvent);
+    }
   }
   goBack() {
     this.location.back();

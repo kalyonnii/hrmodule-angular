@@ -28,11 +28,251 @@
 <div *ngIf="loading">
   <app-preloader></app-preloader>
 </div>
+<p-dialog
+  [(visible)]="isDialogVisible"
+  [modal]="true"
+  [closable]="true"
+  [responsive]="true"
+  class="dialogbox"
+  [style]="{ width: '50vw' }"
+  header="Interview Details"
+  (onHide)="clearDialog()"
+>
+  <div *ngIf="selectedInterviewDetails" class="text-capitalize">
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-id-badge"></i></span>
+      <div class="label d-flex justify-content-between">
+        Interview Id<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{
+          selectedInterviewDetails.interviewId
+            ? selectedInterviewDetails.interviewId
+            : "-"
+        }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-user-alt"></i></span>
+      <div class="label d-flex justify-content-between">
+        Candidate Name<b>:&nbsp;</b>
+      </div>
+      <b
+        ><div class="value">
+          {{
+            selectedInterviewDetails.candidateName
+              ? (selectedInterviewDetails.candidateName | capitalizeFirst)
+              : "-"
+          }}
+        </div></b
+      >
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-calendar-alt"></i></span>
+      <div class="label d-flex justify-content-between">
+        Date Of Birth <b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{
+          selectedInterviewDetails.dateOfBirth
+            ? (selectedInterviewDetails.dateOfBirth | date)
+            : "-"
+        }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-phone"></i></span>
+      <div class="label d-flex justify-content-between">
+        Phone Number<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{
+          selectedInterviewDetails.primaryPhone
+            ? selectedInterviewDetails.primaryPhone
+            : "-"
+        }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-user-graduate"></i></span>
+      <div class="label d-flex justify-content-between">
+        Qualification<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{
+          selectedInterviewDetails.qualification
+            ? (selectedInterviewDetails.qualification | capitalizeFirst)
+            : "-"
+        }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-business-time"></i></span>
+      <div class="label d-flex justify-content-between">
+        Experience<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{
+          selectedInterviewDetails.experience
+            ? (selectedInterviewDetails.experience | capitalizeFirst)
+            : "-"
+        }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-location-dot"></i></span>
+      <div class="label d-flex justify-content-between">
+        Scheduled Location<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{
+          selectedInterviewDetails.scheduledLocationName
+            ? selectedInterviewDetails.scheduledLocationName
+            : "-"
+        }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-calendar-alt"></i></span>
+      <div class="label d-flex justify-content-between">
+        Scheduled Date <b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{
+          selectedInterviewDetails.scheduledDate
+            ? (selectedInterviewDetails.scheduledDate | date)
+            : "-"
+        }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-calendar-check"></i></span>
+      <div class="label d-flex justify-content-between">
+        Attended Interview? <b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{
+          selectedInterviewDetails.attendedInterviewName
+            ? selectedInterviewDetails.attendedInterviewName
+            : "-"
+        }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-calendar"></i></span>
+      <div class="label d-flex justify-content-between">
+        Postponed Date<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{
+          selectedInterviewDetails.postponedDate
+            ? (selectedInterviewDetails.postponedDate | date)
+            : "-"
+        }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-file"></i></span>
+      <div class="label d-flex justify-content-between">
+        Resume<b>:&nbsp;</b>
+      </div>
+      <div class="value m-2">
+        <div
+          *ngIf="
+            selectedInterviewDetails &&
+            selectedInterviewDetails.resume &&
+            selectedInterviewDetails.resume.length > 0
+          "
+          class="files-container"
+        >
+          <div
+            *ngFor="let file of selectedInterviewDetails.resume"
+            class="file-item"
+          >
+            <ng-container>
+              <a [href]="'//' + file" target="_blank">
+                <i
+                  [class]="getFileIcon(file.split('.').pop())"
+                  class="file-icon"
+                ></i>
+              </a>
+            </ng-container>
+          </div>
+        </div>
+        <ng-container *ngIf="selectedInterviewDetails?.resume == null"
+          >-</ng-container
+        >
+      </div>
+    </div>
+
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-comments"></i></span>
+      <div class="label d-flex justify-content-between">
+        Remarks <b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{
+          selectedInterviewDetails.remarks
+            ? (selectedInterviewDetails.remarks | capitalizeFirst)
+            : "-"
+        }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-bullseye"></i></span>
+      <div class="label d-flex justify-content-between">
+        Interview Status<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        <span
+          class="fw-bold statusdata"
+          [ngStyle]="{
+            color: getStatusColor(
+              getStatusName(selectedInterviewDetails.interviewInternalStatus)
+            ).textColor,
+            'background-color': getStatusColor(
+              getStatusName(selectedInterviewDetails.interviewInternalStatus)
+            ).backgroundColor
+          }"
+        >
+          {{ getStatusName(selectedInterviewDetails.interviewInternalStatus) }}
+        </span>
+      </div>
+    </div>
+
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-circle-user"></i></span>
+      <div class="label d-flex justify-content-between">
+        Created By<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{
+          selectedInterviewDetails.createdBy
+            ? (selectedInterviewDetails.createdBy | capitalizeFirst)
+            : "-"
+        }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-calendar-alt"></i></span>
+      <div class="label d-flex justify-content-between">
+        Created On<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{
+          selectedInterviewDetails.createdOn
+            ? (selectedInterviewDetails.createdOn | date)
+            : "-"
+        }}
+      </div>
+    </div>
+  </div>
+</p-dialog>
 <div class="container-fluid">
   <div class="row">
     <div class="d-flex flex-wrap justify-content-start">
       <ng-container *ngFor="let item of countsAnalytics">
-        <div class="col-lg-3 col-md-3 col-sm-6 col-6 mt-2">
+        <div class="col-lg-3 col-md-3 col-sm-6 col-12 mt-2">
           <div class="card p-3 shadow-sm pointer-cursor m-2 cards">
             <div class="d-flex">
               <div
@@ -113,22 +353,22 @@
             ></button>
           </div>
         </div>
-        <div class="col-md-4 mt-1 mb-1 no-padding-small"></div>
+        <div class="col-md-4 mt-1 mb-1 no-padding-small">
+          <p-dropdown
+            styleClass="text-left"
+            [style]="{ width: '100%' }"
+            [options]="interviewInternalStatusList"
+            (onChange)="statusChange($event)"
+            [dropdownIcon]="'fa fa-caret-down'"
+            [(ngModel)]="selectedInterviewStatus"
+            optionLabel="displayName"
+            dataKey="name"
+          >
+          </p-dropdown>
+        </div>
         <div class="col-md-4 mt-1 mb-1 no-padding-small text-right">
           <div class="d-flex">
-            <div class="flex-grow-1 me-2">
-              <p-dropdown
-                styleClass="text-left"
-                [style]="{ width: '100%' }"
-                [options]="interviewInternalStatusList"
-                (onChange)="statusChange($event)"
-                [dropdownIcon]="'fa fa-caret-down'"
-                [(ngModel)]="selectedInterviewStatus"
-                optionLabel="displayName"
-                dataKey="name"
-              >
-              </p-dropdown>
-            </div>
+            <div class="flex-grow-1 me-2"></div>
             <div class="d-flex align-items-center pointer-cursor">
               <app-filter
                 [position]="'right'"
@@ -141,17 +381,17 @@
               >
               </app-filter>
               <button
-              pButton
-              pRipple
-              pTooltip="Add Interview"
-              tooltipPosition="top"
-              type="button"
-              class="p-button-primary "
-              icon="fa fa-plus"
-              (click)="createInterview()"
-            >
-              &nbsp;Add
-            </button>
+                pButton
+                pRipple
+                pTooltip="Add Interview"
+                tooltipPosition="top"
+                type="button"
+                class="p-button-primary"
+                icon="fa fa-plus"
+                (click)="createInterview()"
+              >
+                &nbsp;Add Interview
+              </button>
             </div>
           </div>
         </div>

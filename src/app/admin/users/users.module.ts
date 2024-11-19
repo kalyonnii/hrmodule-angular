@@ -12,6 +12,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { FormsModule } from '@angular/forms';
 import { FilterModule } from 'src/app/filter/filter.module';
 import { InputTextModule } from 'primeng/inputtext';
+import { DialogModule } from 'primeng/dialog';
 
 const routes: Routes = [
   { path: '', component: UsersComponent },
@@ -39,6 +40,7 @@ const routes: Routes = [
     CapitalizeFirstPipe,
     InputTextModule,
     MenuModule,
+    DialogModule,
     ButtonModule,
     TooltipModule,
     [RouterModule.forChild(routes)],

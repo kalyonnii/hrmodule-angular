@@ -1,9 +1,13 @@
 .profilecard {
   border: none !important;
   margin-top: 10px;
+  padding: 0;
   margin-bottom: 20px;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
   border-radius: 5px;
+}
+.profilecards {
+  padding: 15px;
 }
 
 .detailscard {
@@ -29,7 +33,7 @@
 }
 
 .tabcard {
-  border: none !important;
+  border: none;
   border-radius: 5px;
   padding: 10px;
   margin-bottom: 15px;
@@ -43,7 +47,7 @@
 }
 
 .card-title {
-  color: #476089;
+  color: #fff;
   font-weight: bold;
 }
 
@@ -69,7 +73,6 @@
 .editicon {
   border-radius: 50%;
   padding: 4px;
-
   background-color: #31425e;
   color: #f2f7fe;
   border-color: #31425e;
@@ -122,14 +125,21 @@
   border-radius: 10px;
 }
 
-.file-icon {
-  font-size: 48px;
-}
+// .profileimg {
+//   width: 150px;
+//   border-radius: 10px;
+//   border: 5px solid #f2f7fe;
+//   box-shadow: rgb(67, 91, 116) 0px 20px 30px -10px;
+// }
 .profileimg {
-  width: 150px;
-  border-radius: 10px;
-  border: 5px solid #f2f7fe;
-  box-shadow: rgb(67, 91, 116) 0px 20px 30px -10px;
+  border-radius: 50%;
+  width: 200px;
+  height: 200px;
+  border: 5px solid white;
+  // background-color: white;
+  // border-bottom-color: #31425e;
+  // border-left-color: #31425e;
+  // border-right-color: #31425e;
 }
 
 @media screen and (max-width: 620px) {
@@ -176,7 +186,6 @@
 }
 .row-delete {
   width: 30px;
-
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -218,19 +227,24 @@ label {
 }
 
 .custom-textarea {
-  max-height: 330px;
-  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #51c295 #f1f1f1;
+}
+.bg-gradient {
+  height: 140px;
+  background-color: #31425e;
+  width: 100%;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
 }
 
-.custom-textarea::-webkit-scrollbar {
-  width: 6px;
-}
-
-.custom-textarea::-webkit-scrollbar-thumb {
-  background-color: #51c295;
-  cursor: pointer;
-}
-
-.custom-textarea::-webkit-scrollbar-track {
-  background: #f1f1f1;
+.profile-img-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: -130px;
 }

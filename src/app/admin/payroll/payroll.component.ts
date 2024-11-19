@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Location } from '@angular/common';
 import { RoutingService } from 'src/app/services/routing-service';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MenuItem } from 'primeng/api';
 import { ToastService } from 'src/app/services/toast.service';
 import { EmployeesService } from '../employees/employees.service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
@@ -17,6 +17,8 @@ export class PayrollComponent {
   currentTableEvent: any;
   filterConfig: any[] = [];
   appliedFilter: {};
+  selectedPayrollDetails: any = null;
+  isDialogVisible = false;
   selectedEmployee: any;
   loading: any;
   payroll: any = [];
@@ -76,6 +78,41 @@ export class PayrollComponent {
         this.toastService.showError(error);
       }
     );
+  }
+
+  actionItems(payslip: any): MenuItem[] {
+    const menuItems: any = [{ label: 'Actions', items: [] }];
+
+    menuItems[0].items.push({
+      label: 'Payroll Details',
+      icon: 'fa fa-eye',
+      command: () => this.showPayrollDetails(payslip),
+    });
+    menuItems[0].items.push({
+      label: 'Update',
+      icon: 'fa fa-pen-to-square',
+      command: () => this.updateUser(payslip.payslipId),
+    });
+
+    if (this.userDetails?.designation == 4) {
+      menuItems[0].items.push({
+        label: 'Delete',
+        icon: 'fa fa-trash',
+        command: () => this.confirmDelete(payslip.payslipId),
+      });
+    }
+    return menuItems;
+  }
+  formatPayrollMonth(payrollMonth: string): string {
+    return this.moment(payrollMonth, 'MM/YYYY').format('MMMM YYYY');
+  }
+  showPayrollDetails(user: any): void {
+    this.selectedPayrollDetails = user;
+    this.isDialogVisible = true;
+  }
+  clearDialog(): void {
+    this.selectedPayrollDetails = null;
+    this.isDialogVisible = false;
   }
 
   statusChange(event) {

@@ -25,7 +25,6 @@
     </div>
   </div>
 </div>
-<p-confirmDialog></p-confirmDialog>
 <div *ngIf="loading">
   <app-preloader></app-preloader>
 </div>
@@ -74,19 +73,19 @@
             ></button>
           </div>
         </div>
-        <div class="col-md-4 mt-1 mb-1 no-padding-small"></div>
+        <div class="col-md-4 mt-1 mb-1 no-padding-small">
+          <p-dropdown
+            [options]="years"
+            [(ngModel)]="selectedYear"
+            [style]="{ width: '100%' }"
+            (onChange)="loadHolidaysByYear()"
+            placeholder="Select Year"
+          >
+          </p-dropdown>
+        </div>
         <div class="col-md-4 mt-1 mb-1 no-padding-small text-right">
           <div class="d-flex">
-            <div class="flex-grow-1 me-2">
-              <p-dropdown
-                [options]="years"
-                [(ngModel)]="selectedYear"
-                [style]="{ width: '100%' }"
-                (onChange)="loadHolidaysByYear()"
-                placeholder="Select Year"
-              >
-              </p-dropdown>
-            </div>
+            <div class="flex-grow-1 me-2"></div>
             <div class="d-flex align-items-center pointer-cursor">
               <app-filter
                 [position]="'right'"
@@ -108,7 +107,7 @@
                 icon="fa fa-plus"
                 (click)="addHoliday()"
               >
-                &nbsp;Add
+                &nbsp;Add Holiday
               </button>
             </div>
           </div>

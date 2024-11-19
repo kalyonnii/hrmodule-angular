@@ -52,3 +52,31 @@
   outline-offset: 0;
   box-shadow: 0 0 0 0.2rem #abc6f7;
 }
+.icon {
+  width: 35px;
+  margin-right: 13px;
+  color: #31425e;
+  background-color: #f2f7fe;
+  border-radius: 50%;
+  padding: 8px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.info-line {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.label {
+  flex: 0 0 250px;
+  font-weight: bold;
+}
+
+.value {
+  color: grey;
+  flex: 1;
+  margin-left: 5px;
+}
