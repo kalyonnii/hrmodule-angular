@@ -122,7 +122,7 @@ export class CreateComponent {
         label: 'Date Of Birth',
         controlName: 'dateOfBirth',
         type: 'calendar',
-        required: true,
+        required: false,
       },
       {
         label: 'Contact Number',
@@ -242,7 +242,6 @@ export class CreateComponent {
       (response: any) => {
         if (response.message === 'File deleted successfully.') {
           console.log('File deleted successfully.');
-
           if (this.selectedFiles[fileType]?.uploadedFiles) {
             this.selectedFiles[fileType].uploadedFiles = this.selectedFiles[
               fileType
@@ -271,11 +270,11 @@ export class CreateComponent {
   createForm() {
     this.interviewsForm = this.formBuilder.group({
       candidateName: ['', Validators.required],
-      dateOfBirth: ['', Validators.required],
+      dateOfBirth: [''],
       primaryPhone: ['', Validators.required],
-      currentAddress: ['', Validators.required],
+      currentAddress: [''],
       qualification: ['', Validators.required],
-      permanentAddress: ['', Validators.required],
+      permanentAddress: [''],
       experience: ['', Validators.required],
       scheduledLocation: ['', Validators.required],
       scheduledDate: ['', Validators.required],
@@ -313,21 +312,6 @@ export class CreateComponent {
         : null,
       resume: this.getFileData('resume'),
     };
-    // formData['resume'] = [];
-    // if (this.selectedFiles['resume'] && this.selectedFiles['resume']['links']) {
-    //   for (let i = 0; i < this.selectedFiles['resume']['links'].length; i++) {
-    //     formData['resume'].push(this.selectedFiles['resume']['links'][i]);
-    //   }
-    //   for (
-    //     let i = 0;
-    //     i < this.selectedFiles['resume']['uploadedFiles'].length;
-    //     i++
-    //   ) {
-    //     formData['resume'].push(
-    //       this.selectedFiles['resume']['uploadedFiles'][i]
-    //     );
-    //   }
-    // }
     console.log('formData', formData);
     if (this.actionType == 'create') {
       this.loading = true;

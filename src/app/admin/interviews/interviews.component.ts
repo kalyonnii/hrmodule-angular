@@ -289,7 +289,7 @@ export class InterviewsComponent implements OnInit {
     });
     if (interview.interviewInternalStatus === 1) {
       menuItems[0].items.push({
-        label: 'Slected',
+        label: 'Selected',
         icon: 'fa fa-circle-check',
         command: () => this.selectedInterview(interview),
       });
@@ -347,7 +347,7 @@ export class InterviewsComponent implements OnInit {
         command: () => this.pendingInterview(interview),
       });
       menuItems[0].items.push({
-        label: 'Slected',
+        label: 'Selected',
         icon: 'fa fa-circle-check',
         command: () => this.selectedInterview(interview),
       });

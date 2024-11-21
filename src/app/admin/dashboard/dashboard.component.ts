@@ -109,7 +109,8 @@ export class DashboardComponent implements OnInit {
       {
         name: 'attendance',
         displayName: 'Attendance',
-        count: 0,
+        count:
+          this.totalPresentCount + this.totalLateCount + this.totalHalfDayCount,
         routerLink: 'attendance',
         condition: true,
       },
@@ -135,6 +136,13 @@ export class DashboardComponent implements OnInit {
         condition: true,
       },
       {
+        name: 'incentives',
+        displayName: 'Incentives',
+        count: 0,
+        routerLink: 'incentives',
+        condition: true,
+      },
+      {
         name: 'events',
         displayName: 'Events',
         count: 0,
@@ -148,13 +156,13 @@ export class DashboardComponent implements OnInit {
         routerLink: 'users',
         condition: true,
       },
-      {
-        name: 'reports',
-        displayName: 'Reports',
-        count: 0,
-        routerLink: 'reports',
-        condition: true,
-      },
+      // {
+      //   name: 'reports',
+      //   displayName: 'Reports',
+      //   count: 0,
+      //   routerLink: 'reports',
+      //   condition: true,
+      // },
     ];
   }
 
@@ -180,6 +188,7 @@ export class DashboardComponent implements OnInit {
           break;
       }
     });
+    this.updateCountsAnalytics();
     console.log(
       `Present: ${this.totalPresentCount}, Absent: ${this.totalAbsentCount}, Half-day: ${this.totalHalfDayCount}, Late: ${this.totalLateCount}`
     );
@@ -188,7 +197,7 @@ export class DashboardComponent implements OnInit {
     this.currentTableEvent = event;
 
     let api_filter = this.employeesService.setFiltersFromPrimeTable(event);
-    api_filter['employeeInternalStatus-eq'] = 1;
+    // api_filter['employeeInternalStatus-eq'] = 1;
     api_filter = Object.assign({}, api_filter);
     if ('from' in api_filter) {
       delete api_filter.from;
@@ -329,22 +338,16 @@ export class DashboardComponent implements OnInit {
   }
   getDepartmentCounts(filter = {}) {
     filter['employeeInternalStatus-eq'] = 1;
-    const filters = [
-      { ...filter, 'designation-eq': 1 },
-      { ...filter, 'designation-eq': 2 },
-      { ...filter, 'designation-eq': 3 },
-      { ...filter, 'designation-eq': 4 },
-    ];
-
+    const filters = [1, 2, 3, 4].map((designation) => ({
+      ...filter,
+      'designation-eq': designation,
+    }));
     this.loading = true;
-    const observables = filters.map((filterItem) =>
-      this.employeesService.getEmployeesCount(filterItem)
-    );
-    forkJoin(observables).subscribe(
-      (responses: any[]) => {
-        const designationCounts = responses.map((response) => response);
-        console.log('Designation Counts Array:', designationCounts);
-        this.designationCounts = designationCounts;
+    forkJoin(
+      filters.map((f) => this.employeesService.getEmployeesCount(f))
+    ).subscribe(
+      (counts) => {
+        this.designationCounts = counts.map((count) => count || 0);
         this.setChartOptions();
         this.loading = false;
       },

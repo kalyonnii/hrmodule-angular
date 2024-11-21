@@ -111,7 +111,10 @@ export class CreateComponent {
 
   getEmployees(filter = {}) {
     this.loading = true;
-    filter['employeeInternalStatus-eq'] = 1;
+    // filter['employeeInternalStatus-eq'] = 1;
+    if (this.actionType === 'create') {
+      filter['employeeInternalStatus-eq'] = 1;
+    }
     this.employeesService.getEmployees(filter).subscribe(
       (response) => {
         this.employees = response;

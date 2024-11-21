@@ -35,17 +35,7 @@
       <ng-container *ngFor="let item of countsAnalytics">
         <div class="col-lg-3 col-md-3 col-sm-6 col-12 mt-2">
           <div class="card p-3 shadow-sm pointer-cursor m-2 cards">
-            <div class="d-flex">
-              <div
-                class="me-4 cardicons"
-                [ngStyle]="{
-                  color: item.textcolor,
-                  'background-color': item.backgroundcolor
-                }"
-              >
-                <i class="fa fa-{{ item.name }}"></i>
-              </div>
-
+            <div class="d-flex justify-content-between">
               <div class="d-flex align-items-center">
                 <div>
                   <div class="count-sub-title">
@@ -56,6 +46,17 @@
                   </div>
                 </div>
               </div>
+              <div
+                class=" cardicons"
+                [ngStyle]="{
+                  color: item.textcolor,
+                  'background-color': item.backgroundcolor
+                }"
+              >
+                <i class="fa fa-{{ item.name }}"></i>
+              </div>
+
+
             </div>
           </div>
         </div>
@@ -67,8 +68,8 @@
   <p-table
     #employeesTable
     [value]="employees"
-    [sortOrder]="-1"
-    [sortField]="'createdOn'"
+    [sortOrder]="1"
+    [sortField]="'joiningDate'"
     [lazy]="true"
     (onLazyLoad)="loadEmployees($event)"
     dataKey="id"
@@ -164,13 +165,13 @@
           Employee Id <p-sortIcon [field]="'employeeId'"></p-sortIcon>
         </th>
         <th pSortableColumn="employeeName">
-          Employee Name <p-sortIcon [field]="'employeeName'"></p-sortIcon>
+          Name <p-sortIcon [field]="'employeeName'"></p-sortIcon>
         </th>
         <th pSortableColumn="designationName">
-          Role <p-sortIcon [field]="'designationName'"></p-sortIcon>
+          Designation <p-sortIcon [field]="'designationName'"></p-sortIcon>
         </th>
         <th pSortableColumn="primaryPhone">
-          Phone Number <p-sortIcon [field]="'primaryPhone'"></p-sortIcon>
+          Mobile <p-sortIcon [field]="'primaryPhone'"></p-sortIcon>
         </th>
         <th pSortableColumn="joiningDate">
           Joining Date <p-sortIcon [field]="'joiningDate'"></p-sortIcon>

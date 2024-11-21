@@ -52,6 +52,13 @@ const routes: Routes = [
           import('./holidays/holidays.module').then((m) => m.HolidaysModule),
       },
       {
+        path: 'incentives',
+        loadChildren: () =>
+          import('./incentives/incentives.module').then(
+            (m) => m.IncentivesModule
+          ),
+      },
+      {
         path: 'events',
         loadChildren: () =>
           import('./events/events.module').then((m) => m.EventsModule),

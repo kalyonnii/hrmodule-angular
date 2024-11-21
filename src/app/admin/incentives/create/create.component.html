@@ -8,7 +8,9 @@
             (click)="goBack()"
           >
             <i class="pi pi-arrow-left fw-bold back-btn-icon"></i>
-            <span class="back-btn-text ms-2 text-capitalize">Events</span>
+            <span class="back-btn-text ms-2 text-capitalize">{{
+              heading
+            }}</span>
           </div>
         </div>
         <div class="bread-crumb mt-3">
@@ -17,7 +19,7 @@
       </div>
       <div class="col-md-2 text-end">
         <img
-          src="../../../assets/images/menu/events.png"
+          src="../../../../assets/images/menu/holidayscreate.png"
           width="100"
           class="heading-image"
         />
@@ -25,12 +27,6 @@
     </div>
   </div>
 </div>
-
-<div class="calendar-container">
-  <div class="calendar-card">
-    <full-calendar
-      #calendar
-      [options]="calendarOptions">
-    </full-calendar>
-  </div>
+<div *ngIf="loading">
+  <app-preloader></app-preloader>
 </div>

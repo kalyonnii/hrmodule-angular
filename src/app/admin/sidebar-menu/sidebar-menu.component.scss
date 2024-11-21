@@ -420,9 +420,13 @@ i {
   .sidemenu-sidebar
   .p-sidebar
   .p-sidebar-content::-webkit-scrollbar-thumb {
-  background: #51C295 !important;
+  background: #51c295 !important;
 }
 
 ::ng-deep .sidemenu-sidebar .p-sidebar .p-sidebar-footer {
   padding: 0.25rem !important;
+}
+::ng-deep .sidemenu-sidebar .p-sidebar .p-sidebar-content,
+::ng-deep .sidemenu-sidebar .p-sidebar .p-sidebar-footer {
+  background-color: #31425e !important;
 }

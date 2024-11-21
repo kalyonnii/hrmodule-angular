@@ -233,8 +233,6 @@ export class CreateComponent {
 
   handlePresentDays(): void {
     const payrollMonth = this.payrollForm.get('payrollMonth')?.value;
-    // const workingDays = this.payrollForm.get('workingDays')?.value;
-
     const employeeId = this.payrollForm.get('employeeId')?.value;
     const payroll = new Date(this.moment(payrollMonth, 'MM/YYYY').toDate());
     this.loading = true;
@@ -268,13 +266,6 @@ export class CreateComponent {
           }
           return count;
         }, 0);
-        // const absentDays = filteredAttendance.reduce((count, record) => {
-        //   const employeeRecord = record.attendanceData.find(
-        //     (emp) => emp.employeeId === employeeId && emp.status === 'Absent'
-        //   );
-        //   return employeeRecord ? count + 1 : count;
-        // }, 0);
-
         const lateDays = filteredAttendance.reduce((count, record) => {
           const employeeRecord = record.attendanceData.find(
             (emp) => emp.employeeId === employeeId && emp.status === 'Late'
@@ -284,7 +275,6 @@ export class CreateComponent {
         const lateLopDays = Math.floor(lateDays / 3);
         this.payrollForm.patchValue({
           presentDays: presentDays,
-
           lateLopDays: lateLopDays,
         });
       })
@@ -335,30 +325,12 @@ export class CreateComponent {
     );
   }
 
-  // handleAbsentDays(absentDays: number | null) {
-  //   const casualDays = this.payrollForm.get('casualDays')?.value;
-  //   const totalAbsentDays =
-  //     casualDays > 0 && absentDays ? absentDays - casualDays : absentDays || 0;
-  //   this.payrollForm.patchValue({
-  //     casualDays,
-  //     totalAbsentDays,
-  //   });
-  // }
-
-  // calculatedaySalary() {
-  //   const workingDays = this.payrollForm.get('workingDays')?.value;
-  //   const salary = this.payrollForm.get('salary')?.value;
-  //   if (salary && workingDays > 0) {
-  //     const daySalary = salary / workingDays;
-  //     this.payrollForm.patchValue({
-  //       daySalary: daySalary.toFixed(),
-  //     });
-  //   }
-  // }
-
   getEmployees(filter = {}) {
     this.loading = true;
-    filter['employeeInternalStatus-eq'] = 1;
+    // filter['employeeInternalStatus-eq'] = 1;
+    if (this.actionType === 'create') {
+      filter['employeeInternalStatus-eq'] = 1;
+    }
     this.employeesService.getEmployees(filter).subscribe(
       (response) => {
         this.employees = response;
@@ -389,36 +361,36 @@ export class CreateComponent {
         optionLabel: 'employeeName',
         optionValue: 'employeeName',
       },
-      {
-        label: 'Custom Employee Id',
-        controlName: 'customEmployeeId',
-        type: 'text',
-        required: true,
-      },
-      {
-        label: 'Joining Date',
-        controlName: 'joiningDate',
-        type: 'calendar',
-        required: true,
-      },
-      {
-        label: 'Account Number',
-        controlName: 'accountNumber',
-        type: 'text',
-        required: true,
-      },
-      {
-        label: 'IFSC Code',
-        controlName: 'ifscCode',
-        type: 'text',
-        required: true,
-      },
-      {
-        label: 'Bank Branch',
-        controlName: 'bankBranch',
-        type: 'text',
-        required: true,
-      },
+      // {
+      //   label: 'Custom Employee Id',
+      //   controlName: 'customEmployeeId',
+      //   type: 'text',
+      //   required: true,
+      // },
+      // {
+      //   label: 'Joining Date',
+      //   controlName: 'joiningDate',
+      //   type: 'calendar',
+      //   required: true,
+      // },
+      // {
+      //   label: 'Account Number',
+      //   controlName: 'accountNumber',
+      //   type: 'text',
+      //   required: true,
+      // },
+      // {
+      //   label: 'IFSC Code',
+      //   controlName: 'ifscCode',
+      //   type: 'text',
+      //   required: true,
+      // },
+      // {
+      //   label: 'Bank Branch',
+      //   controlName: 'bankBranch',
+      //   type: 'text',
+      //   required: true,
+      // },
 
       {
         label: 'Working Days',

@@ -37,7 +37,7 @@
         <div class="bg-gradient"></div>
         <div
           class="d-flex profile-img-container flex-column align-items-center justify-content-center"
-          style="height: 250px"
+          style="height: 270px"
         >
         <h5 class="card-title">
           {{ employees.employeeName | capitalizeFirst }}
@@ -76,7 +76,20 @@
               />
             </tr>
           </div>
-
+          <span
+          class="table-column-data fw-bold statusdata mb-2"
+          *ngIf="employees.employeeInternalStatus"
+          [ngStyle]="{
+            color: getStatusColor(
+              getStatusName(employees.employeeInternalStatus)
+            ).textColor,
+            'background-color': getStatusColor(
+              getStatusName(employees.employeeInternalStatus)
+            ).backgroundColor
+          }"
+        >
+          {{ getStatusName(employees.employeeInternalStatus) }}
+        </span>
         </div>
         <div class="profilecards">
           <div
@@ -907,7 +920,7 @@
                                             pButton
                                             type="button"
                                             icon="fa fa-cloud-arrow-up"
-                                            class="p-button-info me-2"
+                                            class="rightbtn me-2"
                                             (click)="
                                               uploadFiles(
                                                 field.controlName,
@@ -1083,7 +1096,7 @@
                                             pButton
                                             type="button"
                                             icon="fa fa-cloud-arrow-up"
-                                            class="p-button-info me-2"
+                                            class="rightbtn me-2"
                                             (click)="
                                               uploadFiles(
                                                 field.controlName,

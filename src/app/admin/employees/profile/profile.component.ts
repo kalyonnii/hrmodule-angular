@@ -37,6 +37,7 @@ export class ProfileComponent implements OnInit {
   version = projectConstantsLocal.VERSION_DESKTOP;
   employeeId: string | null = null;
   activeSection: string = 'employeeDetails';
+  employeeInternalStatusList: any = projectConstantsLocal.EMPLOYEE_STATUS;
   month: any;
   year: any;
   selectedFiles: any = {
@@ -239,6 +240,8 @@ export class ProfileComponent implements OnInit {
       subject: 'Termination Letter',
       body: employees?.terminationReason,
       employeeName: employees.employeeName,
+      email: employees.emailAddress,
+      mobile: this.userDetails.phoneNumber,
     };
 
     this.employeesService.sendTerminationmail(emailData).subscribe(
@@ -301,6 +304,23 @@ export class ProfileComponent implements OnInit {
       }
     }
     return null;
+  }
+  getStatusName(statusId) {
+    if (
+      this.employeeInternalStatusList &&
+      this.employeeInternalStatusList.length > 0
+    ) {
+      let employeeStatusName = this.employeeInternalStatusList.filter(
+        (employeeStatus) => employeeStatus.id == statusId
+      );
+      return (
+        (employeeStatusName &&
+          employeeStatusName[0] &&
+          employeeStatusName[0].name) ||
+        ''
+      );
+    }
+    return '';
   }
 
   changeEmployeeStatus(employeeId, statusId) {
@@ -550,7 +570,19 @@ export class ProfileComponent implements OnInit {
       }
     );
   }
-
+  getStatusColor(status: string): {
+    textColor: string;
+    backgroundColor: string;
+  } {
+    switch (status) {
+      case 'Active':
+        return { textColor: '#5DCC0B', backgroundColor: '#E4F7D6' };
+      case 'InActive':
+        return { textColor: '#FF555A', backgroundColor: '#FFE2E3' };
+      default:
+        return { textColor: 'black', backgroundColor: 'white' };
+    }
+  }
   goBack() {
     this.location.back();
   }

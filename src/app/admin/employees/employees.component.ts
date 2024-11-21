@@ -240,6 +240,23 @@ export class EmployeesComponent implements OnInit {
           },
         ],
       },
+      {
+        header: 'Joining Date Range',
+        data: [
+          {
+            field: 'joiningDate',
+            title: 'From',
+            type: 'date',
+            filterType: 'gte',
+          },
+          {
+            field: 'joiningDate',
+            title: 'To',
+            type: 'date',
+            filterType: 'lte',
+          },
+        ],
+      },
 
       {
         header: 'Office Branch',

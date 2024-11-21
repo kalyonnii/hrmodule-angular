@@ -38,17 +38,7 @@
                     class="card p-3 shadow-sm pointer-cursor m-2 cards"
                     (click)="goToRoute(item.routerLink)"
                   >
-                    <div class="d-flex">
-                      <div class="me-4">
-                        <img
-                          [lazyLoad]="
-                            'assets/images/menu/' + item.name + '.png'
-                          "
-                          width="70"
-                          loading="lazy"
-                          alt="{{ item.displayName }} icon"
-                        />
-                      </div>
+                    <div class="d-flex justify-content-between">
                       <div class="d-flex align-items-center">
                         <div>
                           <div class="count-sub-title">
@@ -58,6 +48,16 @@
                             {{ item.count }}
                           </div>
                         </div>
+                      </div>
+                      <div class="me-4">
+                        <img
+                          [lazyLoad]="
+                            'assets/images/menu/' + item.name + '.png'
+                          "
+                          width="70"
+                          loading="lazy"
+                          alt="{{ item.displayName }} icon"
+                        />
                       </div>
                     </div>
                   </div>

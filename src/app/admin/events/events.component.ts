@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
+import timeGridPlugin from '@fullcalendar/timegrid';
 import { Location } from '@angular/common';
 import { CalendarOptions } from '@fullcalendar/core';
-import interactionPlugin from '@fullcalendar/interaction'; // For dateClick and eventClick
+import interactionPlugin from '@fullcalendar/interaction';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import { projectConstantsLocal } from 'src/app/constants/project-constants';
 @Component({
@@ -24,7 +25,7 @@ export class EventsComponent {
     ];
   }
   calendarOptions: CalendarOptions = {
-    plugins: [interactionPlugin, dayGridPlugin], // Register plugins
+    plugins: [interactionPlugin, dayGridPlugin, timeGridPlugin],
     initialView: 'dayGridMonth',
     headerToolbar: {
       left: 'prev,next today',
@@ -37,7 +38,6 @@ export class EventsComponent {
       { title: 'Event 1', date: '2024-10-01' },
       { title: 'Event 2', date: '2024-10-05' },
     ],
-    // Use functions for event handling
     dateClick: this.handleDateClick.bind(this),
     eventClick: this.handleEventClick.bind(this),
   };

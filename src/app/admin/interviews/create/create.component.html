@@ -42,7 +42,12 @@
       <div class="row">
         <div class="col-md-12">
           <div class="row mt-3" *ngIf="formFields">
-            <div *ngFor="let field of formFields" class="col-md-4 mt-2">
+            <div
+              *ngFor="let field of formFields"
+              class="mt-2"
+              [class.col-md-12]="field.controlName === 'remarks'"
+              [class.col-md-4]="field.controlName !== 'remarks'"
+            >
               <div>
                 <label>
                   {{ field.label }}
@@ -87,7 +92,7 @@
                         pButton
                         type="button"
                         icon="fa fa-cloud-arrow-up"
-                        class="p-button-info me-2"
+                        class="rightbtn me-2"
                         (click)="
                           uploadFiles(
                             field.controlName,
@@ -132,20 +137,17 @@
                       </div>
                     </div>
                   </ng-container>
-                  <div class="row">
-                    <div class="col-md-12">
-                      <textarea
-                        *ngSwitchCase="'textarea'"
-                        pInputTextarea
-                        class="rounded-lg"
-                        autocomplete="off"
-                        [formControlName]="field.controlName"
-                        [placeholder]="'Enter ' + field.label"
-                        [cols]="30"
-                        [autoResize]="true"
-                      ></textarea>
-                    </div>
-                  </div>
+                  <ng-container *ngSwitchCase="'textarea'">
+                    <textarea
+                      pInputTextarea
+                      class="rounded-lg"
+                      autocomplete="off"
+                      [formControlName]="field.controlName"
+                      [placeholder]="'Enter ' + field.label"
+                      [cols]="30"
+                      [autoResize]="true"
+                    ></textarea>
+                  </ng-container>
                 </ng-container>
               </div>
             </div>

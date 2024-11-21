@@ -8,6 +8,7 @@ import { DateTimeProcessorService } from 'src/app/services/date-time-processor.s
 import { projectConstantsLocal } from 'src/app/constants/project-constants';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { LocalStorageService } from 'src/app/services/local-storage.service';
 
 @Component({
   selector: 'app-offerletter',
@@ -17,6 +18,7 @@ import jsPDF from 'jspdf';
 export class OfferletterComponent {
   breadCrumbItems: any = [];
   moment: any;
+  userDetails: any;
   @ViewChild('pdfContent', { static: false }) pdfContent!: ElementRef;
   loading: boolean = false;
   version = projectConstantsLocal.VERSION_DESKTOP;
@@ -28,6 +30,7 @@ export class OfferletterComponent {
     private route: ActivatedRoute,
     private toastService: ToastService,
     private routingService: RoutingService,
+    private localStorageService: LocalStorageService,
     private employeesService: EmployeesService,
     private dateTimeProcessor: DateTimeProcessorService
   ) {
@@ -53,14 +56,21 @@ export class OfferletterComponent {
     if (this.employeeId) {
       this.getEmployeeById(this.employeeId);
     }
+    const userDetails =
+      this.localStorageService.getItemFromLocalStorage('userDetails');
+    if (userDetails) {
+      this.userDetails = userDetails.user;
+    }
   }
 
   generatePDF() {
     this.loading = true;
+
     const pageElements = document.querySelectorAll('.page');
     const pdf = new jsPDF('p', 'mm', 'a4');
     const imgWidth = 190;
     const pageHeight = 297;
+
     const addPagesToPDF = async () => {
       for (let i = 0; i < pageElements.length; i++) {
         const pageElement = pageElements[i];
@@ -77,7 +87,7 @@ export class OfferletterComponent {
 
     addPagesToPDF()
       .then(() => {
-        pdf.save('document.pdf');
+        pdf.save('Offerletter.pdf');
         this.loading = false;
       })
       .catch((error) => {
@@ -86,6 +96,11 @@ export class OfferletterComponent {
       });
   }
 
+  getOfferLetterDate(joiningDate: string): Date {
+    const date = new Date(joiningDate);
+    date.setDate(date.getDate() - 2);
+    return date;
+  }
   getEmployeeById(id: string) {
     this.loading = true;
     this.employeesService.getEmployeeById(id).subscribe(

@@ -54,71 +54,139 @@ export class MonthattendanceComponent implements OnInit {
 
   ngOnInit(): void {}
 
+  // exportToExcel() {
+  //   this.loading = true;
+  //   const exportData = this.filteredEmployees.map((employee) => {
+  //     const row: any = {
+  //       'Employee ID': employee.employeeId,
+  //       'Employee Name': employee.employeeName,
+  //     };
+
+  //     let presentCount = 0,
+  //       absentCount = 0,
+  //       lateCount = 0,
+  //       halfDayCount = 0;
+
+  //     this.monthDates.forEach((date) => {
+  //       const dateStr = this.moment(date).format('YYYY-MM-DD');
+  //       const attendanceEntry = this.attendance.find(
+  //         (entry) => entry.attendanceDate === dateStr
+  //       );
+  //       if (!attendanceEntry) {
+  //         row[dateStr] = 'H';
+  //       } else {
+  //         const employeeData = attendanceEntry?.attendanceData.find(
+  //           (data) => data.employeeId === employee.employeeId
+  //         );
+  //         let status = employeeData?.status || '-';
+  //         if (status === 'Late' || status === 'Half-day') {
+  //           const checkInTime = employeeData?.checkInTime || '-';
+  //           const checkOutTime = employeeData?.checkOutTime || '-';
+  //           status += ` (Check-in: ${checkInTime}, Check-out: ${checkOutTime})`;
+  //         }
+  //         row[dateStr] = status;
+  //         switch (employeeData?.status) {
+  //           case 'Present':
+  //             presentCount++;
+  //             break;
+  //           case 'Absent':
+  //             absentCount++;
+  //             break;
+  //           case 'Late':
+  //             lateCount++;
+  //             break;
+  //           case 'Half-day':
+  //             halfDayCount++;
+  //             break;
+  //         }
+  //       }
+  //     });
+
+  //     row['Total Present'] = presentCount;
+  //     row['Total Absent'] = absentCount;
+  //     row['Total Late'] = lateCount;
+  //     row['Total Half-day'] = halfDayCount;
+
+  //     return row;
+  //   });
+
+  //   const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);
+  //   const wb: XLSX.WorkBook = XLSX.utils.book_new();
+  //   XLSX.utils.book_append_sheet(wb, ws, 'Attendance Data');
+
+  //   XLSX.writeFile(wb, `Attendance_${this.selectedDate}.xlsx`);
+  //   this.loading = false;
+  // }
+
   exportToExcel() {
-    const exportData = this.filteredEmployees.map((employee) => {
-      const row: any = {
-        'Employee ID': employee.employeeId,
-        'Employee Name': employee.employeeName,
-      };
+    this.loading = true;
+    console.log(this.loading);
+    try {
+      const exportData = this.filteredEmployees.map((employee) => {
+        const row: any = {
+          'Employee ID': employee.employeeId,
+          'Employee Name': employee.employeeName,
+        };
 
-      let presentCount = 0,
-        absentCount = 0,
-        lateCount = 0,
-        halfDayCount = 0;
+        let presentCount = 0,
+          absentCount = 0,
+          lateCount = 0,
+          halfDayCount = 0;
 
-      this.monthDates.forEach((date) => {
-        const dateStr = this.moment(date).format('YYYY-MM-DD');
-        const attendanceEntry = this.attendance.find(
-          (entry) => entry.attendanceDate === dateStr
-        );
-
-        if (!attendanceEntry) {
-          row[dateStr] = 'H';
-        } else {
-          const employeeData = attendanceEntry?.attendanceData.find(
-            (data) => data.employeeId === employee.employeeId
+        this.monthDates.forEach((date) => {
+          const dateStr = this.moment(date).format('YYYY-MM-DD');
+          const attendanceEntry = this.attendance.find(
+            (entry) => entry.attendanceDate === dateStr
           );
-
-          let status = employeeData?.status || '-';
-
-          if (status === 'Late' || status === 'Half-day') {
-            const checkInTime = employeeData?.checkInTime || '-';
-            const checkOutTime = employeeData?.checkOutTime || '-';
-            status += ` (Check-in: ${checkInTime}, Check-out: ${checkOutTime})`;
+          if (!attendanceEntry) {
+            row[dateStr] = 'H';
+          } else {
+            const employeeData = attendanceEntry?.attendanceData.find(
+              (data) => data.employeeId === employee.employeeId
+            );
+            let status = employeeData?.status || '-';
+            if (status === 'Late' || status === 'Half-day') {
+              const checkInTime = employeeData?.checkInTime || '-';
+              const checkOutTime = employeeData?.checkOutTime || '-';
+              status += ` (Check-in: ${checkInTime}, Check-out: ${checkOutTime})`;
+            }
+            row[dateStr] = status;
+            switch (employeeData?.status) {
+              case 'Present':
+                presentCount++;
+                break;
+              case 'Absent':
+                absentCount++;
+                break;
+              case 'Late':
+                lateCount++;
+                break;
+              case 'Half-day':
+                halfDayCount++;
+                break;
+            }
           }
+        });
 
-          row[dateStr] = status;
+        row['Total Present'] = presentCount;
+        row['Total Absent'] = absentCount;
+        row['Total Late'] = lateCount;
+        row['Total Half-day'] = halfDayCount;
 
-          switch (employeeData?.status) {
-            case 'Present':
-              presentCount++;
-              break;
-            case 'Absent':
-              absentCount++;
-              break;
-            case 'Late':
-              lateCount++;
-              break;
-            case 'Half-day':
-              halfDayCount++;
-              break;
-          }
-        }
+        return row;
       });
 
-      row['Total Present'] = presentCount;
-      row['Total Absent'] = absentCount;
-      row['Total Late'] = lateCount;
-      row['Total Half-day'] = halfDayCount;
-
-      return row;
-    });
-
-    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);
-    const wb: XLSX.WorkBook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Attendance Data');
-
-    XLSX.writeFile(wb, `Attendance_${this.selectedDate}.xlsx`);
+      const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);
+      const wb: XLSX.WorkBook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Attendance Data');
+      XLSX.writeFile(wb, `Attendance_${this.selectedDate}.xlsx`);
+      this.loading = false;
+    } catch (error) {
+      console.error('Error exporting to Excel:', error);
+      this.loading = false;
+    } finally {
+      this.loading = false;
+    }
   }
 
   generateMonthDates() {

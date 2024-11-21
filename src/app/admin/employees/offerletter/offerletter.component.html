@@ -45,9 +45,9 @@
         </div>
         <div class="offerletter-title">Offer Letter</div>
         <div class="offerletter-date">
-          Date : {{ employees.createdOn | date }}
+          Date : {{ getOfferLetterDate(employees.joiningDate) | date }}
         </div>
-        <div class="fromdetails">
+        <div class="fromdetails text-capitalize">
           <p>To,</p>
           <b>
             <p>{{ employees.employeeName | capitalizeFirst }},</p></b
@@ -56,7 +56,7 @@
           <p>{{ employees.district | capitalizeFirst }},</p>
           <p>{{ employees.state | capitalizeFirst }}.</p>
         </div>
-        <div class="subject">
+        <div class="subject text-capitalize">
           Dear <b>{{ employees.employeeName | capitalizeFirst }},</b>
         </div>
         <div>
@@ -66,7 +66,7 @@
             company,<b> Winway Creators India Pvt. Ltd.</b>, subjected to the
             following employment terms and conditions.
           </p>
-          <div class="details">
+          <div class="details text-capitalize">
             <div class="info-line">
               <div class="label d-flex justify-content-between">
                 Designation <b>:&nbsp;</b>
@@ -102,9 +102,9 @@
           >
         </div>
         <ol class="para">
-          <li>&nbsp;&nbsp;Pan card Xerox Copy</li>
-          <li>&nbsp;&nbsp;Aadhar card Xerox copy</li>
-          <li>&nbsp;&nbsp;3 Passport Size photos</li>
+          <li>&nbsp;&nbsp; Pan card Xerox Copy</li>
+          <li>&nbsp;&nbsp; Aadhar card Xerox copy</li>
+          <li>&nbsp;&nbsp; 3 Passport Size photos</li>
           <li>
             &nbsp;&nbsp; Qualification certificates Xerox copies(SSC,
             Intermediate, Graduate and Post Graduate)
@@ -128,8 +128,8 @@
         <div>
           <p class="para indented-paragraph">
             This is to acknowledge all the staff members of Winway Creators.
-            Private Limited, to hereby abide by the below-mentioned Rules,  
-            Terms and Conditions of the company.
+            Private Limited, to hereby abide by the below-mentioned Rules, Terms
+            and Conditions of the company.
           </p>
         </div>
 
@@ -266,7 +266,7 @@
                 from the responsible staff member’s salary.
               </p>
             </li>
-         
+
             <li>
               <p class="para">
                 The candidate should not bring his/her personal issues to the
@@ -400,7 +400,7 @@
           <p class="para indented-paragraph">
             The company policies are designed and implemented by the management.
             to treat all the candidates equally without any difference and to
-            Run the business operations smoothly. Hence it is applicable to all
+            run the business operations smoothly. Hence it is applicable to all
             the candidates who had acknowledged the above policies. For any
             details Please contact our Human Resource Team at
             hr&#64;winwaycreators.com.
@@ -413,10 +413,13 @@
             <b> Regards,</b>
           </div>
           <div>
-            <b>{{ employees.createdBy }}</b>
+            <b
+              >{{ userDetails.firstName | capitalizeFirst }}
+              {{ userDetails.lastName | capitalizeFirst }}</b
+            >
           </div>
           <div>(HR Executive)</div>
-          <div>Mobile: +91 {{ 9030227331 }}</div>
+          <div>Mobile: +91 {{ userDetails.phoneNumber }}</div>
           <div><b>WINWAY CREATORS INDIA PRIVATE LIMITED</b></div>
           <div>#506, 5th Floor,</div>
           <div>MGR Estates, Dwarakapuri Colony,</div>
@@ -426,8 +429,6 @@
       </div>
     </div>
     <hr class="separator" />
-
-    <!-- Download Button -->
     <div class="btn-container">
       <button
         pButton
@@ -435,6 +436,7 @@
         (click)="generatePDF()"
         label="Download Offer Letter"
         icon="fa fa-download"
+        [disabled]="loading"
         class="download-btn"
       ></button>
     </div>

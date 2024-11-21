@@ -236,10 +236,6 @@ label {
   width: 100%;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
-  top: 0;
-  left: 0;
-  margin: 0;
-  padding: 0;
 }
 
 .profile-img-container {
@@ -247,4 +243,40 @@ label {
   justify-content: center;
   align-items: center;
   margin-top: -130px;
+}
+.rightbtn {
+  background: linear-gradient(
+    90deg,
+    rgba(77, 54, 208, 1) 0%,
+    rgba(132, 116, 254, 1) 100%
+  );
+  border: 0;
+  border-radius: 12px;
+  color: #ffffff;
+  cursor: pointer;
+  font-family: -apple-system, system-ui, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  outline: transparent;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.rightbtn:not([disabled]):focus {
+  box-shadow: 0 0 0.25rem rgba(0, 0, 0, 0.5),
+    -0.125rem -0.125rem 1rem rgba(140, 106, 241, 0.514),
+    0.125rem 0.125rem 1rem rgba(192, 139, 241, 0.5);
+}
+
+.rightbtn:not([disabled]):hover {
+  background: linear-gradient(
+    90deg,
+    rgba(77, 54, 208, 1) 0%,
+    rgba(132, 116, 254, 1) 100%
+  );
+  box-shadow: 0 0 0.25rem rgba(0, 0, 0, 0.5),
+    -0.125rem -0.125rem 1rem rgba(140, 106, 241, 0.514),
+    0.125rem 0.125rem 1rem rgba(192, 139, 241, 0.5);
 }

@@ -23,7 +23,7 @@ export class AttendanceComponent implements OnInit {
   selectedDate: any;
   displayDialog = false;
   attendance: any = [];
-
+  selectedMonth: Date;
   version = projectConstantsLocal.VERSION_DESKTOP;
   filteredData: any[] = [];
   constructor(
@@ -36,6 +36,7 @@ export class AttendanceComponent implements OnInit {
     private localStorageService: LocalStorageService
   ) {
     this.moment = this.dateTimeProcessor.getMoment();
+    this.selectedMonth = this.moment(new Date()).format('YYYY-MM');
     this.breadCrumbItems = [
       {
         icon: 'fa fa-house',
@@ -56,6 +57,22 @@ export class AttendanceComponent implements OnInit {
   loadAttendance(event) {
     this.currentTableEvent = event;
     let api_filter = this.employeesService.setFiltersFromPrimeTable(event);
+
+    if (this.selectedMonth) {
+      console.log(this.selectedMonth);
+      this.selectedMonth = this.moment(this.selectedMonth, 'YYYY-MM').format(
+        'YYYY-MM'
+      );
+      console.log(this.selectedMonth);
+      const startOfMonth = this.moment(`${this.selectedMonth}-01`)
+        .startOf('month')
+        .format('YYYY-MM-DD');
+      const endOfMonth = this.moment(startOfMonth)
+        .endOf('month')
+        .format('YYYY-MM-DD');
+      api_filter['attendanceDate-gte'] = startOfMonth;
+      api_filter['attendanceDate-lte'] = endOfMonth;
+    }
     api_filter = Object.assign({}, api_filter, this.searchFilter);
     console.log(api_filter);
     if (api_filter) {
@@ -63,7 +80,9 @@ export class AttendanceComponent implements OnInit {
       this.getAttendance(api_filter);
     }
   }
-
+  onDateChange() {
+    this.loadAttendance(this.currentTableEvent);
+  }
   filterByDate() {
     if (this.selectedDate) {
       console.log('called');

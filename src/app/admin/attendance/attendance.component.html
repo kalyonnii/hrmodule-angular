@@ -73,7 +73,21 @@
             </p-calendar>
           </div>
         </div>
-        <div class="col-md-4 mt-1 mb-1 no-padding-small"></div>
+        <div class="col-md-4 mt-1 mb-1 no-padding-small">
+          <p-calendar
+          [(ngModel)]="selectedMonth"
+          [showIcon]="true"
+          view="month"
+          [monthNavigator]="true"
+          [yearNavigator]="true"
+          [yearRange]="'-10:+10'"
+          dateFormat="yy-mm"
+          appendTo="body"
+          [style]="{ width: '100%' }"
+          (ngModelChange)="onDateChange()"
+          [placeholder]="'Select Month and Year'"
+        ></p-calendar>
+        </div>
         <div class="col-md-4 mt-1 mb-1 no-padding-small text-right">
           <div class="d-flex">
             <div class="flex-grow-1 me-2"></div>

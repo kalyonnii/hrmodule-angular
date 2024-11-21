@@ -7,6 +7,7 @@ import { DateTimeProcessorService } from 'src/app/services/date-time-processor.s
 import { projectConstantsLocal } from 'src/app/constants/project-constants';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { LocalStorageService } from 'src/app/services/local-storage.service';
 @Component({
   selector: 'app-payslip',
   templateUrl: './payslip.component.html',
@@ -17,6 +18,7 @@ export class PayslipComponent {
   @ViewChild('pdfContent', { static: false }) pdfContent!: ElementRef;
   payroll: any = [];
   moment: any;
+  userDetails: any;
   payslipId: string | null = null;
   version = projectConstantsLocal.VERSION_DESKTOP;
   loading: boolean = false;
@@ -25,6 +27,7 @@ export class PayslipComponent {
   constructor(
     private location: Location,
     private route: ActivatedRoute,
+    private localStorageService: LocalStorageService,
     private toastService: ToastService,
     private employeesService: EmployeesService,
     private dateTimeProcessor: DateTimeProcessorService
@@ -50,6 +53,11 @@ export class PayslipComponent {
     this.payslipId = this.route.snapshot.paramMap.get('id');
     if (this.payslipId) {
       this.getPayrollById(this.payslipId);
+    }
+    const userDetails =
+      this.localStorageService.getItemFromLocalStorage('userDetails');
+    if (userDetails) {
+      this.userDetails = userDetails.user;
     }
   }
 

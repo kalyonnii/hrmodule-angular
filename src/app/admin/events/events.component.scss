@@ -1,34 +1,20 @@
-/* Calendar container to center the content */
 .calendar-container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #f4f6f9; /* Light background */
+  background-color: #f4f6f9;
   padding: 20px;
 }
 
-/* Card design for the calendar */
 .calendar-card {
-  width: 80%;
-  max-width: 1000px;
+  width: 100% !important;
   background-color: white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   overflow: hidden;
 }
 
-/* Header section for the calendar */
-.calendar-header {
-  padding: 15px;
-  background-color: #007bff; /* Primary blue color */
-  color: white;
-  text-align: center;
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
-/* Styling the FullCalendar */
 full-calendar {
   padding: 10px;
 }
@@ -38,8 +24,36 @@ full-calendar {
     width: 100%;
     margin: 10px;
   }
-
   .calendar-header {
     font-size: 1.2rem;
   }
+}
+
+::ng-deep .fc.fc-theme-standard .fc-toolbar .fc-today-button,
+::ng-deep .fc.fc-theme-standard .fc-toolbar .fc-next-button,
+::ng-deep .fc.fc-theme-standard .fc-toolbar .fc-prev-button {
+  color: #ffffff;
+  background: #33009c !important;
+  border: 1px solid #33009c !important;
+  font-size: 1rem;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s,
+    box-shadow 0.2s;
+  border-radius: 3px;
+}
+
+::ng-deep
+  .fc.fc-theme-standard
+  .fc-toolbar
+  .fc-button.fc-dayGridMonth-button.fc-button-active,
+::ng-deep
+  .fc.fc-theme-standard
+  .fc-toolbar
+  .fc-button.fc-timeGridWeek-button.fc-button-active,
+::ng-deep
+  .fc.fc-theme-standard
+  .fc-toolbar
+  .fc-button.fc-timeGridDay-button.fc-button-active {
+  background: #33009c !important;
+  border-color: #33009c !important;
+  color: #ffffff;
 }

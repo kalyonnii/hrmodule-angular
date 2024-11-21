@@ -274,17 +274,7 @@
       <ng-container *ngFor="let item of countsAnalytics">
         <div class="col-lg-3 col-md-3 col-sm-6 col-12 mt-2">
           <div class="card p-3 shadow-sm pointer-cursor m-2 cards">
-            <div class="d-flex">
-              <div
-                class="me-4 cardicons"
-                [ngStyle]="{
-                  color: item.textcolor,
-                  'background-color': item.backgroundcolor
-                }"
-              >
-                <i class="fa fa-{{ item.name }}"></i>
-              </div>
-
+            <div class="d-flex justify-content-between">
               <div class="d-flex align-items-center">
                 <div>
                   <div class="count-sub-title">
@@ -294,6 +284,15 @@
                     {{ item.count }}
                   </div>
                 </div>
+              </div>
+              <div
+                class="cardicons"
+                [ngStyle]="{
+                  color: item.textcolor,
+                  'background-color': item.backgroundcolor
+                }"
+              >
+                <i class="fa fa-{{ item.name }}"></i>
               </div>
             </div>
           </div>

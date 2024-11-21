@@ -59,3 +59,22 @@
   border: none;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;
 }
+.label {
+  font-size: 14px;
+}
+.value {
+  color: #33009c;
+}
+
+.info-line {
+  margin: 10px;
+  display: flex;
+  font-weight: bold;
+}
+.text-primary{
+  font-size: 18px;
+}
+.light-blue-background {
+  border-radius: 10px;
+  background-color: rgba(51, 96, 255, 0.05) !important;
+}
