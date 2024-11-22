@@ -30,3 +30,180 @@
 <div *ngIf="loading">
   <app-preloader></app-preloader>
 </div>
+<div class="bg-color custom-steps-card" *ngIf="!loading">
+  <form
+    class="login-form mt-3"
+    [formGroup]="incentiveForm"
+    novalidate
+    (ngSubmit)="onSubmit(incentiveForm.value)"
+  >
+    <div class="py-3 px-4">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="row mt-3" *ngIf="formFields">
+            <div *ngFor="let field of formFields" class="col-md-4 mt-2">
+              <div>
+                <label>
+                  {{ field.label }}
+                  <span *ngIf="field.required">
+                    &nbsp;<sup class="text-danger">*</sup>
+                  </span>
+                </label>
+                <ng-container [ngSwitch]="field.type">
+                  <input
+                    *ngSwitchCase="'text'"
+                    pInputText
+                    [formControlName]="field.controlName"
+                    [placeholder]="'Enter ' + field.label"
+                    [maxlength]="field.maxLength"
+                    [pattern]="field.pattern"
+                    class="rounded-lg"
+                    autocomplete="off"
+                  />
+                  <p-calendar
+                    *ngSwitchCase="'calendar'"
+                    [formControlName]="field.controlName"
+                    [placeholder]="'Select ' + field.label"
+                    [showIcon]="true"
+                    appendTo="body"
+                    dateFormat="yy-mm-dd"
+                    [showButtonBar]="true"
+                  ></p-calendar>
+                  <p-dropdown
+                    *ngSwitchCase="'dropdown'"
+                    [options]="this[field.options]"
+                    [formControlName]="field.controlName"
+                    [optionLabel]="field.optionLabel"
+                    [optionValue]="field.optionValue"
+                    [showClear]="true"
+                    [placeholder]="'Select ' + field.label"
+                    [dropdownIcon]="'fa fa-caret-down'"
+                    styleClass="w-100"
+                    [filter]="true"
+                    filterPlaceholder="Search..."
+                  ></p-dropdown>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+          <p-tabMenu
+            [model]="items"
+            class="tabmenudesign"
+            [activeItem]="activeItem"
+            (activeItemChange)="onActiveItemChange($event)"
+          ></p-tabMenu>
+
+          <div *ngIf="activeItem && activeItem.name">
+            <div *ngFor="let monthFiles of monthFileGroups">
+              <ng-container *ngIf="activeItem.name === monthFiles.name">
+                <div class="my-1 text-end">
+                  <button
+                    pButton
+                    pRipple
+                    type="button"
+                    class="p-button-primary me-2 my-3"
+                    (click)="addFileRow(monthFiles.list)"
+                  >
+                    <i class="pi pi-plus"></i>&nbsp;Add {{ monthFiles.label }}
+                  </button>
+                </div>
+                <div
+                  class="row"
+                  *ngFor="let loans of monthFiles.list; let i = index"
+                >
+                  <div class="col-md-3 mt-2">
+                    <div>
+                      <label>Disbursed File Name&nbsp;</label>
+                      <input
+                        pInputText
+                        class="rounded-lg"
+                        [style]="{ width: '100%' }"
+                        type="text"
+                        [ngModelOptions]="{ standalone: true }"
+                        placeholder="Enter File Name"
+                        [(ngModel)]="loans.fileName"
+                        autocomplete="off"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-3 mt-2">
+                    <div>
+                      <label>Maximum Disbursed Amount&nbsp;</label>
+                      <input
+                        pInputText
+                        class="rounded-lg"
+                        [style]="{ width: '100%' }"
+                        type="text"
+                        [ngModelOptions]="{ standalone: true }"
+                        placeholder="Enter Incentive Amount"
+                        [(ngModel)]="loans.disbursedAmount"
+                        autocomplete="off"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-3 mt-2">
+                    <div>
+                      <label>Disbursed Month&nbsp;</label>
+                      <div class="d-flex">
+                        <p-calendar
+                          placeholder="Select Disbursed Month"
+                          appendTo="body"
+                          [ngModelOptions]="{ standalone: true }"
+                          [showIcon]="true"
+                          dateFormat="yy-mm-dd"
+                          class="me-2"
+                          [(ngModel)]="loans.disbursedMonth"
+                          [showButtonBar]="true"
+                        ></p-calendar>
+                        <button
+                          pButton
+                          pRipple
+                          type="button"
+                          class="p-button-danger row-delete ml-1"
+                          (click)="deleteFileRow(monthFiles.list, i)"
+                        >
+                          <i class="pi pi-times"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex justify-content-center">
+      <div class="d-flex mt-3 mb-5">
+        <button
+          pButton
+          pRipple
+          type="button"
+          class="p-button-info goback-button p-button-raised me-2"
+          (click)="goBack()"
+        >
+          Go Back
+        </button>
+        <button
+          pButton
+          pRipple
+          type="submit"
+          [disabled]="!incentiveForm.valid"
+          class="p-button-primary p-button-raised"
+        >
+          {{ actionType == "create" ? "Create" : "Update" }} Incentive
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<footer class="p-2 text-center text-lg-start mt-3" style="color: #878a99">
+  <div class="text-center mb-3 fw-bold">
+    © 2024 <span style="color: #1e4079">The</span>&nbsp;<b
+      style="color: #51c297"
+      >Fintalk</b
+    >. | All Rights Reserved
+  </div>
+</footer>

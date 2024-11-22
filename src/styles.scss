@@ -120,10 +120,10 @@ body {
   color: white !important;
 }
 
-.p-menuitem-text {
-  color: #2e4374 !important;
-  font-weight: bold;
-}
+// .p-menuitem-text {
+//   color: #2e4374 !important;
+//   font-weight: bold;
+// }
 
 .p-datatable .p-datatable-thead > tr > th {
   background: #31425e !important;
@@ -298,4 +298,68 @@ body {
 
 .p-dialog::-webkit-scrollbar {
   width: 3px !important;
+}
+
+.tabmenudesign.p-tabmenu .p-tabmenu-nav {
+  height: 40px;
+}
+
+.tabmenudesign
+  .p-tabmenu
+  .p-tabmenu-nav
+  .p-tabmenuitem.p-highlight
+  .p-menuitem-link {
+  background: #fff !important;
+  color: #31425e !important;
+}
+.tabmenudesign .p-tabmenu .p-tabmenu-nav .p-tabmenuitem .p-menuitem-link {
+  border: solid #31425e !important;
+  border-bottom-color: #fff !important;
+  border-left-color: none;
+
+  border-right-color: none;
+
+  border-bottom-left-radius: 5px !important;
+  border-bottom-right-radius: 5px !important;
+}
+
+.tabmenudesign
+  .p-tabmenu
+  .p-tabmenu-nav
+  .p-tabmenuitem:not(p-highlight)
+  .p-menuitem-link {
+  background: #31425e !important;
+  color: #ffffff !important;
+}
+
+.tabmenudesign .p-tabmenu .p-tabmenu-nav {
+  background: #31425e !important;
+
+  color: #ffffff !important;
+}
+.tabmenudesign .p-tabmenu .p-tabmenu-nav .p-tabmenuitem {
+  color: #fff !important;
+}
+
+.tabmenudesign
+  .p-tabmenu
+  .p-tabmenu-nav
+  .p-tabmenuitem:not(.p-highlight)
+  .p-menuitem-link:hover {
+  background: #dfe7f7 !important;
+  border-color: none;
+  color: #0165ac !important;
+}
+
+.tabmenudesign
+  .p-tabmenu
+  .p-tabmenu-nav
+  .p-tabmenuitem.p-highlight
+  .p-menuitem-link:active {
+  background: #dfe7f7 !important;
+  border-color: none;
+  color: #0165ac !important;
+}
+.tabmenudesign .p-tabmenu {
+  margin-top: 15px;
 }

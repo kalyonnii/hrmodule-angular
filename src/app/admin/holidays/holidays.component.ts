@@ -51,9 +51,11 @@ export class HolidaysComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    let userDetails =
+    const userDetails =
       this.localStorageService.getItemFromLocalStorage('userDetails');
-    this.userDetails = userDetails.user;
+    if (userDetails) {
+      this.userDetails = userDetails.user;
+    }
     this.setFilterConfig();
     this.generateYears();
     this.selectedYear = new Date().getFullYear();

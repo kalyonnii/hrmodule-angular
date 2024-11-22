@@ -133,6 +133,34 @@ export class EmployeesService {
     return this.serviceMeta.httpGet(url, null, filter);
   }
 
+  //INCENTIVES
+  createIncentive(data) {
+    const url = 'incentives';
+    return this.serviceMeta.httpPost(url, data);
+  }
+
+  updateIncentive(incentiveId, data) {
+    const url = 'incentives/' + incentiveId;
+    return this.serviceMeta.httpPut(url, data);
+  }
+  getIncentives(filter = {}) {
+    const url = 'incentives';
+    return this.serviceMeta.httpGet(url, null, filter);
+  }
+
+  getIncentiveById(incentiveId, filter = {}) {
+    const url = 'incentives/' + incentiveId;
+    return this.serviceMeta.httpGet(url, null, filter);
+  }
+  deleteIncentive(incentiveId, filter = {}) {
+    const url = 'incentives/' + incentiveId;
+    return this.serviceMeta.httpDelete(url, null, filter);
+  }
+  getIncentivesCount(filter = {}) {
+    const url = 'incentives/total';
+    return this.serviceMeta.httpGet(url, null, filter);
+  }
+
   //USERS
   createUser(data) {
     const url = 'users';

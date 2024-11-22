@@ -28,15 +28,193 @@
 <div *ngIf="loading">
   <app-preloader></app-preloader>
 </div>
-<button
-  pButton
-  pRipple
-  type="button"
-  pTooltip="Add Incentive"
-  tooltipPosition="top"
-  class="p-button-primary"
-  icon="fa fa-plus"
-  (click)="addIncentive()"
->
-  &nbsp;Add Incentive
-</button>
+
+<div class="text-capitalize table-card">
+  <p-table
+    #incentivesTable
+    [value]="incentives"
+    [sortOrder]="1"
+    [sortField]="'createdOn'"
+    [lazy]="true"
+    (onLazyLoad)="loadIncentives($event)"
+    dataKey="id"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [paginator]="true"
+    [rows]="10"
+    class="p-datatable-striped table"
+    [totalRecords]="totalIncentivesCount"
+    [loading]="loading"
+    responsiveLayout="scroll"
+    scrollHeight="flex"
+    styleClass="p-datatable-customers"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Incentives"
+  >
+    <ng-template pTemplate="caption">
+      <div class="row">
+        <div class="col-md-4 mt-1 mb-1 no-padding-small">
+          <div class="p-inputgroup">
+            <input
+              type="text"
+              pInputText
+              placeholder="Search with Employee Name"
+              [(ngModel)]="employeeNameToSearch"
+              (ngModelChange)="
+                inputValueChangeEvent('employeeId', employeeNameToSearch)
+              "
+              (keyup.enter)="filterWithEmployeeName()"
+            />
+            <button
+              type="button"
+              pButton
+              icon="pi pi-search"
+              class="p-button-primary"
+              [disabled]="!employeeNameToSearch"
+              (click)="filterWithEmployeeName()"
+            ></button>
+          </div>
+        </div>
+        <div class="col-md-4 mt-1 mb-1 no-padding-small">
+          <!-- <p-dropdown
+            [options]="years"
+            [(ngModel)]="selectedYear"
+            [style]="{ width: '100%' }"
+            (onChange)="loadIncentivesByYear()"
+            placeholder="Select Year"
+          >
+          </p-dropdown> -->
+        </div>
+        <div class="col-md-4 mt-1 mb-1 no-padding-small text-right">
+          <div class="d-flex">
+            <div class="flex-grow-1 me-2"></div>
+            <div class="d-flex align-items-center pointer-cursor">
+              <button
+                pButton
+                pRipple
+                type="button"
+                pTooltip="Add Incentive"
+                tooltipPosition="top"
+                class="p-button-primary"
+                icon="fa fa-plus"
+                (click)="addIncentive()"
+              >
+                &nbsp;Add Incentive
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th pSortableColumn="incentiveId">
+          Incentive Id <p-sortIcon field="incentiveId"></p-sortIcon>
+        </th>
+        <th pSortableColumn="employeeName">
+          Employee Name <p-sortIcon field="employeeName"></p-sortIcon>
+        </th>
+        <th pSortableColumn="incentiveApplicableMonth">
+          Applicable Month
+          <p-sortIcon field="incentiveApplicableMonth"></p-sortIcon>
+        </th>
+        <th pSortableColumn="incentiveAmount">
+          Incentive Amount <p-sortIcon field="incentiveAmount"></p-sortIcon>
+        </th>
+        <th pSortableColumn="createdOn">
+          created Date <p-sortIcon field="createdOn"></p-sortIcon>
+        </th>
+
+        <th>Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-incentive>
+      <tr>
+        <td>
+          <span
+            class="table-column-data"
+            *ngIf="incentive.incentiveId; else noData"
+            >{{ incentive.incentiveId }}</span
+          >
+        </td>
+        <td>
+          <b>
+            <span
+              class="table-column-data"
+              *ngIf="incentive.employeeName; else noData"
+              >{{ incentive.employeeName | capitalizeFirst }}</span
+            >
+          </b>
+        </td>
+        <td>
+          <span
+            class="table-column-data"
+            *ngIf="incentive.incentiveApplicableMonth; else noData"
+            >{{ incentive.incentiveApplicableMonth | capitalizeFirst }}</span
+          >
+        </td>
+
+        <td>
+          <span
+            class="table-column-data"
+            *ngIf="incentive.incentiveAmount; else noData"
+            >{{ incentive.incentiveAmount | capitalizeFirst }}</span
+          >
+        </td>
+
+        <td>
+          <span
+            class="table-column-data"
+            *ngIf="incentive.createdOn; else noData"
+            >{{ incentive.createdOn | date }}</span
+          >
+        </td>
+
+        <td>
+          <div class="text-center">
+            <div class="d-flex">
+              <button
+                pButton
+                pRipple
+                type="button"
+                pTooltip="Update"
+                class="p-button-info me-2 update-btn"
+                icon="fa fa-pen-to-square"
+                (click)="updateIncentive(incentive.incentiveId)"
+              ></button>
+              <button
+                *ngIf="userDetails?.designation == 4"
+                pButton
+                type="button"
+                icon="fa fa-trash"
+                pTooltip="Delete"
+                class="p-button-danger me-2 delete-btn"
+                (click)="confirmDelete(incentive.incentiveId)"
+              ></button>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr class="text-center">
+        <td colspan="10" class="text-center fw-bold">
+          <img
+            src="../../../assets/images/menu/nodata.gif"
+            width="200"
+            height="200"
+          />
+          <p>No incentives Found</p>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+<ng-template #noData> - </ng-template>
+<footer class="p-2 text-center text-lg-start mt-3" style="color: #878a99">
+  <div class="text-center mb-3 fw-bold">
+    © 2024 <span style="color: #1e4079">The</span>&nbsp;<b
+      style="color: #51c297"
+      >Fintalk</b
+    >. | All Rights Reserved
+  </div>
+</footer>
