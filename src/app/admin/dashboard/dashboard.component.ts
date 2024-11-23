@@ -154,7 +154,10 @@ export class DashboardComponent implements OnInit {
         displayName: 'Users',
         count: this.totalUsersCount,
         routerLink: 'users',
-        condition: true,
+        // condition: true,
+        condition:
+          this.userDetails?.designation == 1 ||
+          this.userDetails?.designation == 4,
       },
       // {
       //   name: 'reports',

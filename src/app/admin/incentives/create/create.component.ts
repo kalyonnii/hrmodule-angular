@@ -140,8 +140,11 @@ export class CreateComponent implements OnInit {
     }
   }
 
-  loadEmployees(filter: any = { 'employeeInternalStatus-eq': 1 }) {
+  loadEmployees(filter: any = {}) {
     this.loading = true;
+    if (this.actionType === 'create') {
+      filter['employeeInternalStatus-eq'] = 1;
+    }
     this.employeesService.getEmployees(filter).subscribe(
       (response: any) => {
         this.employees = response;
@@ -178,7 +181,7 @@ export class CreateComponent implements OnInit {
       {
         label: 'Incentive Applicable Month',
         controlName: 'incentiveApplicableMonth',
-        type: 'text',
+        type: 'calendar',
         required: true,
       },
     ];
@@ -255,7 +258,9 @@ export class CreateComponent implements OnInit {
       employeeName: formValues.employeeName,
       employeeId: formValues.employeeId,
       incentiveAmount,
-      incentiveApplicableMonth: formValues.incentiveApplicableMonth,
+      incentiveApplicableMonth: formValues.incentiveApplicableMonth
+        ? this.moment(formValues.incentiveApplicableMonth).format('YYYY-MM-DD')
+        : null,
       firstMonthFiles:
         this.firstMonthFiles && this.firstMonthFiles.length > 0
           ? formatMonthFiles(this.firstMonthFiles)

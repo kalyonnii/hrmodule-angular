@@ -12,7 +12,8 @@
               Welcome Back,
               <span style="color: #8cb5fe"
                 ><b
-                  >{{ userDetails.firstName }} {{ userDetails.lastName }}!</b
+                  >{{ userDetails.firstName | capitalizeFirst }}
+                  {{ userDetails.lastName | capitalizeFirst }}!</b
                 ></span
               >
             </h4>

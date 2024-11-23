@@ -7,6 +7,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { ButtonModule } from 'primeng/button';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
+import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
 
 @NgModule({
   declarations: [SidebarMenuComponent],
@@ -14,6 +15,7 @@ import { LazyLoadImageModule } from 'ng-lazyload-image';
     CommonModule,
     RouterModule,
     SidebarModule,
+    CapitalizeFirstPipe,
     TooltipModule,
     LazyLoadImageModule,
     ButtonModule,

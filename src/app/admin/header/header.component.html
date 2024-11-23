@@ -30,7 +30,7 @@
                 </div>
                 <div>
                   <div class="text-primary fw-bold text-capitalize">
-                    {{ userDetails.username }}
+                    {{ userDetails.username | capitalizeFirst }}
                   </div>
                   <div class="text-capitalize">
                     {{ userDetails.designationName }}
@@ -41,13 +41,13 @@
                 <div class="info-line">
                   <div class="label me-2">First Name&nbsp;:</div>
                   <div class="value">
-                    {{ userDetails.firstName }}
+                    {{ userDetails.firstName | capitalizeFirst }}
                   </div>
                 </div>
                 <div class="info-line">
                   <div class="label me-2">Last Name&nbsp;:</div>
                   <div class="value">
-                    {{ userDetails.lastName }}
+                    {{ userDetails.lastName | capitalizeFirst }}
                   </div>
                 </div>
                 <div class="info-line">
@@ -95,7 +95,7 @@
             }}
           </button>
           <p class="profile text-capitalize">
-            {{ userDetails.username }}
+            {{ userDetails.username | capitalizeFirst }}
           </p>
         </div>
       </div>
