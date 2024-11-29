@@ -75,18 +75,18 @@
         </div>
         <div class="col-md-4 mt-1 mb-1 no-padding-small">
           <p-calendar
-          [(ngModel)]="selectedMonth"
-          [showIcon]="true"
-          view="month"
-          [monthNavigator]="true"
-          [yearNavigator]="true"
-          [yearRange]="'-10:+10'"
-          dateFormat="yy-mm"
-          appendTo="body"
-          [style]="{ width: '100%' }"
-          (ngModelChange)="onDateChange()"
-          [placeholder]="'Select Month and Year'"
-        ></p-calendar>
+            [(ngModel)]="selectedMonth"
+            [showIcon]="true"
+            view="month"
+            [monthNavigator]="true"
+            [yearNavigator]="true"
+            [yearRange]="'-10:+10'"
+            dateFormat="yy-mm"
+            appendTo="body"
+            [style]="{ width: '100%' }"
+            (ngModelChange)="onDateChange()"
+            [placeholder]="'Select Month and Year'"
+          ></p-calendar>
         </div>
         <div class="col-md-4 mt-1 mb-1 no-padding-small text-right">
           <div class="d-flex">
@@ -136,7 +136,6 @@
         <th>Status</th>
       </tr>
     </ng-template>
-
     <ng-template pTemplate="body" let-attendance>
       <tr>
         <td>{{ attendance.attendanceId }}</td>
@@ -184,7 +183,6 @@
         </td>
       </tr>
     </ng-template>
-
     <ng-template pTemplate="emptymessage">
       <tr>
         <td colspan="10" class="text-center fw-bold">

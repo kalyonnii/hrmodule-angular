@@ -6,7 +6,6 @@ import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
-import { ConfirmationService } from 'primeng/api';
 import { TooltipModule } from 'primeng/tooltip';
 import { PreloaderModule } from 'src/app/preloader/preloader.module';
 import { FormsModule } from '@angular/forms';

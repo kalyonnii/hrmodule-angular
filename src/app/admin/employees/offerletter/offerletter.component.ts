@@ -65,12 +65,10 @@ export class OfferletterComponent {
 
   generatePDF() {
     this.loading = true;
-
     const pageElements = document.querySelectorAll('.page');
     const pdf = new jsPDF('p', 'mm', 'a4');
     const imgWidth = 190;
     const pageHeight = 297;
-
     const addPagesToPDF = async () => {
       for (let i = 0; i < pageElements.length; i++) {
         const pageElement = pageElements[i];
@@ -84,7 +82,6 @@ export class OfferletterComponent {
         });
       }
     };
-
     addPagesToPDF()
       .then(() => {
         pdf.save('Offerletter.pdf');
@@ -95,7 +92,6 @@ export class OfferletterComponent {
         this.loading = false;
       });
   }
-
   getOfferLetterDate(joiningDate: string): Date {
     const date = new Date(joiningDate);
     date.setDate(date.getDate() - 2);

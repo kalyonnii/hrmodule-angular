@@ -22,11 +22,43 @@
             <div class="mt-2 pointer-cursor text-capitalize">
               <div class="d-flex p-3 light-blue-background">
                 <div class="me-2">
-                  <img
+                  <!-- <img
                     src="../../../assets/images/profile/user.png"
                     width="50px"
                     class="rounded-circle"
-                  />
+                  /> -->
+                  <div class="d-flex justify-content-center align-items-center">
+                    <ng-container
+                      *ngIf="
+                        userDetails &&
+                        userDetails.userImage &&
+                        userDetails.userImage.length > 0
+                      "
+                    >
+                      <ng-container>
+                        <a
+                          [href]="'//' + userDetails.userImage[0]"
+                          target="_blank"
+                        >
+                          <img
+                            [src]="'//' + userDetails.userImage[0]"
+                            alt="Image"
+                            class="employeeImage"
+                            style="height: 50px; width: 50px"
+                          />
+                        </a>
+                      </ng-container>
+                    </ng-container>
+                    <div *ngIf="userDetails && userDetails.userImage == null">
+                      <tr class="text-center">
+                        <img
+                          class="employeeImage"
+                          style="height: 50px; width: 50px"
+                          src="../../../assets/images/profile/user.png"
+                        />
+                      </tr>
+                    </div>
+                  </div>
                 </div>
                 <div>
                   <div class="text-primary fw-bold text-capitalize">
@@ -56,7 +88,6 @@
                     {{ userDetails.email }}
                   </div>
                 </div>
-
                 <div class="info-line">
                   <div class="label me-2">Mobile&nbsp;:</div>
                   <div class="value">
@@ -80,7 +111,7 @@
           class="d-flex profile1 align-items-center justify-content-center"
           (click)="sidebarVisible = true"
         >
-          <button
+          <!-- <button
             pButton
             pRipple
             type="button"
@@ -93,7 +124,36 @@
                 ? (userDetails.username.charAt(0) | capitalizeFirst)
                 : ""
             }}
-          </button>
+          </button> -->
+          <div class="d-flex justify-content-center align-items-center me-2">
+            <ng-container
+              *ngIf="
+                userDetails &&
+                userDetails.userImage &&
+                userDetails.userImage.length > 0
+              "
+            >
+              <ng-container>
+                <a [href]="'//' + userDetails.userImage[0]" target="_blank">
+                  <img
+                    [src]="'//' + userDetails.userImage[0]"
+                    alt="Image"
+                    class="employeeImage"
+                    style="height: 45px; width: 45px"
+                  />
+                </a>
+              </ng-container>
+            </ng-container>
+            <div *ngIf="userDetails && userDetails.userImage == null">
+              <tr class="text-center">
+                <img
+                  class="employeeImage"
+                  style="height: 45px; width: 50px"
+                  src="../../../assets/images/profile/user.png"
+                />
+              </tr>
+            </div>
+          </div>
           <p class="profile text-capitalize">
             {{ userDetails.username | capitalizeFirst }}
           </p>

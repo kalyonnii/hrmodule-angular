@@ -52,12 +52,20 @@ export class AttendanceComponent implements OnInit {
     let userDetails =
       this.localStorageService.getItemFromLocalStorage('userDetails');
     this.userDetails = userDetails.user;
+    const storedDate = localStorage.getItem('selectedAttendanceDate');
+    if (storedDate) {
+      this.selectedDate = storedDate;
+      this.filterByDate();
+    }
+    const storedMonth = localStorage.getItem('selectedAttendanceMonth');
+    if (storedMonth) {
+      this.selectedMonth = JSON.parse(storedMonth);
+    }
   }
 
   loadAttendance(event) {
     this.currentTableEvent = event;
     let api_filter = this.employeesService.setFiltersFromPrimeTable(event);
-
     if (this.selectedMonth) {
       console.log(this.selectedMonth);
       this.selectedMonth = this.moment(this.selectedMonth, 'YYYY-MM').format(
@@ -80,18 +88,39 @@ export class AttendanceComponent implements OnInit {
       this.getAttendance(api_filter);
     }
   }
-  onDateChange() {
+  // onDateChange() {
+  //   this.loadAttendance(this.currentTableEvent);
+  // }
+  onDateChange(): void {
+    const monthValue = this.moment(this.selectedMonth, 'YYYY-MM').format(
+      'YYYY-MM'
+    );
+    localStorage.setItem('selectedAttendanceMonth', JSON.stringify(monthValue));
     this.loadAttendance(this.currentTableEvent);
   }
-  filterByDate() {
+  // filterByDate() {
+  //   if (this.selectedDate) {
+  //     console.log('called');
+  //     const formattedDate = this.moment(this.selectedDate).format('YYYY-MM-DD');
+  //     console.log(formattedDate);
+  //     const searchFilter = { 'attendanceDate-like': formattedDate };
+  //     this.applyFilters(searchFilter);
+  //   } else {
+  //     this.searchFilter = {};
+  //     this.loadAttendance(this.currentTableEvent);
+  //   }
+  // }
+
+  filterByDate(): void {
     if (this.selectedDate) {
-      console.log('called');
       const formattedDate = this.moment(this.selectedDate).format('YYYY-MM-DD');
-      console.log(formattedDate);
+      console.log('Formatted Date:', formattedDate);
+      localStorage.setItem('selectedAttendanceDate', formattedDate);
       const searchFilter = { 'attendanceDate-like': formattedDate };
       this.applyFilters(searchFilter);
     } else {
       this.searchFilter = {};
+      localStorage.removeItem('selectedAttendanceDate');
       this.loadAttendance(this.currentTableEvent);
     }
   }
@@ -111,7 +140,6 @@ export class AttendanceComponent implements OnInit {
       }
     );
   }
-
   getAttendance(filter = {}) {
     this.loading = true;
     this.employeesService.getAttendance(filter).subscribe(
@@ -126,7 +154,6 @@ export class AttendanceComponent implements OnInit {
       }
     );
   }
-
   updateAttendance(attendanceId) {
     this.routingService.handleRoute('attendance/update/' + attendanceId, null);
   }
@@ -140,7 +167,6 @@ export class AttendanceComponent implements OnInit {
       },
     });
   }
-
   deleteAttendance(attendanceId) {
     this.loading = true;
     this.employeesService.deleteAttendance(attendanceId).subscribe(
@@ -166,34 +192,6 @@ export class AttendanceComponent implements OnInit {
   ViewAttendance(attendanceId) {
     this.routingService.handleRoute('attendance/view/' + attendanceId, null);
   }
-
-  // attendencecount() {
-  //   const currentDate = new Date();
-  //   const currentMonth = currentDate.getMonth() + 1;
-  //   const currentYear = currentDate.getFullYear();
-  //   const attendanceCount = {};
-  //   this.attendance.forEach((record) => {
-  //     const attendanceDate = new Date(record.attendanceDate);
-  //     const attendanceMonth = attendanceDate.getMonth() + 1;
-  //     const attendanceYear = attendanceDate.getFullYear();
-  //     if (attendanceMonth === currentMonth && attendanceYear === currentYear) {
-  //       record.attendanceData.forEach((entry) => {
-  //         const { employeeId, status } = entry;
-  //         if (!attendanceCount[employeeId]) {
-  //           attendanceCount[employeeId] = {
-  //             Present: 0,
-  //             Absent: 0,
-  //             'Half-day': 0,
-  //             Late: 0,
-  //           };
-  //         }
-  //         attendanceCount[employeeId][status]++;
-  //       });
-  //     }
-  //   });
-  //   console.log(attendanceCount);
-  // }
-
   goBack() {
     this.location.back();
   }

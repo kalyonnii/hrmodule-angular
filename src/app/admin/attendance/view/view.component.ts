@@ -53,7 +53,6 @@ export class ViewComponent implements OnInit {
           });
       }
     });
-
     this.breadCrumbItems = [
       {
         icon: 'fa fa-house',
@@ -69,11 +68,9 @@ export class ViewComponent implements OnInit {
       { label: 'View Attendance' },
     ];
   }
-
   ngOnInit(): void {
     this.updateCountsAnalytics();
   }
-
   updateCountsAnalytics() {
     this.countsAnalytics = [
       {
@@ -117,7 +114,6 @@ export class ViewComponent implements OnInit {
       },
     ];
   }
-
   calculateAttendanceCounts() {
     this.totalPresentCount =
       this.totalAbsentCount =
@@ -145,7 +141,6 @@ export class ViewComponent implements OnInit {
     );
     this.updateCountsAnalytics();
   }
-
   loadEmployees(event) {
     this.currentTableEvent = event;
     console.log(event.first);
@@ -161,7 +156,6 @@ export class ViewComponent implements OnInit {
       this.getEmployees(api_filter);
     }
   }
-
   getEmployeesCount(filter = {}) {
     this.employeesService.getEmployeesCount(filter).subscribe(
       (response: any) => {
@@ -196,7 +190,6 @@ export class ViewComponent implements OnInit {
       this.employeeDetails
     );
   }
-
   getEmployees(filter = {}) {
     this.loading = true;
     this.employeesService.getEmployees(filter).subscribe(
@@ -212,7 +205,6 @@ export class ViewComponent implements OnInit {
       }
     );
   }
-
   getAttendanceById(filter = {}) {
     return new Promise((resolve, reject) => {
       this.loading = true;
@@ -232,7 +224,6 @@ export class ViewComponent implements OnInit {
         );
     });
   }
-
   goBack() {
     this.location.back();
   }

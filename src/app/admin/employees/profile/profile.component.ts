@@ -54,7 +54,6 @@ export class ProfileComponent implements OnInit {
     { id: 'attendanceDetails', label: 'Attendance Details' },
     { id: 'otherDetails', label: 'Other Details' },
   ];
-
   attendanceStatusCounts: { [key: string]: number } = {
     Present: 0,
     Absent: 0,
@@ -63,7 +62,6 @@ export class ProfileComponent implements OnInit {
   };
   resignationForm: UntypedFormGroup;
   terminationForm: UntypedFormGroup;
-
   constructor(
     private location: Location,
     private confirmationService: ConfirmationService,
@@ -97,7 +95,6 @@ export class ProfileComponent implements OnInit {
       { label: 'Profile' },
     ];
   }
-
   ngOnInit(): void {
     const userDetails =
       this.localStorageService.getItemFromLocalStorage('userDetails');
@@ -132,7 +129,6 @@ export class ProfileComponent implements OnInit {
             this.selectedFiles['terminationLetter']['uploadedFiles'] =
               this.employees.terminationLetter;
           }
-
           console.log(this.selectedFiles);
         }
       });
@@ -190,7 +186,6 @@ export class ProfileComponent implements OnInit {
         required: true,
       },
     ];
-
     this.terminationFormFields = [
       {
         label: 'Date',
@@ -212,7 +207,6 @@ export class ProfileComponent implements OnInit {
         uploadFunction: 'uploadFiles',
         acceptedFileTypes: '*/*',
       },
-
       {
         label: 'Dues',
         controlName: 'anyDues',
@@ -243,7 +237,6 @@ export class ProfileComponent implements OnInit {
       email: employees.emailAddress,
       mobile: this.userDetails.phoneNumber,
     };
-
     this.employeesService.sendTerminationmail(emailData).subscribe(
       (data) => {
         if (data) {
@@ -275,9 +268,6 @@ export class ProfileComponent implements OnInit {
       experienceLetter: this.getFileData('experienceLetter'),
       terminationLetter: this.getFileData('terminationLetter'),
     };
-
-    // this.sendEmail(formData);
-
     console.log('formData', formData);
     this.loading = true;
     this.employeesService.updateEmployee(this.employeeId, formData).subscribe(
@@ -322,7 +312,6 @@ export class ProfileComponent implements OnInit {
     }
     return '';
   }
-
   changeEmployeeStatus(employeeId, statusId) {
     this.loading = true;
     this.employeesService.changeEmployeeStatus(employeeId, statusId).subscribe(
@@ -343,7 +332,6 @@ export class ProfileComponent implements OnInit {
     this.year = selectedDate.getFullYear();
     this.getAttendance();
   }
-
   getAttendance() {
     this.loading = true;
     this.employeesService.getAttendance().subscribe(
@@ -363,7 +351,6 @@ export class ProfileComponent implements OnInit {
       }
     );
   }
-
   getAttendanceCountsByMonth(attendanceRecords, month, year, employeeId) {
     this.attendanceStatusCounts = {
       Present: 0,
@@ -389,25 +376,20 @@ export class ProfileComponent implements OnInit {
     });
     console.log('Attendance Status Counts:', this.attendanceStatusCounts);
   }
-
   selectSection(section: string) {
     this.activeSection = section;
   }
-
   updateEmployee(employeeId) {
     this.routingService.handleRoute('employees/update/' + employeeId, null);
   }
-
   isImageFile(file: string): boolean {
     const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
     const fileExtension = file.split('.').pop()?.toLowerCase();
     return !!fileExtension && imageExtensions.includes(fileExtension);
   }
-
   getFileIcon(fileType) {
     return this.employeesService.getFileIcon(fileType);
   }
-
   getEmployeeById(id) {
     return new Promise((resolve, reject) => {
       this.loading = true;
@@ -425,7 +407,6 @@ export class ProfileComponent implements OnInit {
       );
     });
   }
-
   uploadFiles(fileType, acceptableTypes, index?) {
     console.log(acceptableTypes);
     let data = {
@@ -507,7 +488,6 @@ export class ProfileComponent implements OnInit {
         );
     }
   }
-
   confirmDelete(file, controlName, docIndex?, fileIndex?) {
     console.log('Before Deletion:', this.selectedFiles);
     this.confirmationService.confirm({
@@ -519,7 +499,6 @@ export class ProfileComponent implements OnInit {
       },
     });
   }
-
   deleteFile(
     fileUrl: string,
     fileType: string,
@@ -555,7 +534,6 @@ export class ProfileComponent implements OnInit {
               'No uploaded files found for the specified file type.'
             );
           }
-
           this.toastService.showSuccess('File Deleted Successfully');
         } else {
           console.error('Error deleting file:', response.error);

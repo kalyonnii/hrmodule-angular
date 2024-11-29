@@ -18,12 +18,10 @@ export class EmployeesService {
   ) {
     this.moment = this.dateTimeProcessor.getMoment();
   }
-
   getOfferLetterContent() {
     const url = 'https://s3.thefintalk.in/offerletterformat/index.html';
     return this.serviceMeta.httpGet(url, null);
   }
-
   getOfferLetterTemplateHtml(
     templateName: string,
     data: any
@@ -43,7 +41,6 @@ export class EmployeesService {
       );
     });
   }
-
   renderTemplate(htmlString: string, data: any): string {
     const processedHtml = htmlString.replace(/{{(.*?)}}/g, (match, key) => {
       const value = data[key.trim()];
@@ -58,28 +55,22 @@ export class EmployeesService {
         element.remove();
       }
     });
-
     return tempDiv.innerHTML;
   }
-
   //NODE MAILER
-
   sendTerminationmail(data) {
     const url = 'mail/terminationmail';
     return this.serviceMeta.httpPost(url, data);
   }
-
   //employee
   createEmployee(data) {
     const url = 'employees';
     return this.serviceMeta.httpPost(url, data);
   }
-
   createEmployeeFromInterview(data) {
     const url = 'employees/interviewtoemployee';
     return this.serviceMeta.httpPost(url, data);
   }
-
   updateEmployee(employeeId, data) {
     const url = 'employees/' + employeeId;
     return this.serviceMeta.httpPut(url, data);
@@ -104,13 +95,11 @@ export class EmployeesService {
     const url = 'employees/total';
     return this.serviceMeta.httpGet(url, null, filter);
   }
-
   //HOLIDAYS
   createHoliday(data) {
     const url = 'holidays';
     return this.serviceMeta.httpPost(url, data);
   }
-
   updateHoliday(employeeId, data) {
     const url = 'holidays/' + employeeId;
     return this.serviceMeta.httpPut(url, data);
@@ -119,7 +108,6 @@ export class EmployeesService {
     const url = 'holidays';
     return this.serviceMeta.httpGet(url, null, filter);
   }
-
   getHolidayById(employeeId, filter = {}) {
     const url = 'holidays/' + employeeId;
     return this.serviceMeta.httpGet(url, null, filter);
@@ -132,13 +120,11 @@ export class EmployeesService {
     const url = 'holidays/total';
     return this.serviceMeta.httpGet(url, null, filter);
   }
-
   //INCENTIVES
   createIncentive(data) {
     const url = 'incentives';
     return this.serviceMeta.httpPost(url, data);
   }
-
   updateIncentive(incentiveId, data) {
     const url = 'incentives/' + incentiveId;
     return this.serviceMeta.httpPut(url, data);
@@ -147,7 +133,6 @@ export class EmployeesService {
     const url = 'incentives';
     return this.serviceMeta.httpGet(url, null, filter);
   }
-
   getIncentiveById(incentiveId, filter = {}) {
     const url = 'incentives/' + incentiveId;
     return this.serviceMeta.httpGet(url, null, filter);
@@ -160,13 +145,11 @@ export class EmployeesService {
     const url = 'incentives/total';
     return this.serviceMeta.httpGet(url, null, filter);
   }
-
   //USERS
   createUser(data) {
     const url = 'users';
     return this.serviceMeta.httpPost(url, data);
   }
-
   updateUser(userId, data) {
     const url = 'users/' + userId;
     return this.serviceMeta.httpPut(url, data);
@@ -175,7 +158,6 @@ export class EmployeesService {
     const url = 'users';
     return this.serviceMeta.httpGet(url, null, filter);
   }
-
   getUserById(userId, filter = {}) {
     const url = 'users/' + userId;
     return this.serviceMeta.httpGet(url, null, filter);
@@ -188,24 +170,19 @@ export class EmployeesService {
     const url = 'users/total';
     return this.serviceMeta.httpGet(url, null, filter);
   }
-
   //REPORTS
-
   exportEmployees(filter = {}) {
     const url = 'reports/employees';
     return this.serviceMeta.httpGet(url, null, filter);
   }
-
   exportInterviews(filter = {}) {
     const url = 'reports/interviews';
     return this.serviceMeta.httpGet(url, null, filter);
   }
-
   exportSalarySheet(filter = {}) {
     const url = 'reports/salarysheet';
     return this.serviceMeta.httpGet(url, null, filter);
   }
-
   exportLeaves(filter = {}) {
     const url = 'reports/leaves';
     return this.serviceMeta.httpGet(url, null, filter);
@@ -213,6 +190,11 @@ export class EmployeesService {
 
   exportHolidays(filter = {}) {
     const url = 'reports/holidays';
+    return this.serviceMeta.httpGet(url, null, filter);
+  }
+
+  exportIncentives(filter = {}) {
+    const url = 'reports/incentives';
     return this.serviceMeta.httpGet(url, null, filter);
   }
 

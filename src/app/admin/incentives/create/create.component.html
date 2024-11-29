@@ -61,13 +61,15 @@
                     autocomplete="off"
                   />
                   <p-calendar
-                    *ngSwitchCase="'calendar'"
+                    *ngSwitchCase="'month'"
                     [formControlName]="field.controlName"
                     [placeholder]="'Select ' + field.label"
                     [showIcon]="true"
                     appendTo="body"
-                    dateFormat="yy-mm-dd"
+                    view="month"
                     [showButtonBar]="true"
+                    dateFormat="mm/yy"
+                    appendTo="body"
                   ></p-calendar>
                   <p-dropdown
                     *ngSwitchCase="'dropdown'"
@@ -92,7 +94,6 @@
             [activeItem]="activeItem"
             (activeItemChange)="onActiveItemChange($event)"
           ></p-tabMenu>
-
           <div *ngIf="activeItem && activeItem.name">
             <div *ngFor="let monthFiles of monthFileGroups">
               <ng-container *ngIf="activeItem.name === monthFiles.name">
@@ -146,14 +147,18 @@
                       <label>Disbursed Month&nbsp;</label>
                       <div class="d-flex">
                         <p-calendar
-                          placeholder="Select Disbursed Month"
-                          appendTo="body"
-                          [ngModelOptions]="{ standalone: true }"
-                          [showIcon]="true"
-                          dateFormat="yy-mm-dd"
-                          class="me-2"
                           [(ngModel)]="loans.disbursedMonth"
-                          [showButtonBar]="true"
+                          [showIcon]="true"
+                          view="month"
+                          [monthNavigator]="true"
+                          [ngModelOptions]="{ standalone: true }"
+                          [yearNavigator]="true"
+                          [yearRange]="'-10:+10'"
+                          dateFormat="mm/yy"
+                          appendTo="body"
+                          class="me-2"
+                          [style]="{ width: '100%' }"
+                          placeholder="Select Disbursed Month"
                         ></p-calendar>
                         <button
                           pButton
@@ -198,7 +203,6 @@
     </div>
   </form>
 </div>
-
 <footer class="p-2 text-center text-lg-start mt-3" style="color: #878a99">
   <div class="text-center mb-3 fw-bold">
     © 2024 <span style="color: #1e4079">The</span>&nbsp;<b

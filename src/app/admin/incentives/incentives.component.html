@@ -28,12 +28,175 @@
 <div *ngIf="loading">
   <app-preloader></app-preloader>
 </div>
-
+<p-dialog
+  [(visible)]="isDialogVisible"
+  [modal]="true"
+  [closable]="true"
+  [responsive]="true"
+  class="dialogbox"
+  [style]="{ width: '50vw' }"
+  header="Incentive Details"
+  (onHide)="clearDialog()"
+>
+  <div *ngIf="selectedIncentive" class="text-capitalize">
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-id-badge"></i></span>
+      <div class="label d-flex justify-content-between">
+        Incentive Id<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{
+          selectedIncentive.incentiveId ? selectedIncentive.incentiveId : "-"
+        }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-user-alt"></i></span>
+      <div class="label d-flex justify-content-between">
+        Employee Name<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        <b>
+          {{
+            selectedIncentive.employeeName
+              ? (selectedIncentive.employeeName | capitalizeFirst)
+              : "-"
+          }}
+        </b>
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-calendar-alt"></i></span>
+      <div class="label d-flex justify-content-between">
+        Incentive Applicable Month<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{ getFormattedMonthYear(selectedIncentive.incentiveApplicableMonth) }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-money-bill-wave"></i></span>
+      <div class="label d-flex justify-content-between">
+        Incentive Amount<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{
+          selectedIncentive.incentiveAmount
+            ? selectedIncentive.incentiveAmount
+            : "-"
+        }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-user"></i></span>
+      <div class="label d-flex justify-content-between">
+        Created By<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{
+          selectedIncentive.createdBy
+            ? (selectedIncentive.createdBy | capitalizeFirst)
+            : "-"
+        }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-calendar-alt"></i></span>
+      <div class="label d-flex justify-content-between">
+        Created On<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{
+          selectedIncentive.createdOn
+            ? (selectedIncentive.createdOn | date)
+            : "-"
+        }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-user-tag"></i></span>
+      <div class="label d-flex justify-content-between">
+        Last Updated By<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{
+          selectedIncentive.lastUpdatedBy
+            ? (selectedIncentive.lastUpdatedBy | capitalizeFirst)
+            : "-"
+        }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-calendar-check"></i></span>
+      <div class="label d-flex justify-content-between">
+        Last Updated On<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{
+          selectedIncentive.lastUpdatedOn
+            ? (selectedIncentive.lastUpdatedOn | date : "MMM d, y, h:mm a")
+            : "-"
+        }}
+      </div>
+    </div>
+    <p-tabMenu
+      [model]="items"
+      class="tabmenudesign"
+      [activeItem]="activeItem"
+      (activeItemChange)="onActiveItemChange($event)"
+    >
+    </p-tabMenu>
+    <ng-container *ngIf="selectedIncentive">
+      <div *ngIf="getFilesForActiveTab().length > 0; else noFilesFound">
+        <div
+          *ngFor="let loan of getFilesForActiveTab(); let i = index"
+          class="business-details mt-3"
+        >
+          <div class="label mb-2" style="text-decoration: underline">
+            <b>Disbursed File {{ i + 1 }}</b>
+          </div>
+          <div class="info-line">
+            <div class="label d-flex justify-content-between">
+              Disbursed File Name <b>:</b>
+            </div>
+            <div class="value">{{ loan.fileName | capitalizeFirst }}</div>
+          </div>
+          <div class="info-line">
+            <div class="label d-flex justify-content-between">
+              Disbursed Amount <b>:</b>
+            </div>
+            <div class="value">{{ loan.disbursedAmount }}</div>
+          </div>
+          <div class="info-line">
+            <div class="label d-flex justify-content-between">
+              Disbursed Month <b>:</b>
+            </div>
+            <div class="value">
+              {{ getFormattedMonthYear(loan.disbursedMonth) }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <ng-template #noFilesFound>
+        <div class="text-center">
+          <img
+            src="assets/images/menu/nodata.gif"
+            alt="No Data"
+            width="200"
+            height="200"
+            class="no-data-image"
+          />
+          <p>No Files Found</p>
+        </div>
+      </ng-template>
+    </ng-container>
+  </div>
+</p-dialog>
 <div class="text-capitalize table-card">
   <p-table
     #incentivesTable
     [value]="incentives"
-    [sortOrder]="1"
+    [sortOrder]="-1"
     [sortField]="'createdOn'"
     [lazy]="true"
     (onLazyLoad)="loadIncentives($event)"
@@ -75,14 +238,19 @@
           </div>
         </div>
         <div class="col-md-4 mt-1 mb-1 no-padding-small">
-          <!-- <p-dropdown
-            [options]="years"
-            [(ngModel)]="selectedYear"
+          <p-calendar
+            [(ngModel)]="selectedDate"
+            [showIcon]="true"
+            view="month"
+            [monthNavigator]="true"
+            [yearNavigator]="true"
+            [yearRange]="'-10:+10'"
+            dateFormat="mm/yy"
+            appendTo="body"
             [style]="{ width: '100%' }"
-            (onChange)="loadIncentivesByYear()"
-            placeholder="Select Year"
-          >
-          </p-dropdown> -->
+            (ngModelChange)="onDateChange($event)"
+            [placeholder]="'Select Month and Year'"
+          ></p-calendar>
         </div>
         <div class="col-md-4 mt-1 mb-1 no-padding-small text-right">
           <div class="d-flex">
@@ -123,7 +291,6 @@
         <th pSortableColumn="createdOn">
           created Date <p-sortIcon field="createdOn"></p-sortIcon>
         </th>
-
         <th>Actions</th>
       </tr>
     </ng-template>
@@ -149,10 +316,11 @@
           <span
             class="table-column-data"
             *ngIf="incentive.incentiveApplicableMonth; else noData"
-            >{{ incentive.incentiveApplicableMonth | date }}</span
+            >{{
+              getFormattedMonthYear(incentive.incentiveApplicableMonth)
+            }}</span
           >
         </td>
-
         <td>
           <span
             class="table-column-data"
@@ -160,7 +328,6 @@
             >{{ incentive.incentiveAmount | capitalizeFirst }}</span
           >
         </td>
-
         <td>
           <span
             class="table-column-data"
@@ -168,7 +335,6 @@
             >{{ incentive.createdOn | date }}</span
           >
         </td>
-
         <td>
           <div class="text-center">
             <div class="d-flex">
@@ -176,8 +342,17 @@
                 pButton
                 pRipple
                 type="button"
+                pTooltip="View"
+                class="p-button-info me-2 view-btn"
+                icon="fa fa-eye"
+                (click)="showUserDetails(incentive)"
+              ></button>
+              <button
+                pButton
+                pRipple
+                type="button"
                 pTooltip="Update"
-                class="p-button-info me-2 update-btn"
+                class="p-button-success me-2 update-btn"
                 icon="fa fa-pen-to-square"
                 (click)="updateIncentive(incentive.incentiveId)"
               ></button>

@@ -111,7 +111,6 @@ export class CreateComponent {
 
   getEmployees(filter = {}) {
     this.loading = true;
-    // filter['employeeInternalStatus-eq'] = 1;
     if (this.actionType === 'create') {
       filter['employeeInternalStatus-eq'] = 1;
     }
@@ -139,21 +138,18 @@ export class CreateComponent {
         optionLabel: 'employeeName',
         optionValue: 'employeeName',
       },
-
       {
         label: 'Leave From',
         controlName: 'leaveFrom',
         type: 'calendar',
         required: true,
       },
-
       {
         label: 'Leave To',
         controlName: 'leaveTo',
         type: 'calendar',
         required: true,
       },
-
       {
         label: 'Leave Type',
         controlName: 'leaveType',

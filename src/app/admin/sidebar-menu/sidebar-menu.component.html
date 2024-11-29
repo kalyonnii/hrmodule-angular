@@ -69,11 +69,43 @@
             >
               <div class="d-flex">
                 <div class="me-2">
-                  <img
+                  <!-- <img
                     src="../../../assets/images/profile/user.png"
                     width="50px"
                     class="rounded-circle"
-                  />
+                  /> -->
+                  <div class="d-flex justify-content-center align-items-center">
+                    <ng-container
+                      *ngIf="
+                        userDetails &&
+                        userDetails.userImage &&
+                        userDetails.userImage.length > 0
+                      "
+                    >
+                      <ng-container>
+                        <a
+                          [href]="'//' + userDetails.userImage[0]"
+                          target="_blank"
+                        >
+                          <img
+                            [src]="'//' + userDetails.userImage[0]"
+                            alt="Image"
+                            class="employeeImage"
+                            style="height: 50px; width: 50px"
+                          />
+                        </a>
+                      </ng-container>
+                    </ng-container>
+                    <div *ngIf="userDetails && userDetails.userImage == null">
+                      <tr class="text-center">
+                        <img
+                          class="employeeImage"
+                          style="height: 50px; width: 50px"
+                          src="../../../assets/images/profile/user.png"
+                        />
+                      </tr>
+                    </div>
+                  </div>
                 </div>
                 <div>
                   <div class="text-primary fw-bold text-capitalize">

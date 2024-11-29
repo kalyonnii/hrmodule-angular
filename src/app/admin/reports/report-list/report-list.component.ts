@@ -51,6 +51,15 @@ export class ReportListComponent {
       this.localStorageService.getItemFromLocalStorage('userDetails');
     this.userDetails = userDetails.user;
     this.setFilterConfig();
+    const storedReportType = localStorage.getItem('reportType');
+    if (storedReportType) {
+      this.reportTypeToSearch = storedReportType;
+      this.filterWithReportType();
+    }
+    const storedAppliedFilter = localStorage.getItem('reportsAppliedFilter');
+    if (storedAppliedFilter) {
+      this.appliedFilter = JSON.parse(storedAppliedFilter);
+    }
   }
 
   setFilterConfig() {
@@ -157,23 +166,51 @@ export class ReportListComponent {
     );
   }
 
-  filterWithReportType() {
-    let searchFilter = { 'reportType-like': this.reportTypeToSearch };
-    this.applyFilters(searchFilter);
+  // filterWithReportType() {
+  //   let searchFilter = { 'reportType-like': this.reportTypeToSearch };
+  //   this.applyFilters(searchFilter);
+  // }
+
+  filterWithReportType(): void {
+    const reportTypeToSearch =
+      localStorage.getItem('reportType') || this.reportTypeToSearch;
+    if (reportTypeToSearch) {
+      const searchFilter = { 'reportType-like': reportTypeToSearch };
+      this.applyFilters(searchFilter);
+    }
   }
   applyFilters(searchFilter = {}) {
     this.searchFilter = searchFilter;
     console.log(this.currentTableEvent);
     this.loadReports(this.currentTableEvent);
   }
-  inputValueChangeEvent(dataType, value) {
-    if (value == '') {
+  // inputValueChangeEvent(dataType, value) {
+  //   if (value == '') {
+  //     this.searchFilter = {};
+  //     console.log(this.currentTableEvent);
+  //     this.loadReports(this.currentTableEvent);
+  //   }
+  // }
+  inputValueChangeEvent(dataType: string, value: string): void {
+    if (value === '') {
       this.searchFilter = {};
+      localStorage.setItem('reportType', value);
       console.log(this.currentTableEvent);
       this.loadReports(this.currentTableEvent);
+    } else {
+      localStorage.setItem('reportType', value);
     }
   }
-
+  // applyConfigFilters(event) {
+  //   let api_filter = event;
+  //   if (api_filter['reset']) {
+  //     delete api_filter['reset'];
+  //     this.appliedFilter = {};
+  //   } else {
+  //     this.appliedFilter = api_filter;
+  //   }
+  //   this.loadReports(this.currentTableEvent);
+  // }
   applyConfigFilters(event) {
     let api_filter = event;
     if (api_filter['reset']) {
@@ -182,6 +219,10 @@ export class ReportListComponent {
     } else {
       this.appliedFilter = api_filter;
     }
+    localStorage.setItem(
+      'reportsAppliedFilter',
+      JSON.stringify(this.appliedFilter)
+    );
     this.loadReports(this.currentTableEvent);
   }
 

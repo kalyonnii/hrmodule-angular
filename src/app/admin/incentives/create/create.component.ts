@@ -23,7 +23,6 @@ export class CreateComponent implements OnInit {
   actionType: 'create' | 'update' = 'create';
   formFields: any[] = [];
   monthFileGroups: { name: string; label: string; list: any[] }[] = [];
-
   incentiveForm: UntypedFormGroup;
   moment: any;
   activeItem: any;
@@ -35,11 +34,9 @@ export class CreateComponent implements OnInit {
   employees: any[] = [];
   loading = false;
   incentiveData: any;
-
   firstMonthFiles: any[] = [];
   secondMonthFiles: any[] = [];
   thirdMonthFiles: any[] = [];
-
   constructor(
     private location: Location,
     private formBuilder: UntypedFormBuilder,
@@ -52,7 +49,6 @@ export class CreateComponent implements OnInit {
   ) {
     this.moment = this.dateTimeProcessor.getMoment();
     this.initializeBreadcrumb();
-
     this.activatedRoute.params.subscribe((params) => {
       if (params && params['id']) {
         this.incentiveId = params['id'];
@@ -68,7 +64,6 @@ export class CreateComponent implements OnInit {
               incentiveApplicableMonth:
                 this.incentiveData?.incentiveApplicableMonth,
             });
-
             this.firstMonthFiles = this.incentiveData?.firstMonthFiles?.length
               ? [...this.incentiveData.firstMonthFiles]
               : [];
@@ -78,7 +73,6 @@ export class CreateComponent implements OnInit {
             this.thirdMonthFiles = this.incentiveData?.thirdMonthFiles?.length
               ? [...this.incentiveData.thirdMonthFiles]
               : [];
-
             this.monthFileGroups[0].list = this.firstMonthFiles;
             this.monthFileGroups[1].list = this.secondMonthFiles;
             this.monthFileGroups[2].list = this.thirdMonthFiles;
@@ -101,10 +95,15 @@ export class CreateComponent implements OnInit {
     this.breadCrumbItems = [
       {
         icon: 'fa fa-house',
-        label: 'Dashboard',
+        label: ' Dashboard',
         routerLink: '/user/dashboard',
+        queryParams: { v: this.version },
       },
-      { label: 'Holidays', routerLink: '/user/holidays' },
+      {
+        label: 'Incentives',
+        routerLink: '/user/incentives',
+        queryParams: { v: this.version },
+      },
       { label: this.actionType === 'create' ? 'Create' : 'Update' },
     ];
   }
@@ -177,11 +176,10 @@ export class CreateComponent implements OnInit {
         optionLabel: 'employeeName',
         optionValue: 'employeeName',
       },
-
       {
         label: 'Incentive Applicable Month',
         controlName: 'incentiveApplicableMonth',
-        type: 'calendar',
+        type: 'month',
         required: true,
       },
     ];
@@ -222,10 +220,9 @@ export class CreateComponent implements OnInit {
       files.map((file) => ({
         ...file,
         disbursedMonth: file.disbursedMonth
-          ? this.moment(file.disbursedMonth).format('YYYY-MM-DD')
+          ? this.moment(file.disbursedMonth).format('MM/YYYY')
           : null,
       }));
-
     const calculateIncentive = (totalDisbursedAmount: number): number => {
       if (totalDisbursedAmount >= 10000000) {
         return totalDisbursedAmount * 0.003;
@@ -236,14 +233,12 @@ export class CreateComponent implements OnInit {
       }
       return 0;
     };
-
     const getTotalDisbursedAmount = (files: any[]) =>
       files.reduce(
         (sum, file) =>
           sum + (file.disbursedAmount ? Number(file.disbursedAmount) : 0),
         0
       );
-
     const firstMonthTotal = getTotalDisbursedAmount(this.firstMonthFiles || []);
     const secondMonthTotal = getTotalDisbursedAmount(
       this.secondMonthFiles || []
@@ -251,15 +246,13 @@ export class CreateComponent implements OnInit {
     const thirdMonthTotal = getTotalDisbursedAmount(this.thirdMonthFiles || []);
     const totalDisbursedAmount =
       firstMonthTotal + secondMonthTotal + thirdMonthTotal;
-
     const incentiveAmount = calculateIncentive(totalDisbursedAmount);
-
     const formData: any = {
       employeeName: formValues.employeeName,
       employeeId: formValues.employeeId,
       incentiveAmount,
       incentiveApplicableMonth: formValues.incentiveApplicableMonth
-        ? this.moment(formValues.incentiveApplicableMonth).format('YYYY-MM-DD')
+        ? this.moment(formValues.incentiveApplicableMonth).format('MM/YYYY')
         : null,
       firstMonthFiles:
         this.firstMonthFiles && this.firstMonthFiles.length > 0
@@ -274,9 +267,7 @@ export class CreateComponent implements OnInit {
           ? formatMonthFiles(this.thirdMonthFiles)
           : null,
     };
-
     console.log('formData', formData);
-
     if (this.actionType == 'create') {
       this.loading = true;
       this.employeesService.createIncentive(formData).subscribe(
@@ -312,7 +303,6 @@ export class CreateComponent implements OnInit {
         );
     }
   }
-
   getEmployeeById(filter = {}) {
     return new Promise((resolve, reject) => {
       this.loading = true;
@@ -332,7 +322,6 @@ export class CreateComponent implements OnInit {
         );
     });
   }
-
   goBack() {
     this.location.back();
   }

@@ -97,14 +97,15 @@
             styleClass="text-left"
             [style]="{ width: '100%' }"
             [options]="employees"
-            (onChange)="statusChange($event)"
+            (onChange)="statusChangeEmployee($event)"
             [dropdownIcon]="'fa fa-caret-down'"
             [(ngModel)]="selectedEmployee"
             optionLabel="employeeName"
             [filter]="true"
             [showClear]="true"
+            appendTo="body"
             filterPlaceholder="Search..."
-            dataKey="name"
+            dataKey="id"
           >
           </p-dropdown>
         </div>
@@ -181,7 +182,6 @@
           Reason
           <p-sortIcon field="reason"></p-sortIcon>
         </th>
-
         <th pSortableColumn="createdOn">
           Created Date <p-sortIcon field="createdOn"></p-sortIcon>
         </th>
@@ -207,7 +207,6 @@
             >
           </b>
         </td>
-
         <td>
           <span
             class="table-column-data"
@@ -241,7 +240,7 @@
         </td>
         <td>
           <span class="table-column-data" *ngIf="leave.reason; else noData">{{
-            leave.reason
+            leave.reason |capitalizeFirst
           }}</span>
         </td>
         <td>
@@ -301,9 +300,7 @@
     </ng-template>
   </p-table>
 </div>
-
 <ng-template #noData> - </ng-template>
-
 <footer class="p-2 text-center text-lg-start mt-3" style="color: #878a99">
   <div class="text-center mb-3 fw-bold">
     © 2024 <span style="color: #1e4079">The</span>&nbsp;<b

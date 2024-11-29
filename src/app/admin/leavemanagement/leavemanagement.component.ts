@@ -59,6 +59,18 @@ export class LeavemanagementComponent {
     this.updateCountsAnalytics();
     this.setFilterConfig();
     this.getLeavesStatusCount();
+    const storedStatus = localStorage.getItem('selectedLeaveStatus');
+    if (storedStatus) {
+      this.selectedLeavesStatus = JSON.parse(storedStatus);
+    }
+    const storedEmployee = localStorage.getItem('selectedEmployeeStatus');
+    if (storedEmployee) {
+      this.selectedEmployee = JSON.parse(storedEmployee);
+    }
+    const storedAppliedFilter = localStorage.getItem('leavesAppliedFilter');
+    if (storedAppliedFilter) {
+      this.appliedFilter = JSON.parse(storedAppliedFilter);
+    }
   }
 
   setFilterConfig() {
@@ -74,7 +86,6 @@ export class LeavemanagementComponent {
           },
         ],
       },
-
       {
         header: 'Employee Id',
         data: [
@@ -109,7 +120,6 @@ export class LeavemanagementComponent {
           { field: 'createdOn', title: 'To', type: 'date', filterType: 'lte' },
         ],
       },
-
       {
         header: 'Leave Type',
         data: [
@@ -162,7 +172,6 @@ export class LeavemanagementComponent {
           },
         ],
       },
-
       {
         header: 'created On  ',
         data: [
@@ -259,7 +268,6 @@ export class LeavemanagementComponent {
         icon: 'fa fa-circle-xmark',
         command: () => this.rejectLeave(leave),
       });
-
       menuItems[0].items.push({
         label: 'Update',
         icon: 'fa fa-pen-to-square',
@@ -369,7 +377,6 @@ export class LeavemanagementComponent {
       }
     );
   }
-
   getLeavesCount(filter = {}) {
     this.employeesService.getLeavesCount(filter).subscribe(
       (response) => {
@@ -387,7 +394,6 @@ export class LeavemanagementComponent {
       (response) => {
         this.leaves = response;
         console.log('leaves', this.leaves);
-
         this.loading = false;
       },
       (error: any) => {
@@ -419,7 +425,6 @@ export class LeavemanagementComponent {
         statusCount[leave.leaveInternalStatus]++;
       }
     });
-
     return statusCount;
   }
 
@@ -484,9 +489,30 @@ export class LeavemanagementComponent {
     console.log(this.currentTableEvent);
     this.loadLeaves(this.currentTableEvent);
   }
-  statusChange(event) {
+  // statusChange(event) {
+  //   this.loadLeaves(this.currentTableEvent);
+  // }
+
+  statusChange(event: any): void {
+    localStorage.setItem('selectedLeaveStatus', JSON.stringify(event.value));
     this.loadLeaves(this.currentTableEvent);
   }
+
+  statusChangeEmployee(event: any): void {
+    localStorage.setItem('selectedEmployeeStatus', JSON.stringify(event.value));
+    this.loadLeaves(this.currentTableEvent);
+  }
+
+  // applyConfigFilters(event) {
+  //   let api_filter = event;
+  //   if (api_filter['reset']) {
+  //     delete api_filter['reset'];
+  //     this.appliedFilter = {};
+  //   } else {
+  //     this.appliedFilter = api_filter;
+  //   }
+  //   this.loadLeaves(this.currentTableEvent);
+  // }
 
   applyConfigFilters(event) {
     let api_filter = event;
@@ -496,6 +522,10 @@ export class LeavemanagementComponent {
     } else {
       this.appliedFilter = api_filter;
     }
+    localStorage.setItem(
+      'leavesAppliedFilter',
+      JSON.stringify(this.appliedFilter)
+    );
     this.loadLeaves(this.currentTableEvent);
   }
   createLeave() {

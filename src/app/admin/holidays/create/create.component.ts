@@ -27,7 +27,6 @@ export class CreateComponent implements OnInit {
   activeIndex: number = 0;
   heading: any = 'Create Holiday';
   actionType: any = 'create';
-
   loading: any;
   constructor(
     private location: Location,
@@ -72,12 +71,10 @@ export class CreateComponent implements OnInit {
       { label: this.actionType == 'create' ? 'Create' : 'Update' },
     ];
   }
-
   ngOnInit() {
     this.createForm();
     this.setHolidaysList();
   }
-
   setHolidaysList() {
     this.formFields = [
       {
@@ -114,14 +111,12 @@ export class CreateComponent implements OnInit {
       description: ['', Validators.required],
     });
   }
-
   onDateSelect(selectedDate: Date) {
     const dayOfWeek = this.getDayOfWeek(selectedDate);
     console.log(dayOfWeek);
     this.holidayForm.controls['day'].enable();
     this.holidayForm.patchValue({ day: dayOfWeek });
   }
-
   getDayOfWeek(date: Date): string {
     const days = [
       'Sunday',
@@ -143,7 +138,6 @@ export class CreateComponent implements OnInit {
       day: formValues.day,
       description: formValues.description,
     };
-
     console.log('formData', formData);
     if (this.actionType == 'create') {
       this.loading = true;
@@ -179,7 +173,6 @@ export class CreateComponent implements OnInit {
       );
     }
   }
-
   getHolidayById(filter = {}) {
     return new Promise((resolve, reject) => {
       this.loading = true;

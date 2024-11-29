@@ -175,7 +175,6 @@ export class CreateComponent {
   ngOnInit() {
     this.createForm();
     this.setEmployeesList();
-    // this.createPayslip();
     const userDetails =
       this.localStorageService.getItemFromLocalStorage('userDetails');
     if (userDetails) {
@@ -236,7 +235,6 @@ export class CreateComponent {
       experience: [''],
     });
   }
-
   onSubmit(formValues) {
     let formData: any = {
       employeeName: formValues.employeeName,
@@ -341,53 +339,51 @@ export class CreateComponent {
       }
       return otherDocumentData;
     });
-
     const filteredDocuments = otherDocumentsData.filter(
       (doc) => doc.otherDocuments.length > 0
     );
     return filteredDocuments.length > 0 ? filteredDocuments : null;
   }
+  // createPayslip() {
+  //   const payslipData = {
+  //     employeeId: 23,
+  //     employeeName: 'Mudhiiguubba Kalyonnii',
+  //     designation: 'Web developer',
+  //     basicSalary: 21666,
+  //     dateOfJoining: '04/13/2024',
+  //     totalDays: 27,
+  //     workedDays: 27,
+  //     employeePan: 'WDERS3454T',
+  //     employeeAc: '2343151353',
+  //     employeeIfsc: 'DAGDAG45235',
+  //     hra: 0,
+  //     allowances: 0,
+  //     grossEarnings: 21666,
+  //     tds: 0,
+  //     pf: 0,
+  //     otherDeductions: 0,
+  //     totalDeductions: 0,
+  //     netPay: 21666,
+  //     month: 'October',
+  //     year: '2024',
+  //   };
 
-  createPayslip() {
-    const payslipData = {
-      employeeId: 23,
-      employeeName: 'Mudhiiguubba Kalyonnii',
-      designation: 'Web developer',
-      basicSalary: 21666,
-      dateOfJoining: '04/13/2024',
-      totalDays: 27,
-      workedDays: 27,
-      employeePan: 'WDERS3454T',
-      employeeAc: '2343151353',
-      employeeIfsc: 'DAGDAG45235',
-      hra: 0,
-      allowances: 0,
-      grossEarnings: 21666,
-      tds: 0,
-      pf: 0,
-      otherDeductions: 0,
-      totalDeductions: 0,
-      netPay: 21666,
-      month: 'October',
-      year: '2024',
-    };
-
-    this.employeesService.generatePdf(payslipData).subscribe(
-      (response: any) => {
-        const url = window.URL.createObjectURL(response);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${payslipData.employeeId}_payslip.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-      },
-      (error) => {
-        console.error('Error generating payslip:', error);
-      }
-    );
-  }
+  //   this.employeesService.generatePdf(payslipData).subscribe(
+  //     (response: any) => {
+  //       const url = window.URL.createObjectURL(response);
+  //       const a = document.createElement('a');
+  //       a.href = url;
+  //       a.download = `${payslipData.employeeId}_payslip.pdf`;
+  //       document.body.appendChild(a);
+  //       a.click();
+  //       document.body.removeChild(a);
+  //       window.URL.revokeObjectURL(url);
+  //     },
+  //     (error) => {
+  //       console.error('Error generating payslip:', error);
+  //     }
+  //   );
+  // }
 
   setEmployeesList() {
     this.personalFields = [
@@ -442,7 +438,6 @@ export class CreateComponent {
         optionLabel: 'displayName',
         optionValue: 'id',
       },
-
       {
         label: 'Gaurdian Type',
         controlName: 'careOf',
@@ -464,13 +459,11 @@ export class CreateComponent {
         type: 'calendar',
         required: true,
       },
-
       {
         label: 'Phone',
         controlName: 'primaryPhone',
         type: 'text',
         maxLength: 10,
-
         required: true,
       },
       {
@@ -498,7 +491,6 @@ export class CreateComponent {
         required: true,
       },
     ];
-
     this.addressFields = [
       {
         label: 'District',
@@ -525,7 +517,6 @@ export class CreateComponent {
         required: false,
       },
     ];
-
     this.experienceFields = [
       {
         label: 'Experience',
@@ -601,7 +592,6 @@ export class CreateComponent {
         acceptedFileTypes: '*/*',
       },
     ];
-
     this.salaryAccountFields = [
       {
         label: 'Account Holder Name',
@@ -634,7 +624,6 @@ export class CreateComponent {
         required: false,
       },
     ];
-
     this.otherFields = [
       {
         label: 'Offer Letter (signed)',
@@ -646,7 +635,6 @@ export class CreateComponent {
       },
     ];
   }
-
   getOfcBranchName(branchId) {
     if (this.ofcBranchNamesList && this.ofcBranchNamesList.length > 0) {
       let branchName = this.ofcBranchNamesList.filter(
@@ -656,7 +644,6 @@ export class CreateComponent {
     }
     return '';
   }
-
   getDesignationName(designationId) {
     if (this.designationEntities && this.designationEntities.length > 0) {
       let designationName = this.designationEntities.filter(
@@ -671,7 +658,6 @@ export class CreateComponent {
     }
     return '';
   }
-
   getGenderName(genderId) {
     if (this.genderEntities && this.genderEntities.length > 0) {
       let gernderName = this.genderEntities.filter(
@@ -828,7 +814,6 @@ export class CreateComponent {
               'No uploaded files found for the specified file type.'
             );
           }
-
           this.toastService.showSuccess('File Deleted Successfully');
         } else {
           console.error('Error deleting file:', response.error);
@@ -843,7 +828,6 @@ export class CreateComponent {
       }
     );
   }
-
   getFileIcon(fileType) {
     return this.employeesService.getFileIcon(fileType);
   }

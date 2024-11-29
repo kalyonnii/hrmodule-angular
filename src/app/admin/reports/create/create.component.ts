@@ -152,14 +152,26 @@ export class CreateComponent {
             label: 'displayName',
           },
           {
+            field: 'joiningDate',
+            title: 'Joining Date From Date',
+            type: 'date',
+            filterType: 'gte',
+          },
+          {
+            field: 'joiningDate',
+            title: 'Joining Date To Date',
+            type: 'date',
+            filterType: 'lte',
+          },
+          {
             field: 'createdOn',
-            title: 'From Date',
+            title: 'Created On From Date',
             type: 'date',
             filterType: 'gte',
           },
           {
             field: 'createdOn',
-            title: 'To Date',
+            title: 'Created On To Date',
             type: 'date',
             filterType: 'lte',
           },
@@ -199,13 +211,13 @@ export class CreateComponent {
           },
           {
             field: 'createdOn',
-            title: 'From Date',
+            title: 'Created On From Date',
             type: 'date',
             filterType: 'gte',
           },
           {
             field: 'createdOn',
-            title: 'To Date',
+            title: 'Created On To Date',
             type: 'date',
             filterType: 'lte',
           },
@@ -224,13 +236,13 @@ export class CreateComponent {
           },
           {
             field: 'createdOn',
-            title: 'From Date',
+            title: 'Created On From Date',
             type: 'date',
             filterType: 'gte',
           },
           {
             field: 'createdOn',
-            title: 'To Date',
+            title: 'Created On To Date',
             type: 'date',
             filterType: 'lte',
           },
@@ -270,13 +282,13 @@ export class CreateComponent {
           },
           {
             field: 'createdOn',
-            title: 'From Date',
+            title: 'Created On From Date',
             type: 'date',
             filterType: 'gte',
           },
           {
             field: 'createdOn',
-            title: 'To Date',
+            title: 'Created On To Date',
             type: 'date',
             filterType: 'lte',
           },
@@ -289,13 +301,13 @@ export class CreateComponent {
         fields: [
           {
             field: 'createdOn',
-            title: 'From Date',
+            title: 'Created On From Date',
             type: 'date',
             filterType: 'gte',
           },
           {
             field: 'createdOn',
-            title: 'To Date',
+            title: 'Created On To Date',
             type: 'date',
             filterType: 'lte',
           },
@@ -308,20 +320,44 @@ export class CreateComponent {
         fields: [
           {
             field: 'attendanceDate',
-            title: 'Day Wise Attendance',
+            title: 'Attendance Date',
             type: 'date',
             filterType: 'eq',
           },
-
+          {
+            field: 'attendanceDate',
+            title: 'Attendance From Date',
+            type: 'date',
+            filterType: 'gte',
+          },
+          {
+            field: 'attendanceDate',
+            title: 'Attendance To Date',
+            type: 'date',
+            filterType: 'lte',
+          },
+        ],
+      },
+      {
+        reportName: 'Incentives',
+        reportType: 'INCENTIVES',
+        condition: true,
+        fields: [
+          {
+            field: 'incentiveApplicableMonth',
+            title: 'Incentive Month',
+            type: 'month',
+            filterType: 'eq',
+          },
           {
             field: 'createdOn',
-            title: 'From Date',
+            title: 'Created On From Date',
             type: 'date',
             filterType: 'gte',
           },
           {
             field: 'createdOn',
-            title: 'To Date',
+            title: 'Created On To Date',
             type: 'date',
             filterType: 'lte',
           },
@@ -363,10 +399,34 @@ export class CreateComponent {
         .add(1, 'days')
         .format('YYYY-MM-DD');
     }
-
+    if (this.reportData['attendanceDate-gte']) {
+      apiFilter['attendanceDate-gte'] = this.moment(
+        this.reportData['attendanceDate-gte']
+      ).format('YYYY-MM-DD');
+    }
+    if (this.reportData['attendanceDate-lte']) {
+      apiFilter['attendanceDate-lte'] = this.moment(
+        this.reportData['attendanceDate-lte']
+      ).format('YYYY-MM-DD');
+    }
+    if (this.reportData['joiningDate-gte']) {
+      apiFilter['joiningDate-gte'] = this.moment(
+        this.reportData['joiningDate-gte']
+      ).format('YYYY-MM-DD');
+    }
+    if (this.reportData['joiningDate-lte']) {
+      apiFilter['joiningDate-lte'] = this.moment(
+        this.reportData['joiningDate-lte']
+      ).format('YYYY-MM-DD');
+    }
     if (this.reportData['payrollMonth-eq']) {
       apiFilter['payrollMonth-eq'] = this.moment(
         this.reportData['payrollMonth-eq']
+      ).format('MM/YYYY');
+    }
+    if (this.reportData['incentiveApplicableMonth-eq']) {
+      apiFilter['incentiveApplicableMonth-eq'] = this.moment(
+        this.reportData['incentiveApplicableMonth-eq']
       ).format('MM/YYYY');
     }
     if (this.reportData['attendanceDate-eq']) {
@@ -374,7 +434,6 @@ export class CreateComponent {
         this.reportData['attendanceDate-eq']
       ).format('YYYY-MM-DD');
     }
-
     Object.assign(selectedReportData, apiFilter);
     console.log(reportType);
     console.log(selectedReportData);
@@ -387,6 +446,8 @@ export class CreateComponent {
         this.employeesService.exportSalarySheet(selectedReportData),
       LEAVES: () => this.employeesService.exportLeaves(selectedReportData),
       HOLIDAYS: () => this.employeesService.exportHolidays(selectedReportData),
+      INCENTIVES: () =>
+        this.employeesService.exportIncentives(selectedReportData),
       ATTENDANCE: () =>
         this.employeesService.exportAttendance(selectedReportData),
     };

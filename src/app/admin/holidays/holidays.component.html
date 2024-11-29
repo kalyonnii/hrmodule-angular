@@ -56,10 +56,10 @@
             <input
               type="text"
               pInputText
-              placeholder="Search with Employee Name"
+              placeholder="Search with Holiday Name"
               [(ngModel)]="holidayNameToSearch"
               (ngModelChange)="
-                inputValueChangeEvent('employeeId', holidayNameToSearch)
+                inputValueChangeEvent('holidayId', holidayNameToSearch)
               "
               (keyup.enter)="filterWithHolidayName()"
             />

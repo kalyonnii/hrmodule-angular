@@ -80,11 +80,13 @@ export class SidebarMenuComponent implements OnChanges {
     this.getGlobalSettings().then(() => {
       this.setMenuItems();
     });
-    const userDetails =
+    this.userDetails =
       this.localStorageService.getItemFromLocalStorage('userDetails');
-    if (userDetails) {
-      this.userDetails = userDetails.user;
+    if (this.userDetails && this.userDetails.user) {
+      this.userDetails = this.userDetails.user;
+      this.userDetails.userImage = JSON.parse(this.userDetails.userImage);
     }
+    console.log(this.userDetails);
   }
 
   setMenuItems() {

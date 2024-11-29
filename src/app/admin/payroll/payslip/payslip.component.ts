@@ -139,7 +139,6 @@ export class PayslipComponent {
       'Eighteen',
       'Nineteen',
     ];
-
     const tens = [
       '',
       '',
@@ -153,9 +152,7 @@ export class PayslipComponent {
       'Ninety',
     ];
     const scales = ['', 'Thousand', 'Million', 'Billion', 'Trillion'];
-
     if (amount === 0) return 'Zero';
-
     const chunkify = (n: number): number[] => {
       const chunks: number[] = [];
       while (n > 0) {
@@ -164,7 +161,6 @@ export class PayslipComponent {
       }
       return chunks;
     };
-
     const convertChunk = (chunk: number): string => {
       let words = '';
       if (chunk >= 100) {
@@ -180,16 +176,13 @@ export class PayslipComponent {
       }
       return words.trim();
     };
-
     const chunks = chunkify(amount);
     let words = '';
-
     for (let i = 0; i < chunks.length; i++) {
       if (chunks[i] > 0) {
         words = convertChunk(chunks[i]) + ' ' + scales[i] + ' ' + words;
       }
     }
-
     return words.trim();
   }
 

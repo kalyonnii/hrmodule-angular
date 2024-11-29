@@ -41,6 +41,38 @@
   (onHide)="clearDialog()"
 >
   <div *ngIf="selectedUser" class="text-capitalize">
+    <div
+      *ngIf="
+        selectedUser &&
+        selectedUser.userImage &&
+        selectedUser.userImage.length > 0
+      "
+      class="d-flex justify-content-center"
+    >
+      <ng-container>
+        <a [href]="'//' + selectedUser.userImage[0]" target="_blank">
+          <img
+            [src]="'//' + selectedUser.userImage[0]"
+            alt="Profile"
+            class="profileimg mb-3"
+            style="width: 190px; height: 190px"
+          />
+        </a>
+      </ng-container>
+    </div>
+    <div
+      *ngIf="selectedUser && selectedUser.userImage == null"
+      class="d-flex justify-content-center"
+    >
+      <tr class="text-center">
+        <img
+          src="../../../assets/images/profile/profile.png"
+          alt="Profile"
+          class="profileimg mb-3"
+          style="width: 190px; height: 190px"
+        />
+      </tr>
+    </div>
     <div class="info-line">
       <span class="icon"><i class="fas fa-id-badge"></i></span>
       <div class="label d-flex justify-content-between">
@@ -147,6 +179,33 @@
       </div>
       <div class="value">
         {{ selectedUser.createdOn ? (selectedUser.createdOn | date) : "-" }}
+      </div>
+    </div>
+
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-user-tag"></i></span>
+      <div class="label d-flex justify-content-between">
+        Last Updated By<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{
+          selectedUser.lastUpdatedBy
+            ? (selectedUser.lastUpdatedBy | capitalizeFirst)
+            : "-"
+        }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-calendar-check"></i></span>
+      <div class="label d-flex justify-content-between">
+        Last Updated On<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{
+          selectedUser.lastUpdatedOn
+            ? (selectedUser.lastUpdatedOn | date : "MMM d, y, h:mm a")
+            : "-"
+        }}
       </div>
     </div>
   </div>
@@ -263,13 +322,41 @@
           }}</span>
         </td>
         <td>
-          <b>
-            <span
-              class="table-column-data"
-              *ngIf="user.username; else noData"
-              >{{ user.username | capitalizeFirst }}</span
-            >
-          </b>
+          <div class="d-flex align-items-center">
+            <span class="me-2">
+              <ng-container
+                *ngIf="
+                  user && user.userImage && user.userImage.length > 0;
+                  else defaultImage
+                "
+              >
+                <a [href]="'//' + user.userImage[0]" target="_blank">
+                  <img
+                    [src]="'//' + user.userImage[0]"
+                    alt="Image"
+                    class="employeeImage"
+                    style="height: 40px; width: 40px"
+                  />
+                </a>
+              </ng-container>
+              <ng-template #defaultImage>
+                <img
+                  src="../../../assets/images/profile/user.png"
+                  alt="Default Image"
+                  class="employeeImage"
+                  style="height: 40px; width: 40px"
+                />
+              </ng-template>
+            </span>
+            <b>
+              <span
+                *ngIf="user.username; else noData"
+                class="table-column-data"
+              >
+                {{ user.username | capitalizeFirst }}
+              </span>
+            </b>
+          </div>
         </td>
         <td>
           <span
@@ -288,13 +375,11 @@
             <i class="fa fa-phone"></i> &nbsp;{{ user.phoneNumber }}</span
           >
         </td>
-
         <td>
           <span class="table-column-data" *ngIf="user.createdOn; else noData">{{
             user.createdOn | date : "mediumDate"
           }}</span>
         </td>
-
         <td>
           <div class="text-center">
             <div class="d-flex">

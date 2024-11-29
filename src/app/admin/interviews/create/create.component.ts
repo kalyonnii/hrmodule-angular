@@ -99,7 +99,6 @@ export class CreateComponent {
       { label: this.actionType == 'create' ? 'Create' : 'Update' },
     ];
   }
-
   ngOnInit() {
     this.createForm();
     this.setInterviewsList();
@@ -109,7 +108,6 @@ export class CreateComponent {
       this.userDetails = userDetails.user;
     }
   }
-
   setInterviewsList() {
     this.formFields = [
       {
@@ -179,7 +177,6 @@ export class CreateComponent {
         optionLabel: 'displayName',
         optionValue: 'id',
       },
-
       ...(this.actionType == 'update'
         ? [
             {
@@ -199,7 +196,6 @@ export class CreateComponent {
         required: true,
       },
     ];
-
     this.interviewsForm
       .get('attendedInterview')
       ?.valueChanges.subscribe((value) => {
@@ -223,7 +219,6 @@ export class CreateComponent {
         }
       });
   }
-
   confirmDelete(file, controlName) {
     this.confirmationService.confirm({
       message: 'Are you sure you want to delete this File?',
@@ -266,7 +261,6 @@ export class CreateComponent {
       }
     );
   }
-
   createForm() {
     this.interviewsForm = this.formBuilder.group({
       candidateName: ['', Validators.required],
@@ -283,7 +277,6 @@ export class CreateComponent {
       postponedDate: [''],
     });
   }
-
   onSubmit(formValues) {
     let formData: any = {
       candidateName: formValues.candidateName,
@@ -349,7 +342,6 @@ export class CreateComponent {
         );
     }
   }
-
   private getFileData(fileType: string): any[] | null {
     if (this.selectedFiles[fileType]) {
       const { links = [], uploadedFiles = [] } = this.selectedFiles[fileType];
@@ -359,7 +351,6 @@ export class CreateComponent {
     }
     return null;
   }
-
   getInterviewById(filter = {}) {
     return new Promise((resolve, reject) => {
       this.loading = true;
@@ -410,7 +401,6 @@ export class CreateComponent {
     }
     return '';
   }
-
   uploadFiles(fileType, acceptableTypes, index?) {
     console.log(acceptableTypes);
     let data = {

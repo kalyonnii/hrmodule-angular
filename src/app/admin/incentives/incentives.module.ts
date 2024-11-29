@@ -9,6 +9,9 @@ import { TableModule } from 'primeng/table';
 import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
 import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
+import { DialogModule } from 'primeng/dialog';
+import { TabMenuModule } from 'primeng/tabmenu';
+import { CalendarModule } from 'primeng/calendar';
 
 const routes: Routes = [
   { path: '', component: IncentivesComponent },
@@ -33,6 +36,9 @@ const routes: Routes = [
     FormsModule,
     InputTextModule,
     CapitalizeFirstPipe,
+    DialogModule,
+    TabMenuModule,
+    CalendarModule,
     TableModule,
     BreadcrumbModule,
     [RouterModule.forChild(routes)],

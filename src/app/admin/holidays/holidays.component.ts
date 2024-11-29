@@ -26,7 +26,6 @@ export class HolidaysComponent implements OnInit {
   filterConfig: any[] = [];
   years: { label: string; value: number }[] = [];
   selectedYear: number;
-
   version = projectConstantsLocal.VERSION_DESKTOP;
   constructor(
     private employeesService: EmployeesService,
@@ -38,7 +37,6 @@ export class HolidaysComponent implements OnInit {
     private dateTimeProcessor: DateTimeProcessorService
   ) {
     this.moment = this.dateTimeProcessor.getMoment();
-
     this.breadCrumbItems = [
       {
         icon: 'fa fa-house',
@@ -49,7 +47,6 @@ export class HolidaysComponent implements OnInit {
       { label: 'Holidays' },
     ];
   }
-
   ngOnInit(): void {
     const userDetails =
       this.localStorageService.getItemFromLocalStorage('userDetails');
@@ -59,8 +56,20 @@ export class HolidaysComponent implements OnInit {
     this.setFilterConfig();
     this.generateYears();
     this.selectedYear = new Date().getFullYear();
+    const storedHolidayName = localStorage.getItem('holidayName');
+    if (storedHolidayName) {
+      this.holidayNameToSearch = storedHolidayName;
+      this.filterWithHolidayName();
+    }
+    const storedYear = localStorage.getItem('selectedYear');
+    if (storedYear) {
+      this.selectedYear = JSON.parse(storedYear);
+    }
+    const storedAppliedFilter = localStorage.getItem('holidaysAppliedFilter');
+    if (storedAppliedFilter) {
+      this.appliedFilter = JSON.parse(storedAppliedFilter);
+    }
   }
-
   setFilterConfig() {
     this.filterConfig = [
       {
@@ -97,7 +106,6 @@ export class HolidaysComponent implements OnInit {
           { field: 'createdOn', title: 'To', type: 'date', filterType: 'lte' },
         ],
       },
-
       {
         header: 'Date',
         data: [
@@ -109,7 +117,6 @@ export class HolidaysComponent implements OnInit {
           },
         ],
       },
-
       {
         header: 'Day',
         data: [
@@ -132,7 +139,6 @@ export class HolidaysComponent implements OnInit {
           },
         ],
       },
-
       {
         header: 'created On  ',
         data: [
@@ -146,15 +152,35 @@ export class HolidaysComponent implements OnInit {
       },
     ];
   }
-  filterWithHolidayName() {
-    let searchFilter = { 'holidayName-like': this.holidayNameToSearch };
-    this.applyFilters(searchFilter);
+  // filterWithHolidayName() {
+  //   let searchFilter = { 'holidayName-like': this.holidayNameToSearch };
+  //   this.applyFilters(searchFilter);
+  // }
+
+  filterWithHolidayName(): void {
+    const holidayNameToSearch =
+      localStorage.getItem('holidayName') || this.holidayNameToSearch;
+    if (holidayNameToSearch) {
+      const searchFilter = { 'holidayName-like': holidayNameToSearch };
+      this.applyFilters(searchFilter);
+    }
   }
   applyFilters(searchFilter = {}) {
     this.searchFilter = searchFilter;
     console.log(this.currentTableEvent);
     this.loadHolidays(this.currentTableEvent);
   }
+  // applyConfigFilters(event) {
+  //   let api_filter = event;
+  //   if (api_filter['reset']) {
+  //     delete api_filter['reset'];
+  //     this.appliedFilter = {};
+  //   } else {
+  //     this.appliedFilter = api_filter;
+  //   }
+  //   this.loadHolidays(this.currentTableEvent);
+  // }
+
   applyConfigFilters(event) {
     let api_filter = event;
     if (api_filter['reset']) {
@@ -163,13 +189,28 @@ export class HolidaysComponent implements OnInit {
     } else {
       this.appliedFilter = api_filter;
     }
+    localStorage.setItem(
+      'holidaysAppliedFilter',
+      JSON.stringify(this.appliedFilter)
+    );
     this.loadHolidays(this.currentTableEvent);
   }
-  inputValueChangeEvent(dataType, value) {
-    if (value == '') {
+  // inputValueChangeEvent(dataType, value) {
+  //   if (value == '') {
+  //     this.searchFilter = {};
+  //     console.log(this.currentTableEvent);
+  //     this.loadHolidays(this.currentTableEvent);
+  //   }
+  // }
+
+  inputValueChangeEvent(dataType: string, value: string): void {
+    if (value === '') {
       this.searchFilter = {};
+      localStorage.setItem('holidayName', value);
       console.log(this.currentTableEvent);
       this.loadHolidays(this.currentTableEvent);
+    } else {
+      localStorage.setItem('holidayName', value);
     }
   }
   deleteHoliday(holidayId) {
@@ -197,15 +238,18 @@ export class HolidaysComponent implements OnInit {
       },
     });
   }
-
   generateYears() {
     const currentYear = new Date().getFullYear();
     for (let year = currentYear; year >= currentYear - 10; year--) {
       this.years.push({ label: `${year}`, value: year });
     }
   }
+  // loadHolidaysByYear() {
+  //   this.loadHolidays(this.currentTableEvent);
+  // }
 
-  loadHolidaysByYear() {
+  loadHolidaysByYear(): void {
+    localStorage.setItem('selectedYear', JSON.stringify(this.selectedYear));
     this.loadHolidays(this.currentTableEvent);
   }
   loadHolidays(event) {
@@ -232,7 +276,6 @@ export class HolidaysComponent implements OnInit {
       this.getHolidays(api_filter);
     }
   }
-
   getHolidaysCount(filter = {}) {
     this.employeesService.getHolidaysCount(filter).subscribe(
       (response) => {
@@ -243,7 +286,6 @@ export class HolidaysComponent implements OnInit {
       }
     );
   }
-
   getHolidays(filter = {}) {
     this.loading = true;
     this.employeesService.getHolidays(filter).subscribe(
@@ -258,7 +300,6 @@ export class HolidaysComponent implements OnInit {
       }
     );
   }
-
   addHoliday() {
     this.routingService.handleRoute('holidays/create', null);
   }

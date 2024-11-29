@@ -34,14 +34,14 @@
   <div class="row" *ngIf="employees">
     <div class="col-md-4">
       <div class="card profilecard">
-        <div class="bg-gradient"></div>
+        <div class="profilebg"></div>
         <div
           class="d-flex profile-img-container flex-column align-items-center justify-content-center"
           style="height: 270px"
         >
-        <h5 class="card-title">
-          {{ employees.employeeName | capitalizeFirst }}
-        </h5>
+          <h5 class="card-title">
+            {{ employees.employeeName | capitalizeFirst }}
+          </h5>
           <div
             *ngIf="
               employees && employees.passPhoto && employees.passPhoto.length > 0
@@ -77,19 +77,19 @@
             </tr>
           </div>
           <span
-          class="table-column-data fw-bold statusdata mb-2"
-          *ngIf="employees.employeeInternalStatus"
-          [ngStyle]="{
-            color: getStatusColor(
-              getStatusName(employees.employeeInternalStatus)
-            ).textColor,
-            'background-color': getStatusColor(
-              getStatusName(employees.employeeInternalStatus)
-            ).backgroundColor
-          }"
-        >
-          {{ getStatusName(employees.employeeInternalStatus) }}
-        </span>
+            class="table-column-data fw-bold statusdata mb-2"
+            *ngIf="employees.employeeInternalStatus"
+            [ngStyle]="{
+              color: getStatusColor(
+                getStatusName(employees.employeeInternalStatus)
+              ).textColor,
+              'background-color': getStatusColor(
+                getStatusName(employees.employeeInternalStatus)
+              ).backgroundColor
+            }"
+          >
+            {{ getStatusName(employees.employeeInternalStatus) }}
+          </span>
         </div>
         <div class="profilecards">
           <div
@@ -204,7 +204,6 @@
                     }}
                   </div>
                 </div>
-
                 <div class="">
                   <div class="label">Offer Letter (Signed)<b>:&nbsp;</b></div>
                   <div class="value m-2">
@@ -434,7 +433,6 @@
             </div>
           </div>
         </div>
-
         <div *ngSwitchCase="'experienceDetails'">
           <div class="card detailscard">
             <div
@@ -644,7 +642,6 @@
                         </ng-template>
                       </div>
                     </div>
-
                     <div *ngIf="employees?.panCard == null">
                       <div class="text-center">
                         <div colspan="10" class="fw-bold">
@@ -659,7 +656,6 @@
                     </div>
                   </div>
                 </div>
-
                 <div class="">
                   <div class="label">Aadhar Card<b>:&nbsp;</b></div>
                   <div class="value m-2">
@@ -714,7 +710,6 @@
             </div>
           </div>
         </div>
-
         <div *ngSwitchCase="'accountDetails'">
           <div class="card detailscard">
             <div
@@ -794,7 +789,6 @@
             </div>
           </div>
         </div>
-
         <div *ngSwitchCase="'otherDetails'">
           <div class="card detailscard">
             <div
@@ -837,7 +831,34 @@
                     }}
                   </div>
                 </div>
-
+                <div class="info-line">
+                  <span class="icon"><i class="fas fa-user-tag"></i></span>
+                  <div class="label d-flex justify-content-between">
+                    Last Updated By<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">
+                    {{
+                      employees.lastUpdatedBy
+                        ? (employees.lastUpdatedBy | capitalizeFirst)
+                        : "-"
+                    }}
+                  </div>
+                </div>
+                <div class="info-line">
+                  <span class="icon"
+                    ><i class="fas fa-calendar-check"></i
+                  ></span>
+                  <div class="label d-flex justify-content-between">
+                    Last Updated On<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">
+                    {{
+                      employees.lastUpdatedOn
+                        ? (employees.lastUpdatedOn | date : "MMM d, y, h:mm a")
+                        : "-"
+                    }}
+                  </div>
+                </div>
                 <p-accordion class="custom-accordion">
                   <p-accordionTab header="Resignation">
                     <div class="content">
@@ -1238,7 +1259,6 @@
                     {{ attendanceStatusCounts["Present"] }}
                   </div>
                 </div>
-
                 <div class="info-line">
                   <span class="icon text-warning"
                     ><i class="fas fa-circle-half-stroke"></i
@@ -1280,7 +1300,6 @@
     </div>
   </div>
 </div>
-
 <footer class="p-2 text-center text-lg-start mt-3" style="color: #878a99">
   <div class="text-center mb-3 fw-bold">
     © 2024 <span style="color: #1e4079">The</span>&nbsp;<b

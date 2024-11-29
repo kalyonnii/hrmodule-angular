@@ -28,7 +28,6 @@
 <div *ngIf="loading">
   <app-preloader></app-preloader>
 </div>
-
 <p-dialog
   [(visible)]="isDialogVisible"
   [modal]="true"
@@ -83,7 +82,6 @@
             </div></b
           >
         </div>
-
         <div class="info-line">
           <span class="icon"><i class="fas fa-id-card-clip"></i></span>
           <div class="label d-flex justify-content-between">
@@ -97,7 +95,6 @@
             }}
           </div>
         </div>
-
         <div class="info-line">
           <span class="icon"><i class="fas fa-calendar-week"></i></span>
           <div class="label d-flex justify-content-between">
@@ -137,10 +134,8 @@
             }}
           </div>
         </div>
-
         <div class="info-line">
           <span class="icon"><i class="fas fa-building"></i></span>
-
           <div class="label d-flex justify-content-between">
             Bank Branch<b>:&nbsp;</b>
           </div>
@@ -152,7 +147,6 @@
             }}
           </div>
         </div>
-
         <div class="info-line">
           <span class="icon"><i class="fas fa-sliders-h"></i></span>
           <div class="label d-flex justify-content-between">
@@ -201,20 +195,42 @@
             }}
           </div>
         </div>
+        <div class="info-line">
+          <span class="icon"><i class="fas fa-user-tag"></i></span>
+          <div class="label d-flex justify-content-between">
+            Last Updated By<b>:&nbsp;</b>
+          </div>
+          <div class="value">
+            {{
+              selectedPayrollDetails.lastUpdatedBy
+                ? (selectedPayrollDetails.lastUpdatedBy | capitalizeFirst)
+                : "-"
+            }}
+          </div>
+        </div>
+        <div class="info-line">
+          <span class="icon"><i class="fas fa-calendar-check"></i></span>
+          <div class="label d-flex justify-content-between">
+            Last Updated On<b>:&nbsp;</b>
+          </div>
+          <div class="value">
+            {{
+              selectedPayrollDetails.lastUpdatedOn
+                ? (selectedPayrollDetails.lastUpdatedOn
+                  | date : "MMM d, y, h:mm a")
+                : "-"
+            }}
+          </div>
+        </div>
       </div>
       <div class="col-md-6">
         <div class="info-line">
           <span class="icon"><i class="fas fa-calendar-check"></i></span>
-
           <div class="label d-flex justify-content-between">
             Working Days<b>:&nbsp;</b>
           </div>
           <div class="value">
-            {{
-              selectedPayrollDetails.workingDays
-                ? selectedPayrollDetails.workingDays
-                : "-"
-            }}
+            {{ selectedPayrollDetails.workingDays }}
           </div>
         </div>
         <div class="info-line">
@@ -223,11 +239,7 @@
             Present Days<b>:&nbsp;</b>
           </div>
           <div class="value">
-            {{
-              selectedPayrollDetails.presentDays
-                ? selectedPayrollDetails.presentDays
-                : "-"
-            }}
+            {{ selectedPayrollDetails.presentDays }}
           </div>
         </div>
         <div class="info-line">
@@ -236,11 +248,7 @@
             Paid Days<b>:&nbsp;</b>
           </div>
           <div class="value">
-            {{
-              selectedPayrollDetails.paidDays
-                ? selectedPayrollDetails.paidDays
-                : "-"
-            }}
+            {{ selectedPayrollDetails.paidDays }}
           </div>
         </div>
         <div class="info-line">
@@ -249,11 +257,16 @@
             Absent Days <b>:&nbsp;</b>
           </div>
           <div class="value">
-            {{
-              selectedPayrollDetails.absentDays
-                ? selectedPayrollDetails.absentDays
-                : "-"
-            }}
+            {{ selectedPayrollDetails.absentDays }}
+          </div>
+        </div>
+        <div class="info-line">
+          <span class="icon"><i class="fas fa-umbrella-beach"></i></span>
+          <div class="label d-flex justify-content-between">
+            Casual Days <b>:&nbsp;</b>
+          </div>
+          <div class="value">
+            {{ selectedPayrollDetails.casualDays }}
           </div>
         </div>
         <div class="info-line">
@@ -281,11 +294,7 @@
           </div>
           <div class="value">
             Rs.
-            {{
-              selectedPayrollDetails.salary
-                ? selectedPayrollDetails.salary
-                : "-"
-            }}
+            {{ selectedPayrollDetails.salary }}
           </div>
         </div>
         <div class="info-line">
@@ -295,14 +304,9 @@
           </div>
           <div class="value">
             Rs.
-            {{
-              selectedPayrollDetails.daySalary
-                ? selectedPayrollDetails.daySalary
-                : "-"
-            }}
+            {{ selectedPayrollDetails.daySalary }}
           </div>
         </div>
-
         <div class="info-line">
           <span class="icon"><i class="fas fa-chart-line"></i></span>
           <div class="label d-flex justify-content-between">
@@ -310,14 +314,9 @@
           </div>
           <div class="value">
             Rs.
-            {{
-              selectedPayrollDetails.netSalaryWithoutDoubleLop
-                ? selectedPayrollDetails.netSalaryWithoutDoubleLop
-                : "-"
-            }}
+            {{ selectedPayrollDetails.netSalaryWithoutDoubleLop }}
           </div>
         </div>
-
         <div class="info-line">
           <span class="icon"><i class="fas fa-chart-bar"></i></span>
           <div class="label d-flex justify-content-between">
@@ -325,14 +324,19 @@
           </div>
           <div class="value">
             Rs.
-            {{
-              selectedPayrollDetails.netSalaryWithDoubleLop
-                ? selectedPayrollDetails.netSalaryWithDoubleLop
-                : "-"
-            }}
+            {{ selectedPayrollDetails.netSalaryWithDoubleLop }}
           </div>
         </div>
-
+        <div class="info-line">
+          <span class="icon"><i class="fas fa-minus-circle"></i></span>
+          <div class="label d-flex justify-content-between">
+            Deductions<b>:&nbsp;</b>
+          </div>
+          <div class="value">
+            Rs.
+            {{ selectedPayrollDetails.deductions }}
+          </div>
+        </div>
         <div class="info-line">
           <span class="icon"><i class="fas fa-wallet"></i></span>
           <div class="label d-flex justify-content-between">
@@ -340,11 +344,7 @@
           </div>
           <div class="value">
             Rs.
-            {{
-              selectedPayrollDetails.netSalary
-                ? selectedPayrollDetails.netSalary
-                : "-"
-            }}
+            {{ selectedPayrollDetails.netSalary }}
           </div>
         </div>
       </div>
@@ -407,7 +407,7 @@
             [filter]="true"
             [showClear]="true"
             filterPlaceholder="Search..."
-            dataKey="name"
+            dataKey="id"
           >
           </p-dropdown>
         </div>
@@ -541,7 +541,6 @@
             {{ payslip.netSalary }}</span
           >
         </td>
-
         <td>
           <span
             class="table-column-data"
@@ -558,7 +557,7 @@
                 type="button"
                 pTooltip="Payslip"
                 class="p-button-info me-2 view-btn"
-                icon="fa fa-eye"
+                icon="fa fa-download"
                 (click)="ViewPayslip(payslip.payslipId)"
               ></button>
             </div>
@@ -582,37 +581,6 @@
               ></button>
             </div>
           </div>
-          <!-- <div class="text-center">
-            <div class="d-flex">
-              <button
-                pButton
-                pRipple
-                type="button"
-                pTooltip="Update"
-                class="p-button-info me-2 update-btn"
-                icon="fa fa-pen-to-square"
-                (click)="showUserDetails(payslip)"
-              ></button>
-              <button
-                pButton
-                pRipple
-                type="button"
-                pTooltip="Update"
-                class="p-button-info me-2 update-btn"
-                icon="fa fa-pen-to-square"
-                (click)="updateUser(payslip.payslipId)"
-              ></button>
-              <button
-                *ngIf="userDetails?.designation == 4"
-                pButton
-                type="button"
-                icon="fa fa-trash"
-                pTooltip="Delete"
-                class="p-button-danger me-2 delete-btn"
-                (click)="confirmDelete(payslip.payslipId)"
-              ></button>
-            </div>
-          </div> -->
         </td>
       </tr>
     </ng-template>

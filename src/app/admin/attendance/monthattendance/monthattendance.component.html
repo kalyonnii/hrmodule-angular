@@ -129,7 +129,6 @@
         </ng-container>
       </tr>
     </ng-template>
-
     <ng-template pTemplate="body" let-employee>
       <tr>
         <td>{{ employee.employeeId }}</td>
@@ -172,7 +171,6 @@
         <td>{{ countAttendanceStatus(employee.employeeId, "Half-day") }}</td>
         <td>{{ countAttendanceStatus(employee.employeeId, "Late") }}</td>
         <td>{{ countAttendanceStatus(employee.employeeId, "Absent") }}</td>
-
         <ng-container *ngFor="let date of monthDates">
           <td *ngIf="isAttendanceMatched(employee.employeeId, date)">
             <ng-container

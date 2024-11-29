@@ -19,7 +19,6 @@ export class HeaderComponent implements OnInit {
   businessNameToSearch: any;
   currentTableEvent: any;
   loading: any;
-
   constructor(
     private authService: AuthService,
     private toastService: ToastService,
@@ -27,11 +26,13 @@ export class HeaderComponent implements OnInit {
     private localStorageService: LocalStorageService,
     private subscriptionService: SubscriptionService
   ) {}
-
   ngOnInit(): void {
     this.userDetails =
       this.localStorageService.getItemFromLocalStorage('userDetails');
-    this.userDetails = this.userDetails.user;
+    if (this.userDetails && this.userDetails.user) {
+      this.userDetails = this.userDetails.user;
+      this.userDetails.userImage = JSON.parse(this.userDetails.userImage);
+    }
   }
   userLogout() {
     this.authService

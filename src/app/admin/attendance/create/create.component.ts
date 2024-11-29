@@ -23,7 +23,6 @@ export class CreateComponent {
   totalEmployeesCount: number = 0;
   loading: boolean = false;
   version = projectConstantsLocal.VERSION_DESKTOP;
-
   employees: any[] = [];
   employeeDetails: any[] = [];
   attendanceId: any;
@@ -54,7 +53,6 @@ export class CreateComponent {
           });
       }
     });
-
     this.breadCrumbItems = [
       {
         icon: 'fa fa-house',
@@ -70,11 +68,9 @@ export class CreateComponent {
       { label: this.actionType === 'create' ? 'Create' : 'Update' },
     ];
   }
-
   ngOnInit(): void {
     this.loadEmployees(event);
   }
-
   getAttendanceById(filter = {}) {
     return new Promise((resolve, reject) => {
       this.loading = true;
@@ -99,7 +95,6 @@ export class CreateComponent {
     this.currentTableEvent = event;
     console.log(event.first);
     let api_filter = this.employeesService.setFiltersFromPrimeTable(event);
-    // api_filter['employeeInternalStatus-eq'] = 1;
     if (this.actionType === 'create') {
       api_filter['employeeInternalStatus-eq'] = 1;
     }
@@ -182,7 +177,6 @@ export class CreateComponent {
       );
     }
   }
-
   updateAttendanceStatus(employee: any) {
     console.log(
       `Attendance status for employee ID ${employee.employeeId} updated to ${employee.status}`
@@ -195,13 +189,11 @@ export class CreateComponent {
       employee.checkOutTime = this.formatTime(new Date(0, 0, 0, 18, 30));
     }
   }
-
   private formatTime(date: Date): string {
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
     return `${hours}:${minutes}`;
   }
-
   saveAttendance() {
     const formData = {
       attendanceDate: this.moment(this.selectedDate).format('YYYY-MM-DD'),
@@ -246,7 +238,6 @@ export class CreateComponent {
         );
     }
   }
-
   goBack() {
     this.location.back();
   }

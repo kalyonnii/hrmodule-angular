@@ -7,11 +7,9 @@
   padding-right: 20px;
   padding-top: 10px;
 }
-
 .card-content {
   color: white;
 }
-
 .card-icon {
   width: 250px;
 }
@@ -24,17 +22,14 @@
   font-weight: bold !important;
   color: #31425e;
 }
-
 .count-sub-title {
   font-size: 15px !important;
   font-weight: bold !important;
 }
-
 .card {
   border: none;
   box-shadow: 0 0 10px 1px rgba(80, 82, 106, 0.25);
 }
-
 .nodata-container {
   position: absolute;
   top: 50%;
@@ -44,25 +39,21 @@
   align-items: center;
   justify-content: center;
 }
-
 .nodata {
   width: 200px;
   height: 200px;
   height: auto;
   opacity: 0.8;
 }
-
 .info-line {
   display: flex;
   align-items: center;
   margin-bottom: 15px;
 }
-
 .label {
   flex: 0 0 80px;
   font-weight: bold;
 }
-
 .value {
   color: grey;
   flex: 1;
@@ -70,7 +61,6 @@
 .icon {
   width: 35px;
   margin-right: 13px;
-
   background-color: #f2f7fe;
   border-radius: 50%;
   padding: 8px;
@@ -87,20 +77,16 @@
   height: 560px;
   overflow: hidden;
 }
-
 .custom-scroll-container {
   max-height: 330px;
   overflow-y: auto;
 }
-
 .custom-scroll-container::-webkit-scrollbar {
   width: 6px;
 }
-
 .custom-scroll-container::-webkit-scrollbar-thumb {
   background-color: #51c295;
 }
-
 .custom-scroll-container::-webkit-scrollbar-track {
   background: #f1f1f1;
 }

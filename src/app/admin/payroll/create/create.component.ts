@@ -165,9 +165,6 @@ export class CreateComponent {
       ?.valueChanges.subscribe((payrollMonth) =>
         this.calculateWorkingDays(payrollMonth)
       );
-    // this.payrollForm.get('absentDays')?.valueChanges.subscribe((absentDays) => {
-    //   this.handleAbsentDays(absentDays);
-    // });
     this.payrollForm
       .get('joiningDate')
       ?.valueChanges.subscribe((joiningDate) => {
@@ -180,9 +177,6 @@ export class CreateComponent {
         this.handlePresentDays();
       }
     });
-    //   this.payrollForm
-    //     .get('workingDays')
-    //     ?.valueChanges.subscribe(() => this.calculatedaySalary());
   }
 
   getAttendance(): Promise<void> {
@@ -236,7 +230,6 @@ export class CreateComponent {
     const employeeId = this.payrollForm.get('employeeId')?.value;
     const payroll = new Date(this.moment(payrollMonth, 'MM/YYYY').toDate());
     this.loading = true;
-
     this.getAttendance()
       .then(() => {
         const filteredAttendance = this.attendance.filter((record) => {
@@ -246,13 +239,11 @@ export class CreateComponent {
             attendanceDate.getFullYear() === payroll.getFullYear()
           );
         });
-
         console.log(filteredAttendance);
         const presentDays = filteredAttendance.reduce((count, record) => {
           const employeeRecord = record.attendanceData.find(
             (emp) => emp.employeeId === employeeId
           );
-
           if (employeeRecord) {
             if (
               employeeRecord.status === 'Present' ||
@@ -285,7 +276,6 @@ export class CreateComponent {
         this.loading = false;
       });
   }
-
   calculateWorkingDays(payrollMonth: string): void {
     if (!payrollMonth) {
       return;
@@ -304,12 +294,10 @@ export class CreateComponent {
     }
     this.payrollForm.get('workingDays')?.setValue(workingDaysCount);
   }
-
   isHoliday(day: any): boolean {
     const dayStr = day.format('YYYY-MM-DD');
     return this.holidays.some((holiday) => holiday.date == dayStr);
   }
-
   getHolidays(filter = {}) {
     this.loading = true;
     this.employeesService.getHolidays(filter).subscribe(
@@ -324,10 +312,8 @@ export class CreateComponent {
       }
     );
   }
-
   getEmployees(filter = {}) {
     this.loading = true;
-    // filter['employeeInternalStatus-eq'] = 1;
     if (this.actionType === 'create') {
       filter['employeeInternalStatus-eq'] = 1;
     }
@@ -361,37 +347,6 @@ export class CreateComponent {
         optionLabel: 'employeeName',
         optionValue: 'employeeName',
       },
-      // {
-      //   label: 'Custom Employee Id',
-      //   controlName: 'customEmployeeId',
-      //   type: 'text',
-      //   required: true,
-      // },
-      // {
-      //   label: 'Joining Date',
-      //   controlName: 'joiningDate',
-      //   type: 'calendar',
-      //   required: true,
-      // },
-      // {
-      //   label: 'Account Number',
-      //   controlName: 'accountNumber',
-      //   type: 'text',
-      //   required: true,
-      // },
-      // {
-      //   label: 'IFSC Code',
-      //   controlName: 'ifscCode',
-      //   type: 'text',
-      //   required: true,
-      // },
-      // {
-      //   label: 'Bank Branch',
-      //   controlName: 'bankBranch',
-      //   type: 'text',
-      //   required: true,
-      // },
-
       {
         label: 'Working Days',
         controlName: 'workingDays',
@@ -404,24 +359,12 @@ export class CreateComponent {
         type: 'number',
         required: true,
       },
-      // {
-      //   label: 'Absent Days',
-      //   controlName: 'absentDays',
-      //   type: 'number',
-      //   required: true,
-      // },
       {
         label: 'Casual Days',
         controlName: 'casualDays',
         type: 'number',
         required: true,
       },
-      // {
-      //   label: 'Total Absent Days',
-      //   controlName: 'totalAbsentDays',
-      //   type: 'number',
-      //   required: true,
-      // },
       {
         label: 'Double LOP Days',
         controlName: 'doubleLopDays',
@@ -492,9 +435,7 @@ export class CreateComponent {
       joiningDate,
       workingDays,
       presentDays,
-      // absentDays,
       casualDays,
-      // totalAbsentDays,
       doubleLopDays,
       lateLopDays,
       salary,
@@ -512,11 +453,15 @@ export class CreateComponent {
     const absentDays =
       presentDays > 0 && workingDays > 0 ? workingDays - presentDays : 0;
     const totalAbsentDays =
-      casualDays > 0 && absentDays ? absentDays - casualDays : absentDays || 0;
+      casualDays > 0 && absentDays
+        ? Math.max(0, absentDays - casualDays)
+        : absentDays || 0;
     const daySalary = Number((salary / workingDays).toFixed());
     const absentAndLate =
       absentDays > 0 || lateLopDays > 0
-        ? absentDays + lateLopDays - casualDays
+        ? casualDays > 0 && absentDays == 0.5
+          ? Math.max(0, absentDays - casualDays) + lateLopDays
+          : absentDays + lateLopDays - casualDays
         : absentDays + lateLopDays;
     const totalDeductedDaysWithoutDLOP = absentAndLate;
     const totalDeductedDaysWithDLOP = absentAndLate + doubleLopDays;

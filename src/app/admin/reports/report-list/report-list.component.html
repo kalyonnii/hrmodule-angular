@@ -129,9 +129,9 @@
         </td>
         <td>
           <span
-            class="table-column-data text-lowercase"
+            class="table-column-data"
             *ngIf="report.createdOn"
-            >{{ report.createdOn | date : "dd-MM-yyyy HH:mm:ss" }}</span
+            >{{ report.createdOn | date : "MMM d, y, h:mm a" }}</span
           >
         </td>
         <td>
@@ -151,7 +151,6 @@
                   </a>
                 </ng-container>
               </span>
-
               <button
                 *ngIf="userDetails?.designation == 4"
                 pButton

@@ -11,6 +11,10 @@ import { RoutingService } from 'src/app/services/routing-service';
 import { ActivatedRoute } from '@angular/router';
 import { DateTimeProcessorService } from 'src/app/services/date-time-processor.service';
 import { projectConstantsLocal } from 'src/app/constants/project-constants';
+import { DialogService } from 'primeng/dynamicdialog';
+import { FileUploadComponent } from '../../file-upload/file-upload.component';
+import { LocalStorageService } from 'src/app/services/local-storage.service';
+import { ConfirmationService } from 'primeng/api';
 @Component({
   selector: 'app-create',
   templateUrl: './create.component.html',
@@ -20,11 +24,15 @@ export class CreateComponent {
   heading: any = 'Create User';
   breadCrumbItems: any = [];
   userData: any;
+  userDetails: any;
   formFields: any = [];
   isPasswordVisible: boolean = false;
   isConfirmPasswordVisible: boolean = false;
   actionType: any = 'create';
   loading: any;
+  selectedFiles: any = {
+    userImage: { filesData: [], links: [], uploadedFiles: [] },
+  };
   userId: any;
   version = projectConstantsLocal.VERSION_DESKTOP;
   userForm: UntypedFormGroup;
@@ -32,6 +40,9 @@ export class CreateComponent {
   moment: any;
   constructor(
     private location: Location,
+    private dialogService: DialogService,
+    private confirmationService: ConfirmationService,
+    private localStorageService: LocalStorageService,
     private formBuilder: UntypedFormBuilder,
     private toastService: ToastService,
     private employeesService: EmployeesService,
@@ -58,6 +69,10 @@ export class CreateComponent {
               password: this.userData?.password,
               confirmPassword: this.userData?.confirmPassword,
             });
+            if (this.userData.userImage) {
+              this.selectedFiles['userImage']['uploadedFiles'] =
+                this.userData.userImage;
+            }
           }
         });
       }
@@ -80,6 +95,11 @@ export class CreateComponent {
   ngOnInit() {
     this.createForm();
     this.setEmployeesList();
+    const userDetails =
+      this.localStorageService.getItemFromLocalStorage('userDetails');
+    if (userDetails) {
+      this.userDetails = userDetails.user;
+    }
   }
 
   togglePasswordVisibility() {
@@ -147,6 +167,18 @@ export class CreateComponent {
         required: true,
         isPasswordField: true,
       },
+      ...(this.actionType == 'update'
+        ? [
+            {
+              label: 'User Image',
+              controlName: 'userImage',
+              type: 'file',
+              required: false,
+              uploadFunction: 'uploadFiles',
+              acceptedFileTypes: 'image/*',
+            },
+          ]
+        : []),
     ];
   }
   createForm() {
@@ -200,6 +232,7 @@ export class CreateComponent {
       designationName: this.getDesignationName(formValues.designation),
       password: formValues.password,
       confirmPassword: formValues.confirmPassword,
+      userImage: this.getFileData('userImage'),
     };
 
     console.log('formData', formData);
@@ -238,6 +271,95 @@ export class CreateComponent {
     }
   }
 
+  private getFileData(fileType: string): any[] | null {
+    if (this.selectedFiles[fileType]) {
+      const { links = [], uploadedFiles = [] } = this.selectedFiles[fileType];
+      if (links.length > 0 || uploadedFiles.length > 0) {
+        return [...links, ...uploadedFiles];
+      }
+    }
+    return null;
+  }
+  uploadFiles(fileType, acceptableTypes, index?) {
+    console.log(acceptableTypes);
+    let data = {
+      acceptableTypes: acceptableTypes,
+      files:
+        index || index == 0
+          ? this.selectedFiles[fileType][index]['filesData']
+          : this.selectedFiles[fileType]['filesData'],
+      uploadedFiles:
+        index || index == 0
+          ? this.selectedFiles[fileType][index]['uploadedFiles']
+          : this.selectedFiles[fileType]['uploadedFiles'],
+    };
+    let fileUploadRef = this.dialogService.open(FileUploadComponent, {
+      header: 'Select Files',
+      width: '90%',
+      contentStyle: { 'max-height': '500px', overflow: 'auto' },
+      baseZIndex: 10000,
+      data: data,
+    });
+    fileUploadRef.onClose.subscribe((files: any) => {
+      if (files) {
+        this.saveFiles(files, fileType, index);
+      }
+    });
+  }
+  saveFiles(files, fileType, index) {
+    this.loading = true;
+    if (files && files.length > 0) {
+      console.log(files);
+      const formData = new FormData();
+      for (let file of files) {
+        if (file && !file['fileuploaded']) {
+          formData.append('files', file);
+        }
+      }
+      console.log(formData);
+      console.log(this.userId);
+      console.log(fileType);
+      this.employeesService
+        .uploadFiles(formData, this.userId, fileType)
+        .subscribe(
+          (response: any) => {
+            console.log(response);
+            if (response && response['links'] && response['links'].length > 0) {
+              for (let i = 0; i < response['links'].length; i++) {
+                index || index == 0
+                  ? this.selectedFiles[fileType][index]['links'].push(
+                      response['links'][i]
+                    )
+                  : this.selectedFiles[fileType]['links'].push(
+                      response['links'][i]
+                    );
+              }
+              for (let i = 0; i < files.length; i++) {
+                files[i]['fileuploaded'] = true;
+                index || index == 0
+                  ? this.selectedFiles[fileType][index]['filesData'].push(
+                      files[i]
+                    )
+                  : this.selectedFiles[fileType]['filesData'].push(files[i]);
+              }
+              console.log(
+                'this.selectedFiles',
+                this.selectedFiles[fileType],
+                files
+              );
+              this.toastService.showSuccess('Files Uploaded Successfully');
+            } else {
+              this.toastService.showError({ error: 'Something went wrong' });
+            }
+            this.loading = false;
+          },
+          (error: any) => {
+            this.loading = false;
+            this.toastService.showError(error);
+          }
+        );
+    }
+  }
   getDesignationName(designationId) {
     if (this.designationEntities && this.designationEntities.length > 0) {
       let designationName = this.designationEntities.filter(
@@ -251,6 +373,52 @@ export class CreateComponent {
       );
     }
     return '';
+  }
+
+  confirmDelete(file, controlName) {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete this File?',
+      header: 'Confirm Deletion',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.deleteFile(file, controlName);
+      },
+    });
+  }
+
+  deleteFile(fileUrl: string, fileType: string) {
+    const relativePath = fileUrl.substring(fileUrl.indexOf('/documents'));
+    console.log('Before Deletion:', this.selectedFiles);
+    this.employeesService.deleteFile(relativePath).subscribe(
+      (response: any) => {
+        if (response.message === 'File deleted successfully.') {
+          console.log('File deleted successfully.');
+          if (this.selectedFiles[fileType]?.uploadedFiles) {
+            this.selectedFiles[fileType].uploadedFiles = this.selectedFiles[
+              fileType
+            ].uploadedFiles.filter((f: string) => f !== fileUrl);
+            console.log('After Deletion:', this.selectedFiles);
+          } else {
+            console.error(
+              'No uploaded files found for the specified file type.'
+            );
+          }
+          this.toastService.showSuccess('Files Deleted Successfully');
+        } else {
+          console.error('Error deleting file:', response.error);
+          this.toastService.showError(response);
+        }
+      },
+      (error) => {
+        console.error('Error deleting file:', error);
+        this.toastService.showError(
+          'Failed to delete file. Please try again later.'
+        );
+      }
+    );
+  }
+  getFileIcon(fileType) {
+    return this.employeesService.getFileIcon(fileType);
   }
 
   goBack() {

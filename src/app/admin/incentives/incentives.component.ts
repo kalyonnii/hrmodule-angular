@@ -6,6 +6,7 @@ import { ToastService } from 'src/app/services/toast.service';
 import { EmployeesService } from '../employees/employees.service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { ConfirmationService } from 'primeng/api';
+import { DateTimeProcessorService } from 'src/app/services/date-time-processor.service';
 @Component({
   selector: 'app-incentives',
   templateUrl: './incentives.component.html',
@@ -15,21 +16,31 @@ export class IncentivesComponent implements OnInit {
   breadCrumbItems: any = [];
   loading: any;
   searchFilter: any = {};
+  activeItem: any;
+  selectedDate: Date;
   currentTableEvent: any;
+  selectedIncentive: any = null;
+  isDialogVisible = false;
   employeeNameToSearch: any;
   userDetails: any;
   totalIncentivesCount: any = 0;
+  items: any[];
   incentives: any = [];
   version = projectConstantsLocal.VERSION_DESKTOP;
-
+  moment: any;
   constructor(
     private location: Location,
     private confirmationService: ConfirmationService,
     private localStorageService: LocalStorageService,
     private employeesService: EmployeesService,
     private toastService: ToastService,
-    private routingService: RoutingService
+    private routingService: RoutingService,
+    private dateTimeProcessor: DateTimeProcessorService
   ) {
+    this.moment = this.dateTimeProcessor.getMoment();
+    this.selectedDate = this.moment(new Date())
+      .subtract(1, 'month')
+      .format('MM/YYYY');
     this.breadCrumbItems = [
       {
         icon: 'fa fa-house',
@@ -47,17 +58,88 @@ export class IncentivesComponent implements OnInit {
     if (userDetails) {
       this.userDetails = userDetails.user;
     }
-  }
-  inputValueChangeEvent(dataType, value) {
-    if (value == '') {
-      this.searchFilter = {};
-      console.log(this.currentTableEvent);
-      this.loadIncentives(this.currentTableEvent);
+    this.setupActiveItemTabs();
+
+    const storedEmployeeName = localStorage.getItem('employeeNameInIncentives');
+    if (storedEmployeeName) {
+      this.employeeNameToSearch = storedEmployeeName;
+      this.filterWithEmployeeName();
+    }
+    const storedMonth = localStorage.getItem('selectedIncentiveMonth');
+    if (storedMonth) {
+      this.selectedDate = JSON.parse(storedMonth);
     }
   }
-  filterWithEmployeeName() {
-    let searchFilter = { 'employeeName-like': this.employeeNameToSearch };
-    this.applyFilters(searchFilter);
+
+  onActiveItemChange(event: any) {
+    this.activeItem = event;
+  }
+
+  // onDateChange(event: any) {
+  //   this.selectedDate = this.moment(event).format('MM/YYYY');
+  //   this.loadIncentives(this.currentTableEvent);
+  // }
+
+  onDateChange(event: any) {
+    this.selectedDate = this.moment(event).format('MM/YYYY');
+    localStorage.setItem(
+      'selectedIncentiveMonth',
+      JSON.stringify(this.selectedDate)
+    );
+    this.loadIncentives(this.currentTableEvent);
+  }
+  setupActiveItemTabs() {
+    this.items = [
+      { label: 'First Month Files', name: 'firstMonthFiles' },
+      { label: 'Second Month Files', name: 'secondMonthFiles' },
+      { label: 'Third Month Files', name: 'thirdMonthFiles' },
+    ];
+    this.activeItem = this.items[0];
+  }
+
+  getFilesForActiveTab(): any[] {
+    if (!this.selectedIncentive || !this.activeItem) return [];
+    switch (this.activeItem.name) {
+      case 'firstMonthFiles':
+        return this.selectedIncentive.firstMonthFiles || [];
+      case 'secondMonthFiles':
+        return this.selectedIncentive.secondMonthFiles || [];
+      case 'thirdMonthFiles':
+        return this.selectedIncentive.thirdMonthFiles || [];
+      default:
+        return [];
+    }
+  }
+  // inputValueChangeEvent(dataType, value) {
+  //   if (value == '') {
+  //     this.searchFilter = {};
+  //     console.log(this.currentTableEvent);
+  //     this.loadIncentives(this.currentTableEvent);
+  //   }
+  // }
+
+  inputValueChangeEvent(dataType: string, value: string): void {
+    if (value === '') {
+      this.searchFilter = {};
+      localStorage.setItem('employeeNameInIncentives', value);
+      console.log(this.currentTableEvent);
+      this.loadIncentives(this.currentTableEvent);
+    } else {
+      localStorage.setItem('employeeNameInIncentives', value);
+    }
+  }
+  // filterWithEmployeeName() {
+  //   let searchFilter = { 'employeeName-like': this.employeeNameToSearch };
+  //   this.applyFilters(searchFilter);
+  // }
+  filterWithEmployeeName(): void {
+    const employeeNameToSearch =
+      localStorage.getItem('employeeNameInIncentives') ||
+      this.employeeNameToSearch;
+    if (employeeNameToSearch) {
+      const searchFilter = { 'employeeName-like': employeeNameToSearch };
+      this.applyFilters(searchFilter);
+    }
   }
   applyFilters(searchFilter = {}) {
     this.searchFilter = searchFilter;
@@ -79,6 +161,7 @@ export class IncentivesComponent implements OnInit {
     //   api_filter['date-lte'] = endOfYear;
     // }
     api_filter = Object.assign({}, api_filter, this.searchFilter);
+    api_filter['incentiveApplicableMonth-eq'] = this.selectedDate;
     if (api_filter) {
       this.getIncentivesCount(api_filter);
       this.getIncentives(api_filter);
@@ -94,6 +177,14 @@ export class IncentivesComponent implements OnInit {
         this.toastService.showError(error);
       }
     );
+  }
+  showUserDetails(user: any): void {
+    this.selectedIncentive = user;
+    this.isDialogVisible = true;
+  }
+  clearDialog(): void {
+    this.selectedIncentive = null;
+    this.isDialogVisible = false;
   }
 
   getIncentives(filter = {}) {
@@ -111,6 +202,26 @@ export class IncentivesComponent implements OnInit {
     );
   }
 
+  getFormattedMonthYear(date: string): string {
+    if (!date) return '';
+    const [month, year] = date.split('/'); // Split the date by '/'
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    const monthName = months[parseInt(month, 10) - 1]; // Map the month number
+    return `${monthName} ${year}`;
+  }
 
   confirmDelete(incentiveId) {
     this.confirmationService.confirm({

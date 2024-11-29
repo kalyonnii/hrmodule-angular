@@ -35,7 +35,6 @@ export class EmployeesComponent implements OnInit {
   genderDetails: any = projectConstantsLocal.GENDER_ENTITIES;
   employeeInternalStatusList: any = projectConstantsLocal.EMPLOYEE_STATUS;
   selectedEmployeeStatus = this.employeeInternalStatusList[1];
-
   constructor(
     private employeesService: EmployeesService,
     private location: Location,
@@ -54,7 +53,6 @@ export class EmployeesComponent implements OnInit {
       { label: 'Employees' },
     ];
   }
-
   ngOnInit(): void {
     const userDetails =
       this.localStorageService.getItemFromLocalStorage('userDetails');
@@ -64,8 +62,20 @@ export class EmployeesComponent implements OnInit {
     this.updateCountsAnalytics();
     this.setFilterConfig();
     this.getEmployeesStatusCount();
+    const storedEmployeeName = localStorage.getItem('employeeNameInEmployees');
+    if (storedEmployeeName) {
+      this.employeeNameToSearch = storedEmployeeName;
+      this.filterWithEmployeeName();
+    }
+    const storedStatus = localStorage.getItem('selectedEmployeeStatus');
+    if (storedStatus) {
+      this.selectedEmployeeStatus = JSON.parse(storedStatus);
+    }
+    const storedAppliedFilter = localStorage.getItem('employeesAppliedFilter');
+    if (storedAppliedFilter) {
+      this.appliedFilter = JSON.parse(storedAppliedFilter);
+    }
   }
-
   updateCountsAnalytics() {
     this.countsAnalytics = [
       {
@@ -102,12 +112,16 @@ export class EmployeesComponent implements OnInit {
   }
   actionItems(employee: any): MenuItem[] {
     const menuItems: any = [{ label: 'Actions', items: [] }];
-
     if (employee.employeeInternalStatus === 1) {
       menuItems[0].items.push({
         label: 'Profile',
         icon: 'fa fa-eye',
         command: () => this.employeeProfile(employee.employeeId),
+      });
+      menuItems[0].items.push({
+        label: 'Offer Letter',
+        icon: 'fa fa-file',
+        command: () => this.ViewOfferletter(employee.employeeId),
       });
       menuItems[0].items.push({
         label: 'Update',
@@ -140,7 +154,6 @@ export class EmployeesComponent implements OnInit {
     }
     return menuItems;
   }
-
   setFilterConfig() {
     this.filterConfig = [
       {
@@ -154,7 +167,6 @@ export class EmployeesComponent implements OnInit {
           },
         ],
       },
-
       {
         header: 'Custom Employee Id',
         data: [
@@ -200,7 +212,6 @@ export class EmployeesComponent implements OnInit {
           },
         ],
       },
-
       {
         header: 'Secondary Number',
         data: [
@@ -212,7 +223,6 @@ export class EmployeesComponent implements OnInit {
           },
         ],
       },
-
       {
         header: 'Designation',
         data: [
@@ -228,7 +238,6 @@ export class EmployeesComponent implements OnInit {
           },
         ],
       },
-
       {
         header: 'Joining Date',
         data: [
@@ -257,7 +266,6 @@ export class EmployeesComponent implements OnInit {
           },
         ],
       },
-
       {
         header: 'Office Branch',
         data: [
@@ -354,7 +362,6 @@ export class EmployeesComponent implements OnInit {
           },
         ],
       },
-
       {
         header: 'created On  ',
         data: [
@@ -366,7 +373,6 @@ export class EmployeesComponent implements OnInit {
           },
         ],
       },
-
       {
         header: 'Qualification',
         data: [
@@ -378,7 +384,6 @@ export class EmployeesComponent implements OnInit {
           },
         ],
       },
-
       {
         header: 'Experience',
         data: [
@@ -401,7 +406,6 @@ export class EmployeesComponent implements OnInit {
           },
         ],
       },
-
       {
         header: 'Aadhar Number',
         data: [
@@ -413,7 +417,6 @@ export class EmployeesComponent implements OnInit {
           },
         ],
       },
-
       {
         header: 'Account Holder Name',
         data: [
@@ -469,7 +472,6 @@ export class EmployeesComponent implements OnInit {
           },
         ],
       },
-
       {
         header: 'Current Address',
         data: [
@@ -494,6 +496,17 @@ export class EmployeesComponent implements OnInit {
       },
     ];
   }
+  // applyConfigFilters(event) {
+  //   let api_filter = event;
+  //   if (api_filter['reset']) {
+  //     delete api_filter['reset'];
+  //     this.appliedFilter = {};
+  //   } else {
+  //     this.appliedFilter = api_filter;
+  //   }
+  //   this.loadEmployees(this.currentTableEvent);
+  // }
+
   applyConfigFilters(event) {
     let api_filter = event;
     if (api_filter['reset']) {
@@ -502,13 +515,15 @@ export class EmployeesComponent implements OnInit {
     } else {
       this.appliedFilter = api_filter;
     }
+    localStorage.setItem(
+      'employeesAppliedFilter',
+      JSON.stringify(this.appliedFilter)
+    );
     this.loadEmployees(this.currentTableEvent);
   }
-
   inactiveEmployee(employee) {
     this.changeEmployeeStatus(employee.employeeId, 2);
   }
-
   activateEmployee(employee) {
     this.changeEmployeeStatus(employee.employeeId, 1);
   }
@@ -526,7 +541,6 @@ export class EmployeesComponent implements OnInit {
       }
     );
   }
-
   confirmDelete(employeeId) {
     this.confirmationService.confirm({
       message: 'Are you sure you want to delete this Employee?',
@@ -534,7 +548,6 @@ export class EmployeesComponent implements OnInit {
       icon: 'pi pi-exclamation-triangle',
       acceptLabel: 'Yes',
       rejectLabel: 'No',
-
       accept: () => {
         this.deleteEmployee(employeeId);
       },
@@ -555,23 +568,45 @@ export class EmployeesComponent implements OnInit {
       }
     );
   }
+  // statusChange(event) {
+  //   this.loadEmployees(this.currentTableEvent);
+  // }
 
-  statusChange(event) {
+  statusChange(event: any): void {
+    localStorage.setItem('selectedEmployeeStatus', JSON.stringify(event.value));
     this.loadEmployees(this.currentTableEvent);
   }
-
-  inputValueChangeEvent(dataType, value) {
-    if (value == '') {
+  // inputValueChangeEvent(dataType, value) {
+  //   if (value == '') {
+  //     this.searchFilter = {};
+  //     localStorage.setItem('employeeNameToSearch', value);
+  //     console.log(this.currentTableEvent);
+  //     // this.loadEmployees(this.currentTableEvent);
+  //   }
+  // }
+  // filterWithEmployeeName() {
+  //   let searchFilter = { 'employeeName-like': this.employeeNameToSearch };
+  //   this.applyFilters(searchFilter);
+  // }
+  inputValueChangeEvent(dataType: string, value: string): void {
+    if (value === '') {
       this.searchFilter = {};
+      localStorage.setItem('employeeNameInEmployees', value);
       console.log(this.currentTableEvent);
       this.loadEmployees(this.currentTableEvent);
+    } else {
+      localStorage.setItem('employeeNameInEmployees', value);
     }
   }
-  filterWithEmployeeName() {
-    let searchFilter = { 'employeeName-like': this.employeeNameToSearch };
-    this.applyFilters(searchFilter);
+  filterWithEmployeeName(): void {
+    const employeeNameToSearch =
+      localStorage.getItem('employeeNameInEmployees') ||
+      this.employeeNameToSearch;
+    if (employeeNameToSearch) {
+      const searchFilter = { 'employeeName-like': employeeNameToSearch };
+      this.applyFilters(searchFilter);
+    }
   }
-
   applyFilters(searchFilter = {}) {
     this.searchFilter = searchFilter;
     console.log(this.currentTableEvent);
@@ -603,7 +638,6 @@ export class EmployeesComponent implements OnInit {
       this.getEmployees(api_filter);
     }
   }
-
   getEmployeesCount(filter = {}) {
     this.employeesService.getEmployeesCount(filter).subscribe(
       (response) => {
@@ -614,19 +648,15 @@ export class EmployeesComponent implements OnInit {
       }
     );
   }
-
   countEmployeeInternalStatus(employees: any[]) {
     const statusCount = { 1: 0, 2: 0 };
     const newEmployeeCount = { new: 0, old: 0 };
-
     const threeMonthsAgo = new Date();
-    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 2); // Set the date to 3 months ago
-
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 2);
     employees.forEach((employee) => {
       if (employee.employeeInternalStatus in statusCount) {
         statusCount[employee.employeeInternalStatus]++;
       }
-
       if (employee.employeeInternalStatus !== 2) {
         const joiningDate = new Date(employee.joiningDate);
         if (joiningDate > threeMonthsAgo) {
@@ -636,17 +666,14 @@ export class EmployeesComponent implements OnInit {
         }
       }
     });
-
     return { statusCount, newEmployeeCount };
   }
-
   getEmployees(filter = {}) {
     this.loading = true;
     this.employeesService.getEmployees(filter).subscribe(
       (response) => {
         this.employees = response;
         console.log('employees', this.employees);
-        // window.dispatchEvent(new Event('resize'));
         this.loading = false;
       },
       (error: any) => {
@@ -655,7 +682,6 @@ export class EmployeesComponent implements OnInit {
       }
     );
   }
-
   getEmployeesStatusCount() {
     this.loading = true;
     this.employeesService.getEmployees().subscribe(
@@ -688,7 +714,6 @@ export class EmployeesComponent implements OnInit {
     }
     return '';
   }
-
   getStatusColor(status: string): {
     textColor: string;
     backgroundColor: string;
@@ -705,14 +730,12 @@ export class EmployeesComponent implements OnInit {
   createEmployee() {
     this.routingService.handleRoute('employees/create', null);
   }
-
   updateEmployee(employeeId) {
     this.routingService.handleRoute('employees/update/' + employeeId, null);
   }
   employeeProfile(employeeId) {
     this.routingService.handleRoute('employees/profile/' + employeeId, null);
   }
-
   ViewOfferletter(employeeId) {
     this.routingService.handleRoute(
       'employees/offerletter/' + employeeId,

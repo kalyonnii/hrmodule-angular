@@ -73,7 +73,6 @@
                   >
                   </p-dropdown>
                 </span>
-
                 <span *ngIf="field && field.type == 'multiselect'">
                   <p-multiSelect
                     [placeholder]="'Select ' + field.title"
@@ -96,7 +95,6 @@
       </div>
     </div>
   </p-sidebar>
-
   <div class="button-wrapper position-relative">
     <button
       pButton
@@ -108,8 +106,6 @@
       label="Filters"
       class="p-button-text"
     ></button>
-
     <span class="indication-dot" *ngIf="showIndicationIcon"></span>
   </div>
-
 </div>

@@ -5,7 +5,6 @@ import { RouterModule } from '@angular/router';
 import { SidebarModule } from 'primeng/sidebar';
 import { TooltipModule } from 'primeng/tooltip';
 import { ButtonModule } from 'primeng/button';
-import { MatExpansionModule } from '@angular/material/expansion';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
 

@@ -42,7 +42,6 @@ export class PayrollComponent {
     this.selectedDate = this.moment(new Date())
       .subtract(1, 'month')
       .format('MM/YYYY');
-
     this.breadCrumbItems = [
       {
         icon: 'fa fa-house',
@@ -59,9 +58,26 @@ export class PayrollComponent {
       this.localStorageService.getItemFromLocalStorage('userDetails');
     this.userDetails = userDetails.user;
     this.setFilterConfig();
+    const storedStatus = localStorage.getItem('selectedEmployee');
+    if (storedStatus) {
+      this.selectedEmployee = JSON.parse(storedStatus);
+    }
+    const storedMonth = localStorage.getItem('payrollMonth');
+    if (storedMonth) {
+      this.selectedDate = JSON.parse(storedMonth);
+    }
+    const storedAppliedFilter = localStorage.getItem('payrollAppliedFilter');
+    if (storedAppliedFilter) {
+      this.appliedFilter = JSON.parse(storedAppliedFilter);
+    }
   }
+  // onDateChange(event: any) {
+  //   this.selectedDate = this.moment(event).format('MM/YYYY');
+  //   this.loadPayslips(this.currentTableEvent);
+  // }
   onDateChange(event: any) {
     this.selectedDate = this.moment(event).format('MM/YYYY');
+    localStorage.setItem('payrollMonth', JSON.stringify(this.selectedDate));
     this.loadPayslips(this.currentTableEvent);
   }
   getEmployees(filter = {}) {
@@ -79,10 +95,8 @@ export class PayrollComponent {
       }
     );
   }
-
   actionItems(payslip: any): MenuItem[] {
     const menuItems: any = [{ label: 'Actions', items: [] }];
-
     menuItems[0].items.push({
       label: 'Payroll Details',
       icon: 'fa fa-eye',
@@ -93,7 +107,6 @@ export class PayrollComponent {
       icon: 'fa fa-pen-to-square',
       command: () => this.updateUser(payslip.payslipId),
     });
-
     if (this.userDetails?.designation == 4) {
       menuItems[0].items.push({
         label: 'Delete',
@@ -114,11 +127,14 @@ export class PayrollComponent {
     this.selectedPayrollDetails = null;
     this.isDialogVisible = false;
   }
+  // statusChange(event) {
+  //   this.loadPayslips(this.currentTableEvent);
+  // }
 
-  statusChange(event) {
+  statusChange(event: any): void {
+    localStorage.setItem('selectedEmployee', JSON.stringify(event.value));
     this.loadPayslips(this.currentTableEvent);
   }
-
   setFilterConfig() {
     this.filterConfig = [
       {
@@ -165,7 +181,6 @@ export class PayrollComponent {
           },
         ],
       },
-
       {
         header: 'Joining Date',
         data: [
@@ -221,7 +236,6 @@ export class PayrollComponent {
           },
         ],
       },
-
       {
         header: 'Total Absent Days',
         data: [
@@ -277,7 +291,6 @@ export class PayrollComponent {
           },
         ],
       },
-
       {
         header: 'Day Salary',
         data: [
@@ -289,7 +302,6 @@ export class PayrollComponent {
           },
         ],
       },
-
       {
         header: 'Net Salary Without Double LOP',
         data: [
@@ -334,7 +346,6 @@ export class PayrollComponent {
           },
         ],
       },
-
       {
         header: 'IFSC Code',
         data: [
@@ -346,7 +357,6 @@ export class PayrollComponent {
           },
         ],
       },
-
       {
         header: 'Bank Branch',
         data: [
@@ -358,7 +368,6 @@ export class PayrollComponent {
           },
         ],
       },
-
       {
         header: 'Created Date Range',
         data: [
@@ -371,7 +380,6 @@ export class PayrollComponent {
           { field: 'createdOn', title: 'To', type: 'date', filterType: 'lte' },
         ],
       },
-
       {
         header: 'created On  ',
         data: [
@@ -431,7 +439,6 @@ export class PayrollComponent {
               payrollResponse,
               employeeResponse
             );
-
             console.log('Merged Payroll Data:', this.payroll);
             this.loading = false;
           },
@@ -447,7 +454,6 @@ export class PayrollComponent {
       }
     );
   }
-
   mergePayrollWithEmployees(payroll: any[], employees: any[]): any[] {
     return payroll.map((p) => {
       const employee = employees.find((e) => e.employeeId === p.employeeId);
@@ -461,6 +467,17 @@ export class PayrollComponent {
     this.loadPayslips(this.currentTableEvent);
   }
 
+  // applyConfigFilters(event) {
+  //   let api_filter = event;
+  //   if (api_filter['reset']) {
+  //     delete api_filter['reset'];
+  //     this.appliedFilter = {};
+  //   } else {
+  //     this.appliedFilter = api_filter;
+  //   }
+  //   this.loadPayslips(this.currentTableEvent);
+  // }
+
   applyConfigFilters(event) {
     let api_filter = event;
     if (api_filter['reset']) {
@@ -469,6 +486,10 @@ export class PayrollComponent {
     } else {
       this.appliedFilter = api_filter;
     }
+    localStorage.setItem(
+      'payrollAppliedFilter',
+      JSON.stringify(this.appliedFilter)
+    );
     this.loadPayslips(this.currentTableEvent);
   }
 

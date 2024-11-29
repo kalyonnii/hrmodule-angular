@@ -204,7 +204,6 @@
         >
       </div>
     </div>
-
     <div class="info-line">
       <span class="icon"><i class="fas fa-comments"></i></span>
       <div class="label d-flex justify-content-between">
@@ -239,7 +238,6 @@
         </span>
       </div>
     </div>
-
     <div class="info-line">
       <span class="icon"><i class="fas fa-circle-user"></i></span>
       <div class="label d-flex justify-content-between">
@@ -262,6 +260,33 @@
         {{
           selectedInterviewDetails.createdOn
             ? (selectedInterviewDetails.createdOn | date)
+            : "-"
+        }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-user-tag"></i></span>
+      <div class="label d-flex justify-content-between">
+        Last Updated By<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{
+          selectedInterviewDetails.lastUpdatedBy
+            ? (selectedInterviewDetails.lastUpdatedBy | capitalizeFirst)
+            : "-"
+        }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-calendar-check"></i></span>
+      <div class="label d-flex justify-content-between">
+        Last Updated On<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{
+          selectedInterviewDetails.lastUpdatedOn
+            ? (selectedInterviewDetails.lastUpdatedOn
+              | date : "MMM d, y, h:mm a")
             : "-"
         }}
       </div>
@@ -415,7 +440,6 @@
           Attended Interview
           <p-sortIcon field="attendedInterviewName"></p-sortIcon>
         </th>
-
         <th pSortableColumn="createdOn">
           Created Date <p-sortIcon field="createdOn"></p-sortIcon>
         </th>
@@ -464,7 +488,6 @@
             >{{ interview.attendedInterviewName }}</span
           >
         </td>
-
         <td>
           <span
             class="table-column-data"
@@ -528,9 +551,7 @@
     </ng-template>
   </p-table>
 </div>
-
 <ng-template #noData> - </ng-template>
-
 <footer class="p-2 text-center text-lg-start mt-3" style="color: #878a99">
   <div class="text-center mb-3 fw-bold">
     © 2024 <span style="color: #1e4079">The</span>&nbsp;<b

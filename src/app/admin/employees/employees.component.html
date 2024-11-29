@@ -28,7 +28,6 @@
 <div *ngIf="loading">
   <app-preloader></app-preloader>
 </div>
-
 <div class="container-fluid">
   <div class="row">
     <div class="d-flex flex-wrap justify-content-start">
@@ -47,7 +46,7 @@
                 </div>
               </div>
               <div
-                class=" cardicons"
+                class="cardicons"
                 [ngStyle]="{
                   color: item.textcolor,
                   'background-color': item.backgroundcolor
@@ -55,8 +54,6 @@
               >
                 <i class="fa fa-{{ item.name }}"></i>
               </div>
-
-
             </div>
           </div>
         </div>
@@ -185,7 +182,6 @@
         <th pSortableColumn="employeeInternalStatus">
           Status <p-sortIcon [field]="'employeeInternalStatus'"></p-sortIcon>
         </th>
-        <th>Offer Letter</th>
         <th>Actions</th>
       </tr>
     </ng-template>
@@ -284,7 +280,7 @@
             {{ getStatusName(employee.employeeInternalStatus) }}
           </span>
         </td>
-        <td>
+        <!-- <td>
           <div class="text-center">
             <div class="d-flex">
               <button
@@ -298,7 +294,7 @@
               ></button>
             </div>
           </div>
-        </td>
+        </td> -->
         <td>
           <div class="text-center">
             <div class="d-flex">
@@ -335,7 +331,6 @@
   </p-table>
 </div>
 <ng-template #noData> - </ng-template>
-
 <footer class="p-2 text-center text-lg-start mt-3" style="color: #878a99">
   <div class="text-center mb-3 fw-bold">
     © 2024 <span style="color: #1e4079">The</span>&nbsp;<b

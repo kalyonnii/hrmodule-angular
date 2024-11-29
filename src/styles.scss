@@ -105,10 +105,10 @@ body {
   font-size: 30px;
 }
 
-.p-breadcrumb {
-  background-color: #31425e !important;
-  border: none !important;
-  padding: 0 !important;
+.bread-crumb .p-breadcrumb {
+  background-color: #31425e;
+  border: none;
+  padding: 0;
 }
 
 .p-breadcrumb .p-breadcrumb-chevron,
@@ -118,19 +118,16 @@ body {
 
 .p-breadcrumb .p-menuitem-text {
   color: white !important;
+  font-weight: bold;
 }
 
 .p-menu .p-menuitem-text {
   color: #2e4374 !important;
   font-weight: bold;
 }
-
 .p-datatable .p-datatable-thead > tr > th {
-  background: #31425e !important;
+  background-color: #31425e !important;
   color: white !important;
-}
-.p-datatable .p-datatable-thead {
-  border-radius: 10px;
 }
 .p-inputgroup-addon,
 .p-dropdown .p-dropdown-trigger {
@@ -309,57 +306,32 @@ body {
   .p-tabmenu-nav
   .p-tabmenuitem.p-highlight
   .p-menuitem-link {
-  background: #fff !important;
-  color: #31425e !important;
+  background: #31425e !important;
+  color: #ffffff !important;
+}
+
+.tabmenudesign .p-tabmenu {
+  margin-top: 15px;
+}
+.tabmenudesign .p-tabmenu .p-tabmenu-nav {
+  height: 48px;
 }
 .tabmenudesign .p-tabmenu .p-tabmenu-nav .p-tabmenuitem .p-menuitem-link {
-  border: solid #31425e !important;
-  border-bottom-color: #fff !important;
-  border-left-color: none;
-
-  border-right-color: none;
-
-  border-bottom-left-radius: 5px !important;
-  border-bottom-right-radius: 5px !important;
+  background: #ffffff;
+  color: #0165ac;
 }
-
-.tabmenudesign
-  .p-tabmenu
-  .p-tabmenu-nav
-  .p-tabmenuitem:not(p-highlight)
-  .p-menuitem-link {
-  background: #31425e !important;
-  color: #ffffff !important;
-}
-
-.tabmenudesign .p-tabmenu .p-tabmenu-nav {
-  background: #31425e !important;
-
-  color: #ffffff !important;
-}
-.tabmenudesign .p-tabmenu .p-tabmenu-nav .p-tabmenuitem {
-  color: #fff !important;
-}
-
 .tabmenudesign
   .p-tabmenu
   .p-tabmenu-nav
   .p-tabmenuitem:not(.p-highlight)
   .p-menuitem-link:hover {
-  background: #dfe7f7 !important;
-  border-color: none;
+  background: #f9f9f9 !important;
+  border-color: #4f94d4 !important;
   color: #0165ac !important;
 }
-
-.tabmenudesign
-  .p-tabmenu
-  .p-tabmenu-nav
-  .p-tabmenuitem.p-highlight
-  .p-menuitem-link:active {
-  background: #dfe7f7 !important;
-  border-color: none;
-  color: #0165ac !important;
-}
-.tabmenudesign .p-tabmenu {
-  margin-top: 15px;
+.p-datatable-striped .p-datatable {
+  max-height: 500px !important;
+  overflow-y: auto !important;
+  scrollbar-width: 3px !important;
+  scrollbar-color: #51c295 #f1f1f1;
 }

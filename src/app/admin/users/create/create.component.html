@@ -81,7 +81,6 @@
                         ></i>
                       </span>
                     </div>
-
                     <div
                       *ngIf="
                         field.isPasswordField &&
@@ -121,7 +120,6 @@
                         autocomplete="off"
                       />
                     </div>
-
                     <p-dropdown
                       *ngSwitchCase="'dropdown'"
                       [options]="this[field.options]"
@@ -133,6 +131,57 @@
                       [dropdownIcon]="'fa fa-caret-down'"
                       styleClass="w-100"
                     ></p-dropdown>
+                    <ng-container *ngSwitchCase="'file'">
+                      <div>
+                        <button
+                          pButton
+                          type="button"
+                          icon="fa fa-cloud-arrow-up"
+                          class="rightbtn me-2"
+                          (click)="
+                            uploadFiles(
+                              field.controlName,
+                              field.acceptedFileTypes
+                            )
+                          "
+                        >
+                          &nbsp;Upload {{ field.label }}
+                        </button>
+                        <div
+                          *ngIf="
+                            userData &&
+                            userData[field.controlName] &&
+                            userData[field.controlName].length > 0
+                          "
+                          class="mt-2"
+                        >
+                          <span
+                            *ngFor="let file of userData[field.controlName]"
+                            class="file-wrapper"
+                          >
+                            <a
+                              [href]="'//' + file"
+                              target="_blank"
+                              class="file-link"
+                            >
+                              <i
+                                [ngClass]="getFileIcon(file.split('.').pop())"
+                                class="file-icon me-2"
+                              ></i>
+                            </a>
+                            <button
+                              pButton
+                              *ngIf="this.userDetails?.designation == 4"
+                              type="button"
+                              class="delete-btn p-button-danger p-button-sm"
+                              (click)="confirmDelete(file, field.controlName)"
+                            >
+                              <i class="pi pi-times"></i>
+                            </button>
+                          </span>
+                        </div>
+                      </div>
+                    </ng-container>
                   </ng-container>
                 </div>
               </div>

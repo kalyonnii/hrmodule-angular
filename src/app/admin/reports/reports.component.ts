@@ -68,6 +68,12 @@ export class ReportsComponent {
         reportType: 'HOLIDAYS',
         condition: true,
       },
+      {
+        reportName: 'Incentives',
+        name: 'incentives',
+        reportType: 'INCENTIVES',
+        condition: true,
+      },
     ];
     this.reportsListConfig = reportsListConfig.filter(
       (report) => report.condition

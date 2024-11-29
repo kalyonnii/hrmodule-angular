@@ -26,11 +26,9 @@ export class DashboardComponent implements OnInit {
   branchpieChartOptions: any;
   DepartmentChartOptions: any;
   moment: any;
-
   totalPresentCount: number = 0;
   totalAbsentCount: number = 0;
   totalHalfDayCount: number = 0;
-
   totalLateCount: number = 0;
   attendanceData: any;
   totalUsersCount: any = 0;
@@ -200,7 +198,6 @@ export class DashboardComponent implements OnInit {
     this.currentTableEvent = event;
 
     let api_filter = this.employeesService.setFiltersFromPrimeTable(event);
-    // api_filter['employeeInternalStatus-eq'] = 1;
     api_filter = Object.assign({}, api_filter);
     if ('from' in api_filter) {
       delete api_filter.from;
@@ -210,7 +207,6 @@ export class DashboardComponent implements OnInit {
       this.getEmployees(api_filter);
     }
   }
-
   setDefaultAttendanceData() {
     this.employeeDetails = this.employees
       .filter((employee) =>
@@ -232,7 +228,6 @@ export class DashboardComponent implements OnInit {
       });
     console.log('Absent Employee Details:', this.employeeDetails);
   }
-
   getEmployees(filter = {}) {
     this.loading = true;
     this.employeesService.getEmployees(filter).subscribe({
@@ -254,7 +249,6 @@ export class DashboardComponent implements OnInit {
       },
     });
   }
-
   getAttendanceByDate(filter = {}): Promise<void> {
     this.loading = true;
     filter['attendanceDate-eq'] = this.selectedDate;
@@ -275,7 +269,6 @@ export class DashboardComponent implements OnInit {
       );
     });
   }
-
   fetchCounts(filter = {}) {
     this.loading = true;
     const employeefilter = { ...filter, 'employeeInternalStatus-eq': 1 };
@@ -283,7 +276,6 @@ export class DashboardComponent implements OnInit {
       ...filter,
       'payrollMonth-eq': this.selectedDateforPayroll,
     };
-
     forkJoin([
       this.employeesService?.getEmployeesCount(employeefilter),
       this.employeesService?.getUsersCount(filter),
@@ -315,7 +307,6 @@ export class DashboardComponent implements OnInit {
       }
     );
   }
-
   getGenderCounts(filter = {}) {
     filter['employeeInternalStatus-eq'] = 1;
     const maleFilter = { ...filter, 'gender-eq': 2 };
@@ -360,7 +351,6 @@ export class DashboardComponent implements OnInit {
       }
     );
   }
-
   getBranchCounts(filter = {}) {
     filter['employeeInternalStatus-eq'] = 1;
     const panjaguttafilter = { ...filter, 'ofcBranch-eq': 1 };
@@ -511,7 +501,6 @@ export class DashboardComponent implements OnInit {
         },
       ],
     };
-
     this.branchpieChartOptions = {
       series: [this.panjaguttaCount, this.BegumpetCount],
       labels: ['Panjagutta', 'Begumpet'],
