@@ -59,6 +59,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'designations',
+        loadChildren: () =>
+          import('./designations/designations.module').then(
+            (m) => m.DesignationsModule
+          ),
+      },
+      {
         path: 'events',
         loadChildren: () =>
           import('./events/events.module').then((m) => m.EventsModule),

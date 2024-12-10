@@ -60,11 +60,11 @@ export class IncentivesComponent implements OnInit {
     }
     this.setupActiveItemTabs();
 
-    const storedEmployeeName = localStorage.getItem('employeeNameInIncentives');
-    if (storedEmployeeName) {
-      this.employeeNameToSearch = storedEmployeeName;
-      this.filterWithEmployeeName();
-    }
+    // const storedEmployeeName = localStorage.getItem('employeeNameInIncentives');
+    // if (storedEmployeeName) {
+    //   this.employeeNameToSearch = storedEmployeeName;
+    //   this.filterWithEmployeeName();
+    // }
     const storedMonth = localStorage.getItem('selectedIncentiveMonth');
     if (storedMonth) {
       this.selectedDate = JSON.parse(storedMonth);
@@ -110,37 +110,37 @@ export class IncentivesComponent implements OnInit {
         return [];
     }
   }
-  // inputValueChangeEvent(dataType, value) {
-  //   if (value == '') {
-  //     this.searchFilter = {};
-  //     console.log(this.currentTableEvent);
-  //     this.loadIncentives(this.currentTableEvent);
-  //   }
-  // }
-
-  inputValueChangeEvent(dataType: string, value: string): void {
-    if (value === '') {
+  inputValueChangeEvent(dataType, value) {
+    if (value == '') {
       this.searchFilter = {};
-      localStorage.setItem('employeeNameInIncentives', value);
       console.log(this.currentTableEvent);
       this.loadIncentives(this.currentTableEvent);
-    } else {
-      localStorage.setItem('employeeNameInIncentives', value);
     }
   }
-  // filterWithEmployeeName() {
-  //   let searchFilter = { 'employeeName-like': this.employeeNameToSearch };
-  //   this.applyFilters(searchFilter);
+
+  // inputValueChangeEvent(dataType: string, value: string): void {
+  //   if (value === '') {
+  //     this.searchFilter = {};
+  //     localStorage.setItem('employeeNameInIncentives', value);
+  //     console.log(this.currentTableEvent);
+  //     this.loadIncentives(this.currentTableEvent);
+  //   } else {
+  //     localStorage.setItem('employeeNameInIncentives', value);
+  //   }
   // }
-  filterWithEmployeeName(): void {
-    const employeeNameToSearch =
-      localStorage.getItem('employeeNameInIncentives') ||
-      this.employeeNameToSearch;
-    if (employeeNameToSearch) {
-      const searchFilter = { 'employeeName-like': employeeNameToSearch };
-      this.applyFilters(searchFilter);
-    }
+  filterWithEmployeeName() {
+    let searchFilter = { 'employeeName-like': this.employeeNameToSearch };
+    this.applyFilters(searchFilter);
   }
+  // filterWithEmployeeName(): void {
+  //   const employeeNameToSearch =
+  //     localStorage.getItem('employeeNameInIncentives') ||
+  //     this.employeeNameToSearch;
+  //   if (employeeNameToSearch) {
+  //     const searchFilter = { 'employeeName-like': employeeNameToSearch };
+  //     this.applyFilters(searchFilter);
+  //   }
+  // }
   applyFilters(searchFilter = {}) {
     this.searchFilter = searchFilter;
     console.log(this.currentTableEvent);

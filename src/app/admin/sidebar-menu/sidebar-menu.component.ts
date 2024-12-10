@@ -158,6 +158,14 @@ export class SidebarMenuComponent implements OnChanges {
         showOutside: true,
       },
       {
+        name: 'Departments',
+        condition: true,
+        routerLink: 'designations',
+        image: 'departments.gif',
+        thumbnail: 'departments.png',
+        showOutside: true,
+      },
+      {
         name: 'Events',
         condition: true,
         routerLink: 'events',

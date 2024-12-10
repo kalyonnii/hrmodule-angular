@@ -56,11 +56,11 @@ export class HolidaysComponent implements OnInit {
     this.setFilterConfig();
     this.generateYears();
     this.selectedYear = new Date().getFullYear();
-    const storedHolidayName = localStorage.getItem('holidayName');
-    if (storedHolidayName) {
-      this.holidayNameToSearch = storedHolidayName;
-      this.filterWithHolidayName();
-    }
+    // const storedHolidayName = localStorage.getItem('holidayName');
+    // if (storedHolidayName) {
+    //   this.holidayNameToSearch = storedHolidayName;
+    //   this.filterWithHolidayName();
+    // }
     const storedYear = localStorage.getItem('selectedYear');
     if (storedYear) {
       this.selectedYear = JSON.parse(storedYear);
@@ -152,19 +152,19 @@ export class HolidaysComponent implements OnInit {
       },
     ];
   }
-  // filterWithHolidayName() {
-  //   let searchFilter = { 'holidayName-like': this.holidayNameToSearch };
-  //   this.applyFilters(searchFilter);
-  // }
-
-  filterWithHolidayName(): void {
-    const holidayNameToSearch =
-      localStorage.getItem('holidayName') || this.holidayNameToSearch;
-    if (holidayNameToSearch) {
-      const searchFilter = { 'holidayName-like': holidayNameToSearch };
-      this.applyFilters(searchFilter);
-    }
+  filterWithHolidayName() {
+    let searchFilter = { 'holidayName-like': this.holidayNameToSearch };
+    this.applyFilters(searchFilter);
   }
+
+  // filterWithHolidayName(): void {
+  //   const holidayNameToSearch =
+  //     localStorage.getItem('holidayName') || this.holidayNameToSearch;
+  //   if (holidayNameToSearch) {
+  //     const searchFilter = { 'holidayName-like': holidayNameToSearch };
+  //     this.applyFilters(searchFilter);
+  //   }
+  // }
   applyFilters(searchFilter = {}) {
     this.searchFilter = searchFilter;
     console.log(this.currentTableEvent);
@@ -195,24 +195,24 @@ export class HolidaysComponent implements OnInit {
     );
     this.loadHolidays(this.currentTableEvent);
   }
-  // inputValueChangeEvent(dataType, value) {
-  //   if (value == '') {
-  //     this.searchFilter = {};
-  //     console.log(this.currentTableEvent);
-  //     this.loadHolidays(this.currentTableEvent);
-  //   }
-  // }
-
-  inputValueChangeEvent(dataType: string, value: string): void {
-    if (value === '') {
+  inputValueChangeEvent(dataType, value) {
+    if (value == '') {
       this.searchFilter = {};
-      localStorage.setItem('holidayName', value);
       console.log(this.currentTableEvent);
       this.loadHolidays(this.currentTableEvent);
-    } else {
-      localStorage.setItem('holidayName', value);
     }
   }
+
+  // inputValueChangeEvent(dataType: string, value: string): void {
+  //   if (value === '') {
+  //     this.searchFilter = {};
+  //     localStorage.setItem('holidayName', value);
+  //     console.log(this.currentTableEvent);
+  //     this.loadHolidays(this.currentTableEvent);
+  //   } else {
+  //     localStorage.setItem('holidayName', value);
+  //   }
+  // }
   deleteHoliday(holidayId) {
     this.loading = true;
     this.employeesService.deleteHoliday(holidayId).subscribe(

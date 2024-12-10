@@ -118,6 +118,7 @@
             [style]="{ width: '100%' }"
             [options]="employeeInternalStatusList"
             (onChange)="statusChange($event)"
+            appendTo="body"
             [dropdownIcon]="'fa fa-caret-down'"
             [(ngModel)]="selectedEmployeeStatus"
             optionLabel="displayName"

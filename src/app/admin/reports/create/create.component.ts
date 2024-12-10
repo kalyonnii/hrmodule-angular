@@ -44,7 +44,9 @@ export class CreateComponent {
   interviewStatusList = projectConstantsLocal.INTERVIEW_STATUS;
   officebranchEntities = projectConstantsLocal.BRANCH_ENTITIES;
   leaveTypeEntities = projectConstantsLocal.LEAVE_TYPE_ENTITIES;
-  designationEntities = projectConstantsLocal.DEPARTMENT_ENTITIES;
+  // designationEntities = projectConstantsLocal.DEPARTMENT_ENTITIES;
+  designationEntities: any;
+
   durationTypeEntities = projectConstantsLocal.DURATION_TYPE_ENTITIES;
   attendedInterviewStatus = projectConstantsLocal.ATTENDED_INTERVIEW_ENTITIES;
 
@@ -81,6 +83,7 @@ export class CreateComponent {
       },
       { label: 'Generate Report' },
     ];
+    this.getDesignations();
     this.moment = this.dateTimeProcessor.getMoment();
     this.activatedRoute.queryParams.subscribe((queryParams: any) => {
       if (queryParams && queryParams['reportType']) {
@@ -116,6 +119,22 @@ export class CreateComponent {
   }
   goBack() {
     this.location.back();
+  }
+  getDesignations(filter = {}) {
+    this.loading = true;
+    filter['designationInternalStatus-eq'] = 1;
+    this.employeesService.getDesignations(filter).subscribe(
+      (response: any) => {
+        console.log(response);
+        this.designationEntities = [...response];
+        this.setReportsList();
+        this.loading = false;
+      },
+      (error: any) => {
+        this.loading = false;
+        this.toastService.showError(error);
+      }
+    );
   }
   setReportsList() {
     let reportsListConfig = [

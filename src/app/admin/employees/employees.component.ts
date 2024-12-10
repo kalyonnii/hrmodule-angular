@@ -30,7 +30,8 @@ export class EmployeesComponent implements OnInit {
   @ViewChild('employeesTable') employeesTable!: Table;
   employees: any = [];
   version = projectConstantsLocal.VERSION_DESKTOP;
-  designationDetails: any = projectConstantsLocal.DEPARTMENT_ENTITIES;
+  // designationDetails: any = projectConstantsLocal.DEPARTMENT_ENTITIES;
+  designationDetails: any;
   branchDetails: any = projectConstantsLocal.BRANCH_ENTITIES;
   genderDetails: any = projectConstantsLocal.GENDER_ENTITIES;
   employeeInternalStatusList: any = projectConstantsLocal.EMPLOYEE_STATUS;
@@ -52,6 +53,7 @@ export class EmployeesComponent implements OnInit {
       },
       { label: 'Employees' },
     ];
+    this.getDesignations();
   }
   ngOnInit(): void {
     const userDetails =
@@ -60,13 +62,13 @@ export class EmployeesComponent implements OnInit {
       this.userDetails = userDetails.user;
     }
     this.updateCountsAnalytics();
-    this.setFilterConfig();
+    // this.setFilterConfig();
     this.getEmployeesStatusCount();
-    const storedEmployeeName = localStorage.getItem('employeeNameInEmployees');
-    if (storedEmployeeName) {
-      this.employeeNameToSearch = storedEmployeeName;
-      this.filterWithEmployeeName();
-    }
+    // const storedEmployeeName = localStorage.getItem('employeeNameInEmployees');
+    // if (storedEmployeeName) {
+    //   this.employeeNameToSearch = storedEmployeeName;
+    //   this.filterWithEmployeeName();
+    // }
     const storedStatus = localStorage.getItem('selectedEmployeeStatus');
     if (storedStatus) {
       this.selectedEmployeeStatus = JSON.parse(storedStatus);
@@ -576,37 +578,37 @@ export class EmployeesComponent implements OnInit {
     localStorage.setItem('selectedEmployeeStatus', JSON.stringify(event.value));
     this.loadEmployees(this.currentTableEvent);
   }
-  // inputValueChangeEvent(dataType, value) {
-  //   if (value == '') {
-  //     this.searchFilter = {};
-  //     localStorage.setItem('employeeNameToSearch', value);
-  //     console.log(this.currentTableEvent);
-  //     // this.loadEmployees(this.currentTableEvent);
-  //   }
-  // }
-  // filterWithEmployeeName() {
-  //   let searchFilter = { 'employeeName-like': this.employeeNameToSearch };
-  //   this.applyFilters(searchFilter);
-  // }
-  inputValueChangeEvent(dataType: string, value: string): void {
-    if (value === '') {
+  inputValueChangeEvent(dataType, value) {
+    if (value == '') {
       this.searchFilter = {};
-      localStorage.setItem('employeeNameInEmployees', value);
+      localStorage.setItem('employeeNameToSearch', value);
       console.log(this.currentTableEvent);
       this.loadEmployees(this.currentTableEvent);
-    } else {
-      localStorage.setItem('employeeNameInEmployees', value);
     }
   }
-  filterWithEmployeeName(): void {
-    const employeeNameToSearch =
-      localStorage.getItem('employeeNameInEmployees') ||
-      this.employeeNameToSearch;
-    if (employeeNameToSearch) {
-      const searchFilter = { 'employeeName-like': employeeNameToSearch };
-      this.applyFilters(searchFilter);
-    }
+  filterWithEmployeeName() {
+    let searchFilter = { 'employeeName-like': this.employeeNameToSearch };
+    this.applyFilters(searchFilter);
   }
+  // inputValueChangeEvent(dataType: string, value: string): void {
+  //   if (value === '') {
+  //     this.searchFilter = {};
+  //     localStorage.setItem('employeeNameInEmployees', value);
+  //     console.log(this.currentTableEvent);
+  //     this.loadEmployees(this.currentTableEvent);
+  //   } else {
+  //     localStorage.setItem('employeeNameInEmployees', value);
+  //   }
+  // }
+  // filterWithEmployeeName(): void {
+  //   const employeeNameToSearch =
+  //     localStorage.getItem('employeeNameInEmployees') ||
+  //     this.employeeNameToSearch;
+  //   if (employeeNameToSearch) {
+  //     const searchFilter = { 'employeeName-like': employeeNameToSearch };
+  //     this.applyFilters(searchFilter);
+  //   }
+  // }
   applyFilters(searchFilter = {}) {
     this.searchFilter = searchFilter;
     console.log(this.currentTableEvent);
@@ -713,6 +715,23 @@ export class EmployeesComponent implements OnInit {
       );
     }
     return '';
+  }
+
+  getDesignations(filter = {}) {
+    this.loading = true;
+    filter['designationInternalStatus-eq'] = 1;
+    this.employeesService.getDesignations(filter).subscribe(
+      (response: any) => {
+        console.log(response);
+        this.designationDetails = [...response];
+        this.loading = false;
+        this.setFilterConfig();
+      },
+      (error: any) => {
+        this.loading = false;
+        this.toastService.showError(error);
+      }
+    );
   }
   getStatusColor(status: string): {
     textColor: string;

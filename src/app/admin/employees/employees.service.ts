@@ -277,6 +277,37 @@ export class EmployeesService {
     return this.serviceMeta.httpGet(url, null, filter);
   }
 
+  //Designations
+  createDesignation(data) {
+    const url = 'designations';
+    return this.serviceMeta.httpPost(url, data);
+  }
+
+  updateDesignation(designationId, data) {
+    const url = 'designations/' + designationId;
+    return this.serviceMeta.httpPut(url, data);
+  }
+  getDesignations(filter = {}) {
+    const url = 'designations';
+    return this.serviceMeta.httpGet(url, null, filter);
+  }
+  changeDesignationStatus(designationId, statusId) {
+    const url = `designations/${designationId}/changestatus/${statusId}`;
+    return this.serviceMeta.httpPut(url, null);
+  }
+  getDesignationsById(designationId, filter = {}) {
+    const url = 'designations/' + designationId;
+    return this.serviceMeta.httpGet(url, null, filter);
+  }
+  deleteDesignation(designationId, filter = {}) {
+    const url = 'designations/' + designationId;
+    return this.serviceMeta.httpDelete(url, null, filter);
+  }
+  getDesignationCount(filter = {}) {
+    const url = 'designations/total';
+    return this.serviceMeta.httpGet(url, null, filter);
+  }
+
   //Leaves
   createLeave(data) {
     const url = 'leaves';
@@ -336,10 +367,10 @@ export class EmployeesService {
     return this.serviceMeta.httpGet(url, null, filter);
   }
 
-  generatePdf(data) {
-    const url = 'pdfGenerator/payslip';
-    return this.serviceMeta.httpPost(url, data);
-  }
+  // generatePdf(data) {
+  //   const url = 'pdfGenerator/payslip';
+  //   return this.serviceMeta.httpPost(url, data);
+  // }
 
   uploadFiles(data: FormData, employeeId, type = 'default') {
     console.log(FormData);

@@ -78,6 +78,7 @@
             [options]="years"
             [(ngModel)]="selectedYear"
             [style]="{ width: '100%' }"
+            appendTo="body"
             (onChange)="loadHolidaysByYear()"
             placeholder="Select Year"
           >

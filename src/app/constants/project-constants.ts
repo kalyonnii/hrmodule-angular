@@ -27,13 +27,13 @@ export const projectConstantsLocal = {
     { id: 1, displayName: 'Female', name: 'female' },
     { id: 2, displayName: 'Male', name: 'male' },
   ],
-  DEPARTMENT_ENTITIES: [
-    { id: 1, displayName: 'Telesales', name: 'telesales' },
-    { id: 2, displayName: 'Operations Team', name: 'operationsteam' },
-    { id: 3, displayName: 'HR Team', name: 'hrteam' },
-    { id: 4, displayName: 'Office Team', name: 'ofcteam' },
-    { id: 5, displayName: 'Support Team', name: 'supportteam' },
-  ],
+  // DEPARTMENT_ENTITIES: [
+  //   { id: 1, displayName: 'Telesales', name: 'telesales' },
+  //   { id: 2, displayName: 'Operations Team', name: 'operationsteam' },
+  //   { id: 3, displayName: 'HR Team', name: 'hrteam' },
+  //   { id: 4, displayName: 'Office Team', name: 'ofcteam' },
+  //   { id: 5, displayName: 'Support Team', name: 'supportteam' },
+  // ],
 
   DESIGNATION_ENTITIES: [
     { id: 1, displayName: 'Super Admin', name: 'superAdmin' },
@@ -53,6 +53,12 @@ export const projectConstantsLocal = {
     { id: 1, name: 'pending', displayName: 'Pending Interviews' },
     { id: 2, name: 'selected', displayName: 'Selected Interviews' },
     { id: 3, name: 'rejected', displayName: 'Rejected Interviews' },
+  ],
+
+  DEPARTMENT_STATUS: [
+    { id: 0, name: 'all', displayName: 'All Departments' },
+    { id: 1, name: 'Active', displayName: 'Active Departments' },
+    { id: 2, name: 'InActive', displayName: 'In Active Departments' },
   ],
 
   LEAVE_STATUS: [

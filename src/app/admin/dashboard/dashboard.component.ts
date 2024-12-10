@@ -22,6 +22,8 @@ export class DashboardComponent implements OnInit {
   selectedDate: any;
   loading: any;
   totalEmployeesCount: any = 0;
+  designationsCount: any = 0;
+  incentivesCount: any = 0;
   pieChartOptions: any;
   branchpieChartOptions: any;
   DepartmentChartOptions: any;
@@ -42,6 +44,8 @@ export class DashboardComponent implements OnInit {
   countsAnalytics: any[] = [];
   designationCounts: any[] = [];
   selectedDateforPayroll: Date;
+  selectedDateforIncentive: Date;
+  selectedYear: number;
   constructor(
     private localStorageService: LocalStorageService,
     private routingService: RoutingService,
@@ -50,9 +54,13 @@ export class DashboardComponent implements OnInit {
     private dateTimeProcessor: DateTimeProcessorService
   ) {
     this.moment = this.dateTimeProcessor.getMoment();
+    this.selectedDateforIncentive = this.moment(new Date())
+      .subtract(1, 'month')
+      .format('MM/YYYY');
     this.selectedDateforPayroll = this.moment(new Date())
       .subtract(1, 'month')
       .format('MM/YYYY');
+    this.selectedYear = new Date().getFullYear();
   }
   ngOnInit(): void {
     const userDetails =
@@ -136,17 +144,24 @@ export class DashboardComponent implements OnInit {
       {
         name: 'incentives',
         displayName: 'Incentives',
-        count: 0,
+        count: this.incentivesCount,
         routerLink: 'incentives',
         condition: true,
       },
       {
-        name: 'events',
-        displayName: 'Events',
-        count: 0,
-        routerLink: 'events',
+        name: 'departments',
+        displayName: 'Departments',
+        count: this.designationsCount,
+        routerLink: 'designations',
         condition: true,
       },
+      // {
+      //   name: 'events',
+      //   displayName: 'Events',
+      //   count: 0,
+      //   routerLink: 'events',
+      //   condition: true,
+      // },
       {
         name: 'users',
         displayName: 'Users',
@@ -272,17 +287,37 @@ export class DashboardComponent implements OnInit {
   fetchCounts(filter = {}) {
     this.loading = true;
     const employeefilter = { ...filter, 'employeeInternalStatus-eq': 1 };
+    const departmentfilter = { ...filter, 'designationInternalStatus-eq': 1 };
     const payrollfilter = {
       ...filter,
       'payrollMonth-eq': this.selectedDateforPayroll,
     };
+    const holidayfilter = {
+      ...filter,
+    };
+    if (this.selectedYear) {
+      const startOfYear = this.moment(`${this.selectedYear}-01-01`).format(
+        'YYYY-MM-DD'
+      );
+      const endOfYear = this.moment(`${this.selectedYear}-12-31`).format(
+        'YYYY-MM-DD'
+      );
+      holidayfilter['date-gte'] = startOfYear;
+      holidayfilter['date-lte'] = endOfYear;
+    }
+    const incentivefilter = {
+      ...filter,
+      'incentiveApplicableMonth-eq': this.selectedDateforIncentive,
+    };
     forkJoin([
       this.employeesService?.getEmployeesCount(employeefilter),
       this.employeesService?.getUsersCount(filter),
-      this.employeesService?.getHolidaysCount(filter),
+      this.employeesService?.getHolidaysCount(holidayfilter),
       this.employeesService?.getInterviewCount(filter),
       this.employeesService?.getLeavesCount(filter),
       this.employeesService?.getPayrollCount(payrollfilter),
+      this.employeesService?.getDesignationCount(departmentfilter),
+      this.employeesService?.getIncentivesCount(incentivefilter),
     ]).subscribe(
       ([
         employeesCount,
@@ -291,6 +326,8 @@ export class DashboardComponent implements OnInit {
         interviewCount,
         leavesCount,
         payrollCount,
+        designationsCount,
+        incentivesCount,
       ]) => {
         this.totalEmployeesCount = employeesCount;
         this.totalUsersCount = usersCount;
@@ -298,6 +335,8 @@ export class DashboardComponent implements OnInit {
         this.totalInterviewsCount = interviewCount;
         this.totalLeavesCount = leavesCount;
         this.lastMonthpayrollCount = payrollCount;
+        this.designationsCount = designationsCount;
+        this.incentivesCount = incentivesCount;
         this.updateCountsAnalytics();
         this.loading = false;
       },

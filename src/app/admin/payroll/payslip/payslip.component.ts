@@ -18,6 +18,7 @@ export class PayslipComponent {
   @ViewChild('pdfContent', { static: false }) pdfContent!: ElementRef;
   payroll: any = [];
   moment: any;
+  designations: any = [];
   userDetails: any;
   payslipId: string | null = null;
   version = projectConstantsLocal.VERSION_DESKTOP;
@@ -47,6 +48,7 @@ export class PayslipComponent {
       },
       { label: 'Payslip' },
     ];
+    this.getdesignations();
   }
 
   ngOnInit(): void {
@@ -106,7 +108,11 @@ export class PayslipComponent {
 
   mergePayrollWithEmployee(payroll: any, employee: any): any {
     if (employee && payroll) {
-      return { ...payroll, designationName: employee.designationName };
+      return {
+        ...payroll,
+        designationName: employee.designationName,
+        designation: employee.designation,
+      };
     }
     return payroll;
   }
@@ -185,7 +191,34 @@ export class PayslipComponent {
     }
     return words.trim();
   }
+  getDesignationName(userId) {
+    if (this.designations && this.designations.length > 0) {
+      let designationName = this.designations.filter(
+        (designation) => designation.id == userId
+      );
+      return (
+        (designationName &&
+          designationName[0] &&
+          designationName[0].department) ||
+        ''
+      );
+    }
+    return '';
+  }
 
+  getdesignations(filter = {}) {
+    this.loading = true;
+    this.employeesService.getDesignations(filter).subscribe(
+      (designations: any) => {
+        this.designations = [...designations];
+        this.loading = false;
+      },
+      (error: any) => {
+        this.loading = false;
+        this.toastService.showError(error);
+      }
+    );
+  }
   goBack() {
     this.location.back();
   }

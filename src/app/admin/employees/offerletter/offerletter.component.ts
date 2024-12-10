@@ -23,6 +23,7 @@ export class OfferletterComponent {
   loading: boolean = false;
   version = projectConstantsLocal.VERSION_DESKTOP;
   employees: any = null;
+  designations: any = [];
   employeeId: string | null = null;
   offerLetterContent: string | undefined;
   constructor(
@@ -49,6 +50,7 @@ export class OfferletterComponent {
       },
       { label: 'Offer Letter' },
     ];
+    this.getdesignations();
   }
 
   ngOnInit(): void {
@@ -103,6 +105,35 @@ export class OfferletterComponent {
       (response) => {
         this.employees = response;
         console.log('Employees', this.employees);
+        this.loading = false;
+      },
+      (error: any) => {
+        this.loading = false;
+        this.toastService.showError(error);
+      }
+    );
+  }
+
+  getDesignationName(userId) {
+    if (this.designations && this.designations.length > 0) {
+      let designationName = this.designations.filter(
+        (designation) => designation.id == userId
+      );
+      return (
+        (designationName &&
+          designationName[0] &&
+          designationName[0].department) ||
+        ''
+      );
+    }
+    return '';
+  }
+
+  getdesignations(filter = {}) {
+    this.loading = true;
+    this.employeesService.getDesignations(filter).subscribe(
+      (designations: any) => {
+        this.designations = [...designations];
         this.loading = false;
       },
       (error: any) => {

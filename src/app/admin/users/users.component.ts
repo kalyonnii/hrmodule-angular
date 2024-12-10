@@ -50,11 +50,11 @@ export class UsersComponent implements OnInit {
       this.localStorageService.getItemFromLocalStorage('userDetails');
     this.userDetails = userDetails.user;
     this.setFilterConfig();
-    const storedUserName = localStorage.getItem('userName');
-    if (storedUserName) {
-      this.userNameToSearch = storedUserName;
-      this.filterWithUserName();
-    }
+    // const storedUserName = localStorage.getItem('userName');
+    // if (storedUserName) {
+    //   this.userNameToSearch = storedUserName;
+    //   this.filterWithUserName();
+    // }
     const storedAppliedFilter = localStorage.getItem('usersAppliedFilter');
     if (storedAppliedFilter) {
       this.appliedFilter = JSON.parse(storedAppliedFilter);
@@ -218,24 +218,24 @@ export class UsersComponent implements OnInit {
     );
   }
 
-  // inputValueChangeEvent(dataType, value) {
-  //   if (value == '') {
-  //     this.searchFilter = {};
-  //     console.log(this.currentTableEvent);
-  //     this.loadUsers(this.currentTableEvent);
-  //   }
-  // }
-
-  inputValueChangeEvent(dataType: string, value: string): void {
-    if (value === '') {
+  inputValueChangeEvent(dataType, value) {
+    if (value == '') {
       this.searchFilter = {};
-      localStorage.setItem('userName', value);
       console.log(this.currentTableEvent);
       this.loadUsers(this.currentTableEvent);
-    } else {
-      localStorage.setItem('userName', value);
     }
   }
+
+  // inputValueChangeEvent(dataType: string, value: string): void {
+  //   if (value === '') {
+  //     this.searchFilter = {};
+  //     localStorage.setItem('userName', value);
+  //     console.log(this.currentTableEvent);
+  //     this.loadUsers(this.currentTableEvent);
+  //   } else {
+  //     localStorage.setItem('userName', value);
+  //   }
+  // }
   // applyConfigFilters(event) {
   //   let api_filter = event;
   //   if (api_filter['reset']) {
@@ -261,19 +261,19 @@ export class UsersComponent implements OnInit {
     );
     this.loadUsers(this.currentTableEvent);
   }
-  // filterWithUserName() {
-  //   let searchFilter = { 'username-like': this.userNameToSearch };
-  //   this.applyFilters(searchFilter);
-  // }
-
-  filterWithUserName(): void {
-    const userNameToSearch =
-      localStorage.getItem('userName') || this.userNameToSearch;
-    if (userNameToSearch) {
-      const searchFilter = { 'username-like': userNameToSearch };
-      this.applyFilters(searchFilter);
-    }
+  filterWithUserName() {
+    let searchFilter = { 'username-like': this.userNameToSearch };
+    this.applyFilters(searchFilter);
   }
+
+  // filterWithUserName(): void {
+  //   const userNameToSearch =
+  //     localStorage.getItem('userName') || this.userNameToSearch;
+  //   if (userNameToSearch) {
+  //     const searchFilter = { 'username-like': userNameToSearch };
+  //     this.applyFilters(searchFilter);
+  //   }
+  // }
 
   applyFilters(searchFilter = {}) {
     this.searchFilter = searchFilter;

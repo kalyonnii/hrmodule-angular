@@ -41,7 +41,9 @@ export class CreateComponent {
   branchEntities: any = projectConstantsLocal.BRANCH_ENTITIES;
   careOfEntities: any = projectConstantsLocal.CARE_OF_ENTITIES;
   genderEntities: any = projectConstantsLocal.GENDER_ENTITIES;
-  designationEntities: any = projectConstantsLocal.DEPARTMENT_ENTITIES;
+  // designationEntities: any = projectConstantsLocal.DEPARTMENT_ENTITIES;
+  designationEntities: any;
+
   loading: any;
   userDetails: any;
   selectedFiles: any = {
@@ -78,6 +80,7 @@ export class CreateComponent {
       { label: 'Account Details', icon: 'fa fa-money-bill' },
       { label: 'Other Details', icon: 'fa fa-folder-open' },
     ];
+    this.getDesignations();
     this.moment = this.dateTimeProcessor.getMoment();
     this.activatedRoute.params.subscribe((params) => {
       if (params && params['id']) {
@@ -205,8 +208,8 @@ export class CreateComponent {
     this.employeeForm = this.formBuilder.group({
       employeeName: ['', Validators.compose([Validators.required])],
       customEmployeeId: ['', Validators.compose([Validators.required])],
-      careOf: ['', Validators.compose([Validators.required])],
-      careOfName: ['', Validators.compose([Validators.required])],
+      careOf: [''],
+      careOfName: [''],
       dateOfBirth: ['', Validators.compose([Validators.required])],
       gender: ['', Validators.compose([Validators.required])],
       ofcBranch: ['', Validators.compose([Validators.required])],
@@ -668,6 +671,23 @@ export class CreateComponent {
       );
     }
     return '';
+  }
+
+  getDesignations(filter = {}) {
+    this.loading = true;
+    filter['designationInternalStatus-eq'] = 1;
+    this.employeesService.getDesignations(filter).subscribe(
+      (response: any) => {
+        console.log(response);
+        this.designationEntities = [...response];
+        this.setEmployeesList();
+        this.loading = false;
+      },
+      (error: any) => {
+        this.loading = false;
+        this.toastService.showError(error);
+      }
+    );
   }
   getEmployeeById(filter = {}) {
     return new Promise((resolve, reject) => {
