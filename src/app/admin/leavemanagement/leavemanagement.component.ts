@@ -28,7 +28,7 @@ export class LeavemanagementComponent {
   version = projectConstantsLocal.VERSION_DESKTOP;
   leaves: any = [];
   leavesStatusCount: { [key: number]: number } = { 1: 0, 2: 0, 3: 0 };
-  selectedLeavesStatus: any;
+  selectedLeavesStatus = this.leavesInternalStatusList[1];
   selectedEmployee: any;
   breadCrumbItems: any = [];
   userDetails: any;

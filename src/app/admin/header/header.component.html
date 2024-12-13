@@ -10,7 +10,20 @@
         </div>
       </div>
     </div>
+
     <div class="desktop-only d-flex align-items-center">
+      <div
+        class="icon-container me-3"
+        (click)="gotoEvents()"
+        title="Today's events"
+      >
+        <img
+          src="../../../assets/images/menu/alerts.gif"
+          alt="alerts"
+          class="alerticon"
+        />
+        <span class="badge">{{ todayEventCount }}</span>
+      </div>
       <div class="flex desktop-only justify-content-center">
         <p-sidebar
           [(visible)]="sidebarVisible"

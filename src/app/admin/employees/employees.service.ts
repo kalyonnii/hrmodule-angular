@@ -308,6 +308,34 @@ export class EmployeesService {
     return this.serviceMeta.httpGet(url, null, filter);
   }
 
+  //Hikes
+  createSalaryHike(data) {
+    const url = 'salaryhikes';
+    return this.serviceMeta.httpPost(url, data);
+  }
+
+  updateSalaryHike(hikeId, data) {
+    const url = 'salaryhikes/' + hikeId;
+    return this.serviceMeta.httpPut(url, data);
+  }
+  getSalaryHikes(filter = {}) {
+    const url = 'salaryhikes';
+    return this.serviceMeta.httpGet(url, null, filter);
+  }
+
+  getSalaryHikesById(hikeId, filter = {}) {
+    const url = 'salaryhikes/' + hikeId;
+    return this.serviceMeta.httpGet(url, null, filter);
+  }
+  deleteSalaryHike(hikeId, filter = {}) {
+    const url = 'salaryhikes/' + hikeId;
+    return this.serviceMeta.httpDelete(url, null, filter);
+  }
+  getSalaryHikesCount(filter = {}) {
+    const url = 'salaryhikes/total';
+    return this.serviceMeta.httpGet(url, null, filter);
+  }
+
   //Leaves
   createLeave(data) {
     const url = 'leaves';

@@ -194,16 +194,55 @@
                     ><i class="fas fa-money-bill-wave"></i
                   ></span>
                   <div class="label d-flex justify-content-between">
-                    Salary<b>:&nbsp;</b>
+                    Base Salary<b>:&nbsp;</b>
                   </div>
                   <div class="value">
-                    {{
-                      employees.salary
-                        ? (employees.salary | capitalizeFirst)
-                        : "-"
-                    }}
+                    Rs. {{ employees.salary ? employees.salary : "-" }}
                   </div>
                 </div>
+                <div class="info-line" *ngIf="employees.totalSalary">
+                  <span class="icon">
+                    <i class="fas fa-wallet"></i>
+                  </span>
+                  <div class="label d-flex justify-content-between">
+                    Salary With Hike<b>:&nbsp;</b>
+                  </div>
+                  <div class="value">
+                    Rs.
+                    {{ employees.totalSalary ? employees.totalSalary : "-" }}
+                  </div>
+                </div>
+                <p-accordion
+                  class="my-2 hikeaccordian"
+                  *ngIf="employees.salaryHikes"
+                >
+                  <p-accordionTab header="Salary Hike Details">
+                    <div
+                      *ngFor="let hike of employees.salaryHikes; let i = index"
+                    >
+                      <div class="label my-3">{{ i + 1 }}. Hike Details</div>
+                      <div class="info-line">
+                        <span class="icon">
+                          <i class="fas fa-calendar-day"></i>
+                        </span>
+                        <div class="label d-flex justify-content-between">
+                          Hike Date<b>:&nbsp;</b>
+                        </div>
+                        <div class="value">Rs. {{ hike.hikeDate | date }}</div>
+                      </div>
+                      <div class="info-line">
+                        <span class="icon"
+                          ><i class="fas fa-money-bill-wave"></i
+                        ></span>
+                        <div class="label d-flex justify-content-between">
+                          Monthly Hike<b>:&nbsp;</b>
+                        </div>
+                        <div class="value">Rs. {{ hike.monthlyHike }}</div>
+                      </div>
+                    </div>
+                  </p-accordionTab>
+                </p-accordion>
+
                 <div class="">
                   <div class="label">Offer Letter (Signed)<b>:&nbsp;</b></div>
                   <div class="value m-2">

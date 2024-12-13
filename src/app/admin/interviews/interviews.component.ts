@@ -31,7 +31,7 @@ export class InterviewsComponent implements OnInit {
   interviewInternalStatusList: any = projectConstantsLocal.INTERVIEW_STATUS;
   scheduledloactionDetails = projectConstantsLocal.BRANCH_ENTITIES;
   attendedinterviewDetails = projectConstantsLocal.ATTENDED_INTERVIEW_ENTITIES;
-  selectedInterviewStatus: any;
+  selectedInterviewStatus = this.interviewInternalStatusList[1];
   version = projectConstantsLocal.VERSION_DESKTOP;
 
   constructor(
@@ -56,7 +56,7 @@ export class InterviewsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.checkScheduledDates();
+    // this.checkScheduledDates();
     let userDetails =
       this.localStorageService.getItemFromLocalStorage('userDetails');
     this.userDetails = userDetails.user;
@@ -80,25 +80,25 @@ export class InterviewsComponent implements OnInit {
     }
   }
 
-  checkScheduledDates(): void {
-    const today = this.moment().format('YYYY-MM-DD');
-    this.employeesService.getInterviews().subscribe(
-      (schedules: any) => {
-        console.log(schedules);
-        const todaySchedules = schedules.filter(
-          (schedule: any) => schedule.scheduledDate == today
-        );
-        console.log(todaySchedules);
-        if (todaySchedules.length > 0) {
-          const count = todaySchedules.length;
-          this.toastService.showInfo(`${count} interview(s) scheduled today`);
-        }
-      },
-      (error) => {
-        console.error('Error fetching schedules:', error);
-      }
-    );
-  }
+  // checkScheduledDates(): void {
+  //   const today = this.moment().format('YYYY-MM-DD');
+  //   this.employeesService.getInterviews().subscribe(
+  //     (schedules: any) => {
+  //       console.log(schedules);
+  //       const todaySchedules = schedules.filter(
+  //         (schedule: any) => schedule.scheduledDate == today
+  //       );
+  //       console.log(todaySchedules);
+  //       if (todaySchedules.length > 0) {
+  //         const count = todaySchedules.length;
+  //         this.toastService.showInfo(`${count} interview(s) scheduled today`);
+  //       }
+  //     },
+  //     (error) => {
+  //       console.error('Error fetching schedules:', error);
+  //     }
+  //   );
+  // }
 
   setFilterConfig() {
     this.filterConfig = [

@@ -29,6 +29,7 @@ export class ProfileComponent implements OnInit {
   offerLetterHtml: string = '';
   userDetails: any;
   attendance: any = [];
+  salaryHikes: any = [];
   selectedDate: Date;
   resignationformFields: any = [];
   terminationFormFields: any = [];
@@ -394,18 +395,46 @@ export class ProfileComponent implements OnInit {
     return new Promise((resolve, reject) => {
       this.loading = true;
       this.employeesService.getEmployeeById(id).subscribe(
-        (response) => {
-          this.employees = response;
-          this.loading = false;
-          resolve(true);
+        (employees: any) => {
+          this.getSalaryHikes().subscribe(
+            (salaryHikeData: any) => {
+              if (salaryHikeData) {
+                const matchingHikes = salaryHikeData.filter(
+                  (hike) => hike.employeeId == id
+                );
+                if (matchingHikes.length > 0) {
+                  let totalSalary = employees.salary;
+                  employees.salaryHikes = matchingHikes.map((hike) => {
+                    totalSalary += hike.monthlyHike;
+                    return {
+                      hikeDate: hike.hikeDate,
+                      monthlyHike: hike.monthlyHike,
+                    };
+                  });
+                  employees.totalSalary = totalSalary;
+                }
+              }
+              this.employees = employees;
+              this.loading = false;
+              resolve(true);
+            },
+            (error) => {
+              this.loading = false;
+              this.toastService.showError(error);
+              resolve(false);
+            }
+          );
         },
-        (error: any) => {
+        (error) => {
           this.loading = false;
-          resolve(false);
           this.toastService.showError(error);
+          resolve(false);
         }
       );
     });
+  }
+  getSalaryHikes() {
+    return this.employeesService.getSalaryHikes();
   }
   uploadFiles(fileType, acceptableTypes, index?) {
     console.log(acceptableTypes);

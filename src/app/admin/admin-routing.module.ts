@@ -66,6 +66,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'salaryhikes',
+        loadChildren: () =>
+          import('./salaryhike/salaryhike.module').then(
+            (m) => m.SalaryhikeModule
+          ),
+      },
+      {
         path: 'events',
         loadChildren: () =>
           import('./events/events.module').then((m) => m.EventsModule),

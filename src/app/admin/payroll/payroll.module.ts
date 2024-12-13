@@ -29,7 +29,8 @@ const routes: Routes = [
   },
   {
     path: 'payslip/:id',
-    loadChildren: () => import('./payslip/payslip.module').then((m) => m.PayslipModule),
+    loadChildren: () =>
+      import('./payslip/payslip.module').then((m) => m.PayslipModule),
   },
 ];
 @NgModule({

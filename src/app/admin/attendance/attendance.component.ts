@@ -88,9 +88,6 @@ export class AttendanceComponent implements OnInit {
       this.getAttendance(api_filter);
     }
   }
-  // onDateChange() {
-  //   this.loadAttendance(this.currentTableEvent);
-  // }
   onDateChange(): void {
     const monthValue = this.moment(this.selectedMonth, 'YYYY-MM').format(
       'YYYY-MM'
@@ -98,18 +95,6 @@ export class AttendanceComponent implements OnInit {
     localStorage.setItem('selectedAttendanceMonth', JSON.stringify(monthValue));
     this.loadAttendance(this.currentTableEvent);
   }
-  // filterByDate() {
-  //   if (this.selectedDate) {
-  //     console.log('called');
-  //     const formattedDate = this.moment(this.selectedDate).format('YYYY-MM-DD');
-  //     console.log(formattedDate);
-  //     const searchFilter = { 'attendanceDate-like': formattedDate };
-  //     this.applyFilters(searchFilter);
-  //   } else {
-  //     this.searchFilter = {};
-  //     this.loadAttendance(this.currentTableEvent);
-  //   }
-  // }
 
   filterByDate(): void {
     if (this.selectedDate) {

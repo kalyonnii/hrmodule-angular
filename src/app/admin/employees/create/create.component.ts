@@ -397,7 +397,7 @@ export class CreateComponent {
         required: true,
       },
       {
-        label: 'Employee Name',
+        label: 'Employee Full Name',
         controlName: 'employeeName',
         type: 'text',
         required: true,

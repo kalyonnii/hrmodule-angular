@@ -122,7 +122,7 @@ export class OfferletterComponent {
       return (
         (designationName &&
           designationName[0] &&
-          designationName[0].department) ||
+          designationName[0].designation) ||
         ''
       );
     }

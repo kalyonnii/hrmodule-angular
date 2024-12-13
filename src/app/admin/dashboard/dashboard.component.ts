@@ -287,6 +287,7 @@ export class DashboardComponent implements OnInit {
   fetchCounts(filter = {}) {
     this.loading = true;
     const employeefilter = { ...filter, 'employeeInternalStatus-eq': 1 };
+    const leavesfilter = { ...filter, 'leaveInternalStatus-eq': 1 };
     const departmentfilter = { ...filter, 'designationInternalStatus-eq': 1 };
     const payrollfilter = {
       ...filter,
@@ -314,7 +315,7 @@ export class DashboardComponent implements OnInit {
       this.employeesService?.getUsersCount(filter),
       this.employeesService?.getHolidaysCount(holidayfilter),
       this.employeesService?.getInterviewCount(filter),
-      this.employeesService?.getLeavesCount(filter),
+      this.employeesService?.getLeavesCount(leavesfilter),
       this.employeesService?.getPayrollCount(payrollfilter),
       this.employeesService?.getDesignationCount(departmentfilter),
       this.employeesService?.getIncentivesCount(incentivefilter),

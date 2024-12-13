@@ -158,6 +158,26 @@ export class CreateComponent {
               },
             });
           }
+          this.getSalaryHikes().subscribe(
+            (salaryHikes: any) => {
+              const matchingHikes = salaryHikes.filter(
+                (hike) => hike.employeeId == selectedEmployee.employeeId
+              );
+              if (matchingHikes.length > 0) {
+                const totalHike = matchingHikes.reduce(
+                  (accumulatedHike, hike) => accumulatedHike + hike.monthlyHike,
+                  0
+                );
+                selectedEmployee.salary += totalHike;
+                this.payrollForm.patchValue({
+                  salary: selectedEmployee.salary,
+                });
+              }
+            },
+            (error) => {
+              console.error(error);
+            }
+          );
         }
       });
     this.payrollForm
@@ -198,6 +218,9 @@ export class CreateComponent {
     });
   }
 
+  getSalaryHikes() {
+    return this.employeesService.getSalaryHikes();
+  }
   updateEmployee(employeeId) {
     this.routingService.handleRoute('employees/update/' + employeeId, null);
   }

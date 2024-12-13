@@ -71,7 +71,7 @@
   display: flex;
   font-weight: bold;
 }
-.text-primary{
+.text-primary {
   font-size: 18px;
 }
 .light-blue-background {
@@ -81,4 +81,24 @@
 .employeeImage {
   border-radius: 50px;
   border: 3px solid #a2acb9 !important;
+}
+.icon-container {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.icon-container .alerticon {
+  width: 35px;
+  color: #333;
+}
+.icon-container .badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: #6565ff;
+  color: white;
+  font-size: 12px;
+  padding: 3px 5px;
+  border-radius: 50%;
 }

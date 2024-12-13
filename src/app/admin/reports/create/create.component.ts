@@ -49,7 +49,7 @@ export class CreateComponent {
 
   durationTypeEntities = projectConstantsLocal.DURATION_TYPE_ENTITIES;
   attendedInterviewStatus = projectConstantsLocal.ATTENDED_INTERVIEW_ENTITIES;
-
+  years: { label: string; value: number }[] = [];
   dateRange = [
     { field: 'date', title: 'Date From', type: 'date', filterType: 'ge' },
     { field: 'date', title: 'Date To', type: 'date', filterType: 'le' },
@@ -83,7 +83,13 @@ export class CreateComponent {
       },
       { label: 'Generate Report' },
     ];
-    this.getDesignations();
+    Promise.all([this.getDesignations(), this.generateYears()])
+      .then(() => {
+        this.setReportsList();
+      })
+      .catch((error) => {
+        console.error('Error loading data:', error);
+      });
     this.moment = this.dateTimeProcessor.getMoment();
     this.activatedRoute.queryParams.subscribe((queryParams: any) => {
       if (queryParams && queryParams['reportType']) {
@@ -127,7 +133,6 @@ export class CreateComponent {
       (response: any) => {
         console.log(response);
         this.designationEntities = [...response];
-        this.setReportsList();
         this.loading = false;
       },
       (error: any) => {
@@ -135,6 +140,12 @@ export class CreateComponent {
         this.toastService.showError(error);
       }
     );
+  }
+  generateYears() {
+    const currentYear = new Date().getFullYear();
+    for (let year = currentYear; year >= currentYear - 10; year--) {
+      this.years.push({ label: `${year}`, value: year });
+    }
   }
   setReportsList() {
     let reportsListConfig = [
@@ -319,6 +330,13 @@ export class CreateComponent {
         condition: true,
         fields: [
           {
+            field: 'date',
+            title: 'Year',
+            type: 'dropdown',
+            filterType: 'eq',
+            options: this.years,
+          },
+          {
             field: 'createdOn',
             title: 'Created On From Date',
             type: 'date',
@@ -452,6 +470,17 @@ export class CreateComponent {
       apiFilter['attendanceDate-eq'] = this.moment(
         this.reportData['attendanceDate-eq']
       ).format('YYYY-MM-DD');
+    }
+    if (this.reportData['date-eq']) {
+      const startOfYear = this.moment(
+        `${this.reportData['date-eq']}-01-01`
+      ).format('YYYY-MM-DD');
+      const endOfYear = this.moment(
+        `${this.reportData['date-eq']}-12-31`
+      ).format('YYYY-MM-DD');
+      delete selectedReportData['date-eq'];
+      apiFilter['date-gte'] = startOfYear;
+      apiFilter['date-lte'] = endOfYear;
     }
     Object.assign(selectedReportData, apiFilter);
     console.log(reportType);

@@ -335,3 +335,22 @@ body {
   scrollbar-width: 3px !important;
   scrollbar-color: #51c295 #f1f1f1;
 }
+.hikeaccordian .p-accordion-header {
+  background-color: #f1f8ff !important;
+  border: 1px solid #d1e8f7 !important;
+  color: #0056b3 !important;
+}
+
+.hikeaccordian .p-accordion-tab .p-accordion-header-link {
+  background-color: #d1e8f7 !important;
+  color: #1e3a8a !important;
+  border: 1px solid #3b82f6 !important;
+}
+
+.hikeaccordian .p-accordion-content {
+  padding: 15px;
+  border: none;
+  border-radius: 8px;
+  margin-top: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
