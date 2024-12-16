@@ -489,9 +489,6 @@ export class LeavemanagementComponent {
     console.log(this.currentTableEvent);
     this.loadLeaves(this.currentTableEvent);
   }
-  // statusChange(event) {
-  //   this.loadLeaves(this.currentTableEvent);
-  // }
 
   statusChange(event: any): void {
     localStorage.setItem('selectedLeaveStatus', JSON.stringify(event.value));
@@ -502,18 +499,6 @@ export class LeavemanagementComponent {
     localStorage.setItem('selectedEmployeeStatus', JSON.stringify(event.value));
     this.loadLeaves(this.currentTableEvent);
   }
-
-  // applyConfigFilters(event) {
-  //   let api_filter = event;
-  //   if (api_filter['reset']) {
-  //     delete api_filter['reset'];
-  //     this.appliedFilter = {};
-  //   } else {
-  //     this.appliedFilter = api_filter;
-  //   }
-  //   this.loadLeaves(this.currentTableEvent);
-  // }
-
   applyConfigFilters(event) {
     let api_filter = event;
     if (api_filter['reset']) {

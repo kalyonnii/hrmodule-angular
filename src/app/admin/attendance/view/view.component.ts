@@ -145,7 +145,6 @@ export class ViewComponent implements OnInit {
     this.currentTableEvent = event;
     console.log(event.first);
     let api_filter = this.employeesService.setFiltersFromPrimeTable(event);
-    // api_filter['employeeInternalStatus-eq'] = 1;
     api_filter = Object.assign({}, api_filter);
     if ('from' in api_filter) {
       delete api_filter.from;

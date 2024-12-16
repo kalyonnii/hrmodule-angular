@@ -229,28 +229,28 @@ export class ProfileComponent implements OnInit {
       anyDues: ['', Validators.compose([Validators.required])],
     });
   }
-  sendEmail(employees) {
-    this.loading = true;
-    const emailData = {
-      subject: 'Termination Letter',
-      body: employees?.terminationReason,
-      employeeName: employees.employeeName,
-      email: employees.emailAddress,
-      mobile: this.userDetails.phoneNumber,
-    };
-    this.employeesService.sendTerminationmail(emailData).subscribe(
-      (data) => {
-        if (data) {
-          this.loading = false;
-          this.toastService.showSuccess('Termination Mail Send Successfully');
-        }
-      },
-      (error: any) => {
-        this.loading = false;
-        this.toastService.showError(error);
-      }
-    );
-  }
+  // sendEmail(employees) {
+  //   this.loading = true;
+  //   const emailData = {
+  //     subject: 'Termination Letter',
+  //     body: employees?.terminationReason,
+  //     employeeName: employees.employeeName,
+  //     email: employees.emailAddress,
+  //     mobile: this.userDetails.phoneNumber,
+  //   };
+  //   this.employeesService.sendTerminationmail(emailData).subscribe(
+  //     (data) => {
+  //       if (data) {
+  //         this.loading = false;
+  //         this.toastService.showSuccess('Termination Mail Send Successfully');
+  //       }
+  //     },
+  //     (error: any) => {
+  //       this.loading = false;
+  //       this.toastService.showError(error);
+  //     }
+  //   );
+  // }
   onSubmit(formValues) {
     console.log(formValues);
     let formData: any = {

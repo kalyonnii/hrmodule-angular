@@ -30,7 +30,6 @@ export class EmployeesComponent implements OnInit {
   @ViewChild('employeesTable') employeesTable!: Table;
   employees: any = [];
   version = projectConstantsLocal.VERSION_DESKTOP;
-  // designationDetails: any = projectConstantsLocal.DEPARTMENT_ENTITIES;
   designationDetails: any;
   branchDetails: any = projectConstantsLocal.BRANCH_ENTITIES;
   genderDetails: any = projectConstantsLocal.GENDER_ENTITIES;
@@ -64,11 +63,6 @@ export class EmployeesComponent implements OnInit {
     this.updateCountsAnalytics();
     // this.setFilterConfig();
     this.getEmployeesStatusCount();
-    // const storedEmployeeName = localStorage.getItem('employeeNameInEmployees');
-    // if (storedEmployeeName) {
-    //   this.employeeNameToSearch = storedEmployeeName;
-    //   this.filterWithEmployeeName();
-    // }
     const storedStatus = localStorage.getItem('selectedEmployeeStatus');
     if (storedStatus) {
       this.selectedEmployeeStatus = JSON.parse(storedStatus);
@@ -498,16 +492,6 @@ export class EmployeesComponent implements OnInit {
       },
     ];
   }
-  // applyConfigFilters(event) {
-  //   let api_filter = event;
-  //   if (api_filter['reset']) {
-  //     delete api_filter['reset'];
-  //     this.appliedFilter = {};
-  //   } else {
-  //     this.appliedFilter = api_filter;
-  //   }
-  //   this.loadEmployees(this.currentTableEvent);
-  // }
 
   applyConfigFilters(event) {
     let api_filter = event;
@@ -570,9 +554,6 @@ export class EmployeesComponent implements OnInit {
       }
     );
   }
-  // statusChange(event) {
-  //   this.loadEmployees(this.currentTableEvent);
-  // }
 
   statusChange(event: any): void {
     localStorage.setItem('selectedEmployeeStatus', JSON.stringify(event.value));
@@ -590,25 +571,6 @@ export class EmployeesComponent implements OnInit {
     let searchFilter = { 'employeeName-like': this.employeeNameToSearch };
     this.applyFilters(searchFilter);
   }
-  // inputValueChangeEvent(dataType: string, value: string): void {
-  //   if (value === '') {
-  //     this.searchFilter = {};
-  //     localStorage.setItem('employeeNameInEmployees', value);
-  //     console.log(this.currentTableEvent);
-  //     this.loadEmployees(this.currentTableEvent);
-  //   } else {
-  //     localStorage.setItem('employeeNameInEmployees', value);
-  //   }
-  // }
-  // filterWithEmployeeName(): void {
-  //   const employeeNameToSearch =
-  //     localStorage.getItem('employeeNameInEmployees') ||
-  //     this.employeeNameToSearch;
-  //   if (employeeNameToSearch) {
-  //     const searchFilter = { 'employeeName-like': employeeNameToSearch };
-  //     this.applyFilters(searchFilter);
-  //   }
-  // }
   applyFilters(searchFilter = {}) {
     this.searchFilter = searchFilter;
     console.log(this.currentTableEvent);

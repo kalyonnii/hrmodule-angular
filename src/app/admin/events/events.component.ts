@@ -90,7 +90,7 @@ export class EventsComponent implements OnInit {
     if (this.employees && this.employees.length > 0) {
       this.birthdayEvents = [];
       const currentYear = new Date().getFullYear();
-      const yearsToDisplay = [currentYear - 1, currentYear, currentYear + 1]; // Adjust range as needed
+      const yearsToDisplay = [currentYear - 1, currentYear, currentYear + 1];
       yearsToDisplay.forEach((year) => {
         this.employees.forEach((employee) => {
           const dateOfBirth = new Date(employee.dateOfBirth);

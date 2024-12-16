@@ -525,21 +525,19 @@
           >
         </td>
         <td>
-          <span class="table-column-data" *ngIf="payslip.salary; else noData">{{
-            payslip.salary
-          }}</span>
+          <span class="table-column-data" *ngIf="payslip.salary; else noData"
+            >Rs.{{ payslip.salary }}</span
+          >
         </td>
         <td>
-          <span class="table-column-data">
-            {{ payslip.deductions }}
-          </span>
+          <span class="table-column-data"> Rs.{{ payslip.deductions }} </span>
         </td>
         <td>
           <span
             class="table-column-data"
             *ngIf="payslip.netSalary; else noData"
           >
-            {{ payslip.netSalary }}</span
+            Rs.{{ payslip.netSalary }}</span
           >
         </td>
         <td>

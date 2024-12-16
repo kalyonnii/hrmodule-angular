@@ -370,9 +370,12 @@ export class DashboardComponent implements OnInit {
       }
     );
   }
+  isAllZeros(): boolean {
+    return this.designationCounts.every((count) => count === 0);
+  }
   getDepartmentCounts(filter = {}) {
     filter['employeeInternalStatus-eq'] = 1;
-    const filters = [1, 2, 3, 4].map((designation) => ({
+    const filters = [1, 2, 3, 4, 5].map((designation) => ({
       ...filter,
       'designation-eq': designation,
     }));
@@ -380,8 +383,10 @@ export class DashboardComponent implements OnInit {
     forkJoin(
       filters.map((f) => this.employeesService.getEmployeesCount(f))
     ).subscribe(
-      (counts) => {
-        this.designationCounts = counts.map((count) => count || 0);
+      (counts: any) => {
+        // this.designationCounts = counts.map((count) => count || 0);
+        this.designationCounts = counts;
+        console.log(this.designationCounts);
         this.setChartOptions();
         this.loading = false;
       },
@@ -391,6 +396,43 @@ export class DashboardComponent implements OnInit {
       }
     );
   }
+
+  // getDepartmentCounts(filter = {}) {
+  //   filter['employeeInternalStatus-eq'] = 1;
+  //   this.getDesignations().subscribe((departmentsData: any) => {
+  //     if (departmentsData) {
+  //       this.departments = departmentsData;
+  //       const ids = this.departments?.map((item) => item.id);
+  //       console.log(ids);
+  //       const filters = ids.map((designation) => ({
+  //         ...filter,
+  //         'designation-eq': designation,
+  //       }));
+  //       this.loading = true;
+  //       forkJoin(
+  //         filters.map((f) => this.employeesService.getEmployeesCount(f))
+  //       ).subscribe(
+  //         (counts: any) => {
+  //           this.designationCounts = counts.map((count, index) => ({
+  //             displayName: this.departments[index].displayName,
+  //             count: count || 0,
+  //           }));
+  //           console.log(this.designationCounts);
+  //           this.setChartOptions();
+  //           this.loading = false;
+  //         },
+  //         (error: any) => {
+  //           this.loading = false;
+  //           this.toastService.showError(error);
+  //         }
+  //       );
+  //     }
+  //   });
+  // }
+
+  // getDesignations() {
+  //   return this.employeesService.getDesignations();
+  // }
   getBranchCounts(filter = {}) {
     filter['employeeInternalStatus-eq'] = 1;
     const panjaguttafilter = { ...filter, 'ofcBranch-eq': 1 };
@@ -431,6 +473,10 @@ export class DashboardComponent implements OnInit {
           data: [this.designationCounts[2]],
         },
         {
+          name: 'Team Lead',
+          data: [this.designationCounts[4]],
+        },
+        {
           name: 'Office Team',
           data: [this.designationCounts[3]],
         },
@@ -442,7 +488,16 @@ export class DashboardComponent implements OnInit {
           show: true,
         },
       },
+      // colors: [
+      //   '#640D5F',
+      //   '#31425E',
+      //   '#415A77',
+      //   '#1E212B',
+      //   '#3D5A80',
+      //   '#293241',
+      // ],
       colors: ['#18BADD', '#3039A1', '#8BBEE1', '#676A86'],
+      // colors: ['#18BADD', '#3039A1', ],
       dataLabels: {
         enabled: true,
         style: {

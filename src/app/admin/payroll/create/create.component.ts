@@ -117,7 +117,6 @@ export class CreateComponent {
     if (userDetails) {
       this.userDetails = userDetails.user;
     }
-
     this.getEmployees();
     this.payrollForm
       .get('employeeName')

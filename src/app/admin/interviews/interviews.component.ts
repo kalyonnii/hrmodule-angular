@@ -423,37 +423,15 @@ export class InterviewsComponent implements OnInit {
     }
   }
 
-  // inputValueChangeEvent(dataType: string, value: string): void {
-  //   if (value === '') {
-  //     this.searchFilter = {};
-  //     localStorage.setItem('candidateNameInInterviews', value);
-  //     console.log(this.currentTableEvent);
-  //     this.loadInterviews(this.currentTableEvent);
-  //   } else {
-  //     localStorage.setItem('candidateNameInInterviews', value);
-  //   }
-  // }
   filterWithCandidateName() {
     let searchFilter = { 'candidateName-like': this.candidateNameToSearch };
     this.applyFilters(searchFilter);
   }
-  // filterWithCandidateName(): void {
-  //   const candidateNameToSearch =
-  //     localStorage.getItem('candidateNameInInterviews') ||
-  //     this.candidateNameToSearch;
-  //   if (candidateNameToSearch) {
-  //     const searchFilter = { 'candidateName-like': candidateNameToSearch };
-  //     this.applyFilters(searchFilter);
-  //   }
-  // }
   applyFilters(searchFilter = {}) {
     this.searchFilter = searchFilter;
     console.log(this.currentTableEvent);
     this.loadInterviews(this.currentTableEvent);
   }
-  // statusChange(event) {
-  //   this.loadInterviews(this.currentTableEvent);
-  // }
   statusChange(event: any): void {
     localStorage.setItem(
       'selectedInterviewStatus',
@@ -461,16 +439,6 @@ export class InterviewsComponent implements OnInit {
     );
     this.loadInterviews(this.currentTableEvent);
   }
-  // applyConfigFilters(event) {
-  //   let api_filter = event;
-  //   if (api_filter['reset']) {
-  //     delete api_filter['reset'];
-  //     this.appliedFilter = {};
-  //   } else {
-  //     this.appliedFilter = api_filter;
-  //   }
-  //   this.loadInterviews(this.currentTableEvent);
-  // }
 
   applyConfigFilters(event) {
     let api_filter = event;

@@ -229,6 +229,13 @@
               <app-apex-charts
                 [chartOptions]="DepartmentChartOptions"
               ></app-apex-charts>
+              <div class="nodata-container" *ngIf="isAllZeros()">
+                <img
+                  [lazyLoad]="'../../../assets/images/menu/nodata.gif'"
+                  alt="No Data Available"
+                  class="nodata"
+                />
+              </div>
             </div>
           </div>
         </ng-container>

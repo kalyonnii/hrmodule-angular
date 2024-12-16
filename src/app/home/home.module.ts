@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HomeComponent } from './home.component';
 import { RouterModule, Routes } from '@angular/router';
+import { ButtonModule } from 'primeng/button';
 
 const routes: Routes = [
   {
@@ -12,6 +13,6 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [HomeComponent],
-  imports: [CommonModule, [RouterModule.forChild(routes)]],
+  imports: [CommonModule, ButtonModule, [RouterModule.forChild(routes)]],
 })
 export class HomeModule {}

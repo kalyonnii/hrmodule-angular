@@ -44,7 +44,6 @@ export class CreateComponent {
   interviewStatusList = projectConstantsLocal.INTERVIEW_STATUS;
   officebranchEntities = projectConstantsLocal.BRANCH_ENTITIES;
   leaveTypeEntities = projectConstantsLocal.LEAVE_TYPE_ENTITIES;
-  // designationEntities = projectConstantsLocal.DEPARTMENT_ENTITIES;
   designationEntities: any;
 
   durationTypeEntities = projectConstantsLocal.DURATION_TYPE_ENTITIES;

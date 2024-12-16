@@ -173,7 +173,7 @@ export class CreateComponent {
         controlName: 'attendedInterview',
         type: 'dropdown',
         options: 'attendedInterviewEntities',
-        required: true,
+        required: false,
         optionLabel: 'displayName',
         optionValue: 'id',
       },
@@ -272,7 +272,7 @@ export class CreateComponent {
       experience: ['', Validators.required],
       scheduledLocation: ['', Validators.required],
       scheduledDate: ['', Validators.required],
-      attendedInterview: ['', Validators.required],
+      attendedInterview: [''],
       remarks: ['', Validators.required],
       postponedDate: [''],
     });

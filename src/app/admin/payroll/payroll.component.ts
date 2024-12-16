@@ -71,10 +71,6 @@ export class PayrollComponent {
       this.appliedFilter = JSON.parse(storedAppliedFilter);
     }
   }
-  // onDateChange(event: any) {
-  //   this.selectedDate = this.moment(event).format('MM/YYYY');
-  //   this.loadPayslips(this.currentTableEvent);
-  // }
   onDateChange(event: any) {
     this.selectedDate = this.moment(event).format('MM/YYYY');
     localStorage.setItem('payrollMonth', JSON.stringify(this.selectedDate));
@@ -127,9 +123,6 @@ export class PayrollComponent {
     this.selectedPayrollDetails = null;
     this.isDialogVisible = false;
   }
-  // statusChange(event) {
-  //   this.loadPayslips(this.currentTableEvent);
-  // }
 
   statusChange(event: any): void {
     localStorage.setItem('selectedEmployee', JSON.stringify(event.value));
@@ -467,16 +460,6 @@ export class PayrollComponent {
     this.loadPayslips(this.currentTableEvent);
   }
 
-  // applyConfigFilters(event) {
-  //   let api_filter = event;
-  //   if (api_filter['reset']) {
-  //     delete api_filter['reset'];
-  //     this.appliedFilter = {};
-  //   } else {
-  //     this.appliedFilter = api_filter;
-  //   }
-  //   this.loadPayslips(this.currentTableEvent);
-  // }
 
   applyConfigFilters(event) {
     let api_filter = event;

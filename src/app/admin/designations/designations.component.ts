@@ -160,17 +160,6 @@ export class DesignationsComponent implements OnInit {
       },
     ];
   }
-  // inputValueChangeEvent(dataType: string, value: string): void {
-  //   if (value === '') {
-  //     this.searchFilter = {};
-  //     localStorage.setItem('departmentName', value);
-  //     console.log(this.currentTableEvent);
-  //     this.loadDesignations(this.currentTableEvent);
-  //   } else {
-  //     localStorage.setItem('departmentName', value);
-  //   }
-  // }
-
   inputValueChangeEvent(dataType, value) {
     if (value == '') {
       this.searchFilter = {};
@@ -397,7 +386,6 @@ export class DesignationsComponent implements OnInit {
         command: () => this.ActiveDepartment(department),
       });
     }
-
     return menuItems;
   }
 

@@ -166,11 +166,6 @@ export class ReportListComponent {
     );
   }
 
-  // filterWithReportType() {
-  //   let searchFilter = { 'reportType-like': this.reportTypeToSearch };
-  //   this.applyFilters(searchFilter);
-  // }
-
   filterWithReportType(): void {
     const reportTypeToSearch =
       localStorage.getItem('reportType') || this.reportTypeToSearch;
@@ -184,13 +179,6 @@ export class ReportListComponent {
     console.log(this.currentTableEvent);
     this.loadReports(this.currentTableEvent);
   }
-  // inputValueChangeEvent(dataType, value) {
-  //   if (value == '') {
-  //     this.searchFilter = {};
-  //     console.log(this.currentTableEvent);
-  //     this.loadReports(this.currentTableEvent);
-  //   }
-  // }
   inputValueChangeEvent(dataType: string, value: string): void {
     if (value === '') {
       this.searchFilter = {};
@@ -201,16 +189,6 @@ export class ReportListComponent {
       localStorage.setItem('reportType', value);
     }
   }
-  // applyConfigFilters(event) {
-  //   let api_filter = event;
-  //   if (api_filter['reset']) {
-  //     delete api_filter['reset'];
-  //     this.appliedFilter = {};
-  //   } else {
-  //     this.appliedFilter = api_filter;
-  //   }
-  //   this.loadReports(this.currentTableEvent);
-  // }
   applyConfigFilters(event) {
     let api_filter = event;
     if (api_filter['reset']) {
