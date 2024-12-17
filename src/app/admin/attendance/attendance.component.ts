@@ -21,6 +21,7 @@ export class AttendanceComponent implements OnInit {
   moment: any;
   loading: any;
   selectedDate: any;
+  displayMonth: Date;
   displayDialog = false;
   attendance: any = [];
   selectedMonth: Date;
@@ -37,6 +38,7 @@ export class AttendanceComponent implements OnInit {
   ) {
     this.moment = this.dateTimeProcessor.getMoment();
     this.selectedMonth = this.moment(new Date()).format('YYYY-MM');
+    this.displayMonth = this.moment(new Date()).format('MMMM YYYY');
     this.breadCrumbItems = [
       {
         icon: 'fa fa-house',
@@ -60,6 +62,7 @@ export class AttendanceComponent implements OnInit {
     const storedMonth = localStorage.getItem('selectedAttendanceMonth');
     if (storedMonth) {
       this.selectedMonth = JSON.parse(storedMonth);
+      this.displayMonth = this.moment(this.selectedMonth).format('MMMM YYYY');
     }
   }
 
@@ -88,11 +91,13 @@ export class AttendanceComponent implements OnInit {
       this.getAttendance(api_filter);
     }
   }
-  onDateChange(): void {
-    const monthValue = this.moment(this.selectedMonth, 'YYYY-MM').format(
-      'YYYY-MM'
+  onDateChange(event: any) {
+    this.selectedMonth = this.moment(event).format('YYYY-MM');
+    this.displayMonth = this.moment(event).format('MMMM YYYY');
+    localStorage.setItem(
+      'selectedAttendanceMonth',
+      JSON.stringify(this.selectedMonth)
     );
-    localStorage.setItem('selectedAttendanceMonth', JSON.stringify(monthValue));
     this.loadAttendance(this.currentTableEvent);
   }
 

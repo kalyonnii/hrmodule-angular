@@ -26,6 +26,7 @@ export class UsersComponent implements OnInit {
   designationDetails = projectConstantsLocal.DESIGNATION_ENTITIES;
   version = projectConstantsLocal.VERSION_DESKTOP;
   users: any = [];
+  isPasswordVisible: boolean = false;
   constructor(
     private location: Location,
     private confirmationService: ConfirmationService,
@@ -54,6 +55,12 @@ export class UsersComponent implements OnInit {
     if (storedAppliedFilter) {
       this.appliedFilter = JSON.parse(storedAppliedFilter);
     }
+  }
+  togglePasswordVisibility(): void {
+    this.isPasswordVisible = !this.isPasswordVisible;
+  }
+  maskPassword(password: string): string {
+    return password.replace(/./g, '•');
   }
 
   showUserDetails(user: any): void {

@@ -220,7 +220,7 @@ export class CreateComponent implements OnInit {
       files.map((file) => ({
         ...file,
         disbursedMonth: file.disbursedMonth
-          ? this.moment(file.disbursedMonth).format('MM/YYYY')
+          ? this.moment(file.disbursedMonth, 'YYYY-MM').format('YYYY-MM')
           : null,
       }));
     const calculateIncentive = (totalDisbursedAmount: number): number => {
@@ -252,7 +252,10 @@ export class CreateComponent implements OnInit {
       employeeId: formValues.employeeId,
       incentiveAmount,
       incentiveApplicableMonth: formValues.incentiveApplicableMonth
-        ? this.moment(formValues.incentiveApplicableMonth).format('MM/YYYY')
+        ? this.moment(
+            formValues.incentiveApplicableMonth,
+            'YYYY-MM'
+          ).format('YYYY-MM')
         : null,
       firstMonthFiles:
         this.firstMonthFiles && this.firstMonthFiles.length > 0

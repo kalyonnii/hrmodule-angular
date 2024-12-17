@@ -27,7 +27,8 @@ export class PayrollComponent {
   searchFilter: any = {};
   version = projectConstantsLocal.VERSION_DESKTOP;
   moment: any;
-  selectedDate: Date;
+  selectedMonth: Date;
+  displayMonth: Date;
   userDetails: any;
   constructor(
     private location: Location,
@@ -39,9 +40,12 @@ export class PayrollComponent {
     private dateTimeProcessor: DateTimeProcessorService
   ) {
     this.moment = this.dateTimeProcessor.getMoment();
-    this.selectedDate = this.moment(new Date())
+    this.selectedMonth = this.moment(new Date())
       .subtract(1, 'month')
-      .format('MM/YYYY');
+      .format('YYYY-MM');
+    this.displayMonth = this.moment(new Date())
+      .subtract(1, 'month')
+      .format('MMMM YYYY');
     this.breadCrumbItems = [
       {
         icon: 'fa fa-house',
@@ -64,7 +68,8 @@ export class PayrollComponent {
     }
     const storedMonth = localStorage.getItem('payrollMonth');
     if (storedMonth) {
-      this.selectedDate = JSON.parse(storedMonth);
+      this.selectedMonth = JSON.parse(storedMonth);
+      this.displayMonth = this.moment(this.selectedMonth).format('MMMM YYYY');
     }
     const storedAppliedFilter = localStorage.getItem('payrollAppliedFilter');
     if (storedAppliedFilter) {
@@ -72,8 +77,9 @@ export class PayrollComponent {
     }
   }
   onDateChange(event: any) {
-    this.selectedDate = this.moment(event).format('MM/YYYY');
-    localStorage.setItem('payrollMonth', JSON.stringify(this.selectedDate));
+    this.selectedMonth = this.moment(event).format('YYYY-MM');
+    this.displayMonth = this.moment(event).format('MMMM YYYY');
+    localStorage.setItem('payrollMonth', JSON.stringify(this.selectedMonth));
     this.loadPayslips(this.currentTableEvent);
   }
   getEmployees(filter = {}) {
@@ -112,9 +118,9 @@ export class PayrollComponent {
     }
     return menuItems;
   }
-  formatPayrollMonth(payrollMonth: string): string {
-    return this.moment(payrollMonth, 'MM/YYYY').format('MMMM YYYY');
-  }
+  // formatPayrollMonth(payrollMonth: string): string {
+  //   return this.moment(payrollMonth, 'YYYY-MM').format('MMMM YYYY');
+  // }
   showPayrollDetails(user: any): void {
     this.selectedPayrollDetails = user;
     this.isDialogVisible = true;
@@ -403,7 +409,7 @@ export class PayrollComponent {
         }
       }
     }
-    api_filter['payrollMonth-eq'] = this.selectedDate;
+    api_filter['payrollMonth-eq'] = this.selectedMonth;
     console.log(api_filter);
     if (api_filter) {
       this.getPayrollCount(api_filter);
@@ -459,7 +465,6 @@ export class PayrollComponent {
     console.log(this.currentTableEvent);
     this.loadPayslips(this.currentTableEvent);
   }
-
 
   applyConfigFilters(event) {
     let api_filter = event;

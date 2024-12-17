@@ -62,7 +62,7 @@
           <div class="value">
             {{
               selectedPayrollDetails.payrollMonth
-                ? formatPayrollMonth(selectedPayrollDetails.payrollMonth)
+                ? (selectedPayrollDetails.payrollMonth | date : "MMMM yyyy")
                 : "-"
             }}
           </div>
@@ -382,13 +382,13 @@
       <div class="row">
         <div class="col-md-4 mt-1 mb-1 no-padding-small">
           <p-calendar
-            [(ngModel)]="selectedDate"
+            [(ngModel)]="displayMonth"
             [showIcon]="true"
             view="month"
             [monthNavigator]="true"
             [yearNavigator]="true"
             [yearRange]="'-10:+10'"
-            dateFormat="mm/yy"
+            dateFormat="MM yy"
             appendTo="body"
             [style]="{ width: '100%' }"
             (ngModelChange)="onDateChange($event)"

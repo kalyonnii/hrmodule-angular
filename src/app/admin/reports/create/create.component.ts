@@ -458,12 +458,12 @@ export class CreateComponent {
     if (this.reportData['payrollMonth-eq']) {
       apiFilter['payrollMonth-eq'] = this.moment(
         this.reportData['payrollMonth-eq']
-      ).format('MM/YYYY');
+      ).format('YYYY-MM');
     }
     if (this.reportData['incentiveApplicableMonth-eq']) {
       apiFilter['incentiveApplicableMonth-eq'] = this.moment(
         this.reportData['incentiveApplicableMonth-eq']
-      ).format('MM/YYYY');
+      ).format('YYYY-MM');
     }
     if (this.reportData['attendanceDate-eq']) {
       apiFilter['attendanceDate-eq'] = this.moment(

@@ -56,10 +56,10 @@ export class DashboardComponent implements OnInit {
     this.moment = this.dateTimeProcessor.getMoment();
     this.selectedDateforIncentive = this.moment(new Date())
       .subtract(1, 'month')
-      .format('MM/YYYY');
+      .format('YYYY-MM');
     this.selectedDateforPayroll = this.moment(new Date())
       .subtract(1, 'month')
-      .format('MM/YYYY');
+      .format('YYYY-MM');
     this.selectedYear = new Date().getFullYear();
   }
   ngOnInit(): void {
@@ -104,6 +104,7 @@ export class DashboardComponent implements OnInit {
         count: this.totalEmployeesCount,
         routerLink: 'employees',
         condition: true,
+        isLoading: true,
       },
       {
         name: 'interviews',
@@ -111,6 +112,7 @@ export class DashboardComponent implements OnInit {
         count: this.totalInterviewsCount,
         routerLink: 'interviews',
         condition: true,
+        isLoading: true,
       },
       {
         name: 'attendance',
@@ -119,6 +121,7 @@ export class DashboardComponent implements OnInit {
           this.totalPresentCount + this.totalLateCount + this.totalHalfDayCount,
         routerLink: 'attendance',
         condition: true,
+        isLoading: true,
       },
       {
         name: 'payroll',
@@ -126,6 +129,7 @@ export class DashboardComponent implements OnInit {
         count: this.lastMonthpayrollCount,
         routerLink: 'payroll',
         condition: true,
+        isLoading: true,
       },
       {
         name: 'leaves',
@@ -133,6 +137,7 @@ export class DashboardComponent implements OnInit {
         count: this.totalLeavesCount,
         routerLink: 'leaves',
         condition: true,
+        isLoading: true,
       },
       {
         name: 'holidays',
@@ -140,6 +145,7 @@ export class DashboardComponent implements OnInit {
         count: this.totalHolidaysCount,
         routerLink: 'holidays',
         condition: true,
+        isLoading: true,
       },
       {
         name: 'incentives',
@@ -147,6 +153,7 @@ export class DashboardComponent implements OnInit {
         count: this.incentivesCount,
         routerLink: 'incentives',
         condition: true,
+        isLoading: true,
       },
       {
         name: 'departments',
@@ -154,6 +161,7 @@ export class DashboardComponent implements OnInit {
         count: this.designationsCount,
         routerLink: 'designations',
         condition: true,
+        isLoading: true,
       },
       // {
       //   name: 'events',
@@ -171,6 +179,7 @@ export class DashboardComponent implements OnInit {
         condition:
           this.userDetails?.designation == 1 ||
           this.userDetails?.designation == 4,
+        isLoading: true,
       },
       // {
       //   name: 'reports',
@@ -182,6 +191,14 @@ export class DashboardComponent implements OnInit {
     ];
   }
 
+  onImageLoad(item: any): void {
+    item.isLoading = false;
+  }
+
+  onImageError(item: any): void {
+    item.isLoading = false;
+    item.name = 'placeholder';
+  }
   calculateAttendanceCounts(): void {
     this.totalPresentCount =
       this.totalAbsentCount =

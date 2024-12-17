@@ -17,7 +17,8 @@ export class IncentivesComponent implements OnInit {
   loading: any;
   searchFilter: any = {};
   activeItem: any;
-  selectedDate: Date;
+  selectedMonth: Date;
+  displayMonth: Date;
   currentTableEvent: any;
   selectedIncentive: any = null;
   isDialogVisible = false;
@@ -38,9 +39,12 @@ export class IncentivesComponent implements OnInit {
     private dateTimeProcessor: DateTimeProcessorService
   ) {
     this.moment = this.dateTimeProcessor.getMoment();
-    this.selectedDate = this.moment(new Date())
+    this.selectedMonth = this.moment(new Date())
       .subtract(1, 'month')
-      .format('MM/YYYY');
+      .format('YYYY-MM');
+    this.displayMonth = this.moment(new Date())
+      .subtract(1, 'month')
+      .format('MMMM YYYY');
     this.breadCrumbItems = [
       {
         icon: 'fa fa-house',
@@ -61,7 +65,8 @@ export class IncentivesComponent implements OnInit {
     this.setupActiveItemTabs();
     const storedMonth = localStorage.getItem('selectedIncentiveMonth');
     if (storedMonth) {
-      this.selectedDate = JSON.parse(storedMonth);
+      this.selectedMonth = JSON.parse(storedMonth);
+      this.displayMonth = this.moment(this.selectedMonth).format('MMMM YYYY');
     }
   }
 
@@ -70,10 +75,11 @@ export class IncentivesComponent implements OnInit {
   }
 
   onDateChange(event: any) {
-    this.selectedDate = this.moment(event).format('MM/YYYY');
+    this.selectedMonth = this.moment(event).format('YYYY-MM');
+    this.displayMonth = this.moment(event).format('MMMM YYYY');
     localStorage.setItem(
       'selectedIncentiveMonth',
-      JSON.stringify(this.selectedDate)
+      JSON.stringify(this.selectedMonth)
     );
     this.loadIncentives(this.currentTableEvent);
   }
@@ -121,7 +127,7 @@ export class IncentivesComponent implements OnInit {
     this.currentTableEvent = event;
     let api_filter = this.employeesService.setFiltersFromPrimeTable(event);
     api_filter = Object.assign({}, api_filter, this.searchFilter);
-    api_filter['incentiveApplicableMonth-eq'] = this.selectedDate;
+    api_filter['incentiveApplicableMonth-eq'] = this.selectedMonth;
     if (api_filter) {
       this.getIncentivesCount(api_filter);
       this.getIncentives(api_filter);
@@ -162,26 +168,26 @@ export class IncentivesComponent implements OnInit {
     );
   }
 
-  getFormattedMonthYear(date: string): string {
-    if (!date) return '';
-    const [month, year] = date.split('/');
-    const months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
-    const monthName = months[parseInt(month, 10) - 1];
-    return `${monthName} ${year}`;
-  }
+  // getFormattedMonthYear(date: string): string {
+  //   if (!date) return '';
+  //   const [year, month] = date.split('-');
+  //   const months = [
+  //     'Jan',
+  //     'Feb',
+  //     'Mar',
+  //     'Apr',
+  //     'May',
+  //     'Jun',
+  //     'Jul',
+  //     'Aug',
+  //     'Sep',
+  //     'Oct',
+  //     'Nov',
+  //     'Dec',
+  //   ];
+  //   const monthName = months[parseInt(month, 10) - 1];
+  //   return `${monthName} ${year}`;
+  // }
 
   confirmDelete(incentiveId) {
     this.confirmationService.confirm({

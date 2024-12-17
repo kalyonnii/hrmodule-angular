@@ -50,14 +50,23 @@
                           </div>
                         </div>
                       </div>
-                      <div class="">
+                      <div class="image-container">
+                        <p-skeleton
+                          *ngIf="item.isLoading"
+                          width="70px"
+                          height="70px"
+                          shape="circle"
+                        ></p-skeleton>
                         <img
-                          [lazyLoad]="
-                            'assets/images/menu/' + item.name + '.png'
+                          src="
+                            assets/images/menu/{{ item.name }}.png
                           "
                           width="70"
-                          loading="lazy"
+                          height="70"
                           alt="{{ item.displayName }} icon"
+                          [hidden]="item.isLoading"
+                          (load)="onImageLoad(item)"
+                          (error)="onImageError(item)"
                         />
                       </div>
                     </div>

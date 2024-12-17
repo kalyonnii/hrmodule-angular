@@ -31,6 +31,7 @@ export class ProfileComponent implements OnInit {
   attendance: any = [];
   salaryHikes: any = [];
   selectedDate: Date;
+  displayMonth: Date;
   resignationformFields: any = [];
   terminationFormFields: any = [];
   moment: any;
@@ -80,7 +81,8 @@ export class ProfileComponent implements OnInit {
     console.log(this.selectedDate);
     this.month = this.selectedDate.getMonth() + 1;
     this.year = this.selectedDate.getFullYear();
-    this.selectedDate = this.moment(new Date()).format('MM/YYYY');
+    this.selectedDate = this.moment(new Date()).format('YYYY-MM');
+    this.displayMonth = this.moment(new Date()).format('MMMM YYYY');
     this.breadCrumbItems = [
       {
         icon: 'fa fa-house',
@@ -329,6 +331,7 @@ export class ProfileComponent implements OnInit {
   }
   onDateChange(event: any) {
     const selectedDate = this.moment(event).toDate();
+    this.displayMonth = this.moment(event).format('MMMM YYYY');
     this.month = selectedDate.getMonth() + 1;
     this.year = selectedDate.getFullYear();
     this.getAttendance();

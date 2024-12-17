@@ -75,16 +75,16 @@
         </div>
         <div class="col-md-4 mt-1 mb-1 no-padding-small">
           <p-calendar
-            [(ngModel)]="selectedMonth"
+            [(ngModel)]="displayMonth"
             [showIcon]="true"
             view="month"
             [monthNavigator]="true"
             [yearNavigator]="true"
             [yearRange]="'-10:+10'"
-            dateFormat="yy-mm"
+            dateFormat="MM yy"
             appendTo="body"
             [style]="{ width: '100%' }"
-            (ngModelChange)="onDateChange()"
+            (ngModelChange)="onDateChange($event)"
             [placeholder]="'Select Month and Year'"
           ></p-calendar>
         </div>

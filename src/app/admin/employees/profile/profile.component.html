@@ -1277,13 +1277,13 @@
               <div class="row">
                 <div class="d-flex justify-content-end mb-4">
                   <p-calendar
-                    [(ngModel)]="selectedDate"
+                    [(ngModel)]="displayMonth"
                     [showIcon]="true"
                     view="month"
                     [style]="{ width: '200px' }"
                     [yearNavigator]="true"
                     [yearRange]="'-10:+10'"
-                    dateFormat="mm/yy"
+                    dateFormat="MM yy"
                     appendTo="body"
                     (ngModelChange)="onDateChange($event)"
                     placeholder="Select Month and Year"

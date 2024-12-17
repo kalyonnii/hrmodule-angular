@@ -226,7 +226,7 @@ export class CreateComponent {
   handleCasualDays(joiningDate: Date): void {
     const payrollMonth = this.payrollForm.get('payrollMonth')?.value;
     const joining = new Date(joiningDate);
-    const payroll = new Date(this.moment(payrollMonth, 'MM/YYYY').toDate());
+    const payroll = new Date(this.moment(payrollMonth, 'YYYY-MM').toDate());
     let eligibleCasualMonth;
     if (joining.getDate() < 4) {
       eligibleCasualMonth = new Date(
@@ -250,7 +250,7 @@ export class CreateComponent {
   handlePresentDays(): void {
     const payrollMonth = this.payrollForm.get('payrollMonth')?.value;
     const employeeId = this.payrollForm.get('employeeId')?.value;
-    const payroll = new Date(this.moment(payrollMonth, 'MM/YYYY').toDate());
+    const payroll = new Date(this.moment(payrollMonth, 'YYYY-MM').toDate());
     this.loading = true;
     this.getAttendance()
       .then(() => {
@@ -470,8 +470,8 @@ export class CreateComponent {
     const monthFormatted = this.moment(payrollMonth, [
       'MM-YYYY',
       'YYYY-MM-DD',
-      'MM/YYYY',
-    ]).format('MM/YYYY');
+      'YYYY-MM',
+    ]).format('YYYY-MM');
     const absentDays =
       presentDays > 0 && workingDays > 0 ? workingDays - presentDays : 0;
     const totalAbsentDays =

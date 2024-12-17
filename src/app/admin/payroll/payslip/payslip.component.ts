@@ -118,7 +118,7 @@ export class PayslipComponent {
   }
 
   getMonthNameAndYear(dateString: string): string {
-    const date = this.moment(dateString, 'MM/YYYY');
+    const date = this.moment(dateString, 'YYYY-MM');
     return date.format('MMMM YYYY');
   }
 

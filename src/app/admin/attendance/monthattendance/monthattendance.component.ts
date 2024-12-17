@@ -19,7 +19,8 @@ export class MonthattendanceComponent implements OnInit {
   totalEmployeesCount: number = 0;
   filteredEmployees: any[] = [];
   employees: any[] = [];
-  selectedDate: Date;
+  selectedMonth: Date;
+  displayMonth: Date;
   moment: any;
   showTimes = false;
   monthDates: Date[] = [];
@@ -32,9 +33,10 @@ export class MonthattendanceComponent implements OnInit {
     private employeesService: EmployeesService
   ) {
     this.moment = this.dateTimeProcessor.getMoment();
-    this.selectedDate = this.moment(new Date()).toDate();
-    this.generateMonthDates();
-    this.selectedDate = this.moment(new Date()).format('MM/YYYY');
+    this.selectedMonth = this.moment(new Date()).toDate();
+    this.generateMonthDates(this.selectedMonth);
+    // this.selectedMonth = this.moment(new Date()).format('YYYY-MM');
+    this.displayMonth = this.moment(new Date()).format('MMMM YYYY');
     this.breadCrumbItems = [
       {
         icon: 'fa fa-house',
@@ -107,7 +109,7 @@ export class MonthattendanceComponent implements OnInit {
       const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);
       const wb: XLSX.WorkBook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, 'Attendance Data');
-      XLSX.writeFile(wb, `Attendance_${this.selectedDate}.xlsx`);
+      XLSX.writeFile(wb, `Attendance_${this.selectedMonth}.xlsx`);
       this.loading = false;
     } catch (error) {
       console.error('Error exporting to Excel:', error);
@@ -117,15 +119,16 @@ export class MonthattendanceComponent implements OnInit {
     }
   }
 
-  generateMonthDates() {
-    if (!this.selectedDate) return;
-    const year = this.selectedDate.getFullYear();
-    const month = this.selectedDate.getMonth();
+  generateMonthDates(selectedMonth) {
+    if (!selectedMonth) return;
+    const year = selectedMonth.getFullYear();
+    const month = selectedMonth.getMonth();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     this.monthDates = Array.from(
       { length: daysInMonth },
       (_, i) => new Date(year, month, i + 1)
     );
+    console.log(this.monthDates);
   }
   countAttendanceStatus(employeeId: number, status: string): number {
     return this.monthDates.filter(
@@ -193,9 +196,11 @@ export class MonthattendanceComponent implements OnInit {
   }
 
   onDateChange(event: any) {
-    this.generateMonthDates();
-    this.selectedDate = this.moment(event).format('MM/YYYY');
-    if (this.selectedDate) {
+    // this.selectedMonth = this.moment(event).format('YYYY-MM');
+    this.selectedMonth = this.moment(event).toDate();
+    this.generateMonthDates(this.selectedMonth);
+    this.displayMonth = this.moment(event).format('MMMM YYYY');
+    if (this.selectedMonth) {
       this.loadEmployees(this.currentTableEvent);
     }
   }

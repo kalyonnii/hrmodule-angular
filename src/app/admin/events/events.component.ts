@@ -15,7 +15,7 @@ import { EmployeesService } from '../employees/employees.service';
 })
 export class EventsComponent implements OnInit {
   breadCrumbItems: any = [];
-  birthdayEvents: any[] = [];
+  birthdayEvents: any = [];
   loading: boolean = false;
   version = projectConstantsLocal.VERSION_DESKTOP;
   employees: any[];

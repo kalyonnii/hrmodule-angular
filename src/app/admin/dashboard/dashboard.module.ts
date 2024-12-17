@@ -9,7 +9,7 @@ import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
 import { CalendarModule } from 'primeng/calendar';
 import { FormsModule } from '@angular/forms';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
-
+import { SkeletonModule } from 'primeng/skeleton';
 const routes: Routes = [{ path: '', component: DashboardComponent }];
 
 @NgModule({
@@ -20,6 +20,7 @@ const routes: Routes = [{ path: '', component: DashboardComponent }];
     TableModule,
     LazyLoadImageModule,
     CapitalizeFirstPipe,
+    SkeletonModule,
     PreloaderModule,
     CalendarModule,
     FormsModule,

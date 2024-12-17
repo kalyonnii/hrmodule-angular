@@ -28,11 +28,28 @@
 <div *ngIf="loading">
   <app-preloader></app-preloader>
 </div>
-<div class="calendar-container" *ngIf="calendarOptions">
+<!-- <div class="calendar-container" *ngIf="calendarOptions">
   <div class="calendar-card">
     <full-calendar #calendar [options]="calendarOptions"> </full-calendar>
   </div>
+</div> -->
+<div class="calendar-container" *ngIf="birthdayEvents?.length > 0; else noData">
+  <div class="calendar-card">
+    <full-calendar #calendar [options]="calendarOptions"></full-calendar>
+  </div>
 </div>
+
+<ng-template #noData>
+  <div class="nodata-container mt-5">
+    <img
+      [lazyLoad]="'../../../assets/images/menu/nodata.gif'"
+      alt="No Data Available"
+      class="nodata"
+    />
+    <p>No Events Available</p>
+  </div>
+</ng-template>
+
 <footer class="p-2 text-center text-lg-start mt-3" style="color: #878a99">
   <div class="text-center mb-3 fw-bold">
     © 2024 <span style="color: #1e4079">The</span>&nbsp;<b

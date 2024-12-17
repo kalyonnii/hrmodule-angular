@@ -71,7 +71,7 @@
         Incentive Applicable Month<b>:&nbsp;</b>
       </div>
       <div class="value">
-        {{ getFormattedMonthYear(selectedIncentive.incentiveApplicableMonth) }}
+        {{ selectedIncentive.incentiveApplicableMonth | date : "MMMM yyyy" }}
       </div>
     </div>
     <div class="info-line">
@@ -172,7 +172,7 @@
               Disbursed Month <b>:</b>
             </div>
             <div class="value">
-              {{ getFormattedMonthYear(loan.disbursedMonth) }}
+              {{ loan.disbursedMonth | date : "MMMM yyyy" }}
             </div>
           </div>
         </div>
@@ -239,13 +239,13 @@
         </div>
         <div class="col-md-4 mt-1 mb-1 no-padding-small">
           <p-calendar
-            [(ngModel)]="selectedDate"
+            [(ngModel)]="displayMonth"
             [showIcon]="true"
             view="month"
             [monthNavigator]="true"
             [yearNavigator]="true"
             [yearRange]="'-10:+10'"
-            dateFormat="mm/yy"
+            dateFormat="MM yy"
             appendTo="body"
             [style]="{ width: '100%' }"
             (ngModelChange)="onDateChange($event)"
@@ -316,9 +316,7 @@
           <span
             class="table-column-data"
             *ngIf="incentive.incentiveApplicableMonth; else noData"
-            >{{
-              getFormattedMonthYear(incentive.incentiveApplicableMonth)
-            }}</span
+            >{{ incentive.incentiveApplicableMonth | date : "MMM yyyy" }}</span
           >
         </td>
         <td>

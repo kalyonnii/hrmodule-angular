@@ -122,6 +122,33 @@
       </div>
     </div>
     <div class="info-line">
+      <span class="icon">
+        <i class="fas fa-lock"></i>
+        <!-- You can keep the lock icon or replace it with something else -->
+      </span>
+      <div class="label d-flex justify-content-between">
+        Password<b>:&nbsp;</b>
+      </div>
+      <div class="value d-flex align-items-center">
+        <span *ngIf="isPasswordVisible; else maskedPassword">{{
+          selectedUser.password
+        }}</span>
+         <ng-template #maskedPassword>
+          {{ maskPassword(selectedUser.password) }}
+        </ng-template>
+        <i
+          class="fas"
+          [ngClass]="{
+            'fa-eye': !isPasswordVisible,
+            'fa-eye-slash': isPasswordVisible
+          }"
+          (click)="togglePasswordVisibility()"
+          style="cursor: pointer; margin-left: 10px"
+        ></i>
+      </div>
+    </div>
+
+    <div class="info-line">
       <span class="icon"><i class="fas fa-building"></i></span>
       <div class="label d-flex justify-content-between">
         Designation<b>:&nbsp;</b>

@@ -57,3 +57,22 @@ full-calendar {
   border-color: #33009c !important;
   color: #ffffff;
 }
+.nodata-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  img.nodata {
+    width: 200px;
+    height: auto;
+    margin-bottom: 20px;
+  }
+
+  p {
+    font-size: 18px;
+    font-weight: bold;
+    color: #555;
+  }
+}
