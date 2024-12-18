@@ -23,7 +23,10 @@
   box-shadow: 0 0 5px #9b8db5 !important;
   outline: none;
 }
-
+.p-button-primary {
+  background-color: #533dd5 !important;
+  font-weight: bold;
+}
 .p-inputtext::placeholder {
   color: #888;
 }

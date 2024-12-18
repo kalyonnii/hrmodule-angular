@@ -46,8 +46,21 @@
   display: inline-flex;
   justify-content: center;
   align-items: center;
+  box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
 }
-
+.profilebg {
+  height: 140px;
+  background-color: #31425e;
+  width: 100%;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+.profile-img-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: -130px;
+}
 .info-line {
   display: flex;
   align-items: center;

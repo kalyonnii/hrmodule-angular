@@ -41,37 +41,43 @@
   (onHide)="clearDialog()"
 >
   <div *ngIf="selectedUser" class="text-capitalize">
+    <div class="profilebg"></div>
     <div
-      *ngIf="
-        selectedUser &&
-        selectedUser.userImage &&
-        selectedUser.userImage.length > 0
-      "
-      class="d-flex justify-content-center"
+      class="d-flex profile-img-container flex-column align-items-center justify-content-center"
+      style="height: 270px"
     >
-      <ng-container>
-        <a [href]="'//' + selectedUser.userImage[0]" target="_blank">
+      <div
+        *ngIf="
+          selectedUser &&
+          selectedUser.userImage &&
+          selectedUser.userImage.length > 0
+        "
+        class="d-flex justify-content-center"
+      >
+        <ng-container>
+          <a [href]="'//' + selectedUser.userImage[0]" target="_blank">
+            <img
+              [src]="'//' + selectedUser.userImage[0]"
+              alt="Profile"
+              class="profileimg mb-3"
+              style="width: 190px; height: 190px"
+            />
+          </a>
+        </ng-container>
+      </div>
+      <div
+        *ngIf="selectedUser && selectedUser.userImage == null"
+        class="d-flex justify-content-center"
+      >
+        <tr class="text-center">
           <img
-            [src]="'//' + selectedUser.userImage[0]"
+            src="../../../assets/images/profile/profile.png"
             alt="Profile"
             class="profileimg mb-3"
             style="width: 190px; height: 190px"
           />
-        </a>
-      </ng-container>
-    </div>
-    <div
-      *ngIf="selectedUser && selectedUser.userImage == null"
-      class="d-flex justify-content-center"
-    >
-      <tr class="text-center">
-        <img
-          src="../../../assets/images/profile/profile.png"
-          alt="Profile"
-          class="profileimg mb-3"
-          style="width: 190px; height: 190px"
-        />
-      </tr>
+        </tr>
+      </div>
     </div>
     <div class="info-line">
       <span class="icon"><i class="fas fa-id-badge"></i></span>
@@ -133,7 +139,7 @@
         <span *ngIf="isPasswordVisible; else maskedPassword">{{
           selectedUser.password
         }}</span>
-         <ng-template #maskedPassword>
+        <ng-template #maskedPassword>
           {{ maskPassword(selectedUser.password) }}
         </ng-template>
         <i

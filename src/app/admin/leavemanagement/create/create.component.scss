@@ -7,7 +7,10 @@
 ::ng-deep .p-calendar {
   width: 100% !important;
 }
-
+.p-button-primary {
+  background-color: #533dd5 !important;
+  font-weight: bold;
+}
 .p-inputtext {
   color: #333;
   border-radius: 5px;
