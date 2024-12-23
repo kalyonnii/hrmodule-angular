@@ -44,7 +44,7 @@ export class CreateComponent {
   interviewStatusList = projectConstantsLocal.INTERVIEW_STATUS;
   officebranchEntities = projectConstantsLocal.BRANCH_ENTITIES;
   leaveTypeEntities = projectConstantsLocal.LEAVE_TYPE_ENTITIES;
-  designationEntities: any;
+  designationEntities: any[] = [];
 
   durationTypeEntities = projectConstantsLocal.DURATION_TYPE_ENTITIES;
   attendedInterviewStatus = projectConstantsLocal.ATTENDED_INTERVIEW_ENTITIES;
@@ -82,13 +82,15 @@ export class CreateComponent {
       },
       { label: 'Generate Report' },
     ];
-    Promise.all([this.getDesignations(), this.generateYears()])
-      .then(() => {
-        this.setReportsList();
-      })
-      .catch((error) => {
-        console.error('Error loading data:', error);
-      });
+    // Promise.all([this.getDesignations(), this.generateYears()])
+    //   .then(() => {
+    //     this.setReportsList();
+    //     console.log('called');
+    //   })
+    //   .catch((error) => {
+    //     console.error('Error loading data:', error);
+    //   });
+
     this.moment = this.dateTimeProcessor.getMoment();
     this.activatedRoute.queryParams.subscribe((queryParams: any) => {
       if (queryParams && queryParams['reportType']) {
@@ -100,7 +102,9 @@ export class CreateComponent {
     });
   }
   ngOnInit() {
-    this.setReportsList();
+    this.getDesignations();
+    this.generateYears();
+    // this.setReportsList();
   }
   updateBreadcrumb(): void {
     this.breadCrumbItems = [
@@ -132,6 +136,7 @@ export class CreateComponent {
       (response: any) => {
         console.log(response);
         this.designationEntities = [...response];
+        this.setReportsList();
         this.loading = false;
       },
       (error: any) => {
@@ -145,6 +150,7 @@ export class CreateComponent {
     for (let year = currentYear; year >= currentYear - 10; year--) {
       this.years.push({ label: `${year}`, value: year });
     }
+    this.setReportsList();
   }
   setReportsList() {
     let reportsListConfig = [

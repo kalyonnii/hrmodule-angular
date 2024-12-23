@@ -376,7 +376,7 @@ export class DesignationsComponent implements OnInit {
         menuItems[0].items.push({
           label: 'Delete',
           icon: 'fa fa-trash',
-          command: () => this.confirmDelete(department.designationId),
+          command: () => this.confirmDelete(department),
         });
       }
     } else if (department.designationInternalStatus === 2) {
@@ -413,13 +413,17 @@ export class DesignationsComponent implements OnInit {
         }
       );
   }
-  confirmDelete(designationId) {
+  confirmDelete(department) {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete this Department?',
+      // message: 'Are you sure you want to delete this Department?',
+      message: `Are you sure you want to delete this Department ? <br>
+              Department Name: ${department.displayName}<br>
+              Department ID: ${department.designationId}
+              `,
       header: 'Confirm Deletion',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.deleteDepartment(designationId);
+        this.deleteDepartment(department.designationId);
       },
     });
   }

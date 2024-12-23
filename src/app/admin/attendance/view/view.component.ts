@@ -38,19 +38,20 @@ export class ViewComponent implements OnInit {
     this.activatedRoute.params.subscribe((params) => {
       if (params && params['id']) {
         this.attendanceId = params['id'];
-        this.getAttendanceById(this.attendanceId)
-          .then((data) => {
-            if (data) {
-              this.selectedDate = this.moment(
-                this.attendanceData?.attendanceDate
-              ).format('MM/DD/YYYY');
-              console.log('Attendance Data', this.attendanceData);
-              this.calculateAttendanceCounts();
-            }
-          })
-          .catch((error) => {
-            console.error('Error fetching attendance data:', error);
-          });
+        this.fetchAttendanceData();
+        // this.getAttendanceById(this.attendanceId)
+        //   .then((data) => {
+        //     if (data) {
+        //       this.selectedDate = this.moment(
+        //         this.attendanceData?.attendanceDate
+        //       ).format('MM/DD/YYYY');
+        //       console.log('Attendance Data', this.attendanceData);
+        //       this.calculateAttendanceCounts();
+        //     }
+        //   })
+        //   .catch((error) => {
+        //     console.error('Error fetching attendance data:', error);
+        //   });
       }
     });
     this.breadCrumbItems = [
@@ -70,6 +71,24 @@ export class ViewComponent implements OnInit {
   }
   ngOnInit(): void {
     this.updateCountsAnalytics();
+  }
+  async fetchAttendanceData() {
+    try {
+      this.loading = true;
+      const dataFetched = await this.getAttendanceById();
+      if (dataFetched) {
+        this.selectedDate = this.moment(
+          this.attendanceData?.attendanceDate
+        ).format('MM/DD/YYYY');
+        console.log('Attendance Data:', this.attendanceData);
+        this.calculateAttendanceCounts();
+        this.setDefaultAttendanceData();
+      }
+    } catch (error) {
+      console.error('Error fetching attendance data:', error);
+    } finally {
+      this.loading = false;
+    }
   }
   updateCountsAnalytics() {
     this.countsAnalytics = [

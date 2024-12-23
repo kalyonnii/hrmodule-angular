@@ -347,7 +347,7 @@ export class InterviewsComponent implements OnInit {
         menuItems[0].items.push({
           label: 'Delete',
           icon: 'fa fa-trash',
-          command: () => this.confirmDelete(interview.interviewId),
+          command: () => this.confirmDelete(interview),
         });
       }
     } else if (interview.interviewInternalStatus === 2) {
@@ -376,7 +376,7 @@ export class InterviewsComponent implements OnInit {
         menuItems[0].items.push({
           label: 'Delete',
           icon: 'fa fa-trash',
-          command: () => this.confirmDelete(interview.interviewId),
+          command: () => this.confirmDelete(interview),
         });
       }
     } else if (interview.interviewInternalStatus === 3) {
@@ -399,7 +399,7 @@ export class InterviewsComponent implements OnInit {
         menuItems[0].items.push({
           label: 'Delete',
           icon: 'fa fa-trash',
-          command: () => this.confirmDelete(interview.interviewId),
+          command: () => this.confirmDelete(interview),
         });
       }
     }
@@ -531,21 +531,33 @@ export class InterviewsComponent implements OnInit {
       );
   }
 
-  confirmDelete(interviewId) {
+  // confirmDelete(interviewId) {
+  //   this.confirmationService.confirm({
+  //     message: 'Are you sure you want to delete this Interview?',
+  //     header: 'Confirm Deletion',
+  //     icon: 'pi pi-exclamation-triangle',
+  //     accept: () => {
+  //       this.deleteInterview(interviewId);
+  //     },
+  //   });
+  // }
+  confirmDelete(interview) {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete this Interview?',
+      message: `Are you sure you want to delete this Interview ? <br>
+              Candidate Name: ${interview.candidateName}<br>
+              Interview ID: ${interview.interviewId}
+              `,
       header: 'Confirm Deletion',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.deleteInterview(interviewId);
+        this.deleteInterview(interview.interviewId);
       },
     });
   }
 
   confirmSendtoEmployee(interview) {
     this.confirmationService.confirm({
-      message:
-        'Are you sure you want to convert this candidate into an employee?',
+      message: `Are you sure you want to convert this Candidate : ${interview.candidateName} into an employee?`,
       header: 'Confirm Employment Conversion',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {

@@ -33,6 +33,7 @@ export class SalaryhikeComponent {
   employeeeNameToSearch: any;
   isDialogVisible = false;
   salaryHikes: any = [];
+  salaryHikes1: any = [];
   currentTableEvent: any;
   salaryHikeForm: UntypedFormGroup;
   heading: any = 'Create Salary Hike';
@@ -371,7 +372,91 @@ export class SalaryhikeComponent {
     this.salaryHikeForm.reset();
   }
 
-  onSubmit(formValues) {
+  // onSubmit(formValues) {
+  //   let formData: any = {
+  //     employeeId: formValues.employeeId,
+  //     employeeName: formValues.employeeName,
+  //     basicSalary: formValues.basicSalary,
+  //     monthlyHike: formValues.monthlyHike,
+  //     hikeDate: formValues.hikeDate
+  //       ? this.moment(formValues.hikeDate).format('YYYY-MM-DD')
+  //       : null,
+  //     totalSalary: formValues.basicSalary + formValues.monthlyHike,
+  //   };
+  //   console.log('salaryhikeformData', formData);
+  //   if (this.actionType == 'create') {
+  //     this.loading = true;
+  //     this.employeesService.createSalaryHike(formData).subscribe(
+  //       (data) => {
+  //         if (data) {
+  //           this.loading = false;
+  //           this.isDialogVisible = false;
+  //           this.toastService.showSuccess('Salary Hike Added Successfully');
+  //           this.routingService.handleRoute('salaryhikes', null);
+  //           this.loadSalaryHikes(this.currentTableEvent);
+  //         }
+  //       },
+  //       (error: any) => {
+  //         this.loading = false;
+  //         console.log(error);
+  //         this.toastService.showError(error);
+  //       }
+  //     );
+  //   } else if (this.actionType == 'update') {
+  //     this.loading = true;
+  //     console.log(formData);
+  //     this.employeesService.updateSalaryHike(this.hikeId, formData).subscribe(
+  //       (data) => {
+  //         if (data) {
+  //           this.loading = false;
+  //           this.isDialogVisible = false;
+  //           this.toastService.showSuccess('Salary Hike Updated Successfully');
+  //           this.routingService.handleRoute('salaryhikes', null);
+  //           this.loadSalaryHikes(this.currentTableEvent);
+  //         }
+  //       },
+  //       (error: any) => {
+  //         this.loading = false;
+  //         this.toastService.showError(error);
+  //       }
+  //     );
+  //   }
+  // }
+
+  getSalaryHikes1(filter = {}): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.loading = true;
+      this.employeesService.getSalaryHikes(filter).subscribe(
+        (response) => {
+          this.salaryHikes1 = response;
+          console.log('salaryHikes1', this.salaryHikes1);
+          this.loading = false;
+          resolve();
+        },
+        (error: any) => {
+          this.loading = false;
+          this.toastService.showError(error);
+          reject(error);
+        }
+      );
+    });
+  }
+
+  async onSubmit(formValues) {
+    // Fetch the latest salary hikes before processing
+    await this.getSalaryHikes1();
+    if (this.salaryHikes) {
+      const existingHike = this.salaryHikes1
+        .filter((hike) => hike.employeeId === formValues.employeeId)
+        .sort(
+          (a, b) =>
+            new Date(b.hikeDate).getTime() - new Date(a.hikeDate).getTime()
+        )[0];
+      if (existingHike) {
+        formValues.basicSalary = existingHike.totalSalary;
+      }
+    }
+
     let formData: any = {
       employeeId: formValues.employeeId,
       employeeName: formValues.employeeName,
@@ -382,8 +467,10 @@ export class SalaryhikeComponent {
         : null,
       totalSalary: formValues.basicSalary + formValues.monthlyHike,
     };
+
     console.log('salaryhikeformData', formData);
-    if (this.actionType == 'create') {
+
+    if (this.actionType === 'create') {
       this.loading = true;
       this.employeesService.createSalaryHike(formData).subscribe(
         (data) => {
@@ -401,9 +488,12 @@ export class SalaryhikeComponent {
           this.toastService.showError(error);
         }
       );
-    } else if (this.actionType == 'update') {
+    } else if (this.actionType === 'update') {
+      if (!this.hikeId) {
+        this.toastService.showError('Hike ID is required for updates.');
+        return;
+      }
       this.loading = true;
-      console.log(formData);
       this.employeesService.updateSalaryHike(this.hikeId, formData).subscribe(
         (data) => {
           if (data) {
@@ -462,13 +552,17 @@ export class SalaryhikeComponent {
     });
   }
 
-  confirmDelete(hikeId) {
+  confirmDelete(salaryHike) {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete this Salary Hike?',
+      // message: 'Are you sure you want to delete this Salary Hike?',
+      message: `Are you sure you want to delete this Salary Hike ? <br>
+      Employee Name: ${salaryHike.employeeName}<br>
+      Salary Hike ID: ${salaryHike.hikeId}
+      `,
       header: 'Confirm Deletion',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.deleteSalaryHike(hikeId);
+        this.deleteSalaryHike(salaryHike.hikeId);
       },
     });
   }
@@ -488,7 +582,9 @@ export class SalaryhikeComponent {
       }
     );
   }
-
+  ViewHikeletter(hikeId) {
+    this.routingService.handleRoute('salaryhikes/hikeletter/' + hikeId, null);
+  }
   goBack() {
     this.location.back();
   }

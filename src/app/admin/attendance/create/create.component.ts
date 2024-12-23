@@ -69,7 +69,7 @@ export class CreateComponent {
     ];
   }
   ngOnInit(): void {
-    this.loadEmployees(event);
+    this.loadEmployees(this.currentTableEvent);
   }
   getAttendanceById(filter = {}) {
     return new Promise((resolve, reject) => {
@@ -80,6 +80,7 @@ export class CreateComponent {
           (response) => {
             this.attendanceData = response;
             this.loading = false;
+            this.setDefaultAttendanceData();
             resolve(true);
           },
           (error: any) => {
@@ -141,8 +142,11 @@ export class CreateComponent {
     if (this.actionType === 'create') {
       this.employeeDetails = this.employees.map((employee) => ({
         employeeId: employee.employeeId,
+        customEmployeeId: employee.customEmployeeId,
         employeeName: employee.employeeName.trim(),
         passPhoto: employee.passPhoto,
+        designationName: employee.designationName,
+        joiningDate: employee.joiningDate,
         status: 'Present',
         checkInTime: defaultCheckInTime,
         checkOutTime: defaultCheckOutTime,
@@ -164,8 +168,11 @@ export class CreateComponent {
           );
           return {
             employeeId: employee.employeeId,
+            customEmployeeId: employee.customEmployeeId,
             employeeName: employee.employeeName.trim(),
             passPhoto: employee.passPhoto,
+            designationName: employee.designationName,
+            joiningDate: employee.joiningDate,
             status: attendance?.status,
             checkInTime: attendance?.checkInTime,
             checkOutTime: attendance?.checkOutTime,

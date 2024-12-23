@@ -256,7 +256,7 @@ export class ProfileComponent implements OnInit {
   onSubmit(formValues) {
     console.log(formValues);
     let formData: any = {
-      ...this.employees,
+      employeeName: this.employees.employeeName,
       resignedDate: formValues?.resignedDate
         ? this.moment(formValues?.resignedDate).format('YYYY-MM-DD')
         : null,

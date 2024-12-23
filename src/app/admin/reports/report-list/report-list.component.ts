@@ -204,13 +204,17 @@ export class ReportListComponent {
     this.loadReports(this.currentTableEvent);
   }
 
-  confirmDelete(reportId) {
+  confirmDelete(report) {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete this Report?',
+      // message: 'Are you sure you want to delete this Report?',
+      message: `Are you sure you want to delete this Report ? <br>
+      Report Type: ${report.reportType}<br>
+      Report ID: ${report.reportId}
+      `,
       header: 'Confirm Deletion',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.deleteReport(reportId);
+        this.deleteReport(report.reportId);
       },
     });
   }

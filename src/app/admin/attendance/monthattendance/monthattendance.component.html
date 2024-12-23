@@ -120,6 +120,8 @@
         <th>Employee Id</th>
         <th>Custom Employee Id</th>
         <th>Employee Name</th>
+        <th>Designation</th>
+        <th>Joining Date</th>
         <th>Total Present</th>
         <th>Half Day</th>
         <th>Late</th>
@@ -166,6 +168,16 @@
               </span>
             </b>
           </div>
+        </td>
+        <td>
+          <span class="table-column-data" *ngIf="employee.designationName">{{
+            employee.designationName
+          }}</span>
+        </td>
+        <td>
+          <span class="table-column-data" *ngIf="employee.joiningDate">{{
+            employee.joiningDate | date : "mediumDate"
+          }}</span>
         </td>
         <td>{{ countAttendanceStatus(employee.employeeId, "Present") }}</td>
         <td>{{ countAttendanceStatus(employee.employeeId, "Half-day") }}</td>

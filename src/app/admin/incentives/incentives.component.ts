@@ -189,13 +189,17 @@ export class IncentivesComponent implements OnInit {
   //   return `${monthName} ${year}`;
   // }
 
-  confirmDelete(incentiveId) {
+  confirmDelete(incentive) {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete this Incentive?',
+      // message: 'Are you sure you want to delete this Incentive?',
+      message: `Are you sure you want to delete this Incentive ? <br>
+              Employee Name: ${incentive.employeeName}<br>
+              Incentive ID: ${incentive.incentiveId}
+              `,
       header: 'Confirm Deletion',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.deleteIncentive(incentiveId);
+        this.deleteIncentive(incentive.incentiveId);
       },
     });
   }

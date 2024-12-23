@@ -277,7 +277,7 @@ export class LeavemanagementComponent {
         menuItems[0].items.push({
           label: 'Delete',
           icon: 'fa fa-trash',
-          command: () => this.confirmDelete(leave.leaveId),
+          command: () => this.confirmDelete(leave),
         });
       }
     } else if (leave.leaveInternalStatus === 2) {
@@ -300,7 +300,7 @@ export class LeavemanagementComponent {
         menuItems[0].items.push({
           label: 'Delete',
           icon: 'fa fa-trash',
-          command: () => this.confirmDelete(leave.leaveId),
+          command: () => this.confirmDelete(leave),
         });
       }
     } else if (leave.leaveInternalStatus === 3) {
@@ -323,19 +323,23 @@ export class LeavemanagementComponent {
         menuItems[0].items.push({
           label: 'Delete',
           icon: 'fa fa-trash',
-          command: () => this.confirmDelete(leave.leaveId),
+          command: () => this.confirmDelete(leave),
         });
       }
     }
     return menuItems;
   }
-  confirmDelete(leaveId) {
+  confirmDelete(leave) {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete this Leave?',
+      // message: 'Are you sure you want to delete this Leave?',
+      message: `Are you sure you want to delete this leave ?<br>
+              Employee Name: ${leave.employeeName}<br>
+              Leave ID: ${leave.leaveId}
+              `,
       header: 'Confirm Deletion',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.deleteLeave(leaveId);
+        this.deleteLeave(leave.leaveId);
       },
     });
   }

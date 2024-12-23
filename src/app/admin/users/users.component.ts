@@ -59,8 +59,8 @@ export class UsersComponent implements OnInit {
   togglePasswordVisibility(): void {
     this.isPasswordVisible = !this.isPasswordVisible;
   }
-  maskPassword(password: string): string {
-    return password.replace(/./g, '•');
+  maskPassword(input: any): string {
+    return String(input).replace(/./g, '•');
   }
 
   showUserDetails(user: any): void {
@@ -252,13 +252,17 @@ export class UsersComponent implements OnInit {
     console.log(this.currentTableEvent);
     this.loadUsers(this.currentTableEvent);
   }
-  confirmDelete(userId) {
+  confirmDelete(user) {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete this User?',
+      // message: 'Are you sure you want to delete this User?',
+      message: `Are you sure you want to delete this User ? <br>
+      User Name: ${user.username}<br>
+      User ID: ${user.userId}
+      `,
       header: 'Confirm Deletion',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.deleteUser(userId);
+        this.deleteUser(user.userId);
       },
     });
   }

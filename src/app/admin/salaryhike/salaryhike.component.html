@@ -179,8 +179,7 @@
             ></button>
           </div>
         </div>
-        <div class="col-md-4 mt-1 mb-1 no-padding-small">
-        </div>
+        <div class="col-md-4 mt-1 mb-1 no-padding-small"></div>
         <div class="col-md-4 mt-1 mb-1 no-padding-small text-right">
           <div class="d-flex">
             <div class="flex-grow-1 me-2"></div>
@@ -220,19 +219,27 @@
         <th pSortableColumn="employeeName">
           Employee Name <p-sortIcon field="employeeName"></p-sortIcon>
         </th>
+        <th pSortableColumn="basicSalary">
+          Base Salary <p-sortIcon field="basicSalary"></p-sortIcon>
+        </th>
         <th pSortableColumn="monthlyHike">
           Monthly Hike
           <p-sortIcon field="monthlyHike"></p-sortIcon>
         </th>
+        <th pSortableColumn="totalSalary">
+          Total Salary
+          <p-sortIcon field="totalSalary"></p-sortIcon>
+        </th>
         <th pSortableColumn="hikeDate">
           Hike Date <p-sortIcon field="hikeDate"></p-sortIcon>
         </th>
-        <th pSortableColumn="createdBy">
+        <!-- <th pSortableColumn="createdBy">
           Created By <p-sortIcon field="createdBy"></p-sortIcon>
-        </th>
+        </th> -->
         <th pSortableColumn="createdOn">
           Created Date <p-sortIcon field="createdOn"></p-sortIcon>
         </th>
+        <th>Hike Letter</th>
         <th>Actions</th>
       </tr>
     </ng-template>
@@ -257,8 +264,22 @@
         <td>
           <span
             class="table-column-data"
+            *ngIf="salaryHike.basicSalary; else noData"
+            >Rs.{{ salaryHike.basicSalary | capitalizeFirst }}</span
+          >
+        </td>
+        <td>
+          <span
+            class="table-column-data"
             *ngIf="salaryHike.monthlyHike; else noData"
             >Rs.{{ salaryHike.monthlyHike | capitalizeFirst }}</span
+          >
+        </td>
+        <td>
+          <span
+            class="table-column-data"
+            *ngIf="salaryHike.totalSalary; else noData"
+            >Rs.{{ salaryHike.totalSalary | capitalizeFirst }}</span
           >
         </td>
         <td>
@@ -268,13 +289,13 @@
             >{{ salaryHike.hikeDate | date : "mediumDate" }}</span
           >
         </td>
-        <td>
+        <!-- <td>
           <span
             class="table-column-data"
             *ngIf="salaryHike.createdBy; else noData"
             >{{ salaryHike.createdBy | capitalizeFirst }}</span
           >
-        </td>
+        </td> -->
         <td>
           <span
             class="table-column-data"
@@ -282,7 +303,21 @@
             >{{ salaryHike.createdOn | date : "mediumDate" }}</span
           >
         </td>
-
+        <td>
+          <div class="text-center">
+            <div class="d-flex">
+              <button
+                pButton
+                pRipple
+                type="button"
+                pTooltip="Hike Letter"
+                class="p-button-info me-2 view-btn"
+                icon="fa fa-download"
+                (click)="ViewHikeletter(salaryHike.hikeId)"
+              ></button>
+            </div>
+          </div>
+        </td>
         <td>
           <div class="text-center">
             <div class="d-flex">
@@ -291,7 +326,7 @@
                 pRipple
                 type="button"
                 pTooltip="Update"
-                class="p-button-info me-2 update-btn"
+                class="p-button-success me-2 update-btn"
                 icon="fa fa-pen-to-square"
                 (click)="updateSalaryHike(salaryHike)"
               ></button>
@@ -302,7 +337,7 @@
                 icon="fa fa-trash"
                 pTooltip="Delete"
                 class="p-button-danger me-2 delete-btn"
-                (click)="confirmDelete(salaryHike.hikeId)"
+                (click)="confirmDelete(salaryHike)"
               ></button>
             </div>
           </div>

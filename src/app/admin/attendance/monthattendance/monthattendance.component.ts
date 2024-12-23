@@ -60,7 +60,10 @@ export class MonthattendanceComponent implements OnInit {
       const exportData = this.filteredEmployees.map((employee) => {
         const row: any = {
           'Employee ID': employee.employeeId,
+          'Custom Employee ID': employee.customEmployeeId,
           'Employee Name': employee.employeeName,
+          Designation: employee.designationName,
+          'Joining Date': employee.joiningDate,
         };
         let presentCount = 0,
           absentCount = 0,

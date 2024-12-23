@@ -133,7 +133,7 @@ export class EmployeesComponent implements OnInit {
         menuItems[0].items.push({
           label: 'Delete',
           icon: 'fa fa-trash',
-          command: () => this.confirmDelete(employee.employeeId),
+          command: () => this.confirmDelete(employee),
         });
       }
     } else if (employee.employeeInternalStatus === 2) {
@@ -527,15 +527,19 @@ export class EmployeesComponent implements OnInit {
       }
     );
   }
-  confirmDelete(employeeId) {
+  confirmDelete(employee) {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete this Employee?',
+      // message: 'Are you sure you want to delete this Employee?',
+      message: `Are you sure you want to delete this Employee ?<br>
+              Employee Name: ${employee.employeeName}<br>
+              Employee ID: ${employee.employeeId}
+              `,
       header: 'Confirm Deletion',
       icon: 'pi pi-exclamation-triangle',
       acceptLabel: 'Yes',
       rejectLabel: 'No',
       accept: () => {
-        this.deleteEmployee(employeeId);
+        this.deleteEmployee(employee.employeeId);
       },
     });
   }

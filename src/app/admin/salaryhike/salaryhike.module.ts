@@ -11,11 +11,17 @@ import { TableModule } from 'primeng/table';
 import { DropdownModule } from 'primeng/dropdown';
 import { FilterModule } from 'src/app/filter/filter.module';
 import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
-import { MenuModule } from 'primeng/menu';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 
-const routes: Routes = [{ path: '', component: SalaryhikeComponent }];
+const routes: Routes = [
+  { path: '', component: SalaryhikeComponent },
+  {
+    path: 'hikeletter/:id',
+    loadChildren: () =>
+      import('./hikeletter/hikeletter.module').then((m) => m.HikeletterModule),
+  },
+];
 
 @NgModule({
   declarations: [SalaryhikeComponent],

@@ -92,7 +92,10 @@
     <ng-template pTemplate="header">
       <tr>
         <th>Employee Id</th>
+        <th>Custom Employee Id</th>
         <th>Employee Name</th>
+        <th>Designation Name</th>
+        <th>Joining Date</th>
         <th>Attendance Status</th>
         <th>Check-in Time</th>
         <th>Check-Out Time</th>
@@ -101,6 +104,7 @@
     <ng-template pTemplate="body" let-employee>
       <tr>
         <td>{{ employee.employeeId }}</td>
+        <td>{{ employee.customEmployeeId }}</td>
         <td>
           <div class="d-flex align-items-center">
             <span class="me-2">
@@ -134,6 +138,16 @@
               </span>
             </b>
           </div>
+        </td>
+        <td>
+          <span class="table-column-data" *ngIf="employee.designationName">{{
+            employee.designationName
+          }}</span>
+        </td>
+        <td>
+          <span class="table-column-data" *ngIf="employee.joiningDate">{{
+            employee.joiningDate | date : "mediumDate"
+          }}</span>
         </td>
         <td>
           <ng-container [ngSwitch]="employee.status">

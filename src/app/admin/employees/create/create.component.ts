@@ -347,46 +347,6 @@ export class CreateComponent {
     );
     return filteredDocuments.length > 0 ? filteredDocuments : null;
   }
-  // createPayslip() {
-  //   const payslipData = {
-  //     employeeId: 23,
-  //     employeeName: 'Mudhiiguubba Kalyonnii',
-  //     designation: 'Web developer',
-  //     basicSalary: 21666,
-  //     dateOfJoining: '04/13/2024',
-  //     totalDays: 27,
-  //     workedDays: 27,
-  //     employeePan: 'WDERS3454T',
-  //     employeeAc: '2343151353',
-  //     employeeIfsc: 'DAGDAG45235',
-  //     hra: 0,
-  //     allowances: 0,
-  //     grossEarnings: 21666,
-  //     tds: 0,
-  //     pf: 0,
-  //     otherDeductions: 0,
-  //     totalDeductions: 0,
-  //     netPay: 21666,
-  //     month: 'October',
-  //     year: '2024',
-  //   };
-
-  //   this.employeesService.generatePdf(payslipData).subscribe(
-  //     (response: any) => {
-  //       const url = window.URL.createObjectURL(response);
-  //       const a = document.createElement('a');
-  //       a.href = url;
-  //       a.download = `${payslipData.employeeId}_payslip.pdf`;
-  //       document.body.appendChild(a);
-  //       a.click();
-  //       document.body.removeChild(a);
-  //       window.URL.revokeObjectURL(url);
-  //     },
-  //     (error) => {
-  //       console.error('Error generating payslip:', error);
-  //     }
-  //   );
-  // }
 
   setEmployeesList() {
     this.personalFields = [
@@ -432,6 +392,44 @@ export class CreateComponent {
         type: 'calendar',
         required: true,
       },
+
+      {
+        label: 'Date Of Birth',
+        controlName: 'dateOfBirth',
+        type: 'calendar',
+        required: true,
+      },
+      {
+        label: 'Primary Phone',
+        controlName: 'primaryPhone',
+        type: 'text',
+        maxLength: 10,
+        required: true,
+      },
+      {
+        label: 'Secondary Phone',
+        controlName: 'secondaryPhone',
+        type: 'text',
+        maxLength: 10,
+        required: false,
+      },
+      {
+        label: 'Qualification',
+        controlName: 'qualification',
+        type: 'text',
+        required: false,
+      },
+      {
+        label: 'Email Address',
+        controlName: 'emailAddress',
+        type: 'email',
+      },
+      {
+        label: 'City',
+        controlName: 'city',
+        type: 'text',
+        required: true,
+      },
       {
         label: 'Gender',
         controlName: 'gender',
@@ -455,43 +453,6 @@ export class CreateComponent {
         controlName: 'careOfName',
         type: 'text',
         required: false,
-      },
-      {
-        label: 'Date Of Birth',
-        controlName: 'dateOfBirth',
-        type: 'calendar',
-        required: true,
-      },
-      {
-        label: 'Phone',
-        controlName: 'primaryPhone',
-        type: 'text',
-        maxLength: 10,
-        required: true,
-      },
-      {
-        label: 'Secondary Phone',
-        controlName: 'secondaryPhone',
-        type: 'text',
-        maxLength: 10,
-        required: false,
-      },
-      {
-        label: 'Qualification',
-        controlName: 'qualification',
-        type: 'text',
-        required: false,
-      },
-      {
-        label: 'Email',
-        controlName: 'emailAddress',
-        type: 'email',
-      },
-      {
-        label: 'City',
-        controlName: 'city',
-        type: 'text',
-        required: true,
       },
     ];
     this.addressFields = [

@@ -127,10 +127,9 @@
         }}
       </div>
     </div>
-    <div class="info-line">
+    <div class="info-line" *ngIf="userDetails?.designation == 4">
       <span class="icon">
         <i class="fas fa-lock"></i>
-        <!-- You can keep the lock icon or replace it with something else -->
       </span>
       <div class="label d-flex justify-content-between">
         Password<b>:&nbsp;</b>
@@ -441,7 +440,7 @@
                 icon="fa fa-trash"
                 pTooltip="Delete"
                 class="p-button-danger me-2 delete-btn"
-                (click)="confirmDelete(user.userId)"
+                (click)="confirmDelete(user)"
               ></button>
             </div>
           </div>

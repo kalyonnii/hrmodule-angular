@@ -113,7 +113,7 @@ export class PayrollComponent {
       menuItems[0].items.push({
         label: 'Delete',
         icon: 'fa fa-trash',
-        command: () => this.confirmDelete(payslip.payslipId),
+        command: () => this.confirmDelete(payslip),
       });
     }
     return menuItems;
@@ -503,13 +503,17 @@ export class PayrollComponent {
     this.routingService.handleRoute('payroll/update/' + payslipId, null);
   }
 
-  confirmDelete(payslipId) {
+  confirmDelete(payslip) {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete this User?',
+      // message: 'Are you sure you want to delete this User?',
+      message: `Are you sure you want to delete this Payroll ? <br>
+              Employee Name: ${payslip.employeeName}<br>
+              Payroll ID: ${payslip.payslipId}
+              `,
       header: 'Confirm Deletion',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.deletePayroll(payslipId);
+        this.deletePayroll(payslip.payslipId);
       },
     });
   }

@@ -195,13 +195,17 @@ export class HolidaysComponent implements OnInit {
       }
     );
   }
-  confirmDelete(holidayId) {
+  confirmDelete(holiday) {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete this holiday?',
+      // message: 'Are you sure you want to delete this holiday?',
+      message: `Are you sure you want to delete this Holiday ? <br>
+              Holiday Name: ${holiday.holidayName}<br>
+              Holiday ID: ${holiday.holidayId}
+              `,
       header: 'Confirm Deletion',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.deleteHoliday(holidayId);
+        this.deleteHoliday(holiday.holidayId);
       },
     });
   }

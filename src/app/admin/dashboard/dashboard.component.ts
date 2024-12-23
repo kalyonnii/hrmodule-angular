@@ -304,6 +304,7 @@ export class DashboardComponent implements OnInit {
   fetchCounts(filter = {}) {
     this.loading = true;
     const employeefilter = { ...filter, 'employeeInternalStatus-eq': 1 };
+    const interviewsfilter = { ...filter, 'interviewInternalStatus-eq': 1 };
     const leavesfilter = { ...filter, 'leaveInternalStatus-eq': 1 };
     const departmentfilter = { ...filter, 'designationInternalStatus-eq': 1 };
     const payrollfilter = {
@@ -331,7 +332,7 @@ export class DashboardComponent implements OnInit {
       this.employeesService?.getEmployeesCount(employeefilter),
       this.employeesService?.getUsersCount(filter),
       this.employeesService?.getHolidaysCount(holidayfilter),
-      this.employeesService?.getInterviewCount(filter),
+      this.employeesService?.getInterviewCount(interviewsfilter),
       this.employeesService?.getLeavesCount(leavesfilter),
       this.employeesService?.getPayrollCount(payrollfilter),
       this.employeesService?.getDesignationCount(departmentfilter),
@@ -623,7 +624,7 @@ export class DashboardComponent implements OnInit {
       },
       colors: ['#3039A1', '#8BBEE1'],
       title: {
-        text: 'Employees Count in Different Branches',
+        text: 'Branch Wise Employees Count',
         align: 'left',
         style: { fontSize: '18px', color: '#33009C' },
       },

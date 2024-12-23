@@ -147,13 +147,17 @@ export class AttendanceComponent implements OnInit {
   updateAttendance(attendanceId) {
     this.routingService.handleRoute('attendance/update/' + attendanceId, null);
   }
-  confirmDelete(attendanceId) {
+  confirmDelete(attendance) {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete this Attendance?',
+      // message: 'Are you sure you want to delete this Attendance?',
+      message: `Are you sure you want to delete this Attendance ?<br>
+              Attendance Date: ${attendance.attendanceDate}<br>
+              Attendance ID: ${attendance.attendanceId}
+              `,
       header: 'Confirm Deletion',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.deleteAttendance(attendanceId);
+        this.deleteAttendance(attendance.attendanceId);
       },
     });
   }

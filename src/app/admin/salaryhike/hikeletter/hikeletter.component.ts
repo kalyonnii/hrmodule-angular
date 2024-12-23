@@ -1,21 +1,20 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-import { RoutingService } from 'src/app/services/routing-service';
-import { ToastService } from 'src/app/services/toast.service';
-import { EmployeesService } from '../employees.service';
-import { DateTimeProcessorService } from 'src/app/services/date-time-processor.service';
 import { projectConstantsLocal } from 'src/app/constants/project-constants';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
+import { ActivatedRoute } from '@angular/router';
+import { ToastService } from 'src/app/services/toast.service';
+import { RoutingService } from 'src/app/services/routing-service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
-
+import { EmployeesService } from '../../employees/employees.service';
+import { DateTimeProcessorService } from 'src/app/services/date-time-processor.service';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 @Component({
-  selector: 'app-offerletter',
-  templateUrl: './offerletter.component.html',
-  styleUrls: ['./offerletter.component.scss'],
+  selector: 'app-hikeletter',
+  templateUrl: './hikeletter.component.html',
+  styleUrls: ['./hikeletter.component.scss'],
 })
-export class OfferletterComponent {
+export class HikeletterComponent {
   breadCrumbItems: any = [];
   moment: any;
   userDetails: any;
@@ -23,9 +22,9 @@ export class OfferletterComponent {
   loading: boolean = false;
   version = projectConstantsLocal.VERSION_DESKTOP;
   employees: any = null;
+  salaryHikes: any = [];
   designations: any = [];
   employeeId: string | null = null;
-  offerLetterContent: string | undefined;
   constructor(
     private location: Location,
     private route: ActivatedRoute,
@@ -44,11 +43,11 @@ export class OfferletterComponent {
         queryParams: { v: this.version },
       },
       {
-        label: 'Employees',
-        routerLink: '/user/employees',
+        label: 'Salary Hikes',
+        routerLink: '/user/salaryhikes',
         queryParams: { v: this.version },
       },
-      { label: 'Offer Letter' },
+      { label: 'Hike Letter' },
     ];
     this.getdesignations();
   }
@@ -56,7 +55,7 @@ export class OfferletterComponent {
   ngOnInit(): void {
     this.employeeId = this.route.snapshot.paramMap.get('id');
     if (this.employeeId) {
-      this.getEmployeeById(this.employeeId);
+      this.getSalaryHikesById(this.employeeId);
     }
     const userDetails =
       this.localStorageService.getItemFromLocalStorage('userDetails');
@@ -64,6 +63,7 @@ export class OfferletterComponent {
       this.userDetails = userDetails.user;
     }
   }
+
   roundToLPA(amount: number): string {
     const lakhs = amount / 100000;
     return lakhs.toFixed(1) + ' LPA';
@@ -71,37 +71,46 @@ export class OfferletterComponent {
 
   generatePDF() {
     this.loading = true;
-    const pageElements = document.querySelectorAll('.page');
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const imgWidth = 190;
-    const pageHeight = 297;
-    const addPagesToPDF = async () => {
-      for (let i = 0; i < pageElements.length; i++) {
-        const pageElement = pageElements[i];
-        await html2canvas(pageElement as HTMLElement).then((canvas) => {
-          const imgData = canvas.toDataURL('image/png');
-          const imgHeight = (canvas.height * imgWidth) / canvas.width;
-          pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
-          if (i < pageElements.length - 1) {
-            pdf.addPage();
-          }
-        });
-      }
-    };
-    addPagesToPDF()
-      .then(() => {
-        pdf.save('Offerletter.pdf');
-        this.loading = false;
-      })
-      .catch((error) => {
-        console.error('Error generating PDF:', error);
-        this.loading = false;
-      });
+    const pdfContent = this.pdfContent.nativeElement;
+    html2canvas(pdfContent).then((canvas) => {
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const imgWidth = 190;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+      pdf.save('incrementletter.pdf');
+      this.loading = false;
+    });
   }
-  getOfferLetterDate(joiningDate: string): Date {
-    const date = new Date(joiningDate);
-    date.setDate(date.getDate() - 2);
-    return date;
+  getOfferLetterDate(hikeDate: string | Date): Date {
+    const date = new Date(hikeDate);
+    return new Date(date.getFullYear(), date.getMonth(), 1);
+  }
+  calculateHikePercentage(oldSalary: number, newSalary: number): string {
+    if (oldSalary <= 0) {
+      return 'Invalid old salary';
+    }
+    console.log(oldSalary);
+    console.log(newSalary);
+    const hikePercentage = ((newSalary - oldSalary) / oldSalary) * 100;
+    return hikePercentage.toFixed(2) + '%'; // Round to 2 decimal places and append '%'
+  }
+  getSalaryHikesById(id: string) {
+    this.loading = true;
+    this.employeesService.getSalaryHikesById(id).subscribe(
+      (response) => {
+        this.salaryHikes = response;
+        console.log('Salary Hikes', this.salaryHikes);
+        if (this.salaryHikes.employeeId) {
+          this.getEmployeeById(this.salaryHikes.employeeId);
+        }
+        this.loading = false;
+      },
+      (error: any) => {
+        this.loading = false;
+        this.toastService.showError(error);
+      }
+    );
   }
   getEmployeeById(id: string) {
     this.loading = true;
