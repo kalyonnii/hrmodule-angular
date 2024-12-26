@@ -69,7 +69,9 @@
                     view="month"
                     [showButtonBar]="true"
                     dateFormat="yy-mm"
+                    styleClass="w-100"
                     appendTo="body"
+                    [readonlyInput]="true"
                   ></p-calendar>
                   <p-dropdown
                     *ngSwitchCase="'dropdown'"
@@ -154,9 +156,11 @@
                           [ngModelOptions]="{ standalone: true }"
                           [yearNavigator]="true"
                           [yearRange]="'-10:+10'"
+                          [readonlyInput]="true"
                           dateFormat="yy-mm"
                           appendTo="body"
                           class="me-2"
+                          styleClass="w-100"
                           [style]="{ width: '100%' }"
                           placeholder="Select Disbursed Month"
                         ></p-calendar>

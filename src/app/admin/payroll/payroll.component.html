@@ -369,6 +369,7 @@
     [loading]="loading"
     responsiveLayout="scroll"
     scrollHeight="flex"
+    [scrollable]="true"
     [globalFilterFields]="[
       'referenceNo',
       'customer.firstName',
@@ -388,6 +389,7 @@
             [monthNavigator]="true"
             [yearNavigator]="true"
             [yearRange]="'-10:+10'"
+            [readonlyInput]="true"
             dateFormat="MM yy"
             appendTo="body"
             [style]="{ width: '100%' }"

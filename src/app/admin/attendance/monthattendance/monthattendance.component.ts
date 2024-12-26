@@ -49,7 +49,7 @@ export class MonthattendanceComponent implements OnInit {
         routerLink: '/user/attendance',
         queryParams: { v: this.version },
       },
-      { label: 'Monthly Attendance' },
+      { label: 'Month-wise Attendance' },
     ];
   }
   ngOnInit(): void {}
@@ -104,9 +104,9 @@ export class MonthattendanceComponent implements OnInit {
           }
         });
         row['Total Present'] = presentCount;
-        row['Total Absent'] = absentCount;
-        row['Total Late'] = lateCount;
         row['Total Half-day'] = halfDayCount;
+        row['Total Late'] = lateCount;
+        row['Total Absent'] = absentCount;
         return row;
       });
       const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);

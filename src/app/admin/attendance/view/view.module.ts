@@ -6,22 +6,24 @@ import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { PreloaderModule } from 'src/app/preloader/preloader.module';
 import { TableModule } from 'primeng/table';
 import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
+import { InputTextModule } from 'primeng/inputtext';
+import { FormsModule } from '@angular/forms';
+import { ButtonModule } from 'primeng/button';
 
 const routes: Routes = [{ path: '', component: ViewComponent }];
 
-
-
 @NgModule({
-  declarations: [
-    ViewComponent
-  ],
+  declarations: [ViewComponent],
   imports: [
     CommonModule,
     BreadcrumbModule,
     PreloaderModule,
+    InputTextModule,
+    FormsModule,
+    ButtonModule,
     TableModule,
     CapitalizeFirstPipe,
-    RouterModule.forChild(routes)
-  ]
+    RouterModule.forChild(routes),
+  ],
 })
-export class ViewModule { }
+export class ViewModule {}

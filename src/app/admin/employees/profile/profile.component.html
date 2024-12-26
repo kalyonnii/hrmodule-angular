@@ -322,9 +322,7 @@
                   </div>
                   <div class="value">
                     {{
-                      employees.qualification
-                        ? (employees.qualification | capitalizeFirst)
-                        : "-"
+                      employees.qualification ? employees.qualification : "-"
                     }}
                   </div>
                 </div>
@@ -951,6 +949,8 @@
                                           [showIcon]="true"
                                           dateFormat="yy-mm-dd"
                                           appendTo="body"
+                                          [readonlyInput]="true"
+                                          styleClass="w-100"
                                           [showButtonBar]="true"
                                         ></p-calendar>
                                         <textarea
@@ -1128,7 +1128,9 @@
                                           [showIcon]="true"
                                           dateFormat="yy-mm-dd"
                                           appendTo="body"
+                                          [readonlyInput]="true"
                                           [showButtonBar]="true"
+                                          styleClass="w-100"
                                         ></p-calendar>
                                         <textarea
                                           *ngSwitchCase="'textarea'"
@@ -1285,6 +1287,8 @@
                     [yearRange]="'-10:+10'"
                     dateFormat="MM yy"
                     appendTo="body"
+                    [readonlyInput]="true"
+                    styleClass="w-100"
                     (ngModelChange)="onDateChange($event)"
                     placeholder="Select Month and Year"
                   ></p-calendar>

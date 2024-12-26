@@ -26,6 +26,8 @@ export class ViewComponent implements OnInit {
   totalAbsentCount: number = 0;
   totalHalfDayCount: number = 0;
   totalLateCount: number = 0;
+  employeeNameToSearch: any;
+  searchFilter: any = {};
   version = projectConstantsLocal.VERSION_DESKTOP;
   constructor(
     private location: Location,
@@ -164,7 +166,7 @@ export class ViewComponent implements OnInit {
     this.currentTableEvent = event;
     console.log(event.first);
     let api_filter = this.employeesService.setFiltersFromPrimeTable(event);
-    api_filter = Object.assign({}, api_filter);
+    api_filter = Object.assign({}, api_filter, this.searchFilter);
     if ('from' in api_filter) {
       delete api_filter.from;
     }
@@ -241,6 +243,22 @@ export class ViewComponent implements OnInit {
           }
         );
     });
+  }
+  inputValueChangeEvent(dataType, value) {
+    if (value == '') {
+      this.searchFilter = {};
+      console.log(this.currentTableEvent);
+      this.loadEmployees(this.currentTableEvent);
+    }
+  }
+  filterWithEmployeeName() {
+    let searchFilter = { 'employeeName-like': this.employeeNameToSearch };
+    this.applyFilters(searchFilter);
+  }
+  applyFilters(searchFilter = {}) {
+    this.searchFilter = searchFilter;
+    console.log(this.currentTableEvent);
+    this.loadEmployees(this.currentTableEvent);
   }
   goBack() {
     this.location.back();

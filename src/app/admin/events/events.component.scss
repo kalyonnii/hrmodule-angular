@@ -29,34 +29,6 @@ full-calendar {
   }
 }
 
-::ng-deep .fc.fc-theme-standard .fc-toolbar .fc-today-button,
-::ng-deep .fc.fc-theme-standard .fc-toolbar .fc-next-button,
-::ng-deep .fc.fc-theme-standard .fc-toolbar .fc-prev-button {
-  color: #ffffff;
-  background: #33009c !important;
-  border: 1px solid #33009c !important;
-  font-size: 1rem;
-  transition: background-color 0.2s, color 0.2s, border-color 0.2s,
-    box-shadow 0.2s;
-  border-radius: 3px;
-}
-
-::ng-deep
-  .fc.fc-theme-standard
-  .fc-toolbar
-  .fc-button.fc-dayGridMonth-button.fc-button-active,
-::ng-deep
-  .fc.fc-theme-standard
-  .fc-toolbar
-  .fc-button.fc-timeGridWeek-button.fc-button-active,
-::ng-deep
-  .fc.fc-theme-standard
-  .fc-toolbar
-  .fc-button.fc-timeGridDay-button.fc-button-active {
-  background: #33009c !important;
-  border-color: #33009c !important;
-  color: #ffffff;
-}
 .nodata-container {
   display: flex;
   flex-direction: column;

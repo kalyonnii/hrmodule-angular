@@ -9,7 +9,7 @@
           >
             <i class="pi pi-arrow-left fw-bold back-btn-icon"></i>
             <span class="back-btn-text ms-2 text-capitalize">
-              Monthly Attendance
+              Month-Wise Attendance
             </span>
           </div>
         </div>
@@ -46,6 +46,7 @@
     [loading]="loading"
     responsiveLayout="scroll"
     scrollHeight="flex"
+    [scrollable]="true"
     [globalFilterFields]="[
       'referenceNo',
       'customer.firstName',
@@ -90,6 +91,7 @@
               [yearRange]="'-10:+10'"
               dateFormat="MM yy"
               appendTo="body"
+              [readonlyInput]="true"
               [style]="{ width: '100%' }"
               (ngModelChange)="onDateChange($event)"
               [placeholder]="'Select Month and Year'"
@@ -104,7 +106,7 @@
                 <button
                   pButton
                   type="button"
-                  label="Export Monthly Attendance"
+                  label="Export Month-wise Attendance"
                   icon="fa fa-download"
                   class="download-btn"
                   (click)="exportToExcel()"
@@ -179,10 +181,18 @@
             employee.joiningDate | date : "mediumDate"
           }}</span>
         </td>
-        <td>{{ countAttendanceStatus(employee.employeeId, "Present") }}</td>
-        <td>{{ countAttendanceStatus(employee.employeeId, "Half-day") }}</td>
-        <td>{{ countAttendanceStatus(employee.employeeId, "Late") }}</td>
-        <td>{{ countAttendanceStatus(employee.employeeId, "Absent") }}</td>
+        <td>
+          {{ countAttendanceStatus(employee.employeeId, "Present") }}
+        </td>
+        <td>
+          {{ countAttendanceStatus(employee.employeeId, "Half-day") }}
+        </td>
+        <td>
+          {{ countAttendanceStatus(employee.employeeId, "Late") }}
+        </td>
+        <td>
+          {{ countAttendanceStatus(employee.employeeId, "Absent") }}
+        </td>
         <ng-container *ngFor="let date of monthDates">
           <td *ngIf="isAttendanceMatched(employee.employeeId, date)">
             <ng-container

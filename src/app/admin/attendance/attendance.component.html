@@ -47,6 +47,7 @@
     [loading]="loading"
     responsiveLayout="scroll"
     scrollHeight="flex"
+    [scrollable]="true"
     [globalFilterFields]="[
       'referenceNo',
       'customer.firstName',
@@ -67,6 +68,7 @@
               [style]="{ width: '100%' }"
               placeholder="Select Date"
               appendTo="body"
+              [readonlyInput]="true"
               [showButtonBar]="true"
               (ngModelChange)="filterByDate()"
             >
@@ -84,6 +86,7 @@
             dateFormat="MM yy"
             appendTo="body"
             [style]="{ width: '100%' }"
+            [readonlyInput]="true"
             (ngModelChange)="onDateChange($event)"
             [placeholder]="'Select Month and Year'"
           ></p-calendar>
@@ -100,7 +103,7 @@
                 icon="fa fa-eye"
                 (click)="monthAttendance()"
               >
-                &nbsp;Monthly Attendance
+                &nbsp;Month-wise Attendance
               </button>
               <button
                 pButton
@@ -127,6 +130,10 @@
         <th pSortableColumn="attendanceDate">
           Attendance Date <p-sortIcon [field]="'attendanceDate'"></p-sortIcon>
         </th>
+        <th>Pesent</th>
+        <th>Late</th>
+        <th>Half Day</th>
+        <th>Leave</th>
         <th pSortableColumn="createdBy">
           Created By <p-sortIcon [field]="'createdBy'"></p-sortIcon>
         </th>
@@ -141,6 +148,18 @@
         <td>{{ attendance.attendanceId }}</td>
         <td>
           {{ attendance.attendanceDate | date }}
+        </td>
+        <td>
+          {{ attendance.presentCount }}
+        </td>
+        <td>
+          {{ attendance.lateCount }}
+        </td>
+        <td>
+          {{ attendance.halfDayCount }}
+        </td>
+        <td>
+          {{ attendance.absentCount }}
         </td>
         <td>
           {{ attendance.createdBy }}

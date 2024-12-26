@@ -133,8 +133,29 @@ export class AttendanceComponent implements OnInit {
   getAttendance(filter = {}) {
     this.loading = true;
     this.employeesService.getAttendance(filter).subscribe(
-      (response) => {
+      (response: any) => {
         this.attendance = response;
+        this.attendance = response.map((record: any) => {
+          const presentCount = record.attendanceData.filter(
+            (data: any) => data.status === 'Present'
+          ).length;
+          const absentCount = record.attendanceData.filter(
+            (data: any) => data.status === 'Absent'
+          ).length;
+          const halfDayCount = record.attendanceData.filter(
+            (data: any) => data.status === 'Half-day'
+          ).length;
+          const lateCount = record.attendanceData.filter(
+            (data: any) => data.status === 'Late'
+          ).length;
+          return {
+            ...record,
+            presentCount,
+            absentCount,
+            halfDayCount,
+            lateCount,
+          };
+        });
         console.log('attendance', this.attendance);
         this.loading = false;
       },

@@ -102,11 +102,11 @@ export class HolidaysComponent implements OnInit {
         ],
       },
       {
-        header: 'Date',
+        header: 'Holiday Date',
         data: [
           {
             field: 'date',
-            title: 'Date',
+            title: 'Holiday Date',
             type: 'date',
             filterType: 'like',
           },

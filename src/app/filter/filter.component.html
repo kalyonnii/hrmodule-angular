@@ -53,6 +53,7 @@
                     dateFormat="yy-mm-dd"
                     [(ngModel)]="filter[field.field + '-' + field.filterType]"
                     [showButtonBar]="true"
+                    [readonlyInput]="true"
                   ></p-calendar>
                 </span>
                 <span *ngIf="field && field.type == 'dropdown'">

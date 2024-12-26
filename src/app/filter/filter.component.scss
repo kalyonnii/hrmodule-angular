@@ -1,6 +1,6 @@
-::ng-deep .p-component-overlay.p-sidebar-mask {
-  width: 0 !important;
-}
+// ::ng-deep .p-component-overlay.p-sidebar-mask {
+//   width: 0 !important;
+// }
 
 .button-wrapper {
   position: relative;
@@ -42,18 +42,18 @@
   justify-content: center;
 }
 
-::ng-deep .filter-sidebar .p-sidebar-header {
-  display: flex !important;
-  justify-content: end !important;
-}
+// ::ng-deep .filter-sidebar .p-sidebar-header {
+//   display: flex !important;
+//   justify-content: end !important;
+// }
 
-::ng-deep .filter-sidebar .p-inputtext {
-  width: 100% !important;
-}
+// ::ng-deep .filter-sidebar .p-inputtext {
+//   width: 100% !important;
+// }
 
-::ng-deep .filter-sidebar .p-calendar .p-inputtext {
-  width: 100% !important;
-}
+// ::ng-deep .filter-sidebar .p-calendar .p-inputtext {
+//   width: 100% !important;
+// }
 
 .filter-sidebar label {
   font-weight: 700 !important;
@@ -61,32 +61,32 @@
   margin-bottom: 0 !important;
 }
 
-::ng-deep
-  .filter-sidebar
-  .p-accordion
-  .p-accordion-header
-  .p-accordion-header-link {
-  background: #fff !important;
-  border: none;
-  box-shadow: 0 0 10px 1px rgba(80, 82, 106, 0.25);
-  padding: 1rem !important;
-}
+// ::ng-deep
+//   .filter-sidebar
+//   .p-accordion
+//   .p-accordion-header
+//   .p-accordion-header-link {
+//   background: #fff !important;
+//   border: none;
+//   box-shadow: 0 0 10px 1px rgba(80, 82, 106, 0.25);
+//   padding: 1rem !important;
+// }
 
-::ng-deep
-  .filter-sidebar
-  .p-accordion
-  .p-accordion-header
-  .p-accordion-header-link
-  .p-accordion-toggle-icon {
-  margin-top: -8px !important;
-  position: absolute !important;
-  right: 0.5em !important;
-  top: 50% !important;
-}
+// ::ng-deep
+//   .filter-sidebar
+//   .p-accordion
+//   .p-accordion-header
+//   .p-accordion-header-link
+//   .p-accordion-toggle-icon {
+//   margin-top: -8px !important;
+//   position: absolute !important;
+//   right: 0.5em !important;
+//   top: 50% !important;
+// }
 
-::ng-deep .filter-sidebar .p-multiselect .p-multiselect-label {
-  padding: 8px !important;
-}
+// ::ng-deep .filter-sidebar .p-multiselect .p-multiselect-label {
+//   padding: 8px !important;
+// }
 
 .p-inputtext {
   color: #333;
@@ -118,20 +118,20 @@
   border: 2px solid #33009c;
 }
 
-::ng-deep
-  .filter-sidebar
-  .p-accordion
-  .p-accordion-header:not(.p-disabled)
-  .p-accordion-header-link:focus,
-::ng-deep
-  .filter-sidebar
-  .p-accordion
-  .p-accordion-header:not(.p-disabled)
-  .p-accordion-header-link:hover {
-  outline: 0 none !important;
-  outline-offset: 0 !important;
-  box-shadow: 0 0 0 0.1rem #33009c !important;
-}
+// ::ng-deep
+//   .filter-sidebar
+//   .p-accordion
+//   .p-accordion-header:not(.p-disabled)
+//   .p-accordion-header-link:focus,
+// ::ng-deep
+//   .filter-sidebar
+//   .p-accordion
+//   .p-accordion-header:not(.p-disabled)
+//   .p-accordion-header-link:hover {
+//   outline: 0 none !important;
+//   outline-offset: 0 !important;
+//   box-shadow: 0 0 0 0.1rem #33009c !important;
+// }
 
 .p-button.p-button-secondary {
   color: #ffffff;

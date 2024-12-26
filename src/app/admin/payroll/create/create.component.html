@@ -83,6 +83,8 @@
                     view="month"
                     [showButtonBar]="true"
                     dateFormat="yy-mm"
+                    [readonlyInput]="true"
+                    styleClass="w-100"
                     appendTo="body"
                   ></p-calendar>
                   <p-calendar
@@ -94,6 +96,7 @@
                     [showButtonBar]="true"
                     dateFormat="yy-mm-dd"
                     appendTo="body"
+                    [readonlyInput]="true"
                   ></p-calendar>
                   <p-dropdown
                     *ngSwitchCase="'dropdown'"

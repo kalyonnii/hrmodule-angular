@@ -46,6 +46,7 @@ export class DashboardComponent implements OnInit {
   selectedDateforPayroll: Date;
   selectedDateforIncentive: Date;
   selectedYear: number;
+  isLoading = true;
   constructor(
     private localStorageService: LocalStorageService,
     private routingService: RoutingService,
@@ -72,7 +73,14 @@ export class DashboardComponent implements OnInit {
     this.setChartOptions();
     this.initializeDashboardData();
   }
-
+  onImageLoad1() {
+    console.log('Image loaded');
+    this.isLoading = false;
+  }
+  onImageError1() {
+    console.log('Image failed to load');
+    this.isLoading = false; 
+  }
   initializeDashboardData() {
     this.fetchCounts();
     this.updateCountsAnalytics();

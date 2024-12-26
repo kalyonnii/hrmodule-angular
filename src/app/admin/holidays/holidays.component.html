@@ -46,6 +46,7 @@
     [loading]="loading"
     responsiveLayout="scroll"
     scrollHeight="flex"
+    [scrollable]="true"
     styleClass="p-datatable-customers"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Holidays"
   >
@@ -124,11 +125,14 @@
           Holiday Name <p-sortIcon field="holidayName"></p-sortIcon>
         </th>
         <th pSortableColumn="date">
-          Date <p-sortIcon field="date"></p-sortIcon>
+          Holiday Date <p-sortIcon field="date"></p-sortIcon>
         </th>
         <th pSortableColumn="day">Day <p-sortIcon field="day"></p-sortIcon></th>
         <th pSortableColumn="description">
           Description <p-sortIcon field="description"></p-sortIcon>
+        </th>
+        <th pSortableColumn="createdOn">
+          created Date <p-sortIcon field="createdOn"></p-sortIcon>
         </th>
         <th>Actions</th>
       </tr>
@@ -168,7 +172,13 @@
             >{{ holiday.description | capitalizeFirst }}</span
           >
         </td>
-
+        <td>
+          <span
+            class="table-column-data"
+            *ngIf="holiday.createdOn; else noData"
+            >{{ holiday.createdOn | date }}</span
+          >
+        </td>
         <td>
           <div class="text-center">
             <div class="d-flex">

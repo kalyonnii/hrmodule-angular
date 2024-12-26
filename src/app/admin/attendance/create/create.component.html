@@ -35,7 +35,9 @@
   <div class="row">
     <div class="col-md-4 mb-3">
       <div class="m-2 fw-bold">
-        <label>Attendance Date : </label>
+        <label
+          >Attendance Date <span>&nbsp;<sup class="text-danger">*</sup></span>
+        </label>
       </div>
       <p-calendar
         [(ngModel)]="selectedDate"
@@ -44,6 +46,7 @@
         [style]="{ width: '100%' }"
         appendTo="body"
         [showButtonBar]="true"
+        [readonlyInput]="true"
         placeholder="Select Attendance date"
       >
       </p-calendar>
@@ -63,6 +66,7 @@
     [loading]="loading"
     responsiveLayout="scroll"
     scrollHeight="flex"
+    [scrollable]="true"
     [globalFilterFields]="[
       'referenceNo',
       'customer.firstName',

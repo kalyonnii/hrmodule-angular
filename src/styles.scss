@@ -330,11 +330,26 @@ body {
   color: #0165ac !important;
 }
 .p-datatable-striped .p-datatable {
-  max-height: 500px !important;
+  max-height: 500px;
   overflow-y: auto !important;
   scrollbar-width: 3px !important;
   scrollbar-color: #51c295 #f1f1f1;
 }
+
+/* Large Screens (desktops) */
+@media (min-width: 769px) and (max-width: 1200px) {
+  .p-datatable-striped .p-datatable {
+    max-height: 700px;
+  }
+}
+
+/* Extra-Large Screens */
+@media (min-width: 1201px) {
+  .p-datatable-striped .p-datatable {
+    max-height: 800px;
+  }
+}
+
 .hikeaccordian .p-accordion-header {
   background-color: #f1f8ff !important;
   border: 1px solid #d1e8f7 !important;
@@ -353,4 +368,158 @@ body {
   border-radius: 8px;
   margin-top: 5px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.fc.fc-theme-standard .fc-toolbar .fc-today-button,
+.fc.fc-theme-standard .fc-toolbar .fc-next-button,
+.fc.fc-theme-standard .fc-toolbar .fc-prev-button {
+  color: #ffffff;
+  background: #33009c !important;
+  border: 1px solid #33009c !important;
+  font-size: 1rem;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s,
+    box-shadow 0.2s;
+  border-radius: 3px;
+}
+.fc.fc-theme-standard
+  .fc-toolbar
+  .fc-button.fc-dayGridMonth-button.fc-button-active,
+.fc.fc-theme-standard
+  .fc-toolbar
+  .fc-button.fc-timeGridWeek-button.fc-button-active,
+.fc.fc-theme-standard
+  .fc-toolbar
+  .fc-button.fc-timeGridDay-button.fc-button-active {
+  background: #33009c !important;
+  border-color: #33009c !important;
+  color: #ffffff;
+}
+.p-radiobutton .p-radiobutton-box.p-highlight {
+  border-color: #33009c !important;
+  background: #ffffff !important;
+  box-shadow: #9b8db5;
+}
+
+.p-radiobutton .p-radiobutton-box .p-radiobutton-icon {
+  width: 12px;
+  height: 12px;
+  transition-duration: 0.2s;
+  background-color: #33009c !important;
+}
+.p-radiobutton .p-radiobutton-box {
+  border: 2px solid #33009c !important;
+  background: #ffffff;
+  width: 20px;
+  height: 20px;
+  color: #495057;
+  border-radius: 50%;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s,
+    box-shadow 0.2s;
+}
+.p-fileupload .p-fileupload-buttonbar .p-button.p-fileupload-choose {
+  background-color: #31425e !important;
+  border: #31425e;
+}
+
+.p-fileupload .p-fileupload-buttonbar .p-button {
+  background-color: #1e4079 !important;
+  border: #1e4079;
+}
+
+.p-fileupload .p-fileupload-buttonbar .p-button:focus {
+  outline: 0 none;
+  outline-offset: 0;
+  box-shadow: 0 0 0 0.2rem #9fb6c4;
+}
+
+.p-fileupload .p-button-icon-only,
+.p-dialog-header .p-dialog-header-icon {
+  background-color: #c02929 !important;
+  border: #c02929;
+  color: white !important;
+}
+.p-dialog .p-dialog-header .p-dialog-header-icon:focus {
+  outline: 0 none;
+  outline-offset: 0;
+  box-shadow: 0 0 0 0.2rem #efa5a5 !important;
+}
+.p-fileupload .p-fileupload-buttonbar .p-button.p-fileupload-choose:focus {
+  outline: 0 none;
+  outline-offset: 0;
+  box-shadow: 0 0 0 0.2rem #9fb6c4;
+}
+//side bar
+.more-actions-menu-accordion .mat-expansion-panel {
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px !important;
+}
+.p-component-overlay.p-sidebar-mask {
+  width: 0 !important;
+}
+.sidemenu-sidebar .p-sidebar-left {
+  width: 23rem !important;
+}
+.sidemenu-sidebar .p-sidebar .p-sidebar-content {
+  padding-left: 0.5rem !important;
+}
+.sidemenu-sidebar .p-sidebar .p-sidebar-content::-webkit-scrollbar {
+  width: 8px !important;
+}
+.sidemenu-sidebar .p-sidebar .p-sidebar-content::-webkit-scrollbar-thumb {
+  background: #51c295 !important;
+}
+.sidemenu-sidebar .p-sidebar .p-sidebar-footer {
+  padding: 0.25rem !important;
+}
+.sidemenu-sidebar .p-sidebar .p-sidebar-content,
+.sidemenu-sidebar .p-sidebar .p-sidebar-footer {
+  background-color: #31425e !important;
+}
+
+//filter
+
+.filter-sidebar .p-sidebar-header {
+  display: flex !important;
+  justify-content: end !important;
+}
+
+.filter-sidebar .p-inputtext {
+  width: 100% !important;
+}
+
+.filter-sidebar .p-calendar .p-inputtext {
+  width: 100% !important;
+}
+
+.filter-sidebar .p-accordion .p-accordion-header .p-accordion-header-link {
+  background: #fff !important;
+  border: none;
+  box-shadow: 0 0 10px 1px rgba(80, 82, 106, 0.25);
+  padding: 1rem !important;
+}
+
+.filter-sidebar
+  .p-accordion
+  .p-accordion-header
+  .p-accordion-header-link
+  .p-accordion-toggle-icon {
+  margin-top: -8px !important;
+  position: absolute !important;
+  right: 0.5em !important;
+  top: 50% !important;
+}
+
+.filter-sidebar .p-multiselect .p-multiselect-label {
+  padding: 8px !important;
+}
+
+.filter-sidebar
+  .p-accordion
+  .p-accordion-header:not(.p-disabled)
+  .p-accordion-header-link:focus,
+.filter-sidebar
+  .p-accordion
+  .p-accordion-header:not(.p-disabled)
+  .p-accordion-header-link:hover {
+  outline: 0 none !important;
+  outline-offset: 0 !important;
+  box-shadow: 0 0 0 0.1rem #33009c !important;
 }

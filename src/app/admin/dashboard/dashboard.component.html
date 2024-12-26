@@ -22,11 +22,23 @@
               Started.
             </p>
           </div>
-          <img
-            class="card-icon"
-            src="../../../assets/images/dashboard/welcome.png"
-            alt="Welcome Icon"
-          />
+          <div class="image-container">
+            <p-skeleton
+              *ngIf="isLoading"
+              width="160px"
+              height="160px"
+              shape="circle"
+            >
+            </p-skeleton>
+            <img
+              class="card-icon"
+              [hidden]="isLoading"
+              src="../../../assets/images/dashboard/welcome.png"
+              alt="Welcome Icon"
+              (load)="onImageLoad1()"
+              (error)="onImageError1()"
+            />
+          </div>
         </div>
       </div>
       <div class="bg-color" *ngIf="!loading">
@@ -89,6 +101,7 @@
             [style]="{ width: '200px' }"
             appendTo="body"
             [showButtonBar]="true"
+            [readonlyInput]="true"
             (ngModelChange)="onDateChange($event)"
             placeholder="Select a date"
           >

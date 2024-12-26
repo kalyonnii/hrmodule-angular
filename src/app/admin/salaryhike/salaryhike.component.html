@@ -104,6 +104,7 @@
                     dateFormat="yy-mm-dd"
                     appendTo="body"
                     [showButtonBar]="true"
+                    [readonlyInput]="true"
                     styleClass="w-100"
                   ></p-calendar>
                 </ng-container>
@@ -146,6 +147,7 @@
     [loading]="loading"
     responsiveLayout="scroll"
     scrollHeight="flex"
+    [scrollable]="true"
     [globalFilterFields]="[
       'referenceNo',
       'customer.firstName',
