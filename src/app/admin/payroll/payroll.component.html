@@ -90,7 +90,7 @@
           <div class="value">
             {{
               selectedPayrollDetails.customEmployeeId
-                ? selectedPayrollDetails.customEmployeeId
+                ? (selectedPayrollDetails.customEmployeeId | uppercase)
                 : "-"
             }}
           </div>
@@ -369,7 +369,6 @@
     [loading]="loading"
     responsiveLayout="scroll"
     scrollHeight="flex"
-    [scrollable]="true"
     [globalFilterFields]="[
       'referenceNo',
       'customer.firstName',

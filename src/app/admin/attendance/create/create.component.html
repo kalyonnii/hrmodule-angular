@@ -92,7 +92,7 @@
     <ng-template pTemplate="body" let-employee>
       <tr>
         <td>{{ employee.employeeId }}</td>
-        <td>{{ employee.customEmployeeId }}</td>
+        <td>{{ employee.customEmployeeId | uppercase}}</td>
         <td>
           <div class="d-flex align-items-center">
             <span class="me-2">

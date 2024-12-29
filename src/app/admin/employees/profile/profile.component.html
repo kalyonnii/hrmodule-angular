@@ -147,7 +147,7 @@
                   <div class="value">
                     {{
                       employees.customEmployeeId
-                        ? employees.customEmployeeId
+                        ? (employees.customEmployeeId | uppercase)
                         : "-"
                     }}
                   </div>

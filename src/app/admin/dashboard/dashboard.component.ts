@@ -79,7 +79,7 @@ export class DashboardComponent implements OnInit {
   }
   onImageError1() {
     console.log('Image failed to load');
-    this.isLoading = false; 
+    this.isLoading = false;
   }
   initializeDashboardData() {
     this.fetchCounts();
@@ -500,11 +500,11 @@ export class DashboardComponent implements OnInit {
         },
         {
           name: 'Team Lead',
-          data: [this.designationCounts[4]],
+          data: [this.designationCounts[3]],
         },
         {
           name: 'Office Team',
-          data: [this.designationCounts[3]],
+          data: [this.designationCounts[4]],
         },
       ],
       chart: {

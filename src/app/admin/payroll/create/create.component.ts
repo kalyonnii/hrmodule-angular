@@ -148,7 +148,7 @@ export class CreateComponent {
               ', '
             )}`;
             this.confirmationService.confirm({
-              message: `${missingFieldsMessage}. Please update your information.`,
+              message: `${missingFieldsMessage}. Please update this Fields.`,
               header: 'Incomplete Employee Details',
               icon: 'pi pi-exclamation-triangle',
               acceptLabel: 'Update',
@@ -336,9 +336,9 @@ export class CreateComponent {
   }
   getEmployees(filter = {}) {
     this.loading = true;
-    if (this.actionType === 'create') {
-      filter['employeeInternalStatus-eq'] = 1;
-    }
+    // if (this.actionType === 'create') {
+    //   filter['employeeInternalStatus-eq'] = 1;
+    // }
     this.employeesService.getEmployees(filter).subscribe(
       (response) => {
         this.employees = response;

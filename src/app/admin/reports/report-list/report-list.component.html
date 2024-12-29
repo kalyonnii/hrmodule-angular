@@ -46,7 +46,6 @@
     [loading]="loading"
     responsiveLayout="scroll"
     scrollHeight="flex"
-    [scrollable]="true"
     [globalFilterFields]="[
       'referenceNo',
       'customer.firstName',
@@ -105,7 +104,7 @@
         <th>Report Type</th>
         <th>Created By</th>
         <th>Created Date</th>
-        <th>Status</th>
+        <th>Actions</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-report>
@@ -129,11 +128,9 @@
           }}</span>
         </td>
         <td>
-          <span
-            class="table-column-data"
-            *ngIf="report.createdOn"
-            >{{ report.createdOn | date : "MMM d, y, h:mm a" }}</span
-          >
+          <span class="table-column-data" *ngIf="report.createdOn">{{
+            report.createdOn | date : "MMM d, y, h:mm a"
+          }}</span>
         </td>
         <td>
           <div class="text-center">

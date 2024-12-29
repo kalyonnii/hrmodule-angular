@@ -247,7 +247,6 @@ export class ViewComponent implements OnInit {
   inputValueChangeEvent(dataType, value) {
     if (value == '') {
       this.searchFilter = {};
-      console.log(this.currentTableEvent);
       this.loadEmployees(this.currentTableEvent);
     }
   }

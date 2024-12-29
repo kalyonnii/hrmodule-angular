@@ -88,25 +88,29 @@
               <div class="label d-flex justify-content-between">
                 Designation <b>:&nbsp;</b>
               </div>
-              <div class="value">{{ getDesignationName(payroll.designation) }}</div>
+              <div class="value">
+                {{ getDesignationName(payroll.designation) }}
+              </div>
             </div>
             <div class="info-line">
               <div class="label d-flex justify-content-between">
                 Date of Joining <b>:&nbsp;</b>
               </div>
-              <div class="value">{{ payroll.joiningDate | date : "dd-MM-yyyy" }}</div>
+              <div class="value">
+                {{ payroll.joiningDate | date : "dd-MM-yyyy" }}
+              </div>
+            </div>
+            <div class="info-line">
+              <div class="label d-flex justify-content-between">
+                Account Number<b>:&nbsp;</b>
+              </div>
+              <div class="value">{{ payroll.accountNumber }}</div>
             </div>
             <div class="info-line">
               <div class="label d-flex justify-content-between">
                 IFSC Code<b>:&nbsp;</b>
               </div>
               <div class="value">{{ payroll.ifscCode }}</div>
-            </div>
-            <div class="info-line">
-              <div class="label d-flex justify-content-between">
-                Employee AC<b>:&nbsp;</b>
-              </div>
-              <div class="value">{{ payroll.accountNumber }}</div>
             </div>
           </div>
           <div class="col-md-6">
@@ -152,11 +156,23 @@
                 <tbody>
                   <tr>
                     <td class="earnings">Basic Salary</td>
-                    <td>Rs. {{ payroll.salary }}</td>
+                    <td>Rs. {{ payroll.salary * 0.4 | roundOff }}</td>
                   </tr>
                   <tr>
                     <td class="earnings">House Rent Allowance</td>
-                    <td>Rs. 0</td>
+                    <td>Rs. {{ payroll.salary * 0.2 | roundOff }}</td>
+                  </tr>
+                  <tr>
+                    <td class="earnings">Conveyance Allowance</td>
+                    <td>Rs. {{ payroll.salary * 0.1 | roundOff }}</td>
+                  </tr>
+                  <tr>
+                    <td class="earnings">Special Allowance</td>
+                    <td>Rs. {{ payroll.salary * 0.25 | roundOff }}</td>
+                  </tr>
+                  <tr>
+                    <td class="earnings">Medical Allowance</td>
+                    <td>Rs. {{ payroll.salary * 0.05 | roundOff }}</td>
                   </tr>
                   <tr>
                     <td class="earnings">Other Allowances</td>
@@ -179,7 +195,7 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td class="earnings">Income Tax</td>
+                    <td class="earnings">Professional Tax</td>
                     <td>Rs. 0</td>
                   </tr>
                   <tr>

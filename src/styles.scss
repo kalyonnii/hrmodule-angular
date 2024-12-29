@@ -336,18 +336,10 @@ body {
   scrollbar-color: #51c295 #f1f1f1;
 }
 
-/* Large Screens (desktops) */
-@media (min-width: 769px) and (max-width: 1200px) {
-  .p-datatable-striped .p-datatable {
-    max-height: 700px;
-  }
-}
-
-/* Extra-Large Screens */
-@media (min-width: 1201px) {
-  .p-datatable-striped .p-datatable {
-    max-height: 800px;
-  }
+.p-datatable-striped tbody tr td {
+  // padding: 8px !important;
+  height: auto !important;
+  overflow: visible !important;
 }
 
 .hikeaccordian .p-accordion-header {
@@ -522,4 +514,10 @@ body {
   outline: 0 none !important;
   outline-offset: 0 !important;
   box-shadow: 0 0 0 0.1rem #33009c !important;
+}
+.update-btn,
+.delete-btn,
+.view-btn {
+  height: 30px;
+  box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
 }

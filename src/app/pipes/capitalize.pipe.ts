@@ -16,3 +16,9 @@ export class UppercasePipe implements PipeTransform {
     return value ? value.toUpperCase() : '';
   }
 }
+@Pipe({ name: 'roundOff', standalone: true })
+export class RoundOffPipe implements PipeTransform {
+  transform(value: number): number {
+    return Math.round(value);
+  }
+}
