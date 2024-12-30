@@ -468,6 +468,21 @@ export class LeavemanagementComponent {
     this.employeesService.getEmployees(filter).subscribe(
       (response: any) => {
         this.employees = [{ employeeName: 'All' }, ...response];
+        this.employees = this.employees.map(emp => ({
+          ...emp,
+          employeeName: emp.employeeName
+            .split(' ')
+            .map(word => {
+              if (word.includes('.')) {
+                return word
+                  .split('.')
+                  .map(part => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+                  .join('.');
+              }
+              return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+            })
+            .join(' ')
+        }));
         console.log('employees', this.employees);
         this.loading = false;
       },

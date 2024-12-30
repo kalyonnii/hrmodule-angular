@@ -252,6 +252,8 @@ export class DesignationsComponent implements OnInit {
   }
 
   createDepartment(): void {
+    this.actionType = 'create';
+    this.heading = 'Create Department';
     this.isDialogVisible = true;
     this.departmentsForm.reset();
   }

@@ -363,6 +363,8 @@ export class SalaryhikeComponent {
   }
 
   createSalaryHike(): void {
+    this.actionType = 'create';
+    this.heading = 'Create Salary Hike';
     this.isDialogVisible = true;
     this.salaryHikeForm.reset();
   }

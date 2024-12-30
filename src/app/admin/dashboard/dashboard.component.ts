@@ -487,7 +487,7 @@ export class DashboardComponent implements OnInit {
     this.DepartmentChartOptions = {
       series: [
         {
-          name: 'Telesales',
+          name: 'Inside Sales',
           data: [this.designationCounts[0]],
         },
         {
@@ -495,17 +495,17 @@ export class DashboardComponent implements OnInit {
           data: [this.designationCounts[1]],
         },
         {
-          name: 'HR Team',
+          name: 'Human Resource',
           data: [this.designationCounts[2]],
         },
         {
-          name: 'Team Lead',
+          name: 'Information Technology',
           data: [this.designationCounts[3]],
         },
-        {
-          name: 'Office Team',
-          data: [this.designationCounts[4]],
-        },
+        // {
+        //   name: 'Office Team',
+        //   data: [this.designationCounts[4]],
+        // },
       ],
       chart: {
         height: 400,

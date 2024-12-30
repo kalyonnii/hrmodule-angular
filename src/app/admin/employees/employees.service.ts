@@ -198,11 +198,23 @@ export class EmployeesService {
     return this.serviceMeta.httpGet(url, null, filter);
   }
 
+  exportSalaryHikes(filter = {}) {
+    const url = 'reports/salaryhikes';
+    return this.serviceMeta.httpGet(url, null, filter);
+  }
+
+  exportDesignations(filter = {}) {
+    const url = 'reports/designations';
+    return this.serviceMeta.httpGet(url, null, filter);
+  }
   exportAttendance(filter = {}) {
     const url = 'reports/attendance';
     return this.serviceMeta.httpGet(url, null, filter);
   }
-
+  exportUsers(filter = {}) {
+    const url = 'reports/users';
+    return this.serviceMeta.httpGet(url, null, filter);
+  }
   getReports(filter = {}) {
     const url = 'reports/reportsdata';
     return this.serviceMeta.httpGet(url, null, filter);

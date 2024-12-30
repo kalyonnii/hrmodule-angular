@@ -357,7 +357,7 @@ export class CreateComponent {
         required: true,
       },
       {
-        label: 'Employee Full Name',
+        label: 'Employee Name (as per Aadhar)',
         controlName: 'employeeName',
         type: 'text',
         required: true,

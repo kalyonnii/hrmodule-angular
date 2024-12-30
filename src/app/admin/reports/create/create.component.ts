@@ -42,6 +42,8 @@ export class CreateComponent {
   employeeStatusList = projectConstantsLocal.EMPLOYEE_STATUS;
   leaveStatusList = projectConstantsLocal.LEAVE_STATUS;
   interviewStatusList = projectConstantsLocal.INTERVIEW_STATUS;
+  departementStatusList = projectConstantsLocal.DEPARTMENT_STATUS;
+  designationStatusList = projectConstantsLocal.DESIGNATION_ENTITIES;
   officebranchEntities = projectConstantsLocal.BRANCH_ENTITIES;
   leaveTypeEntities = projectConstantsLocal.LEAVE_TYPE_ENTITIES;
   designationEntities: any[] = [];
@@ -405,6 +407,93 @@ export class CreateComponent {
           },
         ],
       },
+      {
+        reportName: 'Salary hikes',
+        reportType: 'SALARY_HIKES',
+        condition: true,
+        fields: [
+          {
+            field: 'hikeDate',
+            title: 'Salary Hike From Date',
+            type: 'date',
+            filterType: 'gte',
+          },
+          {
+            field: 'hikeDate',
+            title: 'Salary Hike To Date',
+            type: 'date',
+            filterType: 'lte',
+          },
+          {
+            field: 'createdOn',
+            title: 'Created On From Date',
+            type: 'date',
+            filterType: 'gte',
+          },
+          {
+            field: 'createdOn',
+            title: 'Created On To Date',
+            type: 'date',
+            filterType: 'lte',
+          },
+        ],
+      },
+      {
+        reportName: 'Departments',
+        reportType: 'DEPARTMENTS',
+        condition: true,
+        fields: [
+          {
+            field: 'designationInternalStatus',
+            title: 'Department Status',
+            type: 'dropdown',
+            filterType: 'eq',
+            options: this.departementStatusList,
+            value: 'id',
+            label: 'displayName',
+          },
+          {
+            field: 'createdOn',
+            title: 'Created On From Date',
+            type: 'date',
+            filterType: 'gte',
+          },
+          {
+            field: 'createdOn',
+            title: 'Created On To Date',
+            type: 'date',
+            filterType: 'lte',
+          },
+        ],
+      },
+      {
+        reportName: 'Users',
+        reportType: 'USERS',
+        condition: true,
+        fields: [
+          {
+            field: 'designation',
+            title: 'Designation',
+            type: 'dropdown',
+            filterType: 'eq',
+            options: this.designationStatusList,
+            value: 'id',
+            label: 'displayName',
+          },
+          {
+            field: 'createdOn',
+            title: 'Created On From Date',
+            type: 'date',
+            filterType: 'gte',
+          },
+          {
+            field: 'createdOn',
+            title: 'Created On To Date',
+            type: 'date',
+            filterType: 'lte',
+          },
+        ],
+      },
     ];
     this.selectedReportConfig = reportsListConfig.filter(
       (report) => report.condition && report.reportType == this.reportType
@@ -449,6 +538,16 @@ export class CreateComponent {
     if (this.reportData['attendanceDate-lte']) {
       apiFilter['attendanceDate-lte'] = this.moment(
         this.reportData['attendanceDate-lte']
+      ).format('YYYY-MM-DD');
+    }
+    if (this.reportData['hikeDate-gte']) {
+      apiFilter['hikeDate-gte'] = this.moment(
+        this.reportData['hikeDate-gte']
+      ).format('YYYY-MM-DD');
+    }
+    if (this.reportData['hikeDate-lte']) {
+      apiFilter['hikeDate-lte'] = this.moment(
+        this.reportData['hikeDate-lte']
       ).format('YYYY-MM-DD');
     }
     if (this.reportData['joiningDate-gte']) {
@@ -501,6 +600,11 @@ export class CreateComponent {
       HOLIDAYS: () => this.employeesService.exportHolidays(selectedReportData),
       INCENTIVES: () =>
         this.employeesService.exportIncentives(selectedReportData),
+      SALARY_HIKES: () =>
+        this.employeesService.exportSalaryHikes(selectedReportData),
+      DEPARTMENTS: () =>
+        this.employeesService.exportDesignations(selectedReportData),
+      USERS: () => this.employeesService.exportUsers(selectedReportData),
       ATTENDANCE: () =>
         this.employeesService.exportAttendance(selectedReportData),
     };

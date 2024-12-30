@@ -74,6 +74,24 @@ export class ReportsComponent {
         reportType: 'INCENTIVES',
         condition: true,
       },
+      {
+        reportName: 'Salary Hikes',
+        name: 'salaryhike',
+        reportType: 'SALARY_HIKES',
+        condition: true,
+      },
+      {
+        reportName: 'Departments',
+        name: 'departments',
+        reportType: 'DEPARTMENTS',
+        condition: true,
+      },
+      {
+        reportName: 'Users',
+        name: 'users',
+        reportType: 'USERS',
+        condition: true,
+      },
     ];
     this.reportsListConfig = reportsListConfig.filter(
       (report) => report.condition
