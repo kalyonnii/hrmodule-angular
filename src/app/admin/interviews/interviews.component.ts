@@ -27,12 +27,14 @@ export class InterviewsComponent implements OnInit {
   candidateNameToSearch: any;
   countsAnalytics: any[] = [];
   moment: any;
+  apiLoading:any;
   interviewStatusCount: { [key: number]: number } = { 1: 0, 2: 0, 3: 0 };
   interviewInternalStatusList: any = projectConstantsLocal.INTERVIEW_STATUS;
   scheduledloactionDetails = projectConstantsLocal.BRANCH_ENTITIES;
   attendedinterviewDetails = projectConstantsLocal.ATTENDED_INTERVIEW_ENTITIES;
   selectedInterviewStatus = this.interviewInternalStatusList[1];
   version = projectConstantsLocal.VERSION_DESKTOP;
+  qualificationDetails: any = projectConstantsLocal.QUALIFICATION_ENTITIES;
 
   constructor(
     private employeesService: EmployeesService,
@@ -158,18 +160,32 @@ export class InterviewsComponent implements OnInit {
           },
         ],
       },
+      // {
+      //   header: 'Qualification',
+      //   data: [
+      //     {
+      //       field: 'qualification',
+      //       title: 'Qualification',
+      //       type: 'text',
+      //       filterType: 'like',
+      //     },
+      //   ],
+      // },
       {
         header: 'Qualification',
         data: [
           {
             field: 'qualification',
             title: 'Qualification',
-            type: 'text',
+            type: 'dropdown',
             filterType: 'like',
+            options: this.qualificationDetails.map((entity) => ({
+              label: entity.displayName,
+              value: entity.name,
+            })),
           },
         ],
       },
-
       {
         header: 'created On  ',
         data: [
@@ -617,15 +633,15 @@ export class InterviewsComponent implements OnInit {
   }
 
   getInterviews(filter = {}) {
-    this.loading = true;
+    this.apiLoading = true;
     this.employeesService.getInterviews(filter).subscribe(
       (response) => {
         this.interviews = response;
         console.log('Interviews', this.interviews);
-        this.loading = false;
+        this.apiLoading = false;
       },
       (error: any) => {
-        this.loading = false;
+        this.apiLoading = false;
         this.toastService.showError(error);
       }
     );

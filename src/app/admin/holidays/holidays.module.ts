@@ -1,17 +1,17 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HolidaysComponent } from './holidays.component';
+import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
-import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
-import { TooltipModule } from 'primeng/tooltip';
-import { PreloaderModule } from 'src/app/preloader/preloader.module';
-import { FormsModule } from '@angular/forms';
-import { FilterModule } from 'src/app/filter/filter.module';
 import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
+import { TooltipModule } from 'primeng/tooltip';
+import { HolidaysComponent } from './holidays.component';
+import { PreloaderModule } from 'src/app/preloader/preloader.module';
+import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
+import { FilterModule } from 'src/app/filter/filter.module';
 
 const routes: Routes = [
   { path: '', component: HolidaysComponent },
@@ -31,18 +31,17 @@ const routes: Routes = [
   declarations: [HolidaysComponent],
   imports: [
     CommonModule,
+    FormsModule,
+    [RouterModule.forChild(routes)],
     BreadcrumbModule,
     ButtonModule,
     TableModule,
+    InputTextModule,
     DropdownModule,
     TooltipModule,
     PreloaderModule,
-    InputTextModule,
-    FormsModule,
     CapitalizeFirstPipe,
     FilterModule,
-    [RouterModule.forChild(routes)],
   ],
-
 })
 export class HolidaysModule {}

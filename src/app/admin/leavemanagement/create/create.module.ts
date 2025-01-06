@@ -1,26 +1,28 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CreateComponent } from './create.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
-import { PreloaderModule } from 'src/app/preloader/preloader.module';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
+import { CreateComponent } from './create.component';
+import { PreloaderModule } from 'src/app/preloader/preloader.module';
 
 const routes: Routes = [{ path: '', component: CreateComponent }];
 
 @NgModule({
   declarations: [CreateComponent],
-  imports: [CommonModule,
-    BreadcrumbModule,
-    PreloaderModule,
+  imports: [
+    CommonModule,
     FormsModule,
+    ReactiveFormsModule,
+    [RouterModule.forChild(routes)],
+    BreadcrumbModule,
     InputTextModule,
     DropdownModule,
     CalendarModule,
-    ReactiveFormsModule,
-    [RouterModule.forChild(routes)]],
+    PreloaderModule,
+  ],
 })
 export class CreateModule {}

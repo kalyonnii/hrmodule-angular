@@ -1,19 +1,19 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PayrollComponent } from './payroll.component';
+import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
-import { FormsModule } from '@angular/forms';
-import { FilterModule } from 'src/app/filter/filter.module';
-import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
 import { InputTextModule } from 'primeng/inputtext';
-import { PreloaderModule } from 'src/app/preloader/preloader.module';
 import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
 import { DialogModule } from 'primeng/dialog';
 import { MenuModule } from 'primeng/menu';
+import { PayrollComponent } from './payroll.component';
+import { PreloaderModule } from 'src/app/preloader/preloader.module';
+import { FilterModule } from 'src/app/filter/filter.module';
+import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
 
 const routes: Routes = [
   { path: '', component: PayrollComponent },
@@ -37,19 +37,19 @@ const routes: Routes = [
   declarations: [PayrollComponent],
   imports: [
     CommonModule,
-    ButtonModule,
-    BreadcrumbModule,
     FormsModule,
-    InputTextModule,
-    MenuModule,
-    DialogModule,
+    [RouterModule.forChild(routes)],
+    BreadcrumbModule,
+    ButtonModule,
     TableModule,
-    CapitalizeFirstPipe,
-    FilterModule,
+    InputTextModule,
     DropdownModule,
     CalendarModule,
+    DialogModule,
+    MenuModule,
     PreloaderModule,
-    [RouterModule.forChild(routes)],
+    FilterModule,
+    CapitalizeFirstPipe,
   ],
 })
 export class PayrollModule {}

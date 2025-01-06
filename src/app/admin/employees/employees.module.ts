@@ -1,17 +1,18 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { EmployeesComponent } from './employees.component';
+import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { MenuModule } from 'primeng/menu';
+import { DropdownModule } from 'primeng/dropdown';
+import { InputTextModule } from 'primeng/inputtext';
+import { SkeletonModule } from 'primeng/skeleton';
+import { EmployeesComponent } from './employees.component';
 import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
 import { PreloaderModule } from 'src/app/preloader/preloader.module';
 import { FilterModule } from 'src/app/filter/filter.module';
-import { FormsModule } from '@angular/forms';
-import { DropdownModule } from 'primeng/dropdown';
-import { InputTextModule } from 'primeng/inputtext';
 
 const routes: Routes = [
   { path: '', component: EmployeesComponent },
@@ -43,17 +44,18 @@ const routes: Routes = [
   declarations: [EmployeesComponent],
   imports: [
     CommonModule,
+    FormsModule,
+    [RouterModule.forChild(routes)],
     BreadcrumbModule,
     ButtonModule,
-    CapitalizeFirstPipe,
     TableModule,
-    FormsModule,
-    InputTextModule,
     MenuModule,
     DropdownModule,
+    InputTextModule,
+    SkeletonModule,
+    CapitalizeFirstPipe,
     PreloaderModule,
     FilterModule,
-    [RouterModule.forChild(routes)],
   ],
 })
 export class EmployeesModule {}

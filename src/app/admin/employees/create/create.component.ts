@@ -40,6 +40,7 @@ export class CreateComponent {
   ofcBranchNamesList: any = projectConstantsLocal.BRANCH_ENTITIES;
   branchEntities: any = projectConstantsLocal.BRANCH_ENTITIES;
   careOfEntities: any = projectConstantsLocal.CARE_OF_ENTITIES;
+  qualificationEntities: any = projectConstantsLocal.QUALIFICATION_ENTITIES;
   genderEntities: any = projectConstantsLocal.GENDER_ENTITIES;
   // designationEntities: any = projectConstantsLocal.DEPARTMENT_ENTITIES;
   designationEntities: any;
@@ -416,8 +417,11 @@ export class CreateComponent {
       {
         label: 'Qualification',
         controlName: 'qualification',
-        type: 'text',
+        type: 'dropdown',
+        options: 'qualificationEntities',
         required: false,
+        optionLabel: 'displayName',
+        optionValue: 'name',
       },
       {
         label: 'Email Address',

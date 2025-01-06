@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReportsComponent } from './reports.component';
 import { RouterModule, Routes } from '@angular/router';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
-import { PreloaderModule } from 'src/app/preloader/preloader.module';
 import { ButtonModule } from 'primeng/button';
+import { ReportsComponent } from './reports.component';
+import { PreloaderModule } from 'src/app/preloader/preloader.module';
 
 const routes: Routes = [
   { path: '', component: ReportsComponent },
@@ -26,10 +26,10 @@ const routes: Routes = [
   declarations: [ReportsComponent],
   imports: [
     CommonModule,
-    PreloaderModule,
-    ButtonModule,
-    BreadcrumbModule,
     [RouterModule.forChild(routes)],
+    BreadcrumbModule,
+    ButtonModule,
+    PreloaderModule,
   ],
 })
 export class ReportsModule {}

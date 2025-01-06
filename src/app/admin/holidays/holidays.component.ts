@@ -24,6 +24,7 @@ export class HolidaysComponent implements OnInit {
   searchFilter: any = {};
   userDetails: any;
   filterConfig: any[] = [];
+  apiLoading:any;
   years: { label: string; value: number }[] = [];
   selectedYear: number;
   version = projectConstantsLocal.VERSION_DESKTOP;
@@ -255,15 +256,15 @@ export class HolidaysComponent implements OnInit {
     );
   }
   getHolidays(filter = {}) {
-    this.loading = true;
+    this.apiLoading = true;
     this.employeesService.getHolidays(filter).subscribe(
       (response) => {
         this.holidays = response;
         console.log('holidays', this.holidays);
-        this.loading = false;
+        this.apiLoading = false;
       },
       (error: any) => {
-        this.loading = false;
+        this.apiLoading = false;
         this.toastService.showError(error);
       }
     );

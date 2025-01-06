@@ -147,6 +147,24 @@ export class CreateComponent implements OnInit {
     this.employeesService.getEmployees(filter).subscribe(
       (response: any) => {
         this.employees = response;
+        this.employees = this.employees.map((emp) => ({
+          ...emp,
+          employeeName: emp.employeeName
+            .split(' ')
+            .map((word) => {
+              if (word.includes('.')) {
+                return word
+                  .split('.')
+                  .map(
+                    (part) =>
+                      part.charAt(0).toUpperCase() + part.slice(1).toLowerCase()
+                  )
+                  .join('.');
+              }
+              return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+            })
+            .join(' '),
+        }));
         this.loading = false;
       },
       (error) => {
@@ -252,10 +270,9 @@ export class CreateComponent implements OnInit {
       employeeId: formValues.employeeId,
       incentiveAmount,
       incentiveApplicableMonth: formValues.incentiveApplicableMonth
-        ? this.moment(
-            formValues.incentiveApplicableMonth,
+        ? this.moment(formValues.incentiveApplicableMonth, 'YYYY-MM').format(
             'YYYY-MM'
-          ).format('YYYY-MM')
+          )
         : null,
       firstMonthFiles:
         this.firstMonthFiles && this.firstMonthFiles.length > 0

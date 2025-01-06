@@ -1,28 +1,27 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PayslipComponent } from './payslip.component';
 import { RouterModule, Routes } from '@angular/router';
-import { PreloaderModule } from 'src/app/preloader/preloader.module';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
-import { CapitalizeFirstPipe, RoundOffPipe } from 'src/app/pipes/capitalize.pipe';
 import { ButtonModule } from 'primeng/button';
-
+import { PayslipComponent } from './payslip.component';
+import {
+  CapitalizeFirstPipe,
+  RoundOffPipe,
+} from 'src/app/pipes/capitalize.pipe';
+import { PreloaderModule } from 'src/app/preloader/preloader.module';
 
 const routes: Routes = [{ path: '', component: PayslipComponent }];
 
-
 @NgModule({
-  declarations: [
-    PayslipComponent
-  ],
+  declarations: [PayslipComponent],
   imports: [
     CommonModule,
+    RouterModule.forChild(routes),
     BreadcrumbModule,
-    PreloaderModule,
     ButtonModule,
     RoundOffPipe,
     CapitalizeFirstPipe,
-    RouterModule.forChild(routes)
-  ]
+    PreloaderModule,
+  ],
 })
-export class PayslipModule { }
+export class PayslipModule {}

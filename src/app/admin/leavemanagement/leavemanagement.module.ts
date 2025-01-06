@@ -1,17 +1,17 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LeavemanagementComponent } from './leavemanagement.component';
+import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
-import { PreloaderModule } from 'src/app/preloader/preloader.module';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
-import { FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
-import { FilterModule } from 'src/app/filter/filter.module';
-import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
 import { MenuModule } from 'primeng/menu';
 import { InputTextModule } from 'primeng/inputtext';
+import { LeavemanagementComponent } from './leavemanagement.component';
+import { FilterModule } from 'src/app/filter/filter.module';
+import { PreloaderModule } from 'src/app/preloader/preloader.module';
+import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
 
 const routes: Routes = [
   { path: '', component: LeavemanagementComponent },
@@ -31,17 +31,17 @@ const routes: Routes = [
   declarations: [LeavemanagementComponent],
   imports: [
     CommonModule,
+    FormsModule,
+    [RouterModule.forChild(routes)],
     BreadcrumbModule,
-    PreloaderModule,
+    ButtonModule,
+    TableModule,
+    DropdownModule,
     MenuModule,
     InputTextModule,
-    TableModule,
-    CapitalizeFirstPipe,
-    FormsModule,
-    DropdownModule,
     FilterModule,
-    ButtonModule,
-    [RouterModule.forChild(routes)],
+    PreloaderModule,
+    CapitalizeFirstPipe,
   ],
 })
 export class LeavemanagementModule {}

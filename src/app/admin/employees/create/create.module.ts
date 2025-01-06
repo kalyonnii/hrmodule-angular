@@ -1,15 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CreateComponent } from './create.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
-import { PreloaderModule } from 'src/app/preloader/preloader.module';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
 import { InputTextModule } from 'primeng/inputtext';
 import { StepsModule } from 'primeng/steps';
+import { CreateComponent } from './create.component';
+import { PreloaderModule } from 'src/app/preloader/preloader.module';
 import { FileUploadModule } from '../../file-upload/file-upload.module';
 const routes: Routes = [{ path: '', component: CreateComponent }];
 
@@ -18,16 +18,16 @@ const routes: Routes = [{ path: '', component: CreateComponent }];
   imports: [
     CommonModule,
     FormsModule,
-    StepsModule,
-    FileUploadModule,
     ReactiveFormsModule,
+    [RouterModule.forChild(routes)],
     BreadcrumbModule,
-    InputTextModule,
+    InputTextareaModule,
     DropdownModule,
     CalendarModule,
-    InputTextareaModule,
+    InputTextModule,
+    StepsModule,
     PreloaderModule,
-    [RouterModule.forChild(routes)],
+    FileUploadModule,
   ],
 })
 export class CreateModule {}

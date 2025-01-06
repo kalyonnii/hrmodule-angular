@@ -1,16 +1,16 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CreateComponent } from './create.component';
+import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { DropdownModule } from 'primeng/dropdown';
 import { TableModule } from 'primeng/table';
+import { InputTextModule } from 'primeng/inputtext';
 import { CalendarModule } from 'primeng/calendar';
-import { FormsModule } from '@angular/forms';
+import { CreateComponent } from './create.component';
 import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
 import { PreloaderModule } from 'src/app/preloader/preloader.module';
-import { InputTextModule } from 'primeng/inputtext';
 
 const routes: Routes = [{ path: '', component: CreateComponent }];
 
@@ -18,16 +18,16 @@ const routes: Routes = [{ path: '', component: CreateComponent }];
   declarations: [CreateComponent],
   imports: [
     CommonModule,
+    FormsModule,
+    [RouterModule.forChild(routes)],
     ButtonModule,
     BreadcrumbModule,
     DropdownModule,
-    FormsModule,
     TableModule,
-    PreloaderModule,
     InputTextModule,
-    CapitalizeFirstPipe,
     CalendarModule,
-    [RouterModule.forChild(routes)],
+    CapitalizeFirstPipe,
+    PreloaderModule,
   ],
 })
 export class CreateModule {}

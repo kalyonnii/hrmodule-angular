@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MonthattendanceComponent } from './monthattendance.component';
+import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
-import { PreloaderModule } from 'src/app/preloader/preloader.module';
-import { TableModule } from 'primeng/table';
-import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
-import { CalendarModule } from 'primeng/calendar';
-import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
+import { CalendarModule } from 'primeng/calendar';
+import { TableModule } from 'primeng/table';
+import { MonthattendanceComponent } from './monthattendance.component';
+import { PreloaderModule } from 'src/app/preloader/preloader.module';
+import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
 
 const routes: Routes = [{ path: '', component: MonthattendanceComponent }];
 
@@ -16,14 +16,14 @@ const routes: Routes = [{ path: '', component: MonthattendanceComponent }];
   declarations: [MonthattendanceComponent],
   imports: [
     CommonModule,
-    BreadcrumbModule,
-    CapitalizeFirstPipe,
-    TableModule,
     FormsModule,
+    [RouterModule.forChild(routes)],
+    BreadcrumbModule,
     InputTextModule,
     CalendarModule,
+    TableModule,
     PreloaderModule,
-    [RouterModule.forChild(routes)],
+    CapitalizeFirstPipe,
   ],
 })
 export class MonthattendanceModule {}

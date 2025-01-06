@@ -1,19 +1,19 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AttendanceComponent } from './attendance.component';
+import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { TableModule } from 'primeng/table';
-import { PreloaderModule } from 'src/app/preloader/preloader.module';
-import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
 import { MenuModule } from 'primeng/menu';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
-import { FormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { CalendarModule } from 'primeng/calendar';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
+import { AttendanceComponent } from './attendance.component';
+import { PreloaderModule } from 'src/app/preloader/preloader.module';
+import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
 
 const routes: Routes = [
   { path: '', component: AttendanceComponent },
@@ -43,20 +43,19 @@ const routes: Routes = [
   declarations: [AttendanceComponent],
   imports: [
     CommonModule,
-    TableModule,
-    CapitalizeFirstPipe,
-    PreloaderModule,
-    DropdownModule,
     FormsModule,
+    [RouterModule.forChild(routes)],
+    BreadcrumbModule,
+    TableModule,
+    MenuModule,
+    ButtonModule,
+    DropdownModule,
+    DialogModule,
+    InputTextModule,
     CalendarModule,
     LazyLoadImageModule,
-    ButtonModule,
-    MenuModule,
-    DialogModule,
-    DropdownModule,
-    InputTextModule,
-    BreadcrumbModule,
-    [RouterModule.forChild(routes)],
+    PreloaderModule,
+    CapitalizeFirstPipe,
   ],
 })
 export class AttendanceModule {}

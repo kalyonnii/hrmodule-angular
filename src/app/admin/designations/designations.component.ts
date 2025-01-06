@@ -20,6 +20,7 @@ export class DesignationsComponent implements OnInit {
   breadCrumbItems: any = [];
   formFields: any = [];
   loading: any;
+  apiLoading: any;
   appliedFilter: {};
   departmentData: any;
   filterConfig: any[] = [];
@@ -237,15 +238,15 @@ export class DesignationsComponent implements OnInit {
   }
 
   getDesignations(filter = {}) {
-    this.loading = true;
+    this.apiLoading = true;
     this.employeesService.getDesignations(filter).subscribe(
       (response) => {
         this.designations = response;
         console.log('designations', this.designations);
-        this.loading = false;
+        this.apiLoading = false;
       },
       (error: any) => {
-        this.loading = false;
+        this.apiLoading = false;
         this.toastService.showError(error);
       }
     );

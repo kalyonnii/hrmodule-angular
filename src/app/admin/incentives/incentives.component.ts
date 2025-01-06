@@ -26,6 +26,7 @@ export class IncentivesComponent implements OnInit {
   userDetails: any;
   totalIncentivesCount: any = 0;
   items: any[];
+  apiLoading: any;
   incentives: any = [];
   version = projectConstantsLocal.VERSION_DESKTOP;
   moment: any;
@@ -154,15 +155,15 @@ export class IncentivesComponent implements OnInit {
   }
 
   getIncentives(filter = {}) {
-    this.loading = true;
+    this.apiLoading = true;
     this.employeesService.getIncentives(filter).subscribe(
       (response) => {
         this.incentives = response;
         console.log('incentives', this.incentives);
-        this.loading = false;
+        this.apiLoading = false;
       },
       (error: any) => {
-        this.loading = false;
+        this.apiLoading = false;
         this.toastService.showError(error);
       }
     );

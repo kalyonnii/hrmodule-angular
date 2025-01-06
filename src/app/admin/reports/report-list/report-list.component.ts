@@ -14,6 +14,7 @@ export class ReportListComponent {
   breadCrumbItems: any = [];
   reportsData: any = [];
   loading: any;
+  apiLoading: any;
   userDetails: any;
   appliedFilter: {};
   filterConfig: any[] = [];
@@ -152,15 +153,15 @@ export class ReportListComponent {
     );
   }
   getReports(filter = {}) {
-    this.loading = true;
+    this.apiLoading = true;
     this.employeesService.getReports(filter).subscribe(
       (response) => {
         this.reportsData = response;
         console.log(this.reportsData);
-        this.loading = false;
+        this.apiLoading = false;
       },
       (error: any) => {
-        this.loading = false;
+        this.apiLoading = false;
         this.toastService.showError(error);
       }
     );

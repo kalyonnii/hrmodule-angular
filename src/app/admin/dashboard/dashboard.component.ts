@@ -21,6 +21,7 @@ export class DashboardComponent implements OnInit {
   BegumpetCount: number = 0;
   selectedDate: any;
   loading: any;
+  apiLoading: any;
   totalEmployeesCount: any = 0;
   designationsCount: any = 0;
   incentivesCount: any = 0;
@@ -269,7 +270,7 @@ export class DashboardComponent implements OnInit {
     console.log('Absent Employee Details:', this.employeeDetails);
   }
   getEmployees(filter = {}) {
-    this.loading = true;
+    this.apiLoading = true;
     this.employeesService.getEmployees(filter).subscribe({
       next: (response: any) => {
         if (response) {
@@ -279,10 +280,10 @@ export class DashboardComponent implements OnInit {
         } else {
           console.warn('No employees data received');
         }
-        this.loading = false;
+        this.apiLoading = false;
       },
       error: (error: any) => {
-        this.loading = false;
+        this.apiLoading = false;
         this.toastService.showError(
           'Failed to load employees: ' + error.message
         );
@@ -290,19 +291,19 @@ export class DashboardComponent implements OnInit {
     });
   }
   getAttendanceByDate(filter = {}): Promise<void> {
-    this.loading = true;
+    this.apiLoading = true;
     filter['attendanceDate-eq'] = this.selectedDate;
     return new Promise((resolve, reject) => {
       this.employeesService.getAttendance(filter).subscribe(
         (response: any) => {
           console.log('attendanceData:', response);
           this.attendanceData = response;
-          this.loading = false;
+          this.apiLoading = false;
           this.calculateAttendanceCounts();
           resolve();
         },
         (error: any) => {
-          this.loading = false;
+          this.apiLoading = false;
           this.toastService.showError('Failed to load attendance data');
           reject(error);
         }
@@ -555,12 +556,12 @@ export class DashboardComponent implements OnInit {
       xaxis: {
         categories: ['Total Count'],
         title: {
-          text: 'Month',
+          text: 'Departments',
         },
       },
       yaxis: {
         title: {
-          text: 'Amount',
+          text: 'Count',
         },
       },
       legend: {

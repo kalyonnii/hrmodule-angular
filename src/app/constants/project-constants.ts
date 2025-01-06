@@ -12,7 +12,13 @@ export const projectConstantsLocal = {
     { displayName: 'Father', name: 'father' },
     { displayName: 'Spouse', name: 'spouse' },
   ],
-
+  QUALIFICATION_ENTITIES: [
+    { displayName: 'SSC', name: 'ssc' },
+    { displayName: 'Intermediate', name: 'intermediate' },
+    { displayName: 'Undergraduate', name: 'undergraduate' },
+    { displayName: 'Graduate', name: 'graduate' },
+    { displayName: 'Postgraduate', name: 'postgraduate' },
+  ],
   LEAVE_TYPE_ENTITIES: [
     { displayName: 'Sick Leave', name: 'sick leave' },
     { displayName: 'Casual Leave', name: 'casual leave' },
@@ -78,7 +84,7 @@ export const projectConstantsLocal = {
     { label: 'Yes', value: 'Yes' },
     { label: 'No', value: 'No' },
   ],
-  BASE_URL: 'http://localhost:5001/',
-  // BASE_URL: 'https://rest.thefintalk.in:5001/',
+  //BASE_URL: 'http://localhost:5001/',
+  BASE_URL: 'https://rest.thefintalk.in:5001/',
   VERSION_DESKTOP: '0.0.0',
 };

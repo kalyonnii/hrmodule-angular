@@ -19,6 +19,7 @@ export class UsersComponent implements OnInit {
   selectedUser: any = null;
   isDialogVisible = false;
   loading: any;
+  apiLoading: any;
   appliedFilter: {};
   searchFilter: any = {};
   filterConfig: any[] = [];
@@ -206,15 +207,15 @@ export class UsersComponent implements OnInit {
   }
 
   getUsers(filter = {}) {
-    this.loading = true;
+    this.apiLoading = true;
     this.employeesService.getUsers(filter).subscribe(
       (response) => {
         this.users = response;
         console.log('users', this.users);
-        this.loading = false;
+        this.apiLoading = false;
       },
       (error: any) => {
-        this.loading = false;
+        this.apiLoading = false;
         this.toastService.showError(error);
       }
     );

@@ -27,6 +27,7 @@ export class LeavemanagementComponent {
   leavesInternalStatusList: any = projectConstantsLocal.LEAVE_STATUS;
   version = projectConstantsLocal.VERSION_DESKTOP;
   leaves: any = [];
+  apiLoading:any;
   leavesStatusCount: { [key: number]: number } = { 1: 0, 2: 0, 3: 0 };
   selectedLeavesStatus = this.leavesInternalStatusList[1];
   selectedEmployee: any;
@@ -393,15 +394,15 @@ export class LeavemanagementComponent {
   }
 
   getLeaves(filter = {}) {
-    this.loading = true;
+    this.apiLoading = true;
     this.employeesService.getLeaves(filter).subscribe(
       (response) => {
         this.leaves = response;
         console.log('leaves', this.leaves);
-        this.loading = false;
+        this.apiLoading = false;
       },
       (error: any) => {
-        this.loading = false;
+        this.apiLoading = false;
         this.toastService.showError(error);
       }
     );

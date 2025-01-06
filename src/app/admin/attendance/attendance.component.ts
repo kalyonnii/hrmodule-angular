@@ -25,6 +25,7 @@ export class AttendanceComponent implements OnInit {
   displayDialog = false;
   attendance: any = [];
   selectedMonth: Date;
+  apiLoading: any;
   version = projectConstantsLocal.VERSION_DESKTOP;
   filteredData: any[] = [];
   constructor(
@@ -131,7 +132,7 @@ export class AttendanceComponent implements OnInit {
     );
   }
   getAttendance(filter = {}) {
-    this.loading = true;
+    this.apiLoading = true;
     this.employeesService.getAttendance(filter).subscribe(
       (response: any) => {
         this.attendance = response;
@@ -157,10 +158,10 @@ export class AttendanceComponent implements OnInit {
           };
         });
         console.log('attendance', this.attendance);
-        this.loading = false;
+        this.apiLoading = false;
       },
       (error: any) => {
-        this.loading = false;
+        this.apiLoading = false;
         this.toastService.showError(error);
       }
     );

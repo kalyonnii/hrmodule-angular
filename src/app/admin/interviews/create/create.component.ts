@@ -31,6 +31,7 @@ export class CreateComponent {
     projectConstantsLocal.ATTENDED_INTERVIEW_ENTITIES;
   version = projectConstantsLocal.VERSION_DESKTOP;
   userDetails: any;
+  qualificationEntities: any = projectConstantsLocal.QUALIFICATION_ENTITIES;
   interviewId: any;
   interviewsForm: UntypedFormGroup;
   activeIndex: number = 0;
@@ -129,11 +130,20 @@ export class CreateComponent {
         maxLength: 10,
         required: true,
       },
+      // {
+      //   label: 'Qualification',
+      //   controlName: 'qualification',
+      //   type: 'text',
+      //   required: true,
+      // },
       {
         label: 'Qualification',
         controlName: 'qualification',
-        type: 'text',
-        required: true,
+        type: 'dropdown',
+        options: 'qualificationEntities',
+        required: false,
+        optionLabel: 'displayName',
+        optionValue: 'name',
       },
       {
         label: 'Current Address',

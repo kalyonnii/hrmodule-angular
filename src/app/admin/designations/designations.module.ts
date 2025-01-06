@@ -1,18 +1,18 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DesignationsComponent } from './designations.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
-import { PreloaderModule } from 'src/app/preloader/preloader.module';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { TableModule } from 'primeng/table';
-import { MenuModule } from 'primeng/menu';
-import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
-import { DropdownModule } from 'primeng/dropdown';
-import { InputTextModule } from 'primeng/inputtext';
-import { FilterModule } from 'src/app/filter/filter.module';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
+import { MenuModule } from 'primeng/menu';
+import { DropdownModule } from 'primeng/dropdown';
+import { InputTextModule } from 'primeng/inputtext';
+import { DesignationsComponent } from './designations.component';
+import { FilterModule } from 'src/app/filter/filter.module';
+import { PreloaderModule } from 'src/app/preloader/preloader.module';
+import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
 
 const routes: Routes = [{ path: '', component: DesignationsComponent }];
 
@@ -20,19 +20,19 @@ const routes: Routes = [{ path: '', component: DesignationsComponent }];
   declarations: [DesignationsComponent],
   imports: [
     CommonModule,
-    PreloaderModule,
-    TableModule,
-    MenuModule,
-    FilterModule,
-    DropdownModule,
+    FormsModule,
     ReactiveFormsModule,
+    [RouterModule.forChild(routes)],
+    BreadcrumbModule,
+    TableModule,
     ButtonModule,
     DialogModule,
-    FormsModule,
+    MenuModule,
+    DropdownModule,
     InputTextModule,
+    FilterModule,
+    PreloaderModule,
     CapitalizeFirstPipe,
-    BreadcrumbModule,
-    [RouterModule.forChild(routes)],
   ],
 })
 export class DesignationsModule {}

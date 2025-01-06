@@ -33,8 +33,10 @@ export class EmployeesComponent implements OnInit {
   designationDetails: any;
   branchDetails: any = projectConstantsLocal.BRANCH_ENTITIES;
   genderDetails: any = projectConstantsLocal.GENDER_ENTITIES;
+  qualificationDetails: any = projectConstantsLocal.QUALIFICATION_ENTITIES;
   employeeInternalStatusList: any = projectConstantsLocal.EMPLOYEE_STATUS;
   selectedEmployeeStatus = this.employeeInternalStatusList[1];
+  apiLoading: any;
   constructor(
     private employeesService: EmployeesService,
     private location: Location,
@@ -375,8 +377,12 @@ export class EmployeesComponent implements OnInit {
           {
             field: 'qualification',
             title: 'Qualification',
-            type: 'text',
+            type: 'dropdown',
             filterType: 'like',
+            options: this.qualificationDetails.map((entity) => ({
+              label: entity.displayName,
+              value: entity.name,
+            })),
           },
         ],
       },
@@ -637,15 +643,15 @@ export class EmployeesComponent implements OnInit {
     return { statusCount, newEmployeeCount };
   }
   getEmployees(filter = {}) {
-    this.loading = true;
+    this.apiLoading = true;
     this.employeesService.getEmployees(filter).subscribe(
       (response) => {
         this.employees = response;
         console.log('employees', this.employees);
-        this.loading = false;
+        this.apiLoading = false;
       },
       (error: any) => {
-        this.loading = false;
+        this.apiLoading = false;
         this.toastService.showError(error);
       }
     );

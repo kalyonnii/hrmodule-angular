@@ -1,18 +1,18 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UsersComponent } from './users.component';
-import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { TableModule } from 'primeng/table';
-import { PreloaderModule } from 'src/app/preloader/preloader.module';
-import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
 import { MenuModule } from 'primeng/menu';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
-import { FormsModule } from '@angular/forms';
-import { FilterModule } from 'src/app/filter/filter.module';
 import { InputTextModule } from 'primeng/inputtext';
 import { DialogModule } from 'primeng/dialog';
+import { UsersComponent } from './users.component';
+import { FilterModule } from 'src/app/filter/filter.module';
+import { PreloaderModule } from 'src/app/preloader/preloader.module';
+import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
 
 const routes: Routes = [
   { path: '', component: UsersComponent },
@@ -32,18 +32,18 @@ const routes: Routes = [
   declarations: [UsersComponent],
   imports: [
     CommonModule,
-    TableModule,
     FormsModule,
+    [RouterModule.forChild(routes)],
     BreadcrumbModule,
-    PreloaderModule,
-    FilterModule,
-    CapitalizeFirstPipe,
-    InputTextModule,
+    TableModule,
     MenuModule,
-    DialogModule,
     ButtonModule,
     TooltipModule,
-    [RouterModule.forChild(routes)],
+    InputTextModule,
+    DialogModule,
+    FilterModule,
+    PreloaderModule,
+    CapitalizeFirstPipe,
   ],
 })
 export class UsersModule {}

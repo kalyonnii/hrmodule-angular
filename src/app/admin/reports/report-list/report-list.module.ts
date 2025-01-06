@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReportListComponent } from './report-list.component';
+import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { TableModule } from 'primeng/table';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
-import { PreloaderModule } from 'src/app/preloader/preloader.module';
 import { ButtonModule } from 'primeng/button';
-import { FilterModule } from 'src/app/filter/filter.module';
-import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
+import { ReportListComponent } from './report-list.component';
+import { FilterModule } from 'src/app/filter/filter.module';
+import { PreloaderModule } from 'src/app/preloader/preloader.module';
 
 const routes: Routes = [{ path: '', component: ReportListComponent }];
 
@@ -16,14 +16,14 @@ const routes: Routes = [{ path: '', component: ReportListComponent }];
   declarations: [ReportListComponent],
   imports: [
     CommonModule,
-    PreloaderModule,
-    BreadcrumbModule,
-    TableModule,
-    FilterModule,
-    InputTextModule,
     FormsModule,
-    ButtonModule,
     [RouterModule.forChild(routes)],
+    TableModule,
+    BreadcrumbModule,
+    ButtonModule,
+    InputTextModule,
+    PreloaderModule,
+    FilterModule,
   ],
 })
 export class ReportListModule {}

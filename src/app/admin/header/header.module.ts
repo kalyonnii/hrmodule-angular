@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarModule } from 'primeng/sidebar';
-import { HeaderComponent } from './header.component';
 import { ButtonModule } from 'primeng/button';
+import { HeaderComponent } from './header.component';
 import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
 
 

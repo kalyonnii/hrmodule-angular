@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HikeletterComponent } from './hikeletter.component';
-import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
 import { RouterModule, Routes } from '@angular/router';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
-import { PreloaderModule } from 'src/app/preloader/preloader.module';
 import { ButtonModule } from 'primeng/button';
+import { HikeletterComponent } from './hikeletter.component';
+import { PreloaderModule } from 'src/app/preloader/preloader.module';
+import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
 
 const routes: Routes = [{ path: '', component: HikeletterComponent }];
 
@@ -13,12 +13,11 @@ const routes: Routes = [{ path: '', component: HikeletterComponent }];
   declarations: [HikeletterComponent],
   imports: [
     CommonModule,
+    RouterModule.forChild(routes),
     BreadcrumbModule,
-    CapitalizeFirstPipe,
-    ButtonModule,
     ButtonModule,
     PreloaderModule,
-    RouterModule.forChild(routes),
+    CapitalizeFirstPipe,
   ],
 })
 export class HikeletterModule {}

@@ -21,6 +21,7 @@ export class PayrollComponent {
   isDialogVisible = false;
   selectedEmployee: any;
   loading: any;
+  apiLoading: any;
   payroll: any = [];
   totalPayrollCount: any = 0;
   employees: any = [];
@@ -447,7 +448,7 @@ export class PayrollComponent {
   }
 
   getPayroll(filter = {}) {
-    this.loading = true;
+    this.apiLoading = true;
     this.employeesService.getPayroll(filter).subscribe(
       (payrollResponse: any) => {
         this.employeesService.getEmployees().subscribe(
@@ -457,10 +458,10 @@ export class PayrollComponent {
               employeeResponse
             );
             console.log('Merged Payroll Data:', this.payroll);
-            this.loading = false;
+            this.apiLoading = false;
           },
           (error: any) => {
-            this.loading = false;
+            this.apiLoading = false;
             this.toastService.showError(error);
           }
         );

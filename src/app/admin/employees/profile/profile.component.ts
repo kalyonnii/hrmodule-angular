@@ -30,17 +30,26 @@ export class ProfileComponent implements OnInit {
   userDetails: any;
   attendance: any = [];
   salaryHikes: any = [];
+  totalLeavesCount: any = 0;
+  leaves: any = [];
+  currentTableEvent: any;
   selectedDate: Date;
   displayMonth: Date;
+  payroll: any = [];
+  totalPayrollCount: any = 0;
   resignationformFields: any = [];
+  totalIncentivesCount: any = 0;
+  incentives: any = [];
   terminationFormFields: any = [];
   moment: any;
   issuedPayslips: any = projectConstantsLocal.ISSUED_PAYSLIPS;
   version = projectConstantsLocal.VERSION_DESKTOP;
+  leavesInternalStatusList: any = projectConstantsLocal.LEAVE_STATUS;
   employeeId: string | null = null;
   activeSection: string = 'employeeDetails';
   employeeInternalStatusList: any = projectConstantsLocal.EMPLOYEE_STATUS;
   month: any;
+  apiLoading: any;
   year: any;
   selectedFiles: any = {
     resignationLetter: { filesData: [], links: [], uploadedFiles: [] },
@@ -54,6 +63,9 @@ export class ProfileComponent implements OnInit {
     { id: 'kycDetails', label: 'KYC Details' },
     { id: 'accountDetails', label: 'Account Details' },
     { id: 'attendanceDetails', label: 'Attendance Details' },
+    { id: 'payrollDetails', label: 'Payroll Details' },
+    { id: 'incentiveDetails', label: 'Incentive Details' },
+    { id: 'leaves', label: 'Leaves' },
     { id: 'otherDetails', label: 'Other Details' },
   ];
   attendanceStatusCounts: { [key: string]: number } = {
@@ -142,6 +154,10 @@ export class ProfileComponent implements OnInit {
   }
   onDialogHide() {
     this.showDialog = false;
+  }
+  roundToLPA(amount: number): string {
+    const lakhs = amount / 100000;
+    return lakhs.toFixed(1) + ' LPA';
   }
   setHolidaysList() {
     this.resignationformFields = [
@@ -439,6 +455,152 @@ export class ProfileComponent implements OnInit {
   getSalaryHikes() {
     return this.employeesService.getSalaryHikes();
   }
+  loadPayslips(event) {
+    this.currentTableEvent = event;
+    let api_filter = this.employeesService.setFiltersFromPrimeTable(event);
+    api_filter['employeeId-eq'] = this.employeeId;
+    api_filter = Object.assign({}, api_filter);
+    console.log(api_filter);
+    if (api_filter) {
+      this.getPayrollCount(api_filter);
+      this.getPayroll(api_filter);
+    }
+  }
+
+  getPayrollCount(filter = {}) {
+    this.employeesService.getPayrollCount(filter).subscribe(
+      (response) => {
+        this.totalPayrollCount = response;
+      },
+      (error: any) => {
+        this.toastService.showError(error);
+      }
+    );
+  }
+
+  getPayroll(filter = {}) {
+    this.apiLoading = true;
+    this.employeesService.getPayroll(filter).subscribe(
+      (payrollResponse: any) => {
+        this.payroll = payrollResponse;
+        console.log('Payroll Data:', this.payroll);
+        this.apiLoading = false;
+      },
+      (error: any) => {
+        this.apiLoading = false;
+        this.toastService.showError(error);
+      }
+    );
+  }
+
+  loadLeaves(event) {
+    this.currentTableEvent = event;
+    let api_filter = this.employeesService.setFiltersFromPrimeTable(event);
+    api_filter['employeeId-eq'] = this.employeeId;
+    api_filter = Object.assign({}, api_filter);
+    console.log(api_filter);
+    if (api_filter) {
+      this.getLeavesCount(api_filter);
+      this.getLeaves(api_filter);
+    }
+  }
+
+  getLeavesCount(filter = {}) {
+    this.employeesService.getLeavesCount(filter).subscribe(
+      (response) => {
+        this.totalLeavesCount = response;
+      },
+      (error: any) => {
+        this.toastService.showError(error);
+      }
+    );
+  }
+
+  getLeaves(filter = {}) {
+    this.apiLoading = true;
+    this.employeesService.getLeaves(filter).subscribe(
+      (response) => {
+        this.leaves = response;
+        console.log('leaves', this.leaves);
+        this.apiLoading = false;
+      },
+      (error: any) => {
+        this.apiLoading = false;
+        this.toastService.showError(error);
+      }
+    );
+  }
+
+  getLeavesStatusColor(status: string): {
+    textColor: string;
+    backgroundColor: string;
+  } {
+    switch (status) {
+      case 'approved':
+        return { textColor: '#5DCC0B', backgroundColor: '#E4F7D6' };
+      case 'pending':
+        return { textColor: '#FFBA15', backgroundColor: '#FFF3D6' };
+      case 'rejected':
+        return { textColor: '#FF555A', backgroundColor: '#FFE2E3' };
+      default:
+        return { textColor: 'black', backgroundColor: 'white' };
+    }
+  }
+  getLeavesStatusName(statusId) {
+    if (
+      this.leavesInternalStatusList &&
+      this.leavesInternalStatusList.length > 0
+    ) {
+      let leaveStatusName = this.leavesInternalStatusList.filter(
+        (leaveStatus) => leaveStatus.id == statusId
+      );
+      return (
+        (leaveStatusName && leaveStatusName[0] && leaveStatusName[0].name) || ''
+      );
+    }
+    return '';
+  }
+
+  ViewPayslip(payslipId) {
+    this.routingService.handleRoute('payroll/payslip/' + payslipId, null);
+  }
+
+  loadIncentives(event) {
+    this.currentTableEvent = event;
+    let api_filter = this.employeesService.setFiltersFromPrimeTable(event);
+    api_filter = Object.assign({}, api_filter);
+    api_filter['employeeId-eq'] = this.employeeId;
+    if (api_filter) {
+      this.getIncentivesCount(api_filter);
+      this.getIncentives(api_filter);
+    }
+  }
+
+  getIncentivesCount(filter = {}) {
+    this.employeesService.getIncentivesCount(filter).subscribe(
+      (response) => {
+        this.totalIncentivesCount = response;
+      },
+      (error: any) => {
+        this.toastService.showError(error);
+      }
+    );
+  }
+  getIncentives(filter = {}) {
+    this.apiLoading = true;
+    this.employeesService.getIncentives(filter).subscribe(
+      (response) => {
+        this.incentives = response;
+        console.log('incentives', this.incentives);
+        this.apiLoading = false;
+      },
+      (error: any) => {
+        this.apiLoading = false;
+        this.toastService.showError(error);
+      }
+    );
+  }
+
   uploadFiles(fileType, acceptableTypes, index?) {
     console.log(acceptableTypes);
     let data = {

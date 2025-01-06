@@ -35,6 +35,7 @@ export class SalaryhikeComponent {
   salaryHikes: any = [];
   salaryHikes1: any = [];
   currentTableEvent: any;
+  apiLoading:any;
   salaryHikeForm: UntypedFormGroup;
   heading: any = 'Create Salary Hike';
   actionType: any = 'create';
@@ -348,15 +349,15 @@ export class SalaryhikeComponent {
   }
 
   getSalaryHikes(filter = {}) {
-    this.loading = true;
+    this.apiLoading = true;
     this.employeesService.getSalaryHikes(filter).subscribe(
       (response) => {
         this.salaryHikes = response;
         console.log('salaryHikes', this.salaryHikes);
-        this.loading = false;
+        this.apiLoading = false;
       },
       (error: any) => {
-        this.loading = false;
+        this.apiLoading = false;
         this.toastService.showError(error);
       }
     );

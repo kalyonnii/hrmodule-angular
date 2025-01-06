@@ -385,6 +385,10 @@ body {
   border-color: #33009c !important;
   color: #ffffff;
 }
+.fc.fc-theme-standard a {
+  color: #495057;
+  text-decoration: none;
+}
 .p-radiobutton .p-radiobutton-box.p-highlight {
   border-color: #33009c !important;
   background: #ffffff !important;
@@ -520,4 +524,8 @@ body {
 .view-btn {
   height: 30px;
   box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
+}
+.p-datatable .p-datatable-loading-icon {
+  font-size: 2rem;
+  background: transparent;
 }
