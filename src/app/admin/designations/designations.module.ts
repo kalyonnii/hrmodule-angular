@@ -14,7 +14,19 @@ import { FilterModule } from 'src/app/filter/filter.module';
 import { PreloaderModule } from 'src/app/preloader/preloader.module';
 import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
 
-const routes: Routes = [{ path: '', component: DesignationsComponent }];
+const routes: Routes = [
+  { path: '', component: DesignationsComponent },
+  {
+    path: 'create',
+    loadChildren: () =>
+      import('./create/create.module').then((m) => m.CreateModule),
+  },
+  {
+    path: 'update/:id',
+    loadChildren: () =>
+      import('./create/create.module').then((m) => m.CreateModule),
+  },
+];
 
 @NgModule({
   declarations: [DesignationsComponent],

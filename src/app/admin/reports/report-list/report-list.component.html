@@ -150,7 +150,7 @@
                 </ng-container>
               </span>
               <button
-                *ngIf="userDetails?.designation == 4"
+                *ngIf="capabilities.delete"
                 pButton
                 type="button"
                 icon="fa fa-trash"
@@ -180,7 +180,7 @@
 
 <footer class="p-2 text-center text-lg-start mt-3" style="color: #878a99">
   <div class="text-center mb-3 fw-bold">
-    © 2024 <span style="color: #1e4079">The</span>&nbsp;<b
+    © {{ currentYear }} <span style="color: #1e4079">The</span>&nbsp;<b
       style="color: #51c297"
       >Fintalk</b
     >. | All Rights Reserved

@@ -85,6 +85,11 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'ipAddress',
+        loadChildren: () =>
+          import('./ipaddress/ipaddress.module').then((m) => m.IpaddressModule),
+      },
+      {
         path: 'reports',
         loadChildren: () =>
           import('./reports/reports.module').then((m) => m.ReportsModule),

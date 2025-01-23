@@ -37,6 +37,8 @@ export class CreateComponent {
     resume: { filesData: [], links: [], uploadedFiles: [] },
   };
   loading: any;
+  capabilities: any;
+  currentYear: number;
   constructor(
     private location: Location,
     private formBuilder: UntypedFormBuilder,
@@ -87,6 +89,7 @@ export class CreateComponent {
   }
 
   ngOnInit() {
+    this.currentYear = this.employeesService.getCurrentYear();
     this.createForm();
     this.setLeavesList();
     const userDetails =
@@ -94,6 +97,8 @@ export class CreateComponent {
     if (userDetails) {
       this.userDetails = userDetails.user;
     }
+    this.capabilities = this.employeesService.getUserRbac();
+    console.log('capabilities', this.capabilities);
     this.getEmployees();
     this.leavesForm
       .get('employeeName')
@@ -114,6 +119,10 @@ export class CreateComponent {
     if (this.actionType === 'create') {
       filter['employeeInternalStatus-eq'] = 1;
     }
+    if (this.capabilities.employee) {
+      filter['employeeId-eq'] = this.userDetails?.employeeId;
+    }
+    filter['sort'] = 'joiningDate,asc';
     this.employeesService.getEmployees(filter).subscribe(
       (response) => {
         this.employees = response;

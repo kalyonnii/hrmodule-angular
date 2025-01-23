@@ -1,4 +1,4 @@
-.view-btn{
+.view-btn {
   height: 30px;
   border-radius: 50px;
   box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
@@ -44,6 +44,17 @@
   color: grey;
   flex: 1;
   margin-left: 5px;
+}
+@media screen and (max-width: 620px) {
+  .info-line {
+    display: block;
+  }
+  .icon {
+    display: none;
+  }
+  .value {
+    margin-left: 0;
+  }
 }
 .custom-btn {
   height: 30px;

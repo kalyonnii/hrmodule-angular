@@ -74,6 +74,24 @@
                   >
                   </p-dropdown>
                 </span>
+                <span *ngIf="field && field.type == 'month'">
+                  <p-calendar
+                    [(ngModel)]="filter[field.field + '-' + field.filterType]"
+                    [showIcon]="true"
+                    view="month"
+                    [monthNavigator]="true"
+                    [yearNavigator]="true"
+                    [yearRange]="'-10:+10'"
+                    [style]="{
+                      width: field.fieldWidth ? field.fieldWidth : '100%'
+                    }"
+                    dateFormat="yy-mm"
+                    appendTo="body"
+                    [showButtonBar]="true"
+                    [readonlyInput]="true"
+                    [placeholder]="'Select ' + field.title"
+                  ></p-calendar>
+                </span>
                 <span *ngIf="field && field.type == 'multiselect'">
                   <p-multiSelect
                     [placeholder]="'Select ' + field.title"

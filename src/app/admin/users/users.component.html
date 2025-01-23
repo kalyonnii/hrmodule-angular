@@ -36,7 +36,6 @@
   [closable]="true"
   [responsive]="true"
   class="dialogbox"
-  [style]="{ width: '50vw' }"
   header="User Details"
   (onHide)="clearDialog()"
 >
@@ -127,7 +126,7 @@
         }}
       </div>
     </div>
-    <div class="info-line" *ngIf="userDetails?.designation == 4">
+    <div class="info-line" *ngIf="capabilities.passwordView">
       <span class="icon">
         <i class="fas fa-lock"></i>
       </span>
@@ -328,19 +327,19 @@
     </ng-template>
     <ng-template pTemplate="header" let-columns>
       <tr>
-        <th pSortableColumn="userId">
+        <th pSortableColumn="userId" class="text-nowrap">
           User Id <p-sortIcon field="userId"></p-sortIcon>
         </th>
-        <th pSortableColumn="username">
+        <th pSortableColumn="username" class="text-nowrap">
           User Name <p-sortIcon field="username"></p-sortIcon>
         </th>
-        <th pSortableColumn="designationName">
+        <th pSortableColumn="designationName" class="text-nowrap">
           Designation <p-sortIcon field="designationName"></p-sortIcon>
         </th>
-        <th pSortableColumn="phoneNumber">
+        <th pSortableColumn="phoneNumber" class="text-nowrap">
           Phone Number <p-sortIcon field="phoneNumber"></p-sortIcon>
         </th>
-        <th pSortableColumn="createdOn">
+        <th pSortableColumn="createdOn" class="text-nowrap">
           Created Date <p-sortIcon field="createdOn"></p-sortIcon>
         </th>
         <th>Actions</th>
@@ -353,7 +352,7 @@
             user.userId
           }}</span>
         </td>
-        <td>
+        <td class="text-nowrap">
           <div class="d-flex align-items-center">
             <span class="me-2">
               <ng-container
@@ -390,7 +389,7 @@
             </b>
           </div>
         </td>
-        <td>
+        <td class="text-nowrap">
           <span
             class="table-column-data designationstatus"
             *ngIf="user.designationName; else noData"
@@ -402,7 +401,7 @@
             >{{ user.designationName }}</span
           >
         </td>
-        <td>
+        <td class="text-nowrap">
           <span class="table-column-data" *ngIf="user.phoneNumber; else noData">
             <i class="fa fa-phone"></i> &nbsp;{{ user.phoneNumber }}</span
           >
@@ -434,7 +433,7 @@
                 (click)="updateUser(user.userId)"
               ></button>
               <button
-                *ngIf="userDetails?.designation == 4"
+                *ngIf="capabilities.delete"
                 pButton
                 type="button"
                 icon="fa fa-trash"
@@ -464,7 +463,7 @@
 <ng-template #noData> - </ng-template>
 <footer class="p-2 text-center text-lg-start mt-3" style="color: #878a99">
   <div class="text-center mb-3 fw-bold">
-    © 2024 <span style="color: #1e4079">The</span>&nbsp;<b
+    © {{ currentYear }} <span style="color: #1e4079">The</span>&nbsp;<b
       style="color: #51c297"
       >Fintalk</b
     >. | All Rights Reserved

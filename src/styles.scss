@@ -282,9 +282,16 @@ body {
   outline-offset: 0;
   box-shadow: 0 0 0 0.2rem #efa5a5 !important;
 }
-
 .p-dialog {
   border-radius: 20px !important;
+}
+.p-dialog:not(.p-confirm-dialog) {
+  min-width: 70vw !important;
+}
+@media (max-width: 767px) {
+  .p-dialog {
+    width: 90vw !important;
+  }
 }
 
 .p-dialog {
@@ -329,7 +336,7 @@ body {
   border-color: #4f94d4 !important;
   color: #0165ac !important;
 }
-.p-datatable-striped .p-datatable {
+.p-datatable-striped .p-datatable:not(.absenttable) {
   max-height: 500px;
   overflow-y: auto !important;
   scrollbar-width: 3px !important;

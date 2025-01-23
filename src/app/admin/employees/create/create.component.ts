@@ -46,7 +46,6 @@ export class CreateComponent {
   designationEntities: any;
 
   loading: any;
-  userDetails: any;
   selectedFiles: any = {
     panCard: { filesData: [], links: [], uploadedFiles: [] },
     offerLetter: { filesData: [], links: [], uploadedFiles: [] },
@@ -54,13 +53,14 @@ export class CreateComponent {
     passPhoto: { filesData: [], links: [], uploadedFiles: [] },
     otherDocuments: [{ filesData: [], links: [], uploadedFiles: [] }],
   };
-
+  capabilities: any;
   otherDocuments: any = [
     {
       name: '',
       otherDocuments: [],
     },
   ];
+  currentYear: number;
   constructor(
     private location: Location,
     private confirmationService: ConfirmationService,
@@ -177,13 +177,11 @@ export class CreateComponent {
   }
 
   ngOnInit() {
+    this.currentYear = this.employeesService.getCurrentYear();
     this.createForm();
     this.setEmployeesList();
-    const userDetails =
-      this.localStorageService.getItemFromLocalStorage('userDetails');
-    if (userDetails) {
-      this.userDetails = userDetails.user;
-    }
+    this.capabilities = this.employeesService.getUserRbac();
+    console.log('capabilities', this.capabilities);
   }
 
   addotherDocumentsRow() {
@@ -358,13 +356,13 @@ export class CreateComponent {
         required: true,
       },
       {
-        label: 'Employee Name (as per Aadhar)',
+        label: 'Employee Name (as per Aadhaar)',
         controlName: 'employeeName',
         type: 'text',
         required: true,
       },
       {
-        label: 'Designation',
+        label: 'Department',
         controlName: 'designation',
         type: 'dropdown',
         options: 'designationEntities',
@@ -475,13 +473,13 @@ export class CreateComponent {
       {
         label: 'Current Address',
         controlName: 'currentAddress',
-        type: 'text',
+        type: 'textarea',
         required: false,
       },
       {
         label: 'Permanent Address',
         controlName: 'permanentAddress',
-        type: 'text',
+        type: 'textarea',
         required: false,
       },
     ];
@@ -528,7 +526,7 @@ export class CreateComponent {
         maxLength: 10,
       },
       {
-        label: 'Aadhar Number',
+        label: 'Aadhaar Number',
         controlName: 'aadharNumber',
         type: 'text',
         required: false,
@@ -552,7 +550,7 @@ export class CreateComponent {
         acceptedFileTypes: '*/*',
       },
       {
-        label: 'Aadhar Card',
+        label: 'Aadhaar Card',
         controlName: 'aadharCard',
         type: 'file',
         required: false,

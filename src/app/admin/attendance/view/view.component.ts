@@ -15,6 +15,7 @@ export class ViewComponent implements OnInit {
   currentTableEvent: any;
   countsAnalytics: any[] = [];
   loading: boolean = false;
+  apiLoading: any;
   moment: any;
   employees: any[] = [];
   attendanceData: any;
@@ -28,6 +29,7 @@ export class ViewComponent implements OnInit {
   totalLateCount: number = 0;
   employeeNameToSearch: any;
   searchFilter: any = {};
+  currentYear: number;
   version = projectConstantsLocal.VERSION_DESKTOP;
   constructor(
     private location: Location,
@@ -41,19 +43,6 @@ export class ViewComponent implements OnInit {
       if (params && params['id']) {
         this.attendanceId = params['id'];
         this.fetchAttendanceData();
-        // this.getAttendanceById(this.attendanceId)
-        //   .then((data) => {
-        //     if (data) {
-        //       this.selectedDate = this.moment(
-        //         this.attendanceData?.attendanceDate
-        //       ).format('MM/DD/YYYY');
-        //       console.log('Attendance Data', this.attendanceData);
-        //       this.calculateAttendanceCounts();
-        //     }
-        //   })
-        //   .catch((error) => {
-        //     console.error('Error fetching attendance data:', error);
-        //   });
       }
     });
     this.breadCrumbItems = [
@@ -72,6 +61,7 @@ export class ViewComponent implements OnInit {
     ];
   }
   ngOnInit(): void {
+    this.currentYear = this.employeesService.getCurrentYear();
     this.updateCountsAnalytics();
   }
   async fetchAttendanceData() {
@@ -211,16 +201,16 @@ export class ViewComponent implements OnInit {
     );
   }
   getEmployees(filter = {}) {
-    this.loading = true;
+    this.apiLoading = true;
     this.employeesService.getEmployees(filter).subscribe(
       (response: any) => {
         this.employees = response;
         console.log('employees', this.employees);
-        this.loading = false;
+        this.apiLoading = false;
         this.setDefaultAttendanceData();
       },
       (error: any) => {
-        this.loading = false;
+        this.apiLoading = false;
         this.toastService.showError(error);
       }
     );

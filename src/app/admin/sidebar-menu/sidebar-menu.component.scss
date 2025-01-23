@@ -15,10 +15,6 @@
   color: #6b7a99 !important;
 }
 
-// ::ng-deep .more-actions-menu-accordion .mat-expansion-panel {
-//   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px !important;
-// }
-
 .more-actions-accordion-heading {
   font-weight: bold !important;
 }
@@ -26,10 +22,6 @@
 .light-blue-background {
   background-color: rgba(51, 96, 255, 0.05) !important;
 }
-
-// ::ng-deep .p-component-overlay.p-sidebar-mask {
-//   width: 0 !important;
-// }
 
 .pi-bars {
   font-size: 25px !important;
@@ -45,14 +37,6 @@
   font-size: 14px !important;
   font-weight: 600 !important;
 }
-
-// ::ng-deep .sidemenu-sidebar .p-sidebar-left {
-//   width: 23rem !important;
-// }
-
-// ::ng-deep .sidemenu-sidebar .p-sidebar .p-sidebar-content {
-//   padding-left: 0.5rem !important;
-// }
 
 .my-account-card {
   position: absolute !important;
@@ -413,24 +397,8 @@ i {
     display: none;
   }
 }
-// ::ng-deep .sidemenu-sidebar .p-sidebar .p-sidebar-content::-webkit-scrollbar {
-//   width: 8px !important;
-// }
-// ::ng-deep
-//   .sidemenu-sidebar
-//   .p-sidebar
-//   .p-sidebar-content::-webkit-scrollbar-thumb {
-//   background: #51c295 !important;
-// }
 
-// ::ng-deep .sidemenu-sidebar .p-sidebar .p-sidebar-footer {
-//   padding: 0.25rem !important;
-// }
-// ::ng-deep .sidemenu-sidebar .p-sidebar .p-sidebar-content,
-// ::ng-deep .sidemenu-sidebar .p-sidebar .p-sidebar-footer {
-//   background-color: #31425e !important;
-// }
 .employeeImage {
   border-radius: 50px;
-  border: 3px solid #a2acb9 !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }

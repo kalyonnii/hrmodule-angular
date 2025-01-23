@@ -48,6 +48,9 @@ export class DashboardComponent implements OnInit {
   selectedDateforIncentive: Date;
   selectedYear: number;
   isLoading = true;
+  capabilities: any;
+  employeeData: any = null;
+  currentYear: number;
   constructor(
     private localStorageService: LocalStorageService,
     private routingService: RoutingService,
@@ -65,14 +68,23 @@ export class DashboardComponent implements OnInit {
     this.selectedYear = new Date().getFullYear();
   }
   ngOnInit(): void {
+    this.currentYear = this.employeesService.getCurrentYear();
     const userDetails =
       this.localStorageService.getItemFromLocalStorage('userDetails');
     if (userDetails) {
       this.userDetails = userDetails.user;
     }
+    this.capabilities = this.employeesService.getUserRbac();
+    console.log('capabilities', this.capabilities);
+    if (this.userDetails.employeeId && this.capabilities.employee) {
+      this.getEmployeeById(this.userDetails?.employeeId);
+    }
     this.selectedDate = this.moment().format('YYYY-MM-DD');
     this.setChartOptions();
-    this.initializeDashboardData();
+    this.updateCountsAnalytics();
+    if (!this.capabilities.employee) {
+      this.initializeDashboardData();
+    }
   }
   onImageLoad1() {
     console.log('Image loaded');
@@ -84,7 +96,6 @@ export class DashboardComponent implements OnInit {
   }
   initializeDashboardData() {
     this.fetchCounts();
-    this.updateCountsAnalytics();
     this.getGenderCounts();
     this.getBranchCounts();
     this.getAttendanceByDate();
@@ -105,55 +116,106 @@ export class DashboardComponent implements OnInit {
         this.toastService.showError('Failed to load attendance data.');
       });
   }
+  getEmployeeById(id) {
+    this.loading = true;
+    this.employeesService.getEmployeeById(id).subscribe(
+      (employeeData: any) => {
+        this.getSalaryHikes().subscribe(
+          (salaryHikeData: any) => {
+            if (salaryHikeData) {
+              const matchingHikes = salaryHikeData.filter(
+                (hike) => hike.employeeId == id
+              );
+              if (matchingHikes.length > 0) {
+                let totalSalary = employeeData.salary;
+                employeeData.salaryHikes = matchingHikes.map((hike) => {
+                  totalSalary += hike.monthlyHike;
+                  return {
+                    hikeDate: hike.hikeDate,
+                    monthlyHike: hike.monthlyHike,
+                  };
+                });
+                employeeData.totalSalary = totalSalary;
+              }
+            }
+            this.employeeData = employeeData;
+            this.loading = false;
+          },
+          (error) => {
+            this.loading = false;
+            this.toastService.showError(error);
+          }
+        );
+      },
+      (error) => {
+        this.loading = false;
+        this.toastService.showError(error);
+      }
+    );
+  }
+  employeeProfile(employeeId) {
+    this.routingService.handleRoute('employees/profile/' + employeeId, null);
+  }
+  roundToLPA(amount: number): string {
+    const lakhs = amount / 100000;
+    return lakhs.toFixed(1) + ' LPA';
+  }
+  getSalaryHikes() {
+    return this.employeesService.getSalaryHikes();
+  }
   updateCountsAnalytics() {
     this.countsAnalytics = [
       {
         name: 'employees',
-        displayName: 'Employees',
+        displayName: 'Active Employees',
         count: this.totalEmployeesCount,
         routerLink: 'employees',
-        condition: true,
+        condition: this.capabilities.adminEmployees,
         isLoading: true,
       },
       {
         name: 'interviews',
-        displayName: 'Interviews',
+        displayName: 'Upcomming Interviews',
         count: this.totalInterviewsCount,
         routerLink: 'interviews',
-        condition: true,
+        condition: this.capabilities.interviews,
         isLoading: true,
       },
       {
         name: 'attendance',
-        displayName: 'Attendance',
+        displayName: 'Today Attendance',
         count:
           this.totalPresentCount + this.totalLateCount + this.totalHalfDayCount,
         routerLink: 'attendance',
-        condition: true,
+        condition:
+          this.capabilities.adminAttendance ||
+          this.capabilities.employeeAttendance,
         isLoading: true,
       },
       {
         name: 'payroll',
-        displayName: 'Payroll',
+        displayName: 'Last Month Payroll',
         count: this.lastMonthpayrollCount,
         routerLink: 'payroll',
-        condition: true,
+        condition:
+          this.capabilities.adminPayroll || this.capabilities.employeePayroll,
         isLoading: true,
       },
       {
         name: 'leaves',
-        displayName: 'Leave Management',
+        displayName: 'Pending Leaves',
         count: this.totalLeavesCount,
         routerLink: 'leaves',
-        condition: true,
+        condition:
+          this.capabilities.adminLeaves || this.capabilities.employeeLeaves,
         isLoading: true,
       },
       {
         name: 'holidays',
-        displayName: 'Holidays',
+        displayName: `${new Date().getFullYear()} Holidays`, // Dynamically set based on current year
         count: this.totalHolidaysCount,
         routerLink: 'holidays',
-        condition: true,
+        condition: this.capabilities.holidays,
         isLoading: true,
       },
       {
@@ -161,7 +223,9 @@ export class DashboardComponent implements OnInit {
         displayName: 'Incentives',
         count: this.incentivesCount,
         routerLink: 'incentives',
-        condition: true,
+        condition:
+          this.capabilities.adminIncentives ||
+          this.capabilities.employeeIncentives,
         isLoading: true,
       },
       {
@@ -169,7 +233,14 @@ export class DashboardComponent implements OnInit {
         displayName: 'Departments',
         count: this.designationsCount,
         routerLink: 'designations',
-        condition: true,
+        condition: this.capabilities.departments,
+        isLoading: true,
+      },
+      {
+        name: 'salaryhike',
+        displayName: 'Salary Hikes',
+        condition: this.capabilities.employeeSalaryHikes,
+        routerLink: 'salaryhikes',
         isLoading: true,
       },
       // {
@@ -184,10 +255,11 @@ export class DashboardComponent implements OnInit {
         displayName: 'Users',
         count: this.totalUsersCount,
         routerLink: 'users',
+        condition: this.capabilities.users,
         // condition: true,
-        condition:
-          this.userDetails?.designation == 1 ||
-          this.userDetails?.designation == 4,
+        // condition:
+        //   this.userDetails?.designation == 1 ||
+        //   this.userDetails?.designation == 4,
         isLoading: true,
       },
       // {
@@ -199,6 +271,137 @@ export class DashboardComponent implements OnInit {
       // },
     ];
   }
+
+  // updateCountsAnalytics() {
+  //   const isEmployee = this.capabilities?.employee;
+  //   if (isEmployee) {
+  //     this.countsAnalytics = [
+  //       {
+  //         name: 'attendance',
+  //         displayName: 'Attendance',
+  //         routerLink: 'attendance',
+  //         condition: true,
+  //         isLoading: true,
+  //       },
+  //       {
+  //         name: 'payroll',
+  //         displayName: 'Payroll',
+  //         routerLink: 'payroll',
+  //         condition: true,
+  //         isLoading: true,
+  //       },
+  //       {
+  //         name: 'leaves',
+  //         displayName: 'Leave Management',
+  //         routerLink: 'leaves',
+  //         condition: true,
+  //         isLoading: true,
+  //       },
+  //       {
+  //         name: 'salaryhike',
+  //         displayName: 'Salary Hikes',
+  //         routerLink: 'salaryhikes',
+  //         condition: true,
+  //         isLoading: true,
+  //       },
+  //       {
+  //         name: 'incentives',
+  //         displayName: 'Incentives',
+  //         routerLink: 'incentives',
+  //         condition: true,
+  //         isLoading: true,
+  //       },
+  //       {
+  //         name: 'holidays',
+  //         displayName: 'Holidays',
+  //         routerLink: 'holidays',
+  //         condition: true,
+  //         isLoading: true,
+  //       },
+  //     ];
+  //   } else {
+  //     this.countsAnalytics = [
+  //       {
+  //         name: 'employees',
+  //         displayName: 'Employees',
+  //         count: this.totalEmployeesCount,
+  //         routerLink: 'employees',
+  //         condition: true,
+  //         isLoading: true,
+  //       },
+  //       {
+  //         name: 'interviews',
+  //         displayName: 'Interviews',
+  //         count: this.totalInterviewsCount,
+  //         routerLink: 'interviews',
+  //         condition: true,
+  //         isLoading: true,
+  //       },
+  //       {
+  //         name: 'attendance',
+  //         displayName: 'Attendance',
+  //         count:
+  //           this.totalPresentCount +
+  //           this.totalLateCount +
+  //           this.totalHalfDayCount,
+  //         routerLink: 'attendance',
+  //         condition: true,
+  //         isLoading: true,
+  //       },
+  //       {
+  //         name: 'payroll',
+  //         displayName: 'Payroll',
+  //         count: this.lastMonthpayrollCount,
+  //         routerLink: 'payroll',
+  //         condition: true,
+  //         isLoading: true,
+  //       },
+  //       {
+  //         name: 'leaves',
+  //         displayName: 'Leave Management',
+  //         count: this.totalLeavesCount,
+  //         routerLink: 'leaves',
+  //         condition: true,
+  //         isLoading: true,
+  //       },
+  //       {
+  //         name: 'holidays',
+  //         displayName: 'Holidays',
+  //         count: this.totalHolidaysCount,
+  //         routerLink: 'holidays',
+  //         condition: true,
+  //         isLoading: true,
+  //       },
+  //       {
+  //         name: 'incentives',
+  //         displayName: 'Incentives',
+  //         count: this.incentivesCount,
+  //         routerLink: 'incentives',
+  //         condition: true,
+  //         isLoading: true,
+  //       },
+  //       {
+  //         name: 'departments',
+  //         displayName: 'Departments',
+  //         count: this.designationsCount,
+  //         routerLink: 'designations',
+  //         condition: true,
+  //         isLoading: true,
+  //       },
+  //       {
+  //         name: 'users',
+  //         displayName: 'Users',
+  //         count: this.totalUsersCount,
+  //         routerLink: 'users',
+  //         // condition: true,
+  //         condition:
+  //           this.userDetails?.designation == 1 ||
+  //           this.userDetails?.designation == 4,
+  //         isLoading: true,
+  //       },
+  //     ];
+  //   }
+  // }
 
   onImageLoad(item: any): void {
     item.isLoading = false;
@@ -237,7 +440,6 @@ export class DashboardComponent implements OnInit {
   }
   loadEmployees(event) {
     this.currentTableEvent = event;
-
     let api_filter = this.employeesService.setFiltersFromPrimeTable(event);
     api_filter = Object.assign({}, api_filter);
     if ('from' in api_filter) {
@@ -489,24 +691,20 @@ export class DashboardComponent implements OnInit {
       series: [
         {
           name: 'Inside Sales',
-          data: [this.designationCounts[0]],
+          data: [this.designationCounts[0] || 0],
         },
         {
           name: 'Operations Team',
-          data: [this.designationCounts[1]],
+          data: [this.designationCounts[1] || 0],
         },
         {
           name: 'Human Resource',
-          data: [this.designationCounts[2]],
+          data: [this.designationCounts[2] || 0],
         },
         {
           name: 'Information Technology',
-          data: [this.designationCounts[3]],
+          data: [this.designationCounts[3] || 0],
         },
-        // {
-        //   name: 'Office Team',
-        //   data: [this.designationCounts[4]],
-        // },
       ],
       chart: {
         height: 400,
@@ -536,7 +734,7 @@ export class DashboardComponent implements OnInit {
         colors: ['#fff'],
       },
       title: {
-        text: 'Departments Metrics',
+        text: 'Departments Analytics',
         align: 'left',
         style: {
           fontSize: '18px',
@@ -554,26 +752,30 @@ export class DashboardComponent implements OnInit {
         size: 4,
       },
       xaxis: {
-        categories: ['Total Count'],
-        title: {
-          text: 'Departments',
-        },
+        categories: ['Departments'],
+        // title: {
+        //   text: 'Departments',
+        // },
       },
       yaxis: {
         title: {
           text: 'Count',
         },
       },
+      // legend: {
+      //   position: 'top',
+      //   horizontalAlign: 'right',
+      //   floating: true,
+      //   offsetY: -20,
+      //   offsetX: -5,
+      // },
       legend: {
-        position: 'top',
-        horizontalAlign: 'right',
-        floating: true,
-        offsetY: -20,
-        offsetX: -5,
+        position: 'bottom',
+        horizontalAlign: 'center',
       },
     };
     this.pieChartOptions = {
-      series: [this.maleCount, this.femaleCount],
+      series: [this.maleCount || 0, this.femaleCount || 0],
       labels: ['Male', 'Female'],
       chart: {
         height: 350,
@@ -624,7 +826,7 @@ export class DashboardComponent implements OnInit {
       ],
     };
     this.branchpieChartOptions = {
-      series: [this.panjaguttaCount, this.BegumpetCount],
+      series: [this.panjaguttaCount || 0, this.BegumpetCount || 0],
       labels: ['Panjagutta', 'Begumpet'],
       chart: {
         height: 350,

@@ -27,7 +27,6 @@ export class ProfileComponent implements OnInit {
   showDialog: boolean = false;
   employees: any = null;
   offerLetterHtml: string = '';
-  userDetails: any;
   attendance: any = [];
   salaryHikes: any = [];
   totalLeavesCount: any = 0;
@@ -74,8 +73,10 @@ export class ProfileComponent implements OnInit {
     Late: 0,
     'Half-day': 0,
   };
+  capabilities: any;
   resignationForm: UntypedFormGroup;
   terminationForm: UntypedFormGroup;
+  currentYear: number;
   constructor(
     private location: Location,
     private confirmationService: ConfirmationService,
@@ -95,6 +96,8 @@ export class ProfileComponent implements OnInit {
     this.year = this.selectedDate.getFullYear();
     this.selectedDate = this.moment(new Date()).format('YYYY-MM');
     this.displayMonth = this.moment(new Date()).format('MMMM YYYY');
+    this.capabilities = this.employeesService.getUserRbac();
+    console.log('capabilities', this.capabilities);
     this.breadCrumbItems = [
       {
         icon: 'fa fa-house',
@@ -102,20 +105,20 @@ export class ProfileComponent implements OnInit {
         routerLink: '/user/dashboard',
         queryParams: { v: this.version },
       },
-      {
-        label: 'Employees',
-        routerLink: '/user/employees',
-        queryParams: { v: this.version },
-      },
+      ...(!this.capabilities.employee
+        ? [
+            {
+              label: 'Employees',
+              routerLink: '/user/employees',
+              queryParams: { v: this.version },
+            },
+          ]
+        : []),
       { label: 'Profile' },
     ];
   }
   ngOnInit(): void {
-    const userDetails =
-      this.localStorageService.getItemFromLocalStorage('userDetails');
-    if (userDetails) {
-      this.userDetails = userDetails.user;
-    }
+    this.currentYear = this.employeesService.getCurrentYear();
     this.employeeId = this.route.snapshot.paramMap.get('id');
     if (this.employeeId) {
       this.getEmployeeById(this.employeeId).then((data) => {
@@ -254,7 +257,6 @@ export class ProfileComponent implements OnInit {
   //     body: employees?.terminationReason,
   //     employeeName: employees.employeeName,
   //     email: employees.emailAddress,
-  //     mobile: this.userDetails.phoneNumber,
   //   };
   //   this.employeesService.sendTerminationmail(emailData).subscribe(
   //     (data) => {

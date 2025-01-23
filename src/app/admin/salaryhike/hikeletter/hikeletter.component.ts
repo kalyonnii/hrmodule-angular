@@ -9,6 +9,7 @@ import { EmployeesService } from '../../employees/employees.service';
 import { DateTimeProcessorService } from 'src/app/services/date-time-processor.service';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import * as html2pdf from 'html2pdf.js';
 @Component({
   selector: 'app-hikeletter',
   templateUrl: './hikeletter.component.html',
@@ -17,7 +18,6 @@ import html2canvas from 'html2canvas';
 export class HikeletterComponent {
   breadCrumbItems: any = [];
   moment: any;
-  userDetails: any;
   @ViewChild('pdfContent', { static: false }) pdfContent!: ElementRef;
   loading: boolean = false;
   version = projectConstantsLocal.VERSION_DESKTOP;
@@ -25,6 +25,7 @@ export class HikeletterComponent {
   salaryHikes: any = [];
   designations: any = [];
   employeeId: string | null = null;
+  currentYear: number;
   constructor(
     private location: Location,
     private route: ActivatedRoute,
@@ -53,14 +54,10 @@ export class HikeletterComponent {
   }
 
   ngOnInit(): void {
+    this.currentYear = this.employeesService.getCurrentYear();
     this.employeeId = this.route.snapshot.paramMap.get('id');
     if (this.employeeId) {
       this.getSalaryHikesById(this.employeeId);
-    }
-    const userDetails =
-      this.localStorageService.getItemFromLocalStorage('userDetails');
-    if (userDetails) {
-      this.userDetails = userDetails.user;
     }
   }
 
@@ -69,18 +66,42 @@ export class HikeletterComponent {
     return lakhs.toFixed(1) + ' LPA';
   }
 
+  // generatePDF() {
+  //   this.loading = true;
+  //   const pdfContent = this.pdfContent.nativeElement;
+  //   html2canvas(pdfContent).then((canvas) => {
+  //     const imgData = canvas.toDataURL('image/png');
+  //     const pdf = new jsPDF('p', 'mm', 'a4');
+  //     const imgWidth = 190;
+  //     const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  //     pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+  //     pdf.save('incrementletter.pdf');
+  //     this.loading = false;
+  //   });
+  // }
+
+  // generatePDF() {
+  //   const element = document.getElementById('content');
+  //   if (element) {
+  //     html2pdf().from(element).save('IncrementLetter.pdf');
+  //   }
+  // }
+
   generatePDF() {
-    this.loading = true;
-    const pdfContent = this.pdfContent.nativeElement;
-    html2canvas(pdfContent).then((canvas) => {
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const imgWidth = 190;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
-      pdf.save('incrementletter.pdf');
-      this.loading = false;
-    });
+    const element = document.getElementById('content');
+    if (element) {
+      this.loading = true; // Show loading indicator
+      html2pdf()
+        .from(element)
+        .save('IncrementLetter.pdf')
+        .then(() => {
+          this.loading = false; // Hide loading indicator after success
+        })
+        .catch((error) => {
+          console.error('PDF generation error:', error);
+          this.loading = false; // Hide loading indicator on error
+        });
+    }
   }
   getOfferLetterDate(hikeDate: string | Date): Date {
     const date = new Date(hikeDate);
@@ -93,7 +114,7 @@ export class HikeletterComponent {
     console.log(oldSalary);
     console.log(newSalary);
     const hikePercentage = ((newSalary - oldSalary) / oldSalary) * 100;
-    return hikePercentage.toFixed(2) + '%'; // Round to 2 decimal places and append '%'
+    return hikePercentage.toFixed(2) + '%';
   }
   getSalaryHikesById(id: string) {
     this.loading = true;

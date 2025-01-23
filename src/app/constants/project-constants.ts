@@ -2,10 +2,10 @@ export const projectConstantsLocal = {
   EMPLOYEE_STATUS: [
     { id: 0, name: 'all', displayName: 'All Employees' },
     { id: 1, name: 'Active', displayName: 'Active Employees' },
-    { id: 2, name: 'InActive', displayName: 'In Active Employees' },
+    { id: 2, name: 'InActive', displayName: 'InActive Employees' },
   ],
   BRANCH_ENTITIES: [
-    { id: 1, displayName: 'Panjagutta', name: 'panjagutta' },
+    { id: 1, displayName: 'Punjagutta', name: 'punjagutta' },
     { id: 2, displayName: 'Begumpet', name: 'begumpet' },
   ],
   CARE_OF_ENTITIES: [
@@ -84,7 +84,7 @@ export const projectConstantsLocal = {
     { label: 'Yes', value: 'Yes' },
     { label: 'No', value: 'No' },
   ],
-  //BASE_URL: 'http://localhost:5001/',
+  // BASE_URL: 'http://localhost:5001/',
   BASE_URL: 'https://rest.thefintalk.in:5001/',
   VERSION_DESKTOP: '0.0.0',
 };

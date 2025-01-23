@@ -30,7 +30,6 @@ export class CreateComponent {
   attendedInterviewEntities: any =
     projectConstantsLocal.ATTENDED_INTERVIEW_ENTITIES;
   version = projectConstantsLocal.VERSION_DESKTOP;
-  userDetails: any;
   qualificationEntities: any = projectConstantsLocal.QUALIFICATION_ENTITIES;
   interviewId: any;
   interviewsForm: UntypedFormGroup;
@@ -40,8 +39,9 @@ export class CreateComponent {
   selectedFiles: any = {
     resume: { filesData: [], links: [], uploadedFiles: [] },
   };
-
+  capabilities: any;
   loading: any;
+  currentYear: number;
   constructor(
     private location: Location,
     private formBuilder: UntypedFormBuilder,
@@ -101,13 +101,11 @@ export class CreateComponent {
     ];
   }
   ngOnInit() {
+    this.currentYear = this.employeesService.getCurrentYear();
     this.createForm();
     this.setInterviewsList();
-    const userDetails =
-      this.localStorageService.getItemFromLocalStorage('userDetails');
-    if (userDetails) {
-      this.userDetails = userDetails.user;
-    }
+    this.capabilities = this.employeesService.getUserRbac();
+    console.log('capabilities', this.capabilities);
   }
   setInterviewsList() {
     this.formFields = [
@@ -130,12 +128,6 @@ export class CreateComponent {
         maxLength: 10,
         required: true,
       },
-      // {
-      //   label: 'Qualification',
-      //   controlName: 'qualification',
-      //   type: 'text',
-      //   required: true,
-      // },
       {
         label: 'Qualification',
         controlName: 'qualification',

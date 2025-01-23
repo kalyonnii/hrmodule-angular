@@ -24,7 +24,6 @@ export class CreateComponent {
   heading: any = 'Create User';
   breadCrumbItems: any = [];
   userData: any;
-  userDetails: any;
   formFields: any = [];
   isPasswordVisible: boolean = false;
   isConfirmPasswordVisible: boolean = false;
@@ -38,6 +37,9 @@ export class CreateComponent {
   userForm: UntypedFormGroup;
   designationEntities: any = projectConstantsLocal.DESIGNATION_ENTITIES;
   moment: any;
+  capabilities: any;
+  currentYear: number;
+
   constructor(
     private location: Location,
     private dialogService: DialogService,
@@ -93,13 +95,11 @@ export class CreateComponent {
     ];
   }
   ngOnInit() {
+    this.currentYear = this.employeesService.getCurrentYear();
     this.createForm();
     this.setEmployeesList();
-    const userDetails =
-      this.localStorageService.getItemFromLocalStorage('userDetails');
-    if (userDetails) {
-      this.userDetails = userDetails.user;
-    }
+    this.capabilities = this.employeesService.getUserRbac();
+    console.log('capabilities', this.capabilities);
   }
 
   togglePasswordVisibility() {

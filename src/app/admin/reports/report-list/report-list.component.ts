@@ -15,7 +15,7 @@ export class ReportListComponent {
   reportsData: any = [];
   loading: any;
   apiLoading: any;
-  userDetails: any;
+  capabilities: any;
   appliedFilter: {};
   filterConfig: any[] = [];
   currentTableEvent: any;
@@ -24,6 +24,7 @@ export class ReportListComponent {
   version = projectConstantsLocal.VERSION_DESKTOP;
 
   reportsCount: any = 0;
+  currentYear: number;
   constructor(
     private location: Location,
     private confirmationService: ConfirmationService,
@@ -48,9 +49,9 @@ export class ReportListComponent {
   }
 
   ngOnInit(): void {
-    let userDetails =
-      this.localStorageService.getItemFromLocalStorage('userDetails');
-    this.userDetails = userDetails.user;
+    this.currentYear = this.employeesService.getCurrentYear();
+    this.capabilities = this.employeesService.getUserRbac();
+    console.log('capabilities', this.capabilities);
     this.setFilterConfig();
     const storedReportType = localStorage.getItem('reportType');
     if (storedReportType) {
@@ -207,7 +208,6 @@ export class ReportListComponent {
 
   confirmDelete(report) {
     this.confirmationService.confirm({
-      // message: 'Are you sure you want to delete this Report?',
       message: `Are you sure you want to delete this Report ? <br>
       Report Type: ${report.reportType}<br>
       Report ID: ${report.reportId}

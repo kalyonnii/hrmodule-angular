@@ -16,6 +16,7 @@ import { RoutingService } from 'src/app/services/routing-service';
 import { SubscriptionService } from 'src/app/services/subscription.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { SubSink } from 'subsink';
+import { EmployeesService } from '../employees/employees.service';
 
 @Component({
   selector: 'app-sidebar-menu',
@@ -42,6 +43,7 @@ export class SidebarMenuComponent implements OnChanges {
   constructor(
     private subscriptionService: SubscriptionService,
     private renderer: Renderer2,
+    private employeesService: EmployeesService,
     private authService: AuthService,
     private routingService: RoutingService,
     private toastService: ToastService,
@@ -82,9 +84,14 @@ export class SidebarMenuComponent implements OnChanges {
     });
     this.userDetails =
       this.localStorageService.getItemFromLocalStorage('userDetails');
+    this.capabilities = this.employeesService.getUserRbac();
     if (this.userDetails && this.userDetails.user) {
       this.userDetails = this.userDetails.user;
-      this.userDetails.userImage = JSON.parse(this.userDetails.userImage);
+      if (this.capabilities.employee) {
+        this.userDetails.passPhoto = JSON.parse(this.userDetails.passPhoto);
+      } else {
+        this.userDetails.userImage = JSON.parse(this.userDetails.userImage);
+      }
     }
     console.log(this.userDetails);
   }
@@ -101,107 +108,133 @@ export class SidebarMenuComponent implements OnChanges {
       },
       {
         name: 'Employees',
-        condition: true,
+        condition: this.capabilities.adminEmployees,
         routerLink: 'employees',
         image: 'employees.gif',
         thumbnail: 'employees.png',
-        showOutside: true,
+        showOutside: this.capabilities.adminEmployees,
       },
 
       {
         name: 'Interviews',
-        condition: true,
+        condition: this.capabilities.interviews,
         routerLink: 'interviews',
         image: 'interviews.gif',
         thumbnail: 'interviews.png',
-        showOutside: true,
+        showOutside: this.capabilities.interviews,
       },
       {
         name: 'Attendance',
-        condition: true,
+        condition:
+          this.capabilities.adminAttendance ||
+          this.capabilities.employeeAttendance,
         routerLink: 'attendance',
         image: 'attendance.gif',
         thumbnail: 'attendance.png',
-        showOutside: true,
+        showOutside:
+          this.capabilities.adminAttendance ||
+          this.capabilities.employeeAttendance,
       },
       {
         name: 'Payroll',
-        condition: true,
+        condition:
+          this.capabilities.adminPayroll || this.capabilities.employeePayroll,
         routerLink: 'payroll',
         image: 'payroll.gif',
         thumbnail: 'payroll.png',
-        showOutside: true,
+        showOutside:
+          this.capabilities.adminPayroll || this.capabilities.employeePayroll,
       },
 
       {
         name: 'Leave Management',
-        condition: true,
+        condition:
+          this.capabilities.adminLeaves || this.capabilities.employeeLeaves,
         routerLink: 'leaves',
         image: 'leaves.gif',
         thumbnail: 'leaves.png',
-        showOutside: true,
+        showOutside:
+          this.capabilities.adminLeaves || this.capabilities.employeeLeaves,
       },
       {
         name: 'Holidays',
-        condition: true,
+        condition: this.capabilities.holidays,
         routerLink: 'holidays',
         image: 'holidays.gif',
         thumbnail: 'holidays.png',
-        showOutside: true,
+        showOutside: this.capabilities.holidays,
       },
       {
         name: 'Incentives',
-        condition: true,
+        condition:
+          this.capabilities.adminIncentives ||
+          this.capabilities.employeeIncentives,
         routerLink: 'incentives',
         image: 'incentives.gif',
         thumbnail: 'incentives.png',
-        showOutside: true,
+        showOutside:
+          this.capabilities.adminIncentives ||
+          this.capabilities.employeeIncentives,
       },
       {
         name: 'Departments',
-        condition: true,
+        condition: this.capabilities.departments,
         routerLink: 'designations',
         image: 'departments.gif',
         thumbnail: 'departments.png',
-        showOutside: true,
+        showOutside: this.capabilities.departments,
       },
       {
         name: 'Salary Hikes',
-        condition: true,
+        condition:
+          this.capabilities.adminSalaryHikes ||
+          this.capabilities.employeeSalaryHikes,
         routerLink: 'salaryhikes',
         image: 'salaryhike.gif',
         thumbnail: 'salaryhike.png',
-        showOutside: true,
+        showOutside:
+          this.capabilities.adminSalaryHikes ||
+          this.capabilities.employeeSalaryHikes,
       },
       {
         name: 'Events',
-        condition: true,
+        condition: this.capabilities.events,
         routerLink: 'events',
         image: 'events.gif',
         thumbnail: 'events.png',
-        showOutside: true,
+        showOutside: this.capabilities.events,
       },
       {
         name: 'Users',
+        condition: this.capabilities.users,
         // condition: true,
-        condition:
-          this.userDetails?.designation == 1 ||
-          this.userDetails?.designation == 4,
+        // condition:
+        //   this.userDetails?.designation == 1 ||
+        //   this.userDetails?.designation == 4,
         routerLink: 'users',
         image: 'users.gif',
         thumbnail: 'users.png',
+        showOutside: this.capabilities.users,
         // showOutside: true,
-        showOutside:
-          this.userDetails?.designation == 1 ||
-          this.userDetails?.designation == 4,
+        // showOutside:
+        //   this.userDetails?.designation == 1 ||
+        //   this.userDetails?.designation == 4,
       },
       {
         name: 'Reports',
-        condition: true,
+        condition: this.capabilities.reports,
         routerLink: 'reports',
         image: 'reports.gif',
         thumbnail: 'reports.png',
-        showOutside: true,
+        showOutside: this.capabilities.reports,
+      },
+      {
+        name: 'Ip Address',
+        condition: this.capabilities.ipAddress,
+        routerLink: 'ipAddress',
+        image: 'ip.gif',
+        thumbnail: 'ip.png',
+        showOutside: this.capabilities.ipAddress,
       },
       {
         name: 'Settings',
@@ -213,6 +246,203 @@ export class SidebarMenuComponent implements OnChanges {
       },
     ];
   }
+
+  // setMenuItems() {
+  //   const userDesignation = this.userDetails?.designation;
+  //   const isEmployee = this.capabilities?.employee;
+  //   const employeeMenuItems = [
+  //     {
+  //       name: 'Dashboard',
+  //       routerLink: 'dashboard',
+  //       image: 'dashboard.gif',
+  //       thumbnail: 'home-color.png',
+  //       showOutside: true,
+  //       condition: true,
+  //     },
+  //     {
+  //       name: 'Attendance',
+  //       routerLink: 'attendance',
+  //       image: 'attendance.gif',
+  //       thumbnail: 'attendance.png',
+  //       showOutside: true,
+  //       condition: true,
+  //     },
+  //     {
+  //       name: 'Payroll',
+  //       routerLink: 'payroll',
+  //       image: 'payroll.gif',
+  //       thumbnail: 'payroll.png',
+  //       showOutside: true,
+  //       condition: true,
+  //     },
+  //     {
+  //       name: 'Leave Management',
+  //       routerLink: 'leaves',
+  //       image: 'leaves.gif',
+  //       thumbnail: 'leaves.png',
+  //       showOutside: true,
+  //       condition: true,
+  //     },
+  //     {
+  //       name: 'Salary Hikes',
+  //       routerLink: 'salaryhikes',
+  //       image: 'salaryhike.gif',
+  //       thumbnail: 'salaryhike.png',
+  //       showOutside: true,
+  //       condition: true,
+  //     },
+  //     {
+  //       name: 'Incentives',
+  //       routerLink: 'incentives',
+  //       image: 'incentives.gif',
+  //       thumbnail: 'incentives.png',
+  //       showOutside: true,
+  //       condition: true,
+  //     },
+  //     {
+  //       name: 'Holidays',
+  //       routerLink: 'holidays',
+  //       image: 'holidays.gif',
+  //       thumbnail: 'holidays.png',
+  //       showOutside: true,
+  //       condition: true,
+  //     },
+  //     {
+  //       name: 'Settings',
+  //       condition: true,
+  //       routerLink: 'settings',
+  //       image: 'settings.gif',
+  //       thumbnail: 'settings.png',
+  //       showOutside: false,
+  //     },
+  //   ];
+  //   // Define menu items for others (non-employees)
+  //   const nonEmployeeMenuItems = [
+  //     {
+  //       name: 'Dashboard',
+  //       condition: true,
+  //       routerLink: 'dashboard',
+  //       image: 'dashboard.gif',
+  //       thumbnail: 'home-color.png',
+  //       showOutside: true,
+  //     },
+  //     {
+  //       name: 'Employees',
+  //       condition: true,
+  //       routerLink: 'employees',
+  //       image: 'employees.gif',
+  //       thumbnail: 'employees.png',
+  //       showOutside: true,
+  //     },
+
+  //     {
+  //       name: 'Interviews',
+  //       condition: true,
+  //       routerLink: 'interviews',
+  //       image: 'interviews.gif',
+  //       thumbnail: 'interviews.png',
+  //       showOutside: true,
+  //     },
+  //     {
+  //       name: 'Attendance',
+  //       condition: true,
+  //       routerLink: 'attendance',
+  //       image: 'attendance.gif',
+  //       thumbnail: 'attendance.png',
+  //       showOutside: true,
+  //     },
+  //     {
+  //       name: 'Payroll',
+  //       condition: true,
+  //       routerLink: 'payroll',
+  //       image: 'payroll.gif',
+  //       thumbnail: 'payroll.png',
+  //       showOutside: true,
+  //     },
+
+  //     {
+  //       name: 'Leave Management',
+  //       condition: true,
+  //       routerLink: 'leaves',
+  //       image: 'leaves.gif',
+  //       thumbnail: 'leaves.png',
+  //       showOutside: true,
+  //     },
+  //     {
+  //       name: 'Holidays',
+  //       condition: true,
+  //       routerLink: 'holidays',
+  //       image: 'holidays.gif',
+  //       thumbnail: 'holidays.png',
+  //       showOutside: true,
+  //     },
+  //     {
+  //       name: 'Incentives',
+  //       condition: true,
+  //       routerLink: 'incentives',
+  //       image: 'incentives.gif',
+  //       thumbnail: 'incentives.png',
+  //       showOutside: true,
+  //     },
+  //     {
+  //       name: 'Departments',
+  //       condition: true,
+  //       routerLink: 'designations',
+  //       image: 'departments.gif',
+  //       thumbnail: 'departments.png',
+  //       showOutside: true,
+  //     },
+  //     {
+  //       name: 'Salary Hikes',
+  //       condition: true,
+  //       routerLink: 'salaryhikes',
+  //       image: 'salaryhike.gif',
+  //       thumbnail: 'salaryhike.png',
+  //       showOutside: true,
+  //     },
+  //     {
+  //       name: 'Events',
+  //       condition: true,
+  //       routerLink: 'events',
+  //       image: 'events.gif',
+  //       thumbnail: 'events.png',
+  //       showOutside: true,
+  //     },
+  //     {
+  //       name: 'Users',
+  //       // condition: true,
+  //       condition:
+  //         this.userDetails?.designation == 1 ||
+  //         this.userDetails?.designation == 4,
+  //       routerLink: 'users',
+  //       image: 'users.gif',
+  //       thumbnail: 'users.png',
+  //       // showOutside: true,
+  //       showOutside:
+  //         this.userDetails?.designation == 1 ||
+  //         this.userDetails?.designation == 4,
+  //     },
+  //     {
+  //       name: 'Reports',
+  //       condition: true,
+  //       routerLink: 'reports',
+  //       image: 'reports.gif',
+  //       thumbnail: 'reports.png',
+  //       showOutside: true,
+  //     },
+  //     {
+  //       name: 'Settings',
+  //       condition: true,
+  //       routerLink: 'settings',
+  //       image: 'settings.gif',
+  //       thumbnail: 'settings.png',
+  //       showOutside: false,
+  //     },
+  //   ];
+  //   this.subFeatureMenuItems = isEmployee
+  //     ? employeeMenuItems
+  //     : nonEmployeeMenuItems;
+  // }
 
   ngOnDestroy() {
     if (this.subscription) {

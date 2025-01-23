@@ -23,11 +23,12 @@ export class UsersComponent implements OnInit {
   appliedFilter: {};
   searchFilter: any = {};
   filterConfig: any[] = [];
-  userDetails: any;
+  capabilities: any;
   designationDetails = projectConstantsLocal.DESIGNATION_ENTITIES;
   version = projectConstantsLocal.VERSION_DESKTOP;
   users: any = [];
   isPasswordVisible: boolean = false;
+  currentYear: number;
   constructor(
     private location: Location,
     private confirmationService: ConfirmationService,
@@ -48,9 +49,9 @@ export class UsersComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    let userDetails =
-      this.localStorageService.getItemFromLocalStorage('userDetails');
-    this.userDetails = userDetails.user;
+    this.currentYear = this.employeesService.getCurrentYear();
+    this.capabilities = this.employeesService.getUserRbac();
+    console.log('capabilities', this.capabilities);
     this.setFilterConfig();
     const storedAppliedFilter = localStorage.getItem('usersAppliedFilter');
     if (storedAppliedFilter) {
@@ -255,7 +256,6 @@ export class UsersComponent implements OnInit {
   }
   confirmDelete(user) {
     this.confirmationService.confirm({
-      // message: 'Are you sure you want to delete this User?',
       message: `Are you sure you want to delete this User ? <br>
       User Name: ${user.username}<br>
       User ID: ${user.userId}

@@ -26,7 +26,6 @@ export class CreateComponent implements OnInit {
   incentiveForm: UntypedFormGroup;
   moment: any;
   activeItem: any;
-  userDetails: any;
   incentiveId?: number;
   items: any[];
   version = projectConstantsLocal.VERSION_DESKTOP;
@@ -37,6 +36,7 @@ export class CreateComponent implements OnInit {
   firstMonthFiles: any[] = [];
   secondMonthFiles: any[] = [];
   thirdMonthFiles: any[] = [];
+  currentYear: number;
   constructor(
     private location: Location,
     private formBuilder: UntypedFormBuilder,
@@ -83,10 +83,10 @@ export class CreateComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.currentYear = this.employeesService.getCurrentYear();
     this.initializeForm();
     this.setIncentivesList();
     this.setupDropdownListener();
-    this.loadUserDetails();
     this.loadEmployees();
     this.setupActiveItemTabs();
   }
@@ -131,19 +131,12 @@ export class CreateComponent implements OnInit {
       });
   }
 
-  loadUserDetails() {
-    const userDetails =
-      this.localStorageService.getItemFromLocalStorage('userDetails');
-    if (userDetails) {
-      this.userDetails = userDetails.user;
-    }
-  }
-
   loadEmployees(filter: any = {}) {
     this.loading = true;
     if (this.actionType === 'create') {
       filter['employeeInternalStatus-eq'] = 1;
     }
+    filter['sort'] = 'joiningDate,asc';
     this.employeesService.getEmployees(filter).subscribe(
       (response: any) => {
         this.employees = response;

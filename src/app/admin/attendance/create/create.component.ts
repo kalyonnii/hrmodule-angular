@@ -27,6 +27,7 @@ export class CreateComponent {
   employeeDetails: any[] = [];
   attendanceId: any;
   attendanceOptions = projectConstantsLocal.ATTENDANCE_OPTIONS;
+  currentYear: number;
   constructor(
     private location: Location,
     private employeesService: EmployeesService,
@@ -69,6 +70,7 @@ export class CreateComponent {
     ];
   }
   ngOnInit(): void {
+    this.currentYear = this.employeesService.getCurrentYear();
     this.loadEmployees(this.currentTableEvent);
   }
   getAttendanceById(filter = {}) {

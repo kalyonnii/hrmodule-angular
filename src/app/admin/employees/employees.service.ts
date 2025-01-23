@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { DateTimeProcessorService } from 'src/app/services/date-time-processor.service';
+import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { ServiceMeta } from 'src/app/services/service-meta';
 
 @Injectable({
@@ -9,11 +9,13 @@ import { ServiceMeta } from 'src/app/services/service-meta';
 })
 export class EmployeesService {
   moment: any;
+  // loading: any;
   private url = 'https://s3.thefintalk.in/offerletterformat/index.html';
-
+  // designations: any = [];
   constructor(
     private serviceMeta: ServiceMeta,
     private http: HttpClient,
+    private localStorageService: LocalStorageService,
     private dateTimeProcessor: DateTimeProcessorService
   ) {
     this.moment = this.dateTimeProcessor.getMoment();
@@ -57,6 +59,45 @@ export class EmployeesService {
     });
     return tempDiv.innerHTML;
   }
+  getUserRbac() {
+    let userDetails =
+      this.localStorageService.getItemFromLocalStorage('userDetails');
+    let user = userDetails?.user || {};
+    if (!user?.rbac) {
+      console.warn('RBAC not found for the user');
+      return {};
+    }
+    let rbac = user.rbac.split(',');
+    let capabilities = {
+      employee: rbac.includes('employee'),
+      employeeAttendance: rbac.includes('employeeAttendance'),
+      employeePayroll: rbac.includes('employeePayroll'),
+      employeeLeaves: rbac.includes('employeeLeaves'),
+      employeeIncentives: rbac.includes('employeeIncentives'),
+      employeeSalaryHikes: rbac.includes('employeeSalaryHikes'),
+      ipAddress: rbac.includes('ipAddress'),
+      adminEmployees: rbac.includes('adminEmployees'),
+      interviews: rbac.includes('interviews'),
+      adminAttendance: rbac.includes('adminAttendance'),
+      adminPayroll: rbac.includes('adminPayroll'),
+      adminLeaves: rbac.includes('adminLeaves'),
+      holidays: rbac.includes('holidays'),
+      adminIncentives: rbac.includes('adminIncentives'),
+      departments: rbac.includes('departments'),
+      users: rbac.includes('users'),
+      adminSalaryHikes: rbac.includes('adminSalaryHikes'),
+      events: rbac.includes('events'),
+      reports: rbac.includes('reports'),
+      passwordView: rbac.includes('passwordView'),
+      delete: rbac.includes('delete'),
+    };
+    return capabilities;
+  }
+  // current year
+  getCurrentYear(): number {
+    return new Date().getFullYear();
+  }
+
   //NODE MAILER
   sendTerminationmail(data) {
     const url = 'mail/terminationmail';
@@ -94,6 +135,34 @@ export class EmployeesService {
   getEmployeesCount(filter = {}) {
     const url = 'employees/total';
     return this.serviceMeta.httpGet(url, null, filter);
+  }
+  //IPADDRESS
+  createIpAddress(data) {
+    const url = 'ipAddress';
+    return this.serviceMeta.httpPost(url, data);
+  }
+  getIpAddress(filter = {}) {
+    const url = 'ipAddress';
+    return this.serviceMeta.httpGet(url, null, filter);
+  }
+
+  updateIpAddress(ipAddressId, data) {
+    const url = 'ipAddress/' + ipAddressId;
+    return this.serviceMeta.httpPut(url, data);
+  }
+
+  getIpAddressById(ipAddressId, filter = {}) {
+    const url = 'ipAddress/' + ipAddressId;
+    return this.serviceMeta.httpGet(url, null, filter);
+  }
+
+  getIpAddressCount(filter = {}) {
+    const url = 'ipAddress/total';
+    return this.serviceMeta.httpGet(url, null, filter);
+  }
+  deleteIpAddress(ipAddressId, filter = {}) {
+    const url = 'ipAddress/' + ipAddressId;
+    return this.serviceMeta.httpDelete(url, null, filter);
   }
   //HOLIDAYS
   createHoliday(data) {
@@ -319,7 +388,6 @@ export class EmployeesService {
     const url = 'designations/total';
     return this.serviceMeta.httpGet(url, null, filter);
   }
-
   //Hikes
   createSalaryHike(data) {
     const url = 'salaryhikes';

@@ -28,7 +28,7 @@
 <div *ngIf="loading">
   <app-preloader></app-preloader>
 </div>
-<div class="container-fluid">
+<div class="container-fluid" *ngIf="!loading">
   <div class="row">
     <div class="d-flex flex-wrap justify-content-start">
       <ng-container *ngFor="let item of countsAnalytics">
@@ -61,7 +61,7 @@
     </div>
   </div>
 </div>
-<div class="text-capitalize table-card">
+<div class="text-capitalize table-card" *ngIf="!loading">
   <p-table
     #employeesTable
     [value]="employees"
@@ -159,28 +159,28 @@
     </ng-template>
     <ng-template pTemplate="header" let-columns>
       <tr>
-        <th pSortableColumn="employeeId">
+        <th pSortableColumn="employeeId" class="text-nowrap">
           Employee Id <p-sortIcon [field]="'employeeId'"></p-sortIcon>
         </th>
-        <th pSortableColumn="employeeName">
+        <th pSortableColumn="employeeName" class="text-nowrap">
           Name <p-sortIcon [field]="'employeeName'"></p-sortIcon>
         </th>
-        <th pSortableColumn="designationName">
+        <th pSortableColumn="designationName" class="text-nowrap">
           Designation <p-sortIcon [field]="'designationName'"></p-sortIcon>
         </th>
-        <th pSortableColumn="primaryPhone">
+        <th pSortableColumn="primaryPhone" class="text-nowrap">
           Mobile <p-sortIcon [field]="'primaryPhone'"></p-sortIcon>
         </th>
-        <th pSortableColumn="joiningDate">
+        <th pSortableColumn="joiningDate" class="text-nowrap">
           Joining Date <p-sortIcon [field]="'joiningDate'"></p-sortIcon>
         </th>
-        <th pSortableColumn="ofcBranchName">
+        <th pSortableColumn="ofcBranchName" class="text-nowrap">
           Branch <p-sortIcon [field]="'ofcBranchName'"></p-sortIcon>
         </th>
-        <th pSortableColumn="createdOn">
+        <th pSortableColumn="createdOn" class="text-nowrap">
           Created Date <p-sortIcon [field]="'createdOn'"></p-sortIcon>
         </th>
-        <th pSortableColumn="employeeInternalStatus">
+        <th pSortableColumn="employeeInternalStatus" class="text-nowrap">
           Status <p-sortIcon [field]="'employeeInternalStatus'"></p-sortIcon>
         </th>
         <th>Actions</th>
@@ -193,7 +193,7 @@
             employee.employeeId
           }}</span>
         </td>
-        <td>
+        <td class="text-nowrap">
           <div class="d-flex align-items-center">
             <span class="me-2">
               <ng-container
@@ -229,14 +229,14 @@
             </b>
           </div>
         </td>
-        <td>
+        <td class="text-nowrap">
           <span
             class="table-column-data"
             *ngIf="employee.designationName; else noData"
             >{{ employee.designationName }}</span
           >
         </td>
-        <td>
+        <td class="text-nowrap">
           <span
             class="table-column-data"
             *ngIf="employee.primaryPhone; else noData"
@@ -244,28 +244,28 @@
             <i class="fa fa-phone"></i> &nbsp;{{ employee.primaryPhone }}</span
           >
         </td>
-        <td>
+        <td class="text-nowrap">
           <span
             class="table-column-data"
             *ngIf="employee.joiningDate; else noData"
             >{{ employee.joiningDate | date : "mediumDate" }}</span
           >
         </td>
-        <td>
+        <td class="text-nowrap">
           <span
             class="table-column-data"
             *ngIf="employee.ofcBranchName; else noData"
             >{{ employee.ofcBranchName }}</span
           >
         </td>
-        <td>
+        <td class="text-nowrap">
           <span
             class="table-column-data"
             *ngIf="employee.createdOn; else noData"
             >{{ employee.createdOn | date : "mediumDate" }}</span
           >
         </td>
-        <td>
+        <td class="text-nowrap">
           <span
             class="table-column-data fw-bold statusdata"
             *ngIf="employee.employeeInternalStatus; else noData"
@@ -319,7 +319,7 @@
 <ng-template #noData> - </ng-template>
 <footer class="p-2 text-center text-lg-start mt-3" style="color: #878a99">
   <div class="text-center mb-3 fw-bold">
-    © 2024 <span style="color: #1e4079">The</span>&nbsp;<b
+    © {{ currentYear }} <span style="color: #1e4079">The</span>&nbsp;<b
       style="color: #51c297"
       >Fintalk</b
     >. | All Rights Reserved

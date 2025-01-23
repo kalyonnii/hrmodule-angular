@@ -34,7 +34,6 @@
   [closable]="true"
   [responsive]="true"
   class="dialogbox"
-  [style]="{ width: '50vw' }"
   header="Incentive Details"
   (onHide)="clearDialog()"
 >
@@ -197,7 +196,9 @@
     #incentivesTable
     [value]="incentives"
     [sortOrder]="-1"
-    [sortField]="'createdOn'"
+    [sortField]="
+      capabilities.employeeIncentives ? 'incentiveApplicableMonth' : 'createdOn'
+    "
     [lazy]="true"
     (onLazyLoad)="loadIncentives($event)"
     dataKey="id"
@@ -213,7 +214,7 @@
     styleClass="p-datatable-customers"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Incentives"
   >
-    <ng-template pTemplate="caption">
+    <ng-template pTemplate="caption" *ngIf="capabilities.adminIncentives">
       <div class="row">
         <div class="col-md-4 mt-1 mb-1 no-padding-small">
           <div class="p-inputgroup">
@@ -276,20 +277,20 @@
     </ng-template>
     <ng-template pTemplate="header" let-columns>
       <tr>
-        <th pSortableColumn="incentiveId">
+        <th pSortableColumn="incentiveId" class="text-nowrap">
           Incentive Id <p-sortIcon field="incentiveId"></p-sortIcon>
         </th>
-        <th pSortableColumn="employeeName">
+        <th pSortableColumn="employeeName" class="text-nowrap">
           Employee Name <p-sortIcon field="employeeName"></p-sortIcon>
         </th>
-        <th pSortableColumn="incentiveApplicableMonth">
+        <th pSortableColumn="incentiveApplicableMonth" class="text-nowrap">
           Applicable Month
           <p-sortIcon field="incentiveApplicableMonth"></p-sortIcon>
         </th>
-        <th pSortableColumn="incentiveAmount">
+        <th pSortableColumn="incentiveAmount" class="text-nowrap">
           Incentive Amount <p-sortIcon field="incentiveAmount"></p-sortIcon>
         </th>
-        <th pSortableColumn="createdOn">
+        <th pSortableColumn="createdOn" class="text-nowrap">
           created Date <p-sortIcon field="createdOn"></p-sortIcon>
         </th>
         <th>Actions</th>
@@ -304,7 +305,7 @@
             >{{ incentive.incentiveId }}</span
           >
         </td>
-        <td>
+        <!-- <td>
           <b>
             <span
               class="table-column-data"
@@ -312,6 +313,45 @@
               >{{ incentive.employeeName | capitalizeFirst }}</span
             >
           </b>
+        </td> -->
+        <td class="text-nowrap">
+          <div class="d-flex align-items-center">
+            <span class="me-2">
+              <ng-container
+                *ngIf="
+                  incentive &&
+                    incentive.passPhoto &&
+                    incentive.passPhoto.length > 0;
+                  else defaultImage
+                "
+              >
+                <a [href]="'//' + incentive.passPhoto[0]" target="_blank">
+                  <img
+                    [src]="'//' + incentive.passPhoto[0]"
+                    alt="Image"
+                    class="employeeImage"
+                    style="height: 40px; width: 40px"
+                  />
+                </a>
+              </ng-container>
+              <ng-template #defaultImage>
+                <img
+                  src="../../../assets/images/profile/user.png"
+                  alt="Default Image"
+                  class="employeeImage"
+                  style="height: 40px; width: 40px"
+                />
+              </ng-template>
+            </span>
+            <b>
+              <span
+                *ngIf="incentive.employeeName; else noData"
+                class="table-column-data"
+              >
+                {{ incentive.employeeName | capitalizeFirst }}
+              </span>
+            </b>
+          </div>
         </td>
         <td>
           <span
@@ -347,6 +387,7 @@
                 (click)="showUserDetails(incentive)"
               ></button>
               <button
+                *ngIf="capabilities.adminIncentives"
                 pButton
                 pRipple
                 type="button"
@@ -356,7 +397,7 @@
                 (click)="updateIncentive(incentive.incentiveId)"
               ></button>
               <button
-                *ngIf="userDetails?.designation == 4"
+                *ngIf="capabilities.delete"
                 pButton
                 type="button"
                 icon="fa fa-trash"
@@ -386,7 +427,7 @@
 <ng-template #noData> - </ng-template>
 <footer class="p-2 text-center text-lg-start mt-3" style="color: #878a99">
   <div class="text-center mb-3 fw-bold">
-    © 2024 <span style="color: #1e4079">The</span>&nbsp;<b
+    © {{ currentYear }} <span style="color: #1e4079">The</span>&nbsp;<b
       style="color: #51c297"
       >Fintalk</b
     >. | All Rights Reserved

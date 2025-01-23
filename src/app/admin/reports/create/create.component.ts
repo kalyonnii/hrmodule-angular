@@ -62,6 +62,7 @@ export class CreateComponent {
   financeStatus: any;
   invoiceCategories: any;
   version = projectConstantsLocal.VERSION_DESKTOP;
+  currentYear: number;
   constructor(
     private location: Location,
     private employeesService: EmployeesService,
@@ -84,14 +85,6 @@ export class CreateComponent {
       },
       { label: 'Generate Report' },
     ];
-    // Promise.all([this.getDesignations(), this.generateYears()])
-    //   .then(() => {
-    //     this.setReportsList();
-    //     console.log('called');
-    //   })
-    //   .catch((error) => {
-    //     console.error('Error loading data:', error);
-    //   });
 
     this.moment = this.dateTimeProcessor.getMoment();
     this.activatedRoute.queryParams.subscribe((queryParams: any) => {
@@ -104,9 +97,9 @@ export class CreateComponent {
     });
   }
   ngOnInit() {
+    this.currentYear = this.employeesService.getCurrentYear();
     this.getDesignations();
     this.generateYears();
-    // this.setReportsList();
   }
   updateBreadcrumb(): void {
     this.breadCrumbItems = [

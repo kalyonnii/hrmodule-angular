@@ -78,21 +78,23 @@
   >
     <ng-template pTemplate="header">
       <tr>
-        <th>Employee Id</th>
-        <th>Custom Employee Id</th>
+        <th>#</th>
+        <th class="text-nowrap">Employee Id</th>
+        <th class="text-nowrap">Custom Employee Id</th>
         <th>Employee Name</th>
         <th>Designation</th>
-        <th>Joining Date</th>
+        <th class="text-nowrap">Joining Date</th>
         <th>Attendance Status</th>
         <th>Check-in Time</th>
         <th>Check-Out Time</th>
       </tr>
     </ng-template>
 
-    <ng-template pTemplate="body" let-employee>
+    <ng-template pTemplate="body" let-employee let-i="rowIndex">
       <tr>
+        <td>{{ i + 1 }}</td>
         <td>{{ employee.employeeId }}</td>
-        <td>{{ employee.customEmployeeId | uppercase}}</td>
+        <td>{{ employee.customEmployeeId | uppercase }}</td>
         <td>
           <div class="d-flex align-items-center">
             <span class="me-2">
@@ -222,7 +224,7 @@
 </div>
 <footer class="p-2 text-center text-lg-start mt-3" style="color: #878a99">
   <div class="text-center mb-3 fw-bold">
-    © 2024 <span style="color: #1e4079">The</span>&nbsp;<b
+    © {{ currentYear }} <span style="color: #1e4079">The</span>&nbsp;<b
       style="color: #51c297"
       >Fintalk</b
     >. | All Rights Reserved

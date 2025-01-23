@@ -8,6 +8,7 @@ import { DateTimeProcessorService } from 'src/app/services/date-time-processor.s
 import { projectConstantsLocal } from 'src/app/constants/project-constants';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import * as html2pdf from 'html2pdf.js';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 
 @Component({
@@ -18,7 +19,6 @@ import { LocalStorageService } from 'src/app/services/local-storage.service';
 export class OfferletterComponent {
   breadCrumbItems: any = [];
   moment: any;
-  userDetails: any;
   @ViewChild('pdfContent', { static: false }) pdfContent!: ElementRef;
   loading: boolean = false;
   version = projectConstantsLocal.VERSION_DESKTOP;
@@ -26,6 +26,7 @@ export class OfferletterComponent {
   designations: any = [];
   employeeId: string | null = null;
   offerLetterContent: string | undefined;
+  currentYear: number;
   constructor(
     private location: Location,
     private route: ActivatedRoute,
@@ -54,14 +55,10 @@ export class OfferletterComponent {
   }
 
   ngOnInit(): void {
+    this.currentYear = this.employeesService.getCurrentYear();
     this.employeeId = this.route.snapshot.paramMap.get('id');
     if (this.employeeId) {
       this.getEmployeeById(this.employeeId);
-    }
-    const userDetails =
-      this.localStorageService.getItemFromLocalStorage('userDetails');
-    if (userDetails) {
-      this.userDetails = userDetails.user;
     }
   }
   roundToLPA(amount: number): string {
@@ -69,34 +66,57 @@ export class OfferletterComponent {
     return lakhs.toFixed(1) + ' LPA';
   }
 
+  // generatePDF() {
+  //   this.loading = true;
+  //   const pageElements = document.querySelectorAll('.page');
+  //   const pdf = new jsPDF('p', 'mm', 'a4');
+  //   const imgWidth = 190;
+  //   const pageHeight = 297;
+  //   const addPagesToPDF = async () => {
+  //     for (let i = 0; i < pageElements.length; i++) {
+  //       const pageElement = pageElements[i];
+  //       await html2canvas(pageElement as HTMLElement).then((canvas) => {
+  //         const imgData = canvas.toDataURL('image/png');
+  //         const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  //         pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+  //         if (i < pageElements.length - 1) {
+  //           pdf.addPage();
+  //         }
+  //       });
+  //     }
+  //   };
+  //   addPagesToPDF()
+  //     .then(() => {
+  //       pdf.save('Offerletter.pdf');
+  //       this.loading = false;
+  //     })
+  //     .catch((error) => {
+  //       console.error('Error generating PDF:', error);
+  //       this.loading = false;
+  //     });
+  // }
+
+  //  generatePDF() {
+  //     const element = document.getElementById('content');
+  //     if (element) {
+  //       html2pdf().from(element).save('IncrementLetter.pdf');
+  //     }
+  //   }
   generatePDF() {
-    this.loading = true;
-    const pageElements = document.querySelectorAll('.page');
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const imgWidth = 190;
-    const pageHeight = 297;
-    const addPagesToPDF = async () => {
-      for (let i = 0; i < pageElements.length; i++) {
-        const pageElement = pageElements[i];
-        await html2canvas(pageElement as HTMLElement).then((canvas) => {
-          const imgData = canvas.toDataURL('image/png');
-          const imgHeight = (canvas.height * imgWidth) / canvas.width;
-          pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
-          if (i < pageElements.length - 1) {
-            pdf.addPage();
-          }
+    const element = document.getElementById('content');
+    if (element) {
+      this.loading = true; // Show loading indicator
+      html2pdf()
+        .from(element)
+        .save('OfferLetter.pdf')
+        .then(() => {
+          this.loading = false; // Hide loading indicator after success
+        })
+        .catch((error) => {
+          console.error('PDF generation error:', error);
+          this.loading = false; // Hide loading indicator on error
         });
-      }
-    };
-    addPagesToPDF()
-      .then(() => {
-        pdf.save('Offerletter.pdf');
-        this.loading = false;
-      })
-      .catch((error) => {
-        console.error('Error generating PDF:', error);
-        this.loading = false;
-      });
+    }
   }
   getOfferLetterDate(joiningDate: string): Date {
     const date = new Date(joiningDate);

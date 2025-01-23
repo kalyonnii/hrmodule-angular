@@ -25,6 +25,7 @@ export class HeaderComponent implements OnInit {
   currentTableEvent: any;
   todayEventCount: any = 0;
   loading: any;
+  capabilities: any;
   constructor(
     private authService: AuthService,
     private routingService: RoutingService,
@@ -37,17 +38,24 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {
     this.userDetails =
       this.localStorageService.getItemFromLocalStorage('userDetails');
+    this.capabilities = this.employeesService.getUserRbac();
     if (this.userDetails && this.userDetails.user) {
       this.userDetails = this.userDetails.user;
-      this.userDetails.userImage = JSON.parse(this.userDetails.userImage);
+      if (this.capabilities.employee) {
+        this.userDetails.passPhoto = JSON.parse(this.userDetails.passPhoto);
+      } else {
+        this.userDetails.userImage = JSON.parse(this.userDetails.userImage);
+      }
     }
-    Promise.all([this.getEmployees(), this.getInterviews()])
-      .then(() => {
-        this.setBirthdays();
-      })
-      .catch((error) => {
-        console.error('Error loading data:', error);
-      });
+    if (!this.capabilities.employee) {
+      Promise.all([this.getEmployees(), this.getInterviews()])
+        .then(() => {
+          this.setBirthdays();
+        })
+        .catch((error) => {
+          console.error('Error loading data:', error);
+        });
+    }
   }
   userLogout() {
     this.authService

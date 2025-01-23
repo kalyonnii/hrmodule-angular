@@ -30,6 +30,8 @@ export class IncentivesComponent implements OnInit {
   incentives: any = [];
   version = projectConstantsLocal.VERSION_DESKTOP;
   moment: any;
+  capabilities: any;
+  currentYear: number;
   constructor(
     private location: Location,
     private confirmationService: ConfirmationService,
@@ -58,11 +60,14 @@ export class IncentivesComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.currentYear = this.employeesService.getCurrentYear();
     const userDetails =
       this.localStorageService.getItemFromLocalStorage('userDetails');
     if (userDetails) {
       this.userDetails = userDetails.user;
     }
+    this.capabilities = this.employeesService.getUserRbac();
+    console.log('capabilities', this.capabilities);
     this.setupActiveItemTabs();
     const storedMonth = localStorage.getItem('selectedIncentiveMonth');
     if (storedMonth) {
@@ -128,7 +133,11 @@ export class IncentivesComponent implements OnInit {
     this.currentTableEvent = event;
     let api_filter = this.employeesService.setFiltersFromPrimeTable(event);
     api_filter = Object.assign({}, api_filter, this.searchFilter);
-    api_filter['incentiveApplicableMonth-eq'] = this.selectedMonth;
+    if (this.capabilities.employeeIncentives) {
+      api_filter['employeeId-eq'] = this.userDetails?.employeeId;
+    } else {
+      api_filter['incentiveApplicableMonth-eq'] = this.selectedMonth;
+    }
     if (api_filter) {
       this.getIncentivesCount(api_filter);
       this.getIncentives(api_filter);
@@ -157,10 +166,21 @@ export class IncentivesComponent implements OnInit {
   getIncentives(filter = {}) {
     this.apiLoading = true;
     this.employeesService.getIncentives(filter).subscribe(
-      (response) => {
-        this.incentives = response;
-        console.log('incentives', this.incentives);
-        this.apiLoading = false;
+      (incentiveresponse: any) => {
+        this.employeesService.getEmployees().subscribe(
+          (employeeResponse: any) => {
+            this.incentives = this.mergeIncentivesWithEmployees(
+              incentiveresponse,
+              employeeResponse
+            );
+            console.log('Merged Incentives Data:', this.incentives);
+            this.apiLoading = false;
+          },
+          (error: any) => {
+            this.apiLoading = false;
+            this.toastService.showError(error);
+          }
+        );
       },
       (error: any) => {
         this.apiLoading = false;
@@ -168,31 +188,15 @@ export class IncentivesComponent implements OnInit {
       }
     );
   }
-
-  // getFormattedMonthYear(date: string): string {
-  //   if (!date) return '';
-  //   const [year, month] = date.split('-');
-  //   const months = [
-  //     'Jan',
-  //     'Feb',
-  //     'Mar',
-  //     'Apr',
-  //     'May',
-  //     'Jun',
-  //     'Jul',
-  //     'Aug',
-  //     'Sep',
-  //     'Oct',
-  //     'Nov',
-  //     'Dec',
-  //   ];
-  //   const monthName = months[parseInt(month, 10) - 1];
-  //   return `${monthName} ${year}`;
-  // }
+  mergeIncentivesWithEmployees(incentive: any[], employees: any[]): any[] {
+    return incentive.map((p) => {
+      const employee = employees.find((e) => e.employeeId === p.employeeId);
+      return employee ? { ...p, passPhoto: employee.passPhoto } : p;
+    });
+  }
 
   confirmDelete(incentive) {
     this.confirmationService.confirm({
-      // message: 'Are you sure you want to delete this Incentive?',
       message: `Are you sure you want to delete this Incentive ? <br>
               Employee Name: ${incentive.employeeName}<br>
               Incentive ID: ${incentive.incentiveId}

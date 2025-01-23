@@ -53,6 +53,12 @@
   .desktop-only img {
     display: none;
   }
+  .desktop-only {
+    display: none;
+  }
+  .desktop-only .alerticon {
+    display: block;
+  }
 }
 
 .header-card {
@@ -80,7 +86,7 @@
 }
 .employeeImage {
   border-radius: 50px;
-  border: 3px solid #a2acb9 !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 .icon-container {
   position: relative;

@@ -95,6 +95,7 @@
             <div class="flex-grow-1 me-2"></div>
             <div class="d-flex align-items-center pointer-cursor">
               <button
+                *ngIf="capabilities.adminAttendance"
                 pButton
                 pRipple
                 type="button"
@@ -105,6 +106,7 @@
                 &nbsp;Month-wise Attendance
               </button>
               <button
+                *ngIf="capabilities.adminAttendance"
                 pButton
                 pRipple
                 type="button"
@@ -122,27 +124,48 @@
       </div>
     </ng-template>
     <ng-template pTemplate="header">
-      <tr>
+      <tr *ngIf="capabilities.adminAttendance">
+        <th pSortableColumn="attendanceId" class="text-nowrap">
+          Attendance Id <p-sortIcon [field]="'attendanceId'"></p-sortIcon>
+        </th>
+        <th pSortableColumn="attendanceDate" class="text-nowrap">
+          Attendance Date <p-sortIcon [field]="'attendanceDate'"></p-sortIcon>
+        </th>
+        <th>Pesent</th>
+        <th>Late</th>
+        <th class="text-nowrap">Half Day</th>
+        <th>Leave</th>
+        <th pSortableColumn="createdBy" class="text-nowrap">
+          Created By <p-sortIcon [field]="'createdBy'"></p-sortIcon>
+        </th>
+        <th pSortableColumn="createdOn" class="text-nowrap">
+          Created On <p-sortIcon [field]="'createdOn'"></p-sortIcon>
+        </th>
+        <th class="text-nowrap">Status</th>
+      </tr>
+      <tr *ngIf="capabilities.employeeAttendance">
         <th pSortableColumn="attendanceId">
           Attendance Id <p-sortIcon [field]="'attendanceId'"></p-sortIcon>
         </th>
         <th pSortableColumn="attendanceDate">
           Attendance Date <p-sortIcon [field]="'attendanceDate'"></p-sortIcon>
         </th>
-        <th>Pesent</th>
-        <th>Late</th>
-        <th>Half Day</th>
-        <th>Leave</th>
+        <th>Status</th>
+        <th>Check in Time</th>
+        <th>Check Out Time</th>
         <th pSortableColumn="createdBy">
           Created By <p-sortIcon [field]="'createdBy'"></p-sortIcon>
         </th>
         <th pSortableColumn="createdOn">
           Created On <p-sortIcon [field]="'createdOn'"></p-sortIcon>
         </th>
-        <th>Status</th>
       </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-attendance>
+    <ng-template
+      pTemplate="body"
+      let-attendance
+      *ngIf="capabilities.adminAttendance"
+    >
       <tr>
         <td>{{ attendance.attendanceId }}</td>
         <td>
@@ -188,7 +211,7 @@
                 (click)="updateAttendance(attendance.attendanceId)"
               ></button>
               <button
-                *ngIf="userDetails?.designation == 4"
+                *ngIf="capabilities.delete"
                 pButton
                 type="button"
                 icon="fa fa-trash"
@@ -198,6 +221,53 @@
               ></button>
             </div>
           </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template
+      pTemplate="body"
+      let-employee
+      *ngIf="capabilities.employeeAttendance"
+    >
+      <tr>
+        <td>{{ employee.attendanceId }}</td>
+        <td>{{ employee.attendanceDate | date }}</td>
+        <td>
+          <ng-container [ngSwitch]="employee.status">
+            <i
+              *ngSwitchCase="'Present'"
+              pTooltip="Present"
+              class="fa fa-check-circle text-success"
+              title="Present"
+            ></i>
+            <i
+              *ngSwitchCase="'Absent'"
+              pTooltip="Absent"
+              class="fa fa-circle-xmark text-danger"
+              title="Absent"
+            ></i>
+            <i
+              *ngSwitchCase="'Half-day'"
+              pTooltip="Half-day"
+              class="fa fa-circle-half-stroke text-warning"
+              title="Half-day"
+            ></i>
+            <i
+              *ngSwitchCase="'Late'"
+              pTooltip="Late"
+              class="fa fa-circle-exclamation text-primary"
+              title="Late"
+            ></i>
+            <span *ngSwitchDefault>{{ employee.status }}</span>
+          </ng-container>
+        </td>
+        <td>{{ employee.checkInTime }}</td>
+        <td>{{ employee.checkOutTime }}</td>
+        <td>
+          {{ employee.createdBy }}
+        </td>
+        <td>
+          {{ employee.createdOn | date }}
         </td>
       </tr>
     </ng-template>
@@ -217,7 +287,7 @@
 </div>
 <footer class="p-2 text-center text-lg-start mt-3" style="color: #878a99">
   <div class="text-center mb-3 fw-bold">
-    © 2024 <span style="color: #1e4079">The</span>&nbsp;<b
+    © {{ currentYear }} <span style="color: #1e4079">The</span>&nbsp;<b
       style="color: #51c297"
       >Fintalk</b
     >. | All Rights Reserved

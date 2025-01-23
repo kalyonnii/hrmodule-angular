@@ -167,6 +167,10 @@ export class FilterComponent {
               api_filter[data.field + '-' + data.filterType] =
                 phoneNumber.e164Number.split(phoneNumber.dialCode)[1];
             }
+          } else if (data.type == 'month') {
+            api_filter[data.field + '-' + data.filterType] = this.moment(
+              this.filter[data.field + '-' + data.filterType]
+            ).format('YYYY-MM');
           } else {
             if (data.prefix) {
               api_filter[data.field + '-' + data.filterType] =

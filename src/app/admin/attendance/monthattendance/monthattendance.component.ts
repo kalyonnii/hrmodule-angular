@@ -26,6 +26,8 @@ export class MonthattendanceComponent implements OnInit {
   monthDates: Date[] = [];
   attendance: any = [];
   loading: boolean = false;
+  currentYear: number;
+  apiLoading: any;
   constructor(
     private location: Location,
     private toastService: ToastService,
@@ -52,7 +54,9 @@ export class MonthattendanceComponent implements OnInit {
       { label: 'Month-wise Attendance' },
     ];
   }
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.currentYear = this.employeesService.getCurrentYear();
+  }
   exportToExcel() {
     this.loading = true;
     console.log(this.loading);
@@ -112,7 +116,7 @@ export class MonthattendanceComponent implements OnInit {
       const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);
       const wb: XLSX.WorkBook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, 'Attendance Data');
-      XLSX.writeFile(wb, `Attendance_${this.selectedMonth}.xlsx`);
+      XLSX.writeFile(wb, `${this.displayMonth} Attendance.xlsx`);
       this.loading = false;
     } catch (error) {
       console.error('Error exporting to Excel:', error);
@@ -209,16 +213,16 @@ export class MonthattendanceComponent implements OnInit {
   }
   getAttendance(): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.loading = true;
+      this.apiLoading = true;
       this.employeesService.getAttendance().subscribe(
         (response) => {
           this.attendance = response;
           console.log('Attendance:', this.attendance);
-          this.loading = false;
+          this.apiLoading = false;
           resolve();
         },
         (error: any) => {
-          this.loading = false;
+          this.apiLoading = false;
           this.toastService.showError(error);
           reject(error);
         }
@@ -252,7 +256,7 @@ export class MonthattendanceComponent implements OnInit {
     );
   }
   getEmployees(filter = {}) {
-    this.loading = true;
+    this.apiLoading = true;
     this.employeesService.getEmployees(filter).subscribe(
       (response: any) => {
         this.employees = response;
@@ -269,15 +273,15 @@ export class MonthattendanceComponent implements OnInit {
             } else {
               console.log('No attendance data available');
             }
-            this.loading = false;
+            this.apiLoading = false;
           })
           .catch((error) => {
             console.error('Error retrieving attendance data:', error);
-            this.loading = false;
+            this.apiLoading = false;
           });
       },
       (error: any) => {
-        this.loading = false;
+        this.apiLoading = false;
         this.toastService.showError(error);
       }
     );

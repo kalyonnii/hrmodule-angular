@@ -22,12 +22,13 @@ export class HolidaysComponent implements OnInit {
   holidayNameToSearch: any;
   currentTableEvent: any;
   searchFilter: any = {};
-  userDetails: any;
   filterConfig: any[] = [];
-  apiLoading:any;
+  apiLoading: any;
   years: { label: string; value: number }[] = [];
   selectedYear: number;
+  capabilities: any;
   version = projectConstantsLocal.VERSION_DESKTOP;
+  currentYear: number;
   constructor(
     private employeesService: EmployeesService,
     private location: Location,
@@ -49,11 +50,8 @@ export class HolidaysComponent implements OnInit {
     ];
   }
   ngOnInit(): void {
-    const userDetails =
-      this.localStorageService.getItemFromLocalStorage('userDetails');
-    if (userDetails) {
-      this.userDetails = userDetails.user;
-    }
+    this.currentYear = this.employeesService.getCurrentYear();
+    this.capabilities = this.employeesService.getUserRbac();
     this.setFilterConfig();
     this.generateYears();
     this.selectedYear = new Date().getFullYear();
@@ -198,7 +196,6 @@ export class HolidaysComponent implements OnInit {
   }
   confirmDelete(holiday) {
     this.confirmationService.confirm({
-      // message: 'Are you sure you want to delete this holiday?',
       message: `Are you sure you want to delete this Holiday ? <br>
               Holiday Name: ${holiday.holidayName}<br>
               Holiday ID: ${holiday.holidayId}

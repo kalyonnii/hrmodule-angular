@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { EmployeesService } from '../admin/employees/employees.service';
 
 @Component({
   selector: 'app-home',
@@ -8,5 +9,9 @@ import { Router } from '@angular/router';
 })
 export class HomeComponent implements OnInit {
   text = 'Hello, World!';
-  ngOnInit(): void {}
+  currentYear: number;
+  constructor(private employeesService: EmployeesService) {}
+  ngOnInit(): void {
+    this.currentYear = this.employeesService.getCurrentYear();
+  }
 }

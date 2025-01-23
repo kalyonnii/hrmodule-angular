@@ -2,7 +2,7 @@
   <app-preloader></app-preloader>
 </div>
 
-<div class="container-fluid mb-3">
+<div class="container-fluid mb-3" *ngIf="!loading">
   <div class="row">
     <div class="col-md-8 mt-3">
       <div class="card welcome-card" *ngIf="userDetails">
@@ -11,10 +11,14 @@
             <h4>
               Welcome Back,
               <span style="color: #8cb5fe"
-                ><b
-                  >{{ userDetails.firstName | capitalizeFirst }}
-                  {{ userDetails.lastName | capitalizeFirst }}!</b
-                ></span
+                ><b>
+                  {{
+                    capabilities.employee
+                      ? (userDetails?.employeeName | capitalizeFirst)
+                      : (userDetails?.firstName + " " + userDetails?.lastName
+                        | capitalizeFirst)
+                  }}
+                </b></span
               >
             </h4>
             <p>
@@ -22,7 +26,7 @@
               Started.
             </p>
           </div>
-          <div class="image-container">
+          <div class="image-container desktop-only">
             <p-skeleton
               *ngIf="isLoading"
               width="160px"
@@ -54,10 +58,22 @@
                     <div class="d-flex justify-content-between">
                       <div class="d-flex align-items-center">
                         <div>
-                          <div class="count-sub-title">
+                          <div
+                            class="count-sub-title"
+                            *ngIf="!capabilities.employee"
+                          >
                             {{ item.displayName }}
                           </div>
-                          <div class="count-title">
+                          <div
+                            class="count-sub-title-employee"
+                            *ngIf="capabilities.employee"
+                          >
+                            {{ item.displayName }}
+                          </div>
+                          <div
+                            class="count-title"
+                            *ngIf="!capabilities.employee"
+                          >
                             {{ item.count }}
                           </div>
                         </div>
@@ -91,8 +107,8 @@
       </div>
     </div>
     <div class="col-md-4 mt-3">
-      <div class="card attendancecard">
-        <div class="text-center d-flex justify-content-between">
+      <div class="card attendancecard" *ngIf="!capabilities.employee">
+        <div class="text-center d-flex justify-content-between mobile-only">
           <h4 class="attendance-heading">Today Attendance</h4>
           <p-calendar
             [(ngModel)]="selectedDate"
@@ -148,12 +164,12 @@
           </div>
         </div>
         <h5>Absent Employees:</h5>
-        <div class="custom-scroll-container">
+        <div class="custom-scroll-container text-capitalize">
           <p-table
             #employeesTable
             [value]="employeeDetails"
-            [sortOrder]="-1"
-            [sortField]="'createdOn'"
+            [sortOrder]="1"
+            [sortField]="'joiningDate'"
             [lazy]="true"
             (onLazyLoad)="loadEmployees($event)"
             dataKey="id"
@@ -173,12 +189,14 @@
           >
             <ng-template pTemplate="header">
               <tr>
+                <th>#</th>
                 <th>Employee</th>
                 <th>Status</th>
               </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-employee>
+            <ng-template pTemplate="body" let-employee let-i="rowIndex">
               <tr>
+                <td>{{ i + 1 }}</td>
                 <td>
                   <div class="d-flex align-items-center">
                     <span class="me-2">
@@ -239,9 +257,120 @@
           </p-table>
         </div>
       </div>
+      <div class="card p-2 employeeProfile" *ngIf="capabilities.employee">
+        <div class="card-body text-capitalize" *ngIf="employeeData">
+          <div class="row">
+            <div class="employee-info-line">
+              <span class="icon"><i class="fas fa-user"></i></span>
+              <div class="employee-label d-flex justify-content-between">
+                Name<b>:&nbsp;</b>
+              </div>
+              <div class="employee-value">
+                {{
+                  employeeData?.employeeName
+                    ? (employeeData?.employeeName | capitalizeFirst)
+                    : "-"
+                }}
+              </div>
+            </div>
+            <div class="employee-info-line">
+              <span class="icon"><i class="fas fa-id-badge"></i></span>
+              <div class="employee-label d-flex justify-content-between">
+                Custom Employee Id<b>:&nbsp;</b>
+              </div>
+              <div class="employee-value">
+                {{
+                  employeeData.customEmployeeId
+                    ? (employeeData.customEmployeeId | uppercase)
+                    : "-"
+                }}
+              </div>
+            </div>
+            <div class="employee-info-line">
+              <span class="icon"><i class="fas fa-building"></i></span>
+              <div class="employee-label d-flex justify-content-between">
+                Department<b>:&nbsp;</b>
+              </div>
+              <div class="employee-value">
+                {{
+                  employeeData.designationName
+                    ? employeeData.designationName
+                    : "-"
+                }}
+              </div>
+            </div>
+            <div class="employee-info-line">
+              <span class="icon"><i class="fas fa-calendar-alt"></i></span>
+              <div class="employee-label d-flex justify-content-between">
+                Date Of Joining<b>:&nbsp;</b>
+              </div>
+              <div class="employee-value">
+                {{
+                  employeeData.joiningDate
+                    ? (employeeData.joiningDate | date)
+                    : "-"
+                }}
+              </div>
+            </div>
+            <div class="employee-info-line">
+              <span class="icon"><i class="fas fa-briefcase"></i></span>
+              <div class="employee-label d-flex justify-content-between">
+                Office Branch<b>:&nbsp;</b>
+              </div>
+              <div class="employee-value">
+                {{
+                  employeeData.ofcBranchName ? employeeData.ofcBranchName : "-"
+                }}
+              </div>
+            </div>
+            <div class="employee-info-line">
+              <span class="icon"><i class="fas fa-money-bill-wave"></i></span>
+              <div class="employee-label d-flex justify-content-between">
+                CTC<b>:&nbsp;</b>
+              </div>
+              <div class="employee-value">
+                Rs.
+                {{
+                  employeeData.salary
+                    ? roundToLPA(employeeData.salary * 12)
+                    : "-"
+                }}
+              </div>
+            </div>
+            <div class="employee-info-line" *ngIf="employeeData.totalSalary">
+              <span class="icon">
+                <i class="fas fa-wallet"></i>
+              </span>
+              <div class="employee-label d-flex justify-content-between">
+                Salary With Hike<b>:&nbsp;</b>
+              </div>
+              <div class="employee-value">
+                Rs.
+                {{
+                  employeeData.totalSalary
+                    ? roundToLPA(employeeData.totalSalary * 12)
+                    : "-"
+                }}
+              </div>
+            </div>
+            <div class="d-flex justify-content-center">
+              <button
+                pButton
+                pRipple
+                icon="fa fa-cloud-arrow-up"
+                type="button"
+                class="me-2 rightbtn"
+                (click)="employeeProfile(this.userDetails.employeeId)"
+              >
+                &nbsp;View Profile
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="row">
+  <div class="row" *ngIf="!capabilities.employee">
     <div class="col-md-12 col-12">
       <div class="row mt-3">
         <ng-container>
@@ -307,7 +436,7 @@
   </div>
   <footer class="bg-light card text-center text-lg-start mt-3">
     <div class="text-center fw-bold">
-      © 2024 <span style="color: #1e4079">The</span>&nbsp;<b
+      © {{ currentYear }} <span style="color: #1e4079">The</span>&nbsp;<b
         style="color: #51c297"
         >Fintalk</b
       >. | All Rights Reserved

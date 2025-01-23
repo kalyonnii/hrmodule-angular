@@ -82,3 +82,14 @@
   flex: 1;
   margin-left: 5px;
 }
+@media screen and (max-width: 620px) {
+  .info-line {
+    display: block;
+  }
+  .icon {
+    display: none;
+  }
+  .value {
+    margin-left: 0;
+  }
+}

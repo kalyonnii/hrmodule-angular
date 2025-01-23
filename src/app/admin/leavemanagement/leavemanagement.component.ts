@@ -27,12 +27,14 @@ export class LeavemanagementComponent {
   leavesInternalStatusList: any = projectConstantsLocal.LEAVE_STATUS;
   version = projectConstantsLocal.VERSION_DESKTOP;
   leaves: any = [];
-  apiLoading:any;
+  apiLoading: any;
   leavesStatusCount: { [key: number]: number } = { 1: 0, 2: 0, 3: 0 };
   selectedLeavesStatus = this.leavesInternalStatusList[1];
   selectedEmployee: any;
   breadCrumbItems: any = [];
   userDetails: any;
+  capabilities: any;
+  currentYear: number;
   constructor(
     private employeesService: EmployeesService,
     private location: Location,
@@ -54,9 +56,12 @@ export class LeavemanagementComponent {
 
   ngOnInit(): void {
     this.getEmployees();
+    this.currentYear = this.employeesService.getCurrentYear();
     let userDetails =
       this.localStorageService.getItemFromLocalStorage('userDetails');
     this.userDetails = userDetails.user;
+    this.capabilities = this.employeesService.getUserRbac();
+    console.log('capabilities', this.capabilities);
     this.updateCountsAnalytics();
     this.setFilterConfig();
     this.getLeavesStatusCount();
@@ -87,28 +92,54 @@ export class LeavemanagementComponent {
           },
         ],
       },
-      {
-        header: 'Employee Id',
-        data: [
-          {
-            field: 'employeeId',
-            title: 'Employee Id',
-            type: 'text',
-            filterType: 'like',
-          },
-        ],
-      },
-      {
-        header: 'Employee Name',
-        data: [
-          {
-            field: 'employeeName',
-            title: 'Employee Name',
-            type: 'text',
-            filterType: 'like',
-          },
-        ],
-      },
+      // {
+      //   header: 'Employee Id',
+      //   data: [
+      //     {
+      //       field: 'employeeId',
+      //       title: 'Employee Id',
+      //       type: 'text',
+      //       filterType: 'like',
+      //     },
+      //   ],
+      // },
+      // {
+      //   header: 'Employee Name',
+      //   data: [
+      //     {
+      //       field: 'employeeName',
+      //       title: 'Employee Name',
+      //       type: 'text',
+      //       filterType: 'like',
+      //     },
+      //   ],
+      // },
+      ...(this.capabilities.adminLeaves
+        ? [
+            {
+              header: 'Employee Id',
+              data: [
+                {
+                  field: 'employeeId',
+                  title: 'Employee Id',
+                  type: 'text',
+                  filterType: 'like',
+                },
+              ],
+            },
+            {
+              header: 'Employee Name',
+              data: [
+                {
+                  field: 'employeeName',
+                  title: 'Employee Name',
+                  type: 'text',
+                  filterType: 'like',
+                },
+              ],
+            },
+          ]
+        : []),
       {
         header: 'Created Date Range',
         data: [
@@ -190,7 +221,7 @@ export class LeavemanagementComponent {
     this.countsAnalytics = [
       {
         name: 'user',
-        displayName: 'Leaves',
+        displayName: 'Total Leaves',
         count:
           this.leavesStatusCount[1] +
           this.leavesStatusCount[2] +
@@ -200,21 +231,21 @@ export class LeavemanagementComponent {
       },
       {
         name: 'circle-half-stroke',
-        displayName: 'Pending',
+        displayName: 'Pending Leaves',
         count: this.leavesStatusCount[1],
         textcolor: '#FFC107',
         backgroundcolor: '#FFF3D6',
       },
       {
         name: 'check-circle',
-        displayName: 'Approved',
+        displayName: 'Approved Leaves',
         count: this.leavesStatusCount[2],
         textcolor: '#2ECC71',
         backgroundcolor: '#F0F9E8',
       },
       {
         name: 'circle-xmark',
-        displayName: 'Rejected',
+        displayName: 'Rejected Leaves',
         count: this.leavesStatusCount[3],
         textcolor: '#DC3545',
         backgroundcolor: '#F8D7DA',
@@ -238,6 +269,9 @@ export class LeavemanagementComponent {
           api_filter['lastleaveInternalStatus-or'] = '1,2,3';
         }
       }
+    }
+    if (this.capabilities.employeeLeaves) {
+      api_filter['employeeId-eq'] = this.userDetails?.employeeId;
     }
     if (this.selectedEmployee) {
       if (this.selectedEmployee && this.selectedEmployee.employeeName) {
@@ -269,18 +303,6 @@ export class LeavemanagementComponent {
         icon: 'fa fa-circle-xmark',
         command: () => this.rejectLeave(leave),
       });
-      menuItems[0].items.push({
-        label: 'Update',
-        icon: 'fa fa-pen-to-square',
-        command: () => this.updateLeave(leave.leaveId),
-      });
-      if (this.userDetails?.designation == 4) {
-        menuItems[0].items.push({
-          label: 'Delete',
-          icon: 'fa fa-trash',
-          command: () => this.confirmDelete(leave),
-        });
-      }
     } else if (leave.leaveInternalStatus === 2) {
       menuItems[0].items.push({
         label: 'Pending',
@@ -292,18 +314,6 @@ export class LeavemanagementComponent {
         icon: 'fa fa-circle-xmark',
         command: () => this.rejectLeave(leave),
       });
-      menuItems[0].items.push({
-        label: 'Update',
-        icon: 'fa fa-pen-to-square',
-        command: () => this.updateLeave(leave.leaveId),
-      });
-      if (this.userDetails?.designation == 4) {
-        menuItems[0].items.push({
-          label: 'Delete',
-          icon: 'fa fa-trash',
-          command: () => this.confirmDelete(leave),
-        });
-      }
     } else if (leave.leaveInternalStatus === 3) {
       menuItems[0].items.push({
         label: 'Pending',
@@ -315,18 +325,18 @@ export class LeavemanagementComponent {
         icon: 'fa fa-circle-check',
         command: () => this.approveLeave(leave),
       });
+    }
+    menuItems[0].items.push({
+      label: 'Update',
+      icon: 'fa fa-pen-to-square',
+      command: () => this.updateLeave(leave.leaveId),
+    });
+    if (this.capabilities.delete) {
       menuItems[0].items.push({
-        label: 'Update',
-        icon: 'fa fa-pen-to-square',
-        command: () => this.updateLeave(leave.leaveId),
+        label: 'Delete',
+        icon: 'fa fa-trash',
+        command: () => this.confirmDelete(leave),
       });
-      if (this.userDetails?.designation == 4) {
-        menuItems[0].items.push({
-          label: 'Delete',
-          icon: 'fa fa-trash',
-          command: () => this.confirmDelete(leave),
-        });
-      }
     }
     return menuItems;
   }
@@ -396,10 +406,21 @@ export class LeavemanagementComponent {
   getLeaves(filter = {}) {
     this.apiLoading = true;
     this.employeesService.getLeaves(filter).subscribe(
-      (response) => {
-        this.leaves = response;
-        console.log('leaves', this.leaves);
-        this.apiLoading = false;
+      (leaveresponse: any) => {
+        this.employeesService.getEmployees().subscribe(
+          (employeeResponse: any) => {
+            this.leaves = this.mergeLeavesWithEmployees(
+              leaveresponse,
+              employeeResponse
+            );
+            console.log('Merged Leaves Data:', this.leaves);
+            this.apiLoading = false;
+          },
+          (error: any) => {
+            this.apiLoading = false;
+            this.toastService.showError(error);
+          }
+        );
       },
       (error: any) => {
         this.apiLoading = false;
@@ -407,20 +428,30 @@ export class LeavemanagementComponent {
       }
     );
   }
-
+  mergeLeavesWithEmployees(leave: any[], employees: any[]): any[] {
+    return leave.map((p) => {
+      const employee = employees.find((e) => e.employeeId === p.employeeId);
+      return employee ? { ...p, passPhoto: employee.passPhoto } : p;
+    });
+  }
   getLeavesStatusCount() {
     this.loading = true;
-    this.employeesService.getLeaves().subscribe(
-      (response) => {
+    let filter = {};
+    if (this.capabilities?.employeeLeaves && this.userDetails?.employeeId) {
+      filter['employeeId-eq'] = this.userDetails.employeeId;
+    }
+    this.employeesService.getLeaves(filter).subscribe({
+      next: (response) => {
         this.leavesStatusCount = this.countleaveInternalStatus(response);
+        console.log(this.leavesStatusCount);
         this.updateCountsAnalytics();
         this.loading = false;
       },
-      (error: any) => {
+      error: (error: any) => {
         this.loading = false;
         this.toastService.showError(error);
-      }
-    );
+      },
+    });
   }
 
   countleaveInternalStatus(leaves) {
@@ -466,23 +497,27 @@ export class LeavemanagementComponent {
   getEmployees(filter = {}) {
     this.loading = true;
     filter['employeeInternalStatus-eq'] = 1;
+    filter['sort'] = 'joiningDate,asc';
     this.employeesService.getEmployees(filter).subscribe(
       (response: any) => {
         this.employees = [{ employeeName: 'All' }, ...response];
-        this.employees = this.employees.map(emp => ({
+        this.employees = this.employees.map((emp) => ({
           ...emp,
           employeeName: emp.employeeName
             .split(' ')
-            .map(word => {
+            .map((word) => {
               if (word.includes('.')) {
                 return word
                   .split('.')
-                  .map(part => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+                  .map(
+                    (part) =>
+                      part.charAt(0).toUpperCase() + part.slice(1).toLowerCase()
+                  )
                   .join('.');
               }
               return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
             })
-            .join(' ')
+            .join(' '),
         }));
         console.log('employees', this.employees);
         this.loading = false;

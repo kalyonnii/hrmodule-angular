@@ -34,7 +34,6 @@
   [closable]="true"
   [responsive]="true"
   class="dialogbox"
-  [style]="{ width: '70vw' }"
   header="Payroll Details"
   (onHide)="clearDialog()"
 >
@@ -355,8 +354,8 @@
   <p-table
     #payrollTable
     [value]="payroll"
-    [sortOrder]="1"
-    [sortField]="'joiningDate'"
+    [sortOrder]="capabilities.employeePayroll ? -1 : 1"
+    [sortField]="capabilities.employeePayroll ? 'payrollMonth' : 'joiningDate'"
     [lazy]="true"
     (onLazyLoad)="loadPayslips($event)"
     dataKey="id"
@@ -382,6 +381,7 @@
       <div class="row">
         <div class="col-md-4 mt-1 mb-1 no-padding-small">
           <p-calendar
+            *ngIf="capabilities.adminPayroll"
             [(ngModel)]="displayMonth"
             [showIcon]="true"
             view="month"
@@ -398,6 +398,7 @@
         </div>
         <div class="col-md-4 mt-1 mb-1 no-padding-small">
           <p-dropdown
+            *ngIf="capabilities.adminPayroll"
             styleClass="text-left"
             [style]="{ width: '100%' }"
             [options]="employees"
@@ -428,6 +429,7 @@
               >
               </app-filter>
               <button
+                *ngIf="capabilities.adminPayroll"
                 pButton
                 pRipple
                 type="button"
@@ -446,30 +448,37 @@
     </ng-template>
     <ng-template pTemplate="header" let-columns>
       <tr>
-        <th pSortableColumn="payslipId">
+        <th pSortableColumn="payslipId" class="text-nowrap">
           Payroll Id <p-sortIcon field="payslipId"></p-sortIcon>
         </th>
-        <th pSortableColumn="employeeName">
+        <th pSortableColumn="employeeName" class="text-nowrap">
           Employee Name <p-sortIcon field="employeeName"></p-sortIcon>
         </th>
-        <th pSortableColumn="joiningDate">
+        <th
+          pSortableColumn="payrollMonth"
+          *ngIf="capabilities.employeePayroll"
+          class="text-nowrap"
+        >
+          Payroll Month
+          <p-sortIcon field="payrollMonth"></p-sortIcon>
+        </th>
+        <th pSortableColumn="joiningDate" class="text-nowrap">
           Date of Joining <p-sortIcon field="joiningDate"></p-sortIcon>
         </th>
-        <th pSortableColumn="salary">
+        <th pSortableColumn="salary" class="text-nowrap">
           Salary <p-sortIcon field="salary"></p-sortIcon>
         </th>
-        <th pSortableColumn="deductions">
+        <th pSortableColumn="deductions" class="text-nowrap">
           Deductions <p-sortIcon field="deductions"></p-sortIcon>
         </th>
-        <th pSortableColumn="netSalary">
+        <th pSortableColumn="netSalary" class="text-nowrap">
           Net Salary <p-sortIcon field="netSalary"></p-sortIcon>
         </th>
-        <th pSortableColumn="createdOn">
+        <th pSortableColumn="createdOn" class="text-nowrap">
           Created Date <p-sortIcon field="createdOn"></p-sortIcon>
         </th>
-        <th>Payslip</th>
-
-        <th>Actions</th>
+        <th class="text-nowrap">Payslip</th>
+        <th class="text-nowrap">Actions</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-payslip>
@@ -481,7 +490,7 @@
             >{{ payslip.payslipId }}</span
           >
         </td>
-        <td>
+        <td class="text-nowrap">
           <div class="d-flex align-items-center">
             <span class="me-2">
               <ng-container
@@ -518,7 +527,14 @@
             </b>
           </div>
         </td>
-        <td>
+        <td *ngIf="capabilities.employeePayroll" class="text-nowrap">
+          <span
+            class="table-column-data"
+            *ngIf="payslip.payrollMonth; else noData"
+            >{{ payslip.payrollMonth | date : "MMMM yyyy" }}</span
+          >
+        </td>
+        <td class="text-nowrap">
           <span
             class="table-column-data"
             *ngIf="payslip.joiningDate; else noData"
@@ -531,7 +547,9 @@
           >
         </td>
         <td>
-          <span class="table-column-data"> Rs.{{ payslip.deductions }} </span>
+          <span class="table-column-data">
+            Rs.{{ payslip.deductions + payslip.professionalTax }}
+          </span>
         </td>
         <td>
           <span
@@ -603,7 +621,7 @@
 
 <footer class="p-2 text-center text-lg-start mt-3" style="color: #878a99">
   <div class="text-center mb-3 fw-bold">
-    © 2024 <span style="color: #1e4079">The</span>&nbsp;<b
+    © {{ currentYear }} <span style="color: #1e4079">The</span>&nbsp;<b
       style="color: #51c297"
       >Fintalk</b
     >. | All Rights Reserved

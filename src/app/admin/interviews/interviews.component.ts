@@ -17,7 +17,6 @@ export class InterviewsComponent implements OnInit {
   currentTableEvent: any;
   totalInterviewsCount: any = 0;
   loading: any;
-  userDetails: any;
   appliedFilter: {};
   filterConfig: any[] = [];
   selectedInterviewDetails: any = null;
@@ -27,7 +26,7 @@ export class InterviewsComponent implements OnInit {
   candidateNameToSearch: any;
   countsAnalytics: any[] = [];
   moment: any;
-  apiLoading:any;
+  apiLoading: any;
   interviewStatusCount: { [key: number]: number } = { 1: 0, 2: 0, 3: 0 };
   interviewInternalStatusList: any = projectConstantsLocal.INTERVIEW_STATUS;
   scheduledloactionDetails = projectConstantsLocal.BRANCH_ENTITIES;
@@ -35,7 +34,8 @@ export class InterviewsComponent implements OnInit {
   selectedInterviewStatus = this.interviewInternalStatusList[1];
   version = projectConstantsLocal.VERSION_DESKTOP;
   qualificationDetails: any = projectConstantsLocal.QUALIFICATION_ENTITIES;
-
+  capabilities: any;
+  currentYear: number;
   constructor(
     private employeesService: EmployeesService,
     private location: Location,
@@ -58,20 +58,12 @@ export class InterviewsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.checkScheduledDates();
-    let userDetails =
-      this.localStorageService.getItemFromLocalStorage('userDetails');
-    this.userDetails = userDetails.user;
+    this.currentYear = this.employeesService.getCurrentYear();
+    this.capabilities = this.employeesService.getUserRbac();
+    console.log('capabilities', this.capabilities);
     this.updateCountsAnalytics();
     this.setFilterConfig();
     this.getInterviewsStatusCount();
-    // const storedEmployeeName = localStorage.getItem(
-    //   'candidateNameInInterviews'
-    // );
-    // if (storedEmployeeName) {
-    //   this.candidateNameToSearch = storedEmployeeName;
-    //   this.filterWithCandidateName();
-    // }
     const storedStatus = localStorage.getItem('selectedInterviewStatus');
     if (storedStatus) {
       this.selectedInterviewStatus = JSON.parse(storedStatus);
@@ -81,26 +73,6 @@ export class InterviewsComponent implements OnInit {
       this.appliedFilter = JSON.parse(storedAppliedFilter);
     }
   }
-
-  // checkScheduledDates(): void {
-  //   const today = this.moment().format('YYYY-MM-DD');
-  //   this.employeesService.getInterviews().subscribe(
-  //     (schedules: any) => {
-  //       console.log(schedules);
-  //       const todaySchedules = schedules.filter(
-  //         (schedule: any) => schedule.scheduledDate == today
-  //       );
-  //       console.log(todaySchedules);
-  //       if (todaySchedules.length > 0) {
-  //         const count = todaySchedules.length;
-  //         this.toastService.showInfo(`${count} interview(s) scheduled today`);
-  //       }
-  //     },
-  //     (error) => {
-  //       console.error('Error fetching schedules:', error);
-  //     }
-  //   );
-  // }
 
   setFilterConfig() {
     this.filterConfig = [
@@ -160,17 +132,6 @@ export class InterviewsComponent implements OnInit {
           },
         ],
       },
-      // {
-      //   header: 'Qualification',
-      //   data: [
-      //     {
-      //       field: 'qualification',
-      //       title: 'Qualification',
-      //       type: 'text',
-      //       filterType: 'like',
-      //     },
-      //   ],
-      // },
       {
         header: 'Qualification',
         data: [
@@ -197,7 +158,6 @@ export class InterviewsComponent implements OnInit {
           },
         ],
       },
-
       {
         header: 'Current Address',
         data: [
@@ -220,7 +180,6 @@ export class InterviewsComponent implements OnInit {
           },
         ],
       },
-
       {
         header: 'Experience',
         data: [
@@ -232,7 +191,6 @@ export class InterviewsComponent implements OnInit {
           },
         ],
       },
-
       {
         header: 'Scheduled Location',
         data: [
@@ -248,7 +206,6 @@ export class InterviewsComponent implements OnInit {
           },
         ],
       },
-
       {
         header: 'Scheduled Date ',
         data: [
@@ -260,7 +217,6 @@ export class InterviewsComponent implements OnInit {
           },
         ],
       },
-
       {
         header: 'Postponed Date ',
         data: [
@@ -272,7 +228,6 @@ export class InterviewsComponent implements OnInit {
           },
         ],
       },
-
       {
         header: 'Attended Interview?',
         data: [
@@ -305,7 +260,7 @@ export class InterviewsComponent implements OnInit {
     this.countsAnalytics = [
       {
         name: 'circle-user',
-        displayName: 'Interviews',
+        displayName: 'All Interviews',
         count:
           this.interviewStatusCount[1] +
           this.interviewStatusCount[2] +
@@ -315,21 +270,21 @@ export class InterviewsComponent implements OnInit {
       },
       {
         name: 'circle-half-stroke',
-        displayName: 'Pending',
+        displayName: 'Pending Interviews',
         count: this.interviewStatusCount[1],
         textcolor: '#FFC107',
         backgroundcolor: '#FFF3D6',
       },
       {
         name: 'check-circle',
-        displayName: 'Selected',
+        displayName: 'Selected Interviews',
         count: this.interviewStatusCount[2],
         textcolor: '#2ECC71',
         backgroundcolor: '#F0F9E8',
       },
       {
         name: 'circle-xmark',
-        displayName: 'Rejected',
+        displayName: 'Rejected Interviews',
         count: this.interviewStatusCount[3],
         textcolor: '#DC3545',
         backgroundcolor: '#F8D7DA',
@@ -354,25 +309,12 @@ export class InterviewsComponent implements OnInit {
         icon: 'fa fa-circle-xmark',
         command: () => this.rejectedInterview(interview),
       });
-      menuItems[0].items.push({
-        label: 'Update',
-        icon: 'fa fa-pen-to-square',
-        command: () => this.updateInterview(interview.interviewId),
-      });
-      if (this.userDetails?.designation == 4) {
-        menuItems[0].items.push({
-          label: 'Delete',
-          icon: 'fa fa-trash',
-          command: () => this.confirmDelete(interview),
-        });
-      }
     } else if (interview.interviewInternalStatus === 2) {
       menuItems[0].items.push({
         label: 'Send To Employee',
         icon: 'fa fa-right-to-bracket',
         command: () => this.confirmSendtoEmployee(interview),
       });
-
       menuItems[0].items.push({
         label: 'Pending',
         icon: 'fa fa-clock-rotate-left',
@@ -383,18 +325,6 @@ export class InterviewsComponent implements OnInit {
         icon: 'fa fa-circle-xmark',
         command: () => this.rejectedInterview(interview),
       });
-      menuItems[0].items.push({
-        label: 'Update',
-        icon: 'fa fa-pen-to-square',
-        command: () => this.updateInterview(interview.interviewId),
-      });
-      if (this.userDetails?.designation == 4) {
-        menuItems[0].items.push({
-          label: 'Delete',
-          icon: 'fa fa-trash',
-          command: () => this.confirmDelete(interview),
-        });
-      }
     } else if (interview.interviewInternalStatus === 3) {
       menuItems[0].items.push({
         label: 'Pending',
@@ -406,18 +336,18 @@ export class InterviewsComponent implements OnInit {
         icon: 'fa fa-circle-check',
         command: () => this.selectedInterview(interview),
       });
+    }
+    menuItems[0].items.push({
+      label: 'Update',
+      icon: 'fa fa-pen-to-square',
+      command: () => this.updateInterview(interview.interviewId),
+    });
+    if (this.capabilities.delete) {
       menuItems[0].items.push({
-        label: 'Update',
-        icon: 'fa fa-pen-to-square',
-        command: () => this.updateInterview(interview.interviewId),
+        label: 'Delete',
+        icon: 'fa fa-trash',
+        command: () => this.confirmDelete(interview),
       });
-      if (this.userDetails?.designation == 4) {
-        menuItems[0].items.push({
-          label: 'Delete',
-          icon: 'fa fa-trash',
-          command: () => this.confirmDelete(interview),
-        });
-      }
     }
     return menuItems;
   }
@@ -521,7 +451,6 @@ export class InterviewsComponent implements OnInit {
   selectedInterview(interview) {
     this.changeInterviewStatus(interview.interviewId, 2);
   }
-
   rejectedInterview(interview) {
     this.changeInterviewStatus(interview.interviewId, 3);
   }
@@ -547,16 +476,6 @@ export class InterviewsComponent implements OnInit {
       );
   }
 
-  // confirmDelete(interviewId) {
-  //   this.confirmationService.confirm({
-  //     message: 'Are you sure you want to delete this Interview?',
-  //     header: 'Confirm Deletion',
-  //     icon: 'pi pi-exclamation-triangle',
-  //     accept: () => {
-  //       this.deleteInterview(interviewId);
-  //     },
-  //   });
-  // }
   confirmDelete(interview) {
     this.confirmationService.confirm({
       message: `Are you sure you want to delete this Interview ? <br>

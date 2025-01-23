@@ -481,27 +481,27 @@
     </ng-template>
     <ng-template pTemplate="header" let-columns>
       <tr>
-        <th pSortableColumn="interviewId">
+        <th pSortableColumn="interviewId" class="text-nowrap">
           Interview Id <p-sortIcon field="interviewId"></p-sortIcon>
         </th>
-        <th pSortableColumn="candidateName">
+        <th pSortableColumn="candidateName" class="text-nowrap">
           Candidate Name <p-sortIcon field="candidateName"></p-sortIcon>
         </th>
-        <th pSortableColumn="scheduledLocationName">
+        <th pSortableColumn="scheduledLocationName" class="text-nowrap">
           Scheduled Location
           <p-sortIcon field="scheduledLocationName"></p-sortIcon>
         </th>
-        <th pSortableColumn="scheduledDate">
+        <th pSortableColumn="scheduledDate" class="text-nowrap">
           Scheduled Date <p-sortIcon field="scheduledDate"></p-sortIcon>
         </th>
-        <th pSortableColumn="attendedInterviewName">
+        <th pSortableColumn="attendedInterviewName" class="text-nowrap">
           Attended Interview
           <p-sortIcon field="attendedInterviewName"></p-sortIcon>
         </th>
-        <th pSortableColumn="createdOn">
+        <th pSortableColumn="createdOn" class="text-nowrap">
           Created Date <p-sortIcon field="createdOn"></p-sortIcon>
         </th>
-        <th pSortableColumn="interviewInternalStatus">
+        <th pSortableColumn="interviewInternalStatus" class="text-nowrap">
           Status <p-sortIcon field="interviewInternalStatus"></p-sortIcon>
         </th>
         <th>Actions</th>
@@ -612,7 +612,7 @@
 <ng-template #noData> - </ng-template>
 <footer class="p-2 text-center text-lg-start mt-3" style="color: #878a99">
   <div class="text-center mb-3 fw-bold">
-    © 2024 <span style="color: #1e4079">The</span>&nbsp;<b
+    © {{ currentYear }} <span style="color: #1e4079">The</span>&nbsp;<b
       style="color: #51c297"
       >Fintalk</b
     >. | All Rights Reserved

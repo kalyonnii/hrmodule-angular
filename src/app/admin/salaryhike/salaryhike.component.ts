@@ -35,11 +35,13 @@ export class SalaryhikeComponent {
   salaryHikes: any = [];
   salaryHikes1: any = [];
   currentTableEvent: any;
-  apiLoading:any;
+  apiLoading: any;
   salaryHikeForm: UntypedFormGroup;
   heading: any = 'Create Salary Hike';
   actionType: any = 'create';
   employees: any = [];
+  capabilities: any;
+  currentYear: number;
   version = projectConstantsLocal.VERSION_DESKTOP;
   constructor(
     private employeesService: EmployeesService,
@@ -63,9 +65,12 @@ export class SalaryhikeComponent {
     ];
   }
   ngOnInit(): void {
+    this.currentYear = this.employeesService.getCurrentYear();
     let userDetails =
       this.localStorageService.getItemFromLocalStorage('userDetails');
     this.userDetails = userDetails.user;
+    this.capabilities = this.employeesService.getUserRbac();
+    console.log('capabilities', this.capabilities);
     this.setFilterConfig();
     this.createForm();
     this.getEmployees();
@@ -120,6 +125,121 @@ export class SalaryhikeComponent {
   }
 
   setFilterConfig() {
+    // this.filterConfig = [
+    //   {
+    //     header: 'Hike Id',
+    //     data: [
+    //       {
+    //         field: 'hikeId',
+    //         title: 'Hike Id',
+    //         type: 'text',
+    //         filterType: 'like',
+    //       },
+    //     ],
+    //   },
+    //   {
+    //     header: 'Employee Id',
+    //     data: [
+    //       {
+    //         field: 'employeeId',
+    //         title: 'Employee Id',
+    //         type: 'text',
+    //         filterType: 'like',
+    //       },
+    //     ],
+    //   },
+    //   {
+    //     header: 'Employee Name',
+    //     data: [
+    //       {
+    //         field: 'employeeName',
+    //         title: 'Employee Name',
+    //         type: 'text',
+    //         filterType: 'like',
+    //       },
+    //     ],
+    //   },
+    //   {
+    //     header: 'Created Date Range',
+    //     data: [
+    //       {
+    //         field: 'createdOn',
+    //         title: 'From',
+    //         type: 'date',
+    //         filterType: 'gte',
+    //       },
+    //       { field: 'createdOn', title: 'To', type: 'date', filterType: 'lte' },
+    //     ],
+    //   },
+    //   {
+    //     header: 'Basic Salary',
+    //     data: [
+    //       {
+    //         field: 'basicSalary',
+    //         title: 'Basic Salary',
+    //         type: 'text',
+    //         filterType: 'like',
+    //       },
+    //     ],
+    //   },
+    //   {
+    //     header: 'Monthly Hike',
+    //     data: [
+    //       {
+    //         field: 'monthlyHike',
+    //         title: 'Monthly Hike',
+    //         type: 'text',
+    //         filterType: 'like',
+    //       },
+    //     ],
+    //   },
+    //   {
+    //     header: 'Hike Date',
+    //     data: [
+    //       {
+    //         field: 'hikeDate',
+    //         title: 'Date',
+    //         type: 'date',
+    //         filterType: 'like',
+    //       },
+    //     ],
+    //   },
+    //   {
+    //     header: 'Hike Date Range',
+    //     data: [
+    //       {
+    //         field: 'hikeDate',
+    //         title: 'From',
+    //         type: 'date',
+    //         filterType: 'gte',
+    //       },
+    //       { field: 'hikeDate', title: 'To', type: 'date', filterType: 'lte' },
+    //     ],
+    //   },
+    //   {
+    //     header: 'Total Salary',
+    //     data: [
+    //       {
+    //         field: 'totalSalary',
+    //         title: 'Total Salary',
+    //         type: 'text',
+    //         filterType: 'like',
+    //       },
+    //     ],
+    //   },
+    //   {
+    //     header: 'created On  ',
+    //     data: [
+    //       {
+    //         field: 'createdOn',
+    //         title: 'Date ',
+    //         type: 'date',
+    //         filterType: 'like',
+    //       },
+    //     ],
+    //   },
+    // ];
+    // Initial filter configuration
     this.filterConfig = [
       {
         header: 'Hike Id',
@@ -132,28 +252,32 @@ export class SalaryhikeComponent {
           },
         ],
       },
-      {
-        header: 'Employee Id',
-        data: [
-          {
-            field: 'employeeId',
-            title: 'Employee Id',
-            type: 'text',
-            filterType: 'like',
-          },
-        ],
-      },
-      {
-        header: 'Employee Name',
-        data: [
-          {
-            field: 'employeeName',
-            title: 'Employee Name',
-            type: 'text',
-            filterType: 'like',
-          },
-        ],
-      },
+      ...(this.capabilities.adminSalaryHikes
+        ? [
+            {
+              header: 'Employee Id',
+              data: [
+                {
+                  field: 'employeeId',
+                  title: 'Employee Id',
+                  type: 'text',
+                  filterType: 'like',
+                },
+              ],
+            },
+            {
+              header: 'Employee Name',
+              data: [
+                {
+                  field: 'employeeName',
+                  title: 'Employee Name',
+                  type: 'text',
+                  filterType: 'like',
+                },
+              ],
+            },
+          ]
+        : []),
       {
         header: 'Created Date Range',
         data: [
@@ -223,11 +347,11 @@ export class SalaryhikeComponent {
         ],
       },
       {
-        header: 'created On  ',
+        header: 'Created On',
         data: [
           {
             field: 'createdOn',
-            title: 'Date ',
+            title: 'Date',
             type: 'date',
             filterType: 'like',
           },
@@ -239,9 +363,28 @@ export class SalaryhikeComponent {
   getEmployees(filter = {}) {
     this.loading = true;
     filter['employeeInternalStatus-eq'] = 1;
+    filter['sort'] = 'joiningDate,asc';
     this.employeesService.getEmployees(filter).subscribe(
       (response) => {
         this.employees = response;
+        this.employees = this.employees.map((emp) => ({
+          ...emp,
+          employeeName: emp.employeeName
+            .split(' ')
+            .map((word) => {
+              if (word.includes('.')) {
+                return word
+                  .split('.')
+                  .map(
+                    (part) =>
+                      part.charAt(0).toUpperCase() + part.slice(1).toLowerCase()
+                  )
+                  .join('.');
+              }
+              return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+            })
+            .join(' '),
+        }));
         console.log('employees', this.employees);
         this.loading = false;
         this.setSalaryHikesList();
@@ -324,6 +467,9 @@ export class SalaryhikeComponent {
   loadSalaryHikes(event) {
     this.currentTableEvent = event;
     let api_filter = this.employeesService.setFiltersFromPrimeTable(event);
+    if (this.capabilities.employeeSalaryHikes) {
+      api_filter['employeeId-eq'] = this.userDetails?.employeeId;
+    }
     api_filter = Object.assign(
       {},
       api_filter,
@@ -351,10 +497,21 @@ export class SalaryhikeComponent {
   getSalaryHikes(filter = {}) {
     this.apiLoading = true;
     this.employeesService.getSalaryHikes(filter).subscribe(
-      (response) => {
-        this.salaryHikes = response;
-        console.log('salaryHikes', this.salaryHikes);
-        this.apiLoading = false;
+      (hikeresponse: any) => {
+        this.employeesService.getEmployees().subscribe(
+          (employeeResponse: any) => {
+            this.salaryHikes = this.mergeSalaryHikesWithEmployees(
+              hikeresponse,
+              employeeResponse
+            );
+            console.log('Merged Salary Hikes Data:', this.salaryHikes);
+            this.apiLoading = false;
+          },
+          (error: any) => {
+            this.apiLoading = false;
+            this.toastService.showError(error);
+          }
+        );
       },
       (error: any) => {
         this.apiLoading = false;
@@ -362,7 +519,12 @@ export class SalaryhikeComponent {
       }
     );
   }
-
+  mergeSalaryHikesWithEmployees(hike: any[], employees: any[]): any[] {
+    return hike.map((p) => {
+      const employee = employees.find((e) => e.employeeId === p.employeeId);
+      return employee ? { ...p, passPhoto: employee.passPhoto } : p;
+    });
+  }
   createSalaryHike(): void {
     this.actionType = 'create';
     this.heading = 'Create Salary Hike';
@@ -446,7 +608,6 @@ export class SalaryhikeComponent {
   }
 
   async onSubmit(formValues) {
-    // Fetch the latest salary hikes before processing
     await this.getSalaryHikes1();
     if (this.salaryHikes) {
       const existingHike = this.salaryHikes1
@@ -459,7 +620,6 @@ export class SalaryhikeComponent {
         formValues.basicSalary = existingHike.totalSalary;
       }
     }
-
     let formData: any = {
       employeeId: formValues.employeeId,
       employeeName: formValues.employeeName,
@@ -470,9 +630,7 @@ export class SalaryhikeComponent {
         : null,
       totalSalary: formValues.basicSalary + formValues.monthlyHike,
     };
-
     console.log('salaryhikeformData', formData);
-
     if (this.actionType === 'create') {
       this.loading = true;
       this.employeesService.createSalaryHike(formData).subscribe(
@@ -557,7 +715,6 @@ export class SalaryhikeComponent {
 
   confirmDelete(salaryHike) {
     this.confirmationService.confirm({
-      // message: 'Are you sure you want to delete this Salary Hike?',
       message: `Are you sure you want to delete this Salary Hike ? <br>
       Employee Name: ${salaryHike.employeeName}<br>
       Salary Hike ID: ${salaryHike.hikeId}

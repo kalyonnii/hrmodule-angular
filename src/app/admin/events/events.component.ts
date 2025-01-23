@@ -21,6 +21,7 @@ export class EventsComponent implements OnInit {
   employees: any[];
   interviews: any[];
   calendarOptions: CalendarOptions;
+  currentYear: number;
   constructor(
     private location: Location,
     private toastService: ToastService,
@@ -38,6 +39,7 @@ export class EventsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.currentYear = this.employeesService.getCurrentYear();
     Promise.all([this.getEmployees(), this.getInterviews()])
       .then(() => {
         this.setBirthdays();
@@ -54,8 +56,29 @@ export class EventsComponent implements OnInit {
       this.employeesService.getEmployees(filter).subscribe(
         (response: any) => {
           this.employees = response;
-          this.loading = false;
+          this.employees = this.employees.map((emp) => ({
+            ...emp,
+            employeeName: emp.employeeName
+              .split(' ')
+              .map((word) => {
+                if (word.includes('.')) {
+                  return word
+                    .split('.')
+                    .map(
+                      (part) =>
+                        part.charAt(0).toUpperCase() +
+                        part.slice(1).toLowerCase()
+                    )
+                    .join('.');
+                }
+                return (
+                  word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+                );
+              })
+              .join(' '),
+          }));
           console.log(this.employees);
+          this.loading = false;
           resolve(true);
         },
         (error: any) => {
@@ -74,6 +97,27 @@ export class EventsComponent implements OnInit {
       this.employeesService.getInterviews(filter).subscribe(
         (response: any) => {
           this.interviews = response;
+          this.interviews = this.interviews.map((interview) => ({
+            ...interview,
+            candidateName: interview.candidateName
+              .split(' ')
+              .map((word) => {
+                if (word.includes('.')) {
+                  return word
+                    .split('.')
+                    .map(
+                      (part) =>
+                        part.charAt(0).toUpperCase() +
+                        part.slice(1).toLowerCase()
+                    )
+                    .join('.');
+                }
+                return (
+                  word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+                );
+              })
+              .join(' '),
+          }));
           this.loading = false;
           console.log(this.interviews);
           resolve(true);

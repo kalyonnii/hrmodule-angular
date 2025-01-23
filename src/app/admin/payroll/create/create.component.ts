@@ -28,12 +28,11 @@ export class CreateComponent {
   payslipId: any;
   payrollData: any;
   payrollForm: UntypedFormGroup;
-  userDetails: any;
   version = projectConstantsLocal.VERSION_DESKTOP;
   employees: any = [];
   heading: any = 'Create Payroll';
   actionType: any = 'create';
-
+  currentYear: number;
   presentDaysCount = 0;
   constructor(
     private location: Location,
@@ -109,14 +108,10 @@ export class CreateComponent {
   }
 
   ngOnInit() {
+    this.currentYear = this.employeesService.getCurrentYear();
     this.createForm();
     this.setPayrollList();
     this.getHolidays();
-    const userDetails =
-      this.localStorageService.getItemFromLocalStorage('userDetails');
-    if (userDetails) {
-      this.userDetails = userDetails.user;
-    }
     this.getEmployees();
     this.payrollForm
       .get('employeeName')
@@ -339,6 +334,7 @@ export class CreateComponent {
     // if (this.actionType === 'create') {
     //   filter['employeeInternalStatus-eq'] = 1;
     // }
+    filter['sort'] = 'joiningDate,asc';
     this.employeesService.getEmployees(filter).subscribe(
       (response) => {
         this.employees = response;
@@ -523,7 +519,7 @@ export class CreateComponent {
       totalDeductedDaysWithoutDLOP === 0 ? 0 : baseDeductionsWithoutDLOP;
     const deductionsWithDLOP =
       totalDeductedDaysWithDLOP === 0 ? 0 : baseDeductionsWithDLOP;
-    const netSalary =
+    let netSalary =
       lopOption === 'withoutDoubleLOP'
         ? netSalaryWithoutDoubleLop + petrolExpenses
         : netSalaryWithDoubleLop + petrolExpenses;
@@ -533,6 +529,13 @@ export class CreateComponent {
         : deductionsWithDLOP;
     const paidDays =
       lopOption === 'withoutDoubleLOP' ? paidDaysWithoutDLOP : paidDaysWithDLOP;
+    let professionalTax = 0;
+    if (salary > 20000) {
+      professionalTax = 200;
+    } else if (salary > 15000) {
+      professionalTax = 150;
+    }
+    netSalary = netSalary - professionalTax;
     const formData = {
       payrollMonth: monthFormatted,
       employeeName,
@@ -564,6 +567,7 @@ export class CreateComponent {
       netSalary,
       deductions,
       paidDays,
+      professionalTax,
     };
     console.log('formData', formData);
     if (this.actionType == 'create') {

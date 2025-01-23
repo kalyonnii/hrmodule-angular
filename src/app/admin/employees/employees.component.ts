@@ -19,7 +19,6 @@ export class EmployeesComponent implements OnInit {
   totalEmployeesCount: any = 0;
   loading: any;
   appliedFilter: {};
-  userDetails: any;
   searchFilter: any = {};
   employeeStatusCount = {
     statusCount: { 1: 0, 2: 0 },
@@ -37,6 +36,8 @@ export class EmployeesComponent implements OnInit {
   employeeInternalStatusList: any = projectConstantsLocal.EMPLOYEE_STATUS;
   selectedEmployeeStatus = this.employeeInternalStatusList[1];
   apiLoading: any;
+  capabilities: any;
+  currentYear: number;
   constructor(
     private employeesService: EmployeesService,
     private location: Location,
@@ -57,11 +58,9 @@ export class EmployeesComponent implements OnInit {
     this.getDesignations();
   }
   ngOnInit(): void {
-    const userDetails =
-      this.localStorageService.getItemFromLocalStorage('userDetails');
-    if (userDetails) {
-      this.userDetails = userDetails.user;
-    }
+    this.currentYear = this.employeesService.getCurrentYear();
+    this.capabilities = this.employeesService.getUserRbac();
+    console.log('capabilities', this.capabilities);
     this.updateCountsAnalytics();
     // this.setFilterConfig();
     this.getEmployeesStatusCount();
@@ -78,7 +77,7 @@ export class EmployeesComponent implements OnInit {
     this.countsAnalytics = [
       {
         name: 'user-group',
-        displayName: 'Employees',
+        displayName: 'All Employees',
         count:
           this.employeeStatusCount.statusCount['1'] +
           this.employeeStatusCount.statusCount['2'],
@@ -101,7 +100,7 @@ export class EmployeesComponent implements OnInit {
       },
       {
         name: 'circle-xmark',
-        displayName: 'In Active Employees',
+        displayName: 'InActive Employees',
         count: this.employeeStatusCount.statusCount['2'],
         textcolor: '#DC3545',
         backgroundcolor: '#F8D7DA',
@@ -127,11 +126,11 @@ export class EmployeesComponent implements OnInit {
         command: () => this.updateEmployee(employee.employeeId),
       });
       menuItems[0].items.push({
-        label: 'In Active',
+        label: 'InActive',
         icon: 'fa fa-right-to-bracket',
         command: () => this.inactiveEmployee(employee),
       });
-      if (this.userDetails?.designation == 4) {
+      if (this.capabilities.delete) {
         menuItems[0].items.push({
           label: 'Delete',
           icon: 'fa fa-trash',
@@ -409,11 +408,11 @@ export class EmployeesComponent implements OnInit {
         ],
       },
       {
-        header: 'Aadhar Number',
+        header: 'Aadhaar Number',
         data: [
           {
             field: 'aadharNumber',
-            title: 'Aadhar Number',
+            title: 'Aadhaar Number',
             type: 'text',
             filterType: 'like',
           },
@@ -657,16 +656,16 @@ export class EmployeesComponent implements OnInit {
     );
   }
   getEmployeesStatusCount() {
-    this.loading = true;
+    this.apiLoading = true;
     this.employeesService.getEmployees().subscribe(
       (response: any) => {
         this.employeeStatusCount = this.countEmployeeInternalStatus(response);
         console.log(this.employeeStatusCount);
         this.updateCountsAnalytics();
-        this.loading = false;
+        this.apiLoading = false;
       },
       (error: any) => {
-        this.loading = false;
+        this.apiLoading = false;
         this.toastService.showError(error);
       }
     );

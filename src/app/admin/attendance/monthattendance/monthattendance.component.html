@@ -43,7 +43,7 @@
     [showCurrentPageReport]="true"
     class="p-datatable-striped table"
     [totalRecords]="totalEmployeesCount"
-    [loading]="loading"
+    [loading]="apiLoading"
     responsiveLayout="scroll"
     scrollHeight="flex"
     [scrollable]="true"
@@ -119,13 +119,14 @@
     </ng-template>
     <ng-template pTemplate="header">
       <tr>
-        <th>Employee Id</th>
-        <th>Custom Employee Id</th>
-        <th>Employee Name</th>
+        <th>#</th>
+        <th class="text-nowrap">Employee Id</th>
+        <th class="text-nowrap">Custom Employee Id</th>
+        <th class="text-nowrap">Employee Name</th>
         <th>Designation</th>
-        <th>Joining Date</th>
-        <th>Total Present</th>
-        <th>Half Day</th>
+        <th class="text-nowrap">Joining Date</th>
+        <th class="text-nowrap">Total Present</th>
+        <th class="text-nowrap">Half Day</th>
         <th>Late</th>
         <th>Absent</th>
         <ng-container *ngFor="let date of monthDates">
@@ -133,11 +134,12 @@
         </ng-container>
       </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-employee>
+    <ng-template pTemplate="body" let-employee let-i="rowIndex">
       <tr>
+        <td>{{ i + 1 }}</td>
         <td>{{ employee.employeeId }}</td>
         <td>{{ employee.customEmployeeId | uppercase }}</td>
-        <td>
+        <td class="text-nowrap">
           <div class="d-flex align-items-center">
             <span class="me-2">
               <ng-container
@@ -171,12 +173,12 @@
             </b>
           </div>
         </td>
-        <td>
+        <td class="text-nowrap">
           <span class="table-column-data" *ngIf="employee.designationName">{{
             employee.designationName
           }}</span>
         </td>
-        <td>
+        <td class="text-nowrap">
           <span class="table-column-data" *ngIf="employee.joiningDate">{{
             employee.joiningDate | date : "mediumDate"
           }}</span>
@@ -270,7 +272,7 @@
 </div>
 <footer class="p-2 text-center text-lg-start mt-3" style="color: #878a99">
   <div class="text-center mb-3 fw-bold">
-    © 2024 <span style="color: #1e4079">The</span>&nbsp;<b
+    © {{ currentYear }} <span style="color: #1e4079">The</span>&nbsp;<b
       style="color: #51c297"
       >Fintalk</b
     >. | All Rights Reserved

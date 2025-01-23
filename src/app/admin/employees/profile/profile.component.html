@@ -115,6 +115,7 @@
             >
               <span>Basic Details</span>
               <button
+                *ngIf="!capabilities.employee"
                 pButton
                 pRipple
                 type="button"
@@ -235,7 +236,7 @@
                         <div class="label d-flex justify-content-between">
                           Hike Date<b>:&nbsp;</b>
                         </div>
-                        <div class="value">Rs. {{ hike.hikeDate | date }}</div>
+                        <div class="value">{{ hike.hikeDate | date }}</div>
                       </div>
                       <div class="info-line">
                         <span class="icon"
@@ -271,7 +272,7 @@
                           <a [href]="'//' + file" target="_blank">
                             <img
                               [src]="'//' + file"
-                              alt="Aadhar Image"
+                              alt="Aadhaar Image"
                               class="kycimage"
                             />
                           </a>
@@ -311,6 +312,7 @@
             >
               <span>Personal Details</span>
               <button
+                *ngIf="!capabilities.employee"
                 pButton
                 pRipple
                 type="button"
@@ -486,6 +488,7 @@
             >
               <span>Experience Details</span>
               <button
+                *ngIf="!capabilities.employee"
                 pButton
                 pRipple
                 type="button"
@@ -623,6 +626,7 @@
             >
               <span>KYC Details</span>
               <button
+                *ngIf="!capabilities.employee"
                 pButton
                 pRipple
                 type="button"
@@ -646,7 +650,7 @@
                 <div class="info-line">
                   <span class="icon"><i class="fas fa-fingerprint"></i></span>
                   <div class="label d-flex justify-content-between">
-                    Aadhar Number<b>:&nbsp;</b>
+                    Aadhaar Number<b>:&nbsp;</b>
                   </div>
                   <div class="value">
                     {{ employees.aadharNumber ? employees.aadharNumber : "-" }}
@@ -673,7 +677,7 @@
                           <a [href]="'//' + file" target="_blank">
                             <img
                               [src]="'//' + file"
-                              alt="Aadhar Image"
+                              alt="Aadhaar Image"
                               class="kycimage"
                             />
                           </a>
@@ -703,7 +707,7 @@
                   </div>
                 </div>
                 <div class="">
-                  <div class="label">Aadhar Card<b>:&nbsp;</b></div>
+                  <div class="label">Aadhaar Card<b>:&nbsp;</b></div>
                   <div class="value m-2">
                     <div
                       *ngIf="
@@ -723,7 +727,7 @@
                           <a [href]="'//' + file" target="_blank">
                             <img
                               [src]="'//' + file"
-                              alt="Aadhar Image"
+                              alt="Aadhaar Image"
                               class="kycimage"
                             />
                           </a>
@@ -763,6 +767,7 @@
             >
               <span>Salary Account Details</span>
               <button
+                *ngIf="!capabilities.employee"
                 pButton
                 pRipple
                 type="button"
@@ -842,6 +847,7 @@
             >
               <span>Other Details</span>
               <button
+                *ngIf="!capabilities.employee"
                 pButton
                 pRipple
                 type="button"
@@ -905,7 +911,10 @@
                     }}
                   </div>
                 </div>
-                <p-accordion class="custom-accordion">
+                <p-accordion
+                  class="custom-accordion"
+                  *ngIf="!capabilities.employee"
+                >
                   <p-accordionTab header="Resignation">
                     <div class="content">
                       <form
@@ -1033,10 +1042,7 @@
                                               </a>
                                               <button
                                                 pButton
-                                                *ngIf="
-                                                  this.userDetails
-                                                    ?.designation == 4
-                                                "
+                                                *ngIf="capabilities.delete"
                                                 type="button"
                                                 class="delete-btn p-button-danger p-button-sm"
                                                 (click)="
@@ -1212,10 +1218,7 @@
                                               </a>
                                               <button
                                                 pButton
-                                                *ngIf="
-                                                  this.userDetails
-                                                    ?.designation == 4
-                                                "
+                                                *ngIf="capabilities.delete"
                                                 type="button"
                                                 class="delete-btn p-button-danger p-button-sm"
                                                 (click)="
@@ -1314,8 +1317,8 @@
                   </div>
                 </div>
                 <div class="info-line">
-                  <span class="icon text-warning"
-                    ><i class="fas fa-circle-half-stroke"></i
+                  <span class="icon text-primary"
+                    ><i class="fas fa-circle-exclamation"></i
                   ></span>
                   <div class="label d-flex justify-content-between">
                     Late<b>:&nbsp;</b>
@@ -1325,8 +1328,8 @@
                   </div>
                 </div>
                 <div class="info-line">
-                  <span class="icon text-primary"
-                    ><i class="fas fa-circle-exclamation"></i
+                  <span class="icon text-warning"
+                    ><i class="fas fa-circle-half-stroke"></i
                   ></span>
                   <div class="label d-flex justify-content-between">
                     Half-day<b>:&nbsp;</b>
@@ -1724,7 +1727,7 @@
 <ng-template #noData> - </ng-template>
 <footer class="p-2 text-center text-lg-start mt-3" style="color: #878a99">
   <div class="text-center mb-3 fw-bold">
-    © 2024 <span style="color: #1e4079">The</span>&nbsp;<b
+    © {{ currentYear }} <span style="color: #1e4079">The</span>&nbsp;<b
       style="color: #51c297"
       >Fintalk</b
     >. | All Rights Reserved

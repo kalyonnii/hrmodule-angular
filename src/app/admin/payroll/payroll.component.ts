@@ -30,7 +30,9 @@ export class PayrollComponent {
   moment: any;
   selectedMonth: Date;
   displayMonth: Date;
+  capabilities: any;
   userDetails: any;
+  currentYear: number;
   constructor(
     private location: Location,
     private confirmationService: ConfirmationService,
@@ -58,10 +60,15 @@ export class PayrollComponent {
     ];
   }
   ngOnInit(): void {
-    this.getEmployees();
+    this.currentYear = this.employeesService.getCurrentYear();
     let userDetails =
       this.localStorageService.getItemFromLocalStorage('userDetails');
     this.userDetails = userDetails.user;
+    this.capabilities = this.employeesService.getUserRbac();
+    console.log('capabilities', this.capabilities);
+    if (this.capabilities.adminPayroll) {
+      this.getEmployees();
+    }
     this.setFilterConfig();
     const storedStatus = localStorage.getItem('selectedEmployee');
     if (storedStatus) {
@@ -86,6 +93,8 @@ export class PayrollComponent {
   getEmployees(filter = {}) {
     this.loading = true;
     filter['employeeInternalStatus-eq'] = 1;
+    filter['sort'] = 'joiningDate,asc';
+    console.log(filter);
     this.employeesService.getEmployees(filter).subscribe(
       (response: any) => {
         this.employees = [{ employeeName: 'All' }, ...response];
@@ -123,12 +132,14 @@ export class PayrollComponent {
       icon: 'fa fa-eye',
       command: () => this.showPayrollDetails(payslip),
     });
-    menuItems[0].items.push({
-      label: 'Update',
-      icon: 'fa fa-pen-to-square',
-      command: () => this.updateUser(payslip.payslipId),
-    });
-    if (this.userDetails?.designation == 4) {
+    if (this.capabilities.adminPayroll) {
+      menuItems[0].items.push({
+        label: 'Update',
+        icon: 'fa fa-pen-to-square',
+        command: () => this.updateUser(payslip.payslipId),
+      });
+    }
+    if (this.capabilities.delete) {
       menuItems[0].items.push({
         label: 'Delete',
         icon: 'fa fa-trash',
@@ -137,9 +148,7 @@ export class PayrollComponent {
     }
     return menuItems;
   }
-  // formatPayrollMonth(payrollMonth: string): string {
-  //   return this.moment(payrollMonth, 'YYYY-MM').format('MMMM YYYY');
-  // }
+
   showPayrollDetails(user: any): void {
     this.selectedPayrollDetails = user;
     this.isDialogVisible = true;
@@ -166,50 +175,104 @@ export class PayrollComponent {
           },
         ],
       },
-      {
-        header: 'Employee Id',
-        data: [
-          {
-            field: 'employeeId',
-            title: 'Employee Id',
-            type: 'text',
-            filterType: 'like',
-          },
-        ],
-      },
-      {
-        header: 'Employee Name',
-        data: [
-          {
-            field: 'employeeName',
-            title: 'Employee Name',
-            type: 'text',
-            filterType: 'like',
-          },
-        ],
-      },
-      {
-        header: 'Custom Employee Id',
-        data: [
-          {
-            field: 'customEmployeeId',
-            title: 'Custom Employee Id',
-            type: 'text',
-            filterType: 'like',
-          },
-        ],
-      },
-      {
-        header: 'Joining Date',
-        data: [
-          {
-            field: 'joiningDate',
-            title: 'Joining Date ',
-            type: 'date',
-            filterType: 'like',
-          },
-        ],
-      },
+      // {
+      //   header: 'Employee Id',
+      //   data: [
+      //     {
+      //       field: 'employeeId',
+      //       title: 'Employee Id',
+      //       type: 'text',
+      //       filterType: 'like',
+      //     },
+      //   ],
+      // },
+
+      ...(this.capabilities.employeePayroll
+        ? [
+            {
+              header: 'Payroll Month',
+              data: [
+                {
+                  field: 'payrollMonth',
+                  title: 'Payroll Month',
+                  type: 'month',
+                  filterType: 'eq',
+                },
+              ],
+            },
+          ]
+        : []),
+
+      ...(this.capabilities.adminPayroll
+        ? [
+            {
+              header: 'Employee Id',
+              data: [
+                {
+                  field: 'employeeId',
+                  title: 'Employee Id',
+                  type: 'text',
+                  filterType: 'like',
+                },
+              ],
+            },
+            {
+              header: 'Employee Name',
+              data: [
+                {
+                  field: 'employeeName',
+                  title: 'Employee Name',
+                  type: 'text',
+                  filterType: 'like',
+                },
+              ],
+            },
+            {
+              header: 'Custom Employee Id',
+              data: [
+                {
+                  field: 'customEmployeeId',
+                  title: 'Custom Employee Id',
+                  type: 'text',
+                  filterType: 'like',
+                },
+              ],
+            },
+            {
+              header: 'Joining Date',
+              data: [
+                {
+                  field: 'joiningDate',
+                  title: 'Joining Date ',
+                  type: 'date',
+                  filterType: 'like',
+                },
+              ],
+            },
+          ]
+        : []),
+      // {
+      //   header: 'Custom Employee Id',
+      //   data: [
+      //     {
+      //       field: 'customEmployeeId',
+      //       title: 'Custom Employee Id',
+      //       type: 'text',
+      //       filterType: 'like',
+      //     },
+      //   ],
+      // },
+      // {
+      //   header: 'Joining Date',
+      //   data: [
+      //     {
+      //       field: 'joiningDate',
+      //       title: 'Joining Date ',
+      //       type: 'date',
+      //       filterType: 'like',
+      //     },
+      //   ],
+      // },
       {
         header: 'Working Days',
         data: [
@@ -353,39 +416,76 @@ export class PayrollComponent {
           },
         ],
       },
-      {
-        header: 'Account Number',
-        data: [
-          {
-            field: 'accountNumber',
-            title: 'Account Number',
-            type: 'text',
-            filterType: 'like',
-          },
-        ],
-      },
-      {
-        header: 'IFSC Code',
-        data: [
-          {
-            field: 'ifscCode',
-            title: 'IFSC Code',
-            type: 'text',
-            filterType: 'like',
-          },
-        ],
-      },
-      {
-        header: 'Bank Branch',
-        data: [
-          {
-            field: 'bankBranch',
-            title: 'Bank Branch',
-            type: 'text',
-            filterType: 'like',
-          },
-        ],
-      },
+      // {
+      //   header: 'Account Number',
+      //   data: [
+      //     {
+      //       field: 'accountNumber',
+      //       title: 'Account Number',
+      //       type: 'text',
+      //       filterType: 'like',
+      //     },
+      //   ],
+      // },
+      // {
+      //   header: 'IFSC Code',
+      //   data: [
+      //     {
+      //       field: 'ifscCode',
+      //       title: 'IFSC Code',
+      //       type: 'text',
+      //       filterType: 'like',
+      //     },
+      //   ],
+      // },
+      // {
+      //   header: 'Bank Branch',
+      //   data: [
+      //     {
+      //       field: 'bankBranch',
+      //       title: 'Bank Branch',
+      //       type: 'text',
+      //       filterType: 'like',
+      //     },
+      //   ],
+      // },
+      ...(this.capabilities.adminPayroll
+        ? [
+            {
+              header: 'Account Number',
+              data: [
+                {
+                  field: 'accountNumber',
+                  title: 'Account Number',
+                  type: 'text',
+                  filterType: 'like',
+                },
+              ],
+            },
+            {
+              header: 'IFSC Code',
+              data: [
+                {
+                  field: 'ifscCode',
+                  title: 'IFSC Code',
+                  type: 'text',
+                  filterType: 'like',
+                },
+              ],
+            },
+            {
+              header: 'Bank Branch',
+              data: [
+                {
+                  field: 'bankBranch',
+                  title: 'Bank Branch',
+                  type: 'text',
+                  filterType: 'like',
+                },
+              ],
+            },
+          ]
+        : []),
       {
         header: 'Created Date Range',
         data: [
@@ -428,7 +528,11 @@ export class PayrollComponent {
         }
       }
     }
-    api_filter['payrollMonth-eq'] = this.selectedMonth;
+    if (this.capabilities.employeePayroll) {
+      api_filter['employeeId-eq'] = this.userDetails.employeeId;
+    } else {
+      api_filter['payrollMonth-eq'] = this.selectedMonth;
+    }
     console.log(api_filter);
     if (api_filter) {
       this.getPayrollCount(api_filter);
@@ -524,7 +628,6 @@ export class PayrollComponent {
 
   confirmDelete(payslip) {
     this.confirmationService.confirm({
-      // message: 'Are you sure you want to delete this User?',
       message: `Are you sure you want to delete this Payroll ? <br>
               Employee Name: ${payslip.employeeName}<br>
               Payroll ID: ${payslip.payslipId}

@@ -1,8 +1,9 @@
 .status-legend {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   font-size: 14px;
-  gap: 5px;
+  gap: 10px;
 }
 .status-legend i {
   margin-right: 3px;

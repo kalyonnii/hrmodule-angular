@@ -7,6 +7,7 @@ import { DateTimeProcessorService } from 'src/app/services/date-time-processor.s
 import { projectConstantsLocal } from 'src/app/constants/project-constants';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import * as html2pdf from 'html2pdf.js';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 @Component({
   selector: 'app-payslip',
@@ -19,12 +20,11 @@ export class PayslipComponent {
   payroll: any = [];
   moment: any;
   designations: any = [];
-  userDetails: any;
   payslipId: string | null = null;
   version = projectConstantsLocal.VERSION_DESKTOP;
   loading: boolean = false;
   amountinwords: string = 'Sixty Thousand Rupees Only';
-
+  currentYear: number;
   constructor(
     private location: Location,
     private route: ActivatedRoute,
@@ -52,14 +52,10 @@ export class PayslipComponent {
   }
 
   ngOnInit(): void {
+    this.currentYear = this.employeesService.getCurrentYear();
     this.payslipId = this.route.snapshot.paramMap.get('id');
     if (this.payslipId) {
       this.getPayrollById(this.payslipId);
-    }
-    const userDetails =
-      this.localStorageService.getItemFromLocalStorage('userDetails');
-    if (userDetails) {
-      this.userDetails = userDetails.user;
     }
   }
 
@@ -77,6 +73,58 @@ export class PayslipComponent {
     });
   }
 
+  // generatePDF() {
+  //   const print = this.pdfContent?.nativeElement;
+  //   const printWindow = window.open('', '_blank');
+  //   if (printWindow) {
+  //     // Write the document structure first
+  //     printWindow.document.write('<html>');
+  //     printWindow.document.write('<head><title>Print Report</title>');
+  //     printWindow?.document.write(
+  //       `<style>${this.reUsableStylesForReportPrint}</style>`
+  //     );
+  //     printWindow.document.write('</head><body>');
+
+  //     // Check if print content exists and write it
+  //     if (print) {
+  //       printWindow.document.write(print.innerHTML);
+  //     }
+  //     printWindow.document.write('</body></html>');
+
+  //     // Close the document to indicate that writing is done
+  //     printWindow.document.close();
+
+  //     // Ensure the window has time to render the content
+  //     printWindow.onload = () => {
+  //       printWindow.focus(); // Focus on the print window to ensure the print dialog can open
+  //       printWindow.print(); // Trigger the print dialog
+  //       printWindow.close(); // Close the print window after printing
+  //     };
+  //   }
+  // }
+
+  // generatePDF() {
+  //   const print = this.pdfContent?.nativeElement;
+  //   const printWindow = window.open('', '_blank');
+  //   printWindow?.document.write('<html>');
+  //   printWindow?.document.write(
+  //     `<style>${this.reUsableStylesForReportPrint}</style>`
+  //   );
+  //   printWindow?.document.write('<head><title></title></head><body>');
+  //   printWindow?.document.write(print.innerHTML);
+  //   printWindow?.document.write('</body></html>');
+  //   printWindow?.moveTo(0, 0);
+  //   printWindow?.document.close();
+  //   printWindow?.print();
+  //   printWindow?.close();
+  // }
+
+  // generatePDF() {
+  //   const element = document.getElementById('content');
+  //   if (element) {
+  //     html2pdf().from(element).save('download.pdf');
+  //   }
+  // }
   getPayrollById(id: string) {
     this.loading = true;
     this.employeesService.getPayrollById(id).subscribe(

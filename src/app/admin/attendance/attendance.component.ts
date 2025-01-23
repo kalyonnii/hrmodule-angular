@@ -28,6 +28,8 @@ export class AttendanceComponent implements OnInit {
   apiLoading: any;
   version = projectConstantsLocal.VERSION_DESKTOP;
   filteredData: any[] = [];
+  capabilities: any;
+  currentYear: number;
   constructor(
     private location: Location,
     private confirmationService: ConfirmationService,
@@ -52,9 +54,11 @@ export class AttendanceComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.currentYear = this.employeesService.getCurrentYear();
     let userDetails =
       this.localStorageService.getItemFromLocalStorage('userDetails');
     this.userDetails = userDetails.user;
+    this.capabilities = this.employeesService.getUserRbac();
     const storedDate = localStorage.getItem('selectedAttendanceDate');
     if (storedDate) {
       this.selectedDate = storedDate;
@@ -71,11 +75,9 @@ export class AttendanceComponent implements OnInit {
     this.currentTableEvent = event;
     let api_filter = this.employeesService.setFiltersFromPrimeTable(event);
     if (this.selectedMonth) {
-      console.log(this.selectedMonth);
       this.selectedMonth = this.moment(this.selectedMonth, 'YYYY-MM').format(
         'YYYY-MM'
       );
-      console.log(this.selectedMonth);
       const startOfMonth = this.moment(`${this.selectedMonth}-01`)
         .startOf('month')
         .format('YYYY-MM-DD');
@@ -89,7 +91,11 @@ export class AttendanceComponent implements OnInit {
     console.log(api_filter);
     if (api_filter) {
       this.getAttendanceCount(api_filter);
-      this.getAttendance(api_filter);
+      if (this.capabilities.employeeAttendance) {
+        this.getEmployeeAttendance(api_filter);
+      } else {
+        this.getAttendance(api_filter);
+      }
     }
   }
   onDateChange(event: any) {
@@ -166,12 +172,56 @@ export class AttendanceComponent implements OnInit {
       }
     );
   }
+  getEmployeeAttendance(filter = {}) {
+    this.apiLoading = true;
+    this.employeesService.getAttendance(filter).subscribe(
+      (response: any) => {
+        console.log('Full API response:', response);
+        this.attendance = response;
+        if (this.userDetails?.employeeId) {
+          const employeeAttendance = this.attendance?.flatMap(
+            (attendanceRecord: any) =>
+              attendanceRecord.attendanceData
+                .filter((record: any) => {
+                  return record.employeeId == this.userDetails.employeeId;
+                })
+                .map((record: any) => ({
+                  attendanceId: attendanceRecord.attendanceId,
+                  employeeId: record.employeeId,
+                  attendanceDate: attendanceRecord.attendanceDate,
+                  status: record.status,
+                  checkInTime: record.checkInTime,
+                  checkOutTime: record.checkOutTime,
+                  createdBy: attendanceRecord.createdBy,
+                  createdOn: attendanceRecord.createdOn,
+                }))
+          );
+          if (employeeAttendance && employeeAttendance.length > 0) {
+            console.log(
+              'Filtered attendance for employee:',
+              employeeAttendance
+            );
+            this.attendance = employeeAttendance;
+          } else {
+            console.log(
+              'No attendance found for employee with ID:',
+              this.userDetails.employeeId
+            );
+          }
+        }
+        this.apiLoading = false;
+      },
+      (error: any) => {
+        this.apiLoading = false;
+        this.toastService.showError(error);
+      }
+    );
+  }
   updateAttendance(attendanceId) {
     this.routingService.handleRoute('attendance/update/' + attendanceId, null);
   }
   confirmDelete(attendance) {
     this.confirmationService.confirm({
-      // message: 'Are you sure you want to delete this Attendance?',
       message: `Are you sure you want to delete this Attendance ?<br>
               Attendance Date: ${attendance.attendanceDate}<br>
               Attendance ID: ${attendance.attendanceId}

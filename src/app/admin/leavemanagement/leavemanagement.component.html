@@ -96,6 +96,21 @@
           <p-dropdown
             styleClass="text-left"
             [style]="{ width: '100%' }"
+            [options]="leavesInternalStatusList"
+            (onChange)="statusChange($event)"
+            [dropdownIcon]="'fa fa-caret-down'"
+            [(ngModel)]="selectedLeavesStatus"
+            optionLabel="displayName"
+            dataKey="name"
+            appendTo="body"
+          >
+          </p-dropdown>
+        </div>
+        <div class="col-md-4 mt-1 mb-1 no-padding-small">
+          <p-dropdown
+            *ngIf="capabilities.adminLeaves"
+            styleClass="text-left"
+            [style]="{ width: '100%' }"
             [options]="employees"
             (onChange)="statusChangeEmployee($event)"
             [dropdownIcon]="'fa fa-caret-down'"
@@ -106,20 +121,6 @@
             appendTo="body"
             filterPlaceholder="Search..."
             dataKey="id"
-          >
-          </p-dropdown>
-        </div>
-        <div class="col-md-4 mt-1 mb-1 no-padding-small">
-          <p-dropdown
-            styleClass="text-left"
-            [style]="{ width: '100%' }"
-            [options]="leavesInternalStatusList"
-            (onChange)="statusChange($event)"
-            [dropdownIcon]="'fa fa-caret-down'"
-            [(ngModel)]="selectedLeavesStatus"
-            optionLabel="displayName"
-            dataKey="name"
-            appendTo="body"
           >
           </p-dropdown>
         </div>
@@ -156,37 +157,37 @@
     </ng-template>
     <ng-template pTemplate="header" let-columns>
       <tr>
-        <th pSortableColumn="leaveId">
+        <th pSortableColumn="leaveId" class="text-nowrap">
           Leave Id <p-sortIcon field="leaveId"></p-sortIcon>
         </th>
-        <th pSortableColumn="employeeName">
+        <th pSortableColumn="employeeName" class="text-nowrap">
           Employee Name <p-sortIcon field="employeeName"></p-sortIcon>
         </th>
-        <th pSortableColumn="leaveType">
+        <th pSortableColumn="leaveType" class="text-nowrap">
           Leave Type
           <p-sortIcon field="leaveType"></p-sortIcon>
         </th>
-        <th pSortableColumn="leaveFrom">
+        <th pSortableColumn="leaveFrom" class="text-nowrap">
           Leave From
           <p-sortIcon field="leaveFrom"></p-sortIcon>
         </th>
-        <th pSortableColumn="leaveTo">
+        <th pSortableColumn="leaveTo" class="text-nowrap">
           Leave To <p-sortIcon field="leaveTo"></p-sortIcon>
         </th>
-        <th pSortableColumn="noOfDays">
+        <th pSortableColumn="noOfDays" class="text-nowrap">
           No Of Days<p-sortIcon field="noOfDays"></p-sortIcon>
         </th>
-        <th pSortableColumn="durationType">
+        <th pSortableColumn="durationType" class="text-nowrap">
           Duration Type<p-sortIcon field="durationType"></p-sortIcon>
         </th>
-        <th pSortableColumn="reason">
+        <th pSortableColumn="reason" class="text-nowrap">
           Reason
           <p-sortIcon field="reason"></p-sortIcon>
         </th>
-        <th pSortableColumn="createdOn">
+        <th pSortableColumn="createdOn" class="text-nowrap">
           Created Date <p-sortIcon field="createdOn"></p-sortIcon>
         </th>
-        <th pSortableColumn="leaveInternalStatus">
+        <th pSortableColumn="leaveInternalStatus" class="text-nowrap">
           Status <p-sortIcon field="leaveInternalStatus"></p-sortIcon>
         </th>
         <th>Actions</th>
@@ -199,7 +200,7 @@
             leave.leaveId
           }}</span>
         </td>
-        <td>
+        <!-- <td>
           <b>
             <span
               class="table-column-data"
@@ -207,6 +208,43 @@
               >{{ leave.employeeName | capitalizeFirst }}</span
             >
           </b>
+        </td> -->
+        <td class="text-nowrap">
+          <div class="d-flex align-items-center">
+            <span class="me-2">
+              <ng-container
+                *ngIf="
+                  leave && leave.passPhoto && leave.passPhoto.length > 0;
+                  else defaultImage
+                "
+              >
+                <a [href]="'//' + leave.passPhoto[0]" target="_blank">
+                  <img
+                    [src]="'//' + leave.passPhoto[0]"
+                    alt="Image"
+                    class="employeeImage"
+                    style="height: 40px; width: 40px"
+                  />
+                </a>
+              </ng-container>
+              <ng-template #defaultImage>
+                <img
+                  src="../../../assets/images/profile/user.png"
+                  alt="Default Image"
+                  class="employeeImage"
+                  style="height: 40px; width: 40px"
+                />
+              </ng-template>
+            </span>
+            <b>
+              <span
+                *ngIf="leave.employeeName; else noData"
+                class="table-column-data"
+              >
+                {{ leave.employeeName | capitalizeFirst }}
+              </span>
+            </b>
+          </div>
         </td>
         <td>
           <span
@@ -269,6 +307,21 @@
         <td>
           <div class="text-center">
             <div class="d-flex">
+              <button
+                *ngIf="capabilities.employeeLeaves"
+                pButton
+                pRipple
+                type="button"
+                pTooltip="Update"
+                tooltipPosition="left"
+                class="p-button-success me-2 update-btn"
+                icon="fa fa-pen-to-square"
+                [disabled]="
+                  leave.leaveInternalStatus === 2 ||
+                  leave.leaveInternalStatus === 3
+                "
+                (click)="updateLeave(leave.leaveId)"
+              ></button>
               <p-menu
                 appendTo="body"
                 #menu
@@ -276,6 +329,7 @@
                 [popup]="true"
               ></p-menu>
               <button
+                *ngIf="capabilities.adminLeaves"
                 pButton
                 type="button"
                 class="custom-btn"
@@ -304,7 +358,7 @@
 <ng-template #noData> - </ng-template>
 <footer class="p-2 text-center text-lg-start mt-3" style="color: #878a99">
   <div class="text-center mb-3 fw-bold">
-    © 2024 <span style="color: #1e4079">The</span>&nbsp;<b
+    © {{ currentYear }} <span style="color: #1e4079">The</span>&nbsp;<b
       style="color: #51c297"
       >Fintalk</b
     >. | All Rights Reserved

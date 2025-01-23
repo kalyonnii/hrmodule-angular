@@ -3,6 +3,7 @@ import { Location } from '@angular/common';
 import { RoutingService } from 'src/app/services/routing-service';
 import { NavigationExtras } from '@angular/router';
 import { projectConstantsLocal } from 'src/app/constants/project-constants';
+import { EmployeesService } from '../employees/employees.service';
 @Component({
   selector: 'app-reports',
   templateUrl: './reports.component.html',
@@ -13,9 +14,11 @@ export class ReportsComponent {
   loading: any;
   breadCrumbItems: any = [];
   version = projectConstantsLocal.VERSION_DESKTOP;
+  currentYear: number;
   constructor(
     private routingService: RoutingService,
-    private location: Location
+    private location: Location,
+    private employeesService: EmployeesService,
   ) {
     this.breadCrumbItems = [
       {
@@ -28,6 +31,7 @@ export class ReportsComponent {
     ];
   }
   ngOnInit() {
+    this.currentYear = this.employeesService.getCurrentYear();
     this.setReportsList();
   }
   setReportsList() {

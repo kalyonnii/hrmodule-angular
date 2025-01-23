@@ -159,7 +159,7 @@
     <ng-template pTemplate="caption">
       <div class="row">
         <div class="col-md-4 mt-1 mb-1 no-padding-small">
-          <div class="p-inputgroup">
+          <div class="p-inputgroup" *ngIf="capabilities.adminSalaryHikes">
             <input
               type="text"
               pInputText
@@ -196,6 +196,7 @@
               >
               </app-filter>
               <button
+                *ngIf="capabilities.adminSalaryHikes"
                 pButton
                 pRipple
                 pTooltip="Add Salary Hike"
@@ -214,34 +215,34 @@
     </ng-template>
     <ng-template pTemplate="header" let-columns>
       <tr>
-        <th pSortableColumn="hikeId">
+        <th pSortableColumn="hikeId" class="text-nowrap">
           Salary Hike Id <p-sortIcon field="hikeId"></p-sortIcon>
         </th>
-        <th pSortableColumn="employeeName">
+        <th pSortableColumn="employeeName" class="text-nowrap">
           Employee Name <p-sortIcon field="employeeName"></p-sortIcon>
         </th>
-        <th pSortableColumn="basicSalary">
+        <th pSortableColumn="basicSalary" class="text-nowrap">
           Base Salary <p-sortIcon field="basicSalary"></p-sortIcon>
         </th>
-        <th pSortableColumn="monthlyHike">
+        <th pSortableColumn="monthlyHike" class="text-nowrap">
           Monthly Hike
           <p-sortIcon field="monthlyHike"></p-sortIcon>
         </th>
-        <th pSortableColumn="totalSalary">
+        <th pSortableColumn="totalSalary" class="text-nowrap">
           Total Salary
           <p-sortIcon field="totalSalary"></p-sortIcon>
         </th>
-        <th pSortableColumn="hikeDate">
+        <th pSortableColumn="hikeDate" class="text-nowrap">
           Hike Date <p-sortIcon field="hikeDate"></p-sortIcon>
         </th>
         <!-- <th pSortableColumn="createdBy">
           Created By <p-sortIcon field="createdBy"></p-sortIcon>
         </th> -->
-        <th pSortableColumn="createdOn">
+        <th pSortableColumn="createdOn" class="text-nowrap">
           Created Date <p-sortIcon field="createdOn"></p-sortIcon>
         </th>
-        <th>Hike Letter</th>
-        <th>Actions</th>
+        <th *ngIf="capabilities.adminSalaryHikes" class="text-nowrap">Hike Letter</th>
+        <th *ngIf="capabilities.adminSalaryHikes">Actions</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-salaryHike>
@@ -253,7 +254,7 @@
             >{{ salaryHike.hikeId }}</span
           >
         </td>
-        <td>
+        <!-- <td>
           <b>
             <span
               class="table-column-data"
@@ -261,6 +262,45 @@
               >{{ salaryHike.employeeName | capitalizeFirst }}</span
             >
           </b>
+        </td> -->
+        <td>
+          <div class="d-flex align-items-center">
+            <span class="me-2">
+              <ng-container
+                *ngIf="
+                  salaryHike &&
+                    salaryHike.passPhoto &&
+                    salaryHike.passPhoto.length > 0;
+                  else defaultImage
+                "
+              >
+                <a [href]="'//' + salaryHike.passPhoto[0]" target="_blank">
+                  <img
+                    [src]="'//' + salaryHike.passPhoto[0]"
+                    alt="Image"
+                    class="employeeImage"
+                    style="height: 40px; width: 40px"
+                  />
+                </a>
+              </ng-container>
+              <ng-template #defaultImage>
+                <img
+                  src="../../../assets/images/profile/user.png"
+                  alt="Default Image"
+                  class="employeeImage"
+                  style="height: 40px; width: 40px"
+                />
+              </ng-template>
+            </span>
+            <b>
+              <span
+                *ngIf="salaryHike.employeeName; else noData"
+                class="table-column-data"
+              >
+                {{ salaryHike.employeeName | capitalizeFirst }}
+              </span>
+            </b>
+          </div>
         </td>
         <td>
           <span
@@ -304,7 +344,7 @@
             >{{ salaryHike.createdOn | date : "mediumDate" }}</span
           >
         </td>
-        <td>
+        <td *ngIf="capabilities.adminSalaryHikes">
           <div class="text-center">
             <div class="d-flex">
               <button
@@ -312,6 +352,7 @@
                 pRipple
                 type="button"
                 pTooltip="Hike Letter"
+                tooltipPosition="left"
                 class="p-button-info me-2 view-btn"
                 icon="fa fa-download"
                 (click)="ViewHikeletter(salaryHike.hikeId)"
@@ -319,7 +360,7 @@
             </div>
           </div>
         </td>
-        <td>
+        <td *ngIf="capabilities.adminSalaryHikes">
           <div class="text-center">
             <div class="d-flex">
               <button
@@ -332,7 +373,7 @@
                 (click)="updateSalaryHike(salaryHike)"
               ></button>
               <button
-                *ngIf="userDetails?.designation == 4"
+                *ngIf="capabilities.delete"
                 pButton
                 type="button"
                 icon="fa fa-trash"
@@ -362,7 +403,7 @@
 <ng-template #noData> - </ng-template>
 <footer class="p-2 text-center text-lg-start mt-3" style="color: #878a99">
   <div class="text-center mb-3 fw-bold">
-    © 2024 <span style="color: #1e4079">The</span>&nbsp;<b
+    © {{ currentYear }} <span style="color: #1e4079">The</span>&nbsp;<b
       style="color: #51c297"
       >Fintalk</b
     >. | All Rights Reserved

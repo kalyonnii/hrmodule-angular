@@ -99,6 +99,7 @@
               >
               </app-filter>
               <button
+                *ngIf="!capabilities.employee"
                 pButton
                 pRipple
                 type="button"
@@ -117,23 +118,25 @@
     </ng-template>
     <ng-template pTemplate="header" let-columns>
       <tr>
-        <th pSortableColumn="holidayId">
+        <th pSortableColumn="holidayId" class="text-nowrap">
           Holiday Id <p-sortIcon field="holidayId"></p-sortIcon>
         </th>
-        <th pSortableColumn="holidayName">
+        <th pSortableColumn="holidayName" class="text-nowrap">
           Holiday Name <p-sortIcon field="holidayName"></p-sortIcon>
         </th>
-        <th pSortableColumn="date">
+        <th pSortableColumn="date" class="text-nowrap">
           Holiday Date <p-sortIcon field="date"></p-sortIcon>
         </th>
-        <th pSortableColumn="day">Day <p-sortIcon field="day"></p-sortIcon></th>
-        <th pSortableColumn="description">
+        <th pSortableColumn="day" class="text-nowrap">
+          Day <p-sortIcon field="day"></p-sortIcon>
+        </th>
+        <th pSortableColumn="description" class="text-nowrap">
           Description <p-sortIcon field="description"></p-sortIcon>
         </th>
-        <th pSortableColumn="createdOn">
+        <th pSortableColumn="createdOn" class="text-nowrap">
           created Date <p-sortIcon field="createdOn"></p-sortIcon>
         </th>
-        <th>Actions</th>
+        <th *ngIf="!capabilities.employee">Actions</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-holiday>
@@ -178,7 +181,7 @@
             >{{ holiday.createdOn | date }}</span
           >
         </td>
-        <td>
+        <td *ngIf="!capabilities.employee">
           <div class="text-center">
             <div class="d-flex">
               <button
@@ -191,7 +194,7 @@
                 (click)="updateHoliday(holiday.holidayId)"
               ></button>
               <button
-                *ngIf="userDetails?.designation == 4"
+                *ngIf="capabilities.delete"
                 pButton
                 type="button"
                 icon="fa fa-trash"
@@ -221,7 +224,7 @@
 <ng-template #noData> - </ng-template>
 <footer class="p-2 text-center text-lg-start mt-3" style="color: #878a99">
   <div class="text-center mb-3 fw-bold">
-    © 2024 <span style="color: #1e4079">The</span>&nbsp;<b
+    © {{ currentYear }} <span style="color: #1e4079">The</span>&nbsp;<b
       style="color: #51c297"
       >Fintalk</b
     >. | All Rights Reserved

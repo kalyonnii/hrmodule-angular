@@ -28,6 +28,7 @@ export class CreateComponent implements OnInit {
   heading: any = 'Create Holiday';
   actionType: any = 'create';
   loading: any;
+  currentYear: number;
   constructor(
     private location: Location,
     private formBuilder: UntypedFormBuilder,
@@ -72,6 +73,7 @@ export class CreateComponent implements OnInit {
     ];
   }
   ngOnInit() {
+    this.currentYear = this.employeesService.getCurrentYear();
     this.createForm();
     this.setHolidaysList();
   }
