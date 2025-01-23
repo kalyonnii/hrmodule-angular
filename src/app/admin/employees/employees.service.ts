@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { DateTimeProcessorService } from 'src/app/services/date-time-processor.service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { ServiceMeta } from 'src/app/services/service-meta';
-
+import axios from 'axios';
 @Injectable({
   providedIn: 'root',
 })
@@ -92,6 +92,15 @@ export class EmployeesService {
       delete: rbac.includes('delete'),
     };
     return capabilities;
+  }
+
+  getClientIp(): Promise<string> {
+    return axios.get('https://api.ipify.org?format=json')
+      .then(response => response.data.ip)
+      .catch(error => {
+        console.error('Error fetching IP address:', error);
+        return '';
+      });
   }
   // current year
   getCurrentYear(): number {
