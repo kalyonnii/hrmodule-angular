@@ -27,10 +27,10 @@
     </div>
   </div>
 </div>
-<div *ngIf="loading">
+<div *ngIf="apiLoading">
   <app-preloader></app-preloader>
 </div>
-<div class="card-container">
+<div class="card-container" *ngIf="!apiLoading">
   <div class="card hikeletter-card" *ngIf="employees">
     <div id="content" class="card-body">
       <div class="page">

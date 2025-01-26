@@ -307,6 +307,26 @@
           </div>
         </div>
         <div class="info-line">
+          <span class="icon"><i class="fas fa-minus-circle"></i></span>
+          <div class="label d-flex justify-content-between">
+            Deductions<b>:&nbsp;</b>
+          </div>
+          <div class="value">
+            Rs.
+            {{ selectedPayrollDetails.deductions }}
+          </div>
+        </div>
+        <div class="info-line">
+          <span class="icon"><i class="fas fa-file-invoice-dollar"></i></span>
+          <div class="label d-flex justify-content-between">
+            Professional Tax<b>:&nbsp;</b>
+          </div>
+          <div class="value">
+            Rs.
+            {{ selectedPayrollDetails.professionalTax }}
+          </div>
+        </div>
+        <div class="info-line">
           <span class="icon"><i class="fas fa-chart-line"></i></span>
           <div class="label d-flex justify-content-between">
             Net Salary Without Double LOP<b>:&nbsp;</b>
@@ -324,16 +344,6 @@
           <div class="value">
             Rs.
             {{ selectedPayrollDetails.netSalaryWithDoubleLop }}
-          </div>
-        </div>
-        <div class="info-line">
-          <span class="icon"><i class="fas fa-minus-circle"></i></span>
-          <div class="label d-flex justify-content-between">
-            Deductions<b>:&nbsp;</b>
-          </div>
-          <div class="value">
-            Rs.
-            {{ selectedPayrollDetails.deductions }}
           </div>
         </div>
         <div class="info-line">

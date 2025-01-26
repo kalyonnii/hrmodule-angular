@@ -25,6 +25,7 @@ export class PayslipComponent {
   loading: boolean = false;
   amountinwords: string = 'Sixty Thousand Rupees Only';
   currentYear: number;
+  apiLoading: any;
   constructor(
     private location: Location,
     private route: ActivatedRoute,
@@ -126,7 +127,7 @@ export class PayslipComponent {
   //   }
   // }
   getPayrollById(id: string) {
-    this.loading = true;
+    this.apiLoading = true;
     this.employeesService.getPayrollById(id).subscribe(
       (payrollresponse: any) => {
         console.log(payrollresponse);
@@ -139,16 +140,16 @@ export class PayslipComponent {
                 employeeResponse
               );
               console.log('Merged Payroll Data:', this.payroll);
-              this.loading = false;
+              this.apiLoading = false;
             },
             (error: any) => {
-              this.loading = false;
+              this.apiLoading = false;
               this.toastService.showError(error);
             }
           );
       },
       (error: any) => {
-        this.loading = false;
+        this.apiLoading = false;
         this.toastService.showError(error);
       }
     );

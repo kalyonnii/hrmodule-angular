@@ -511,9 +511,9 @@ export class CreateComponent {
     );
     const baseDeductionsWithoutDLOP = salary - baseNetSalaryWithoutDLOP;
     const baseDeductionsWithDLOP = salary - baseNetSalaryWithDLOP;
-    const netSalaryWithoutDoubleLop =
+    let netSalaryWithoutDoubleLop =
       totalDeductedDaysWithoutDLOP === 0 ? salary : baseNetSalaryWithoutDLOP;
-    const netSalaryWithDoubleLop =
+    let netSalaryWithDoubleLop =
       totalDeductedDaysWithDLOP === 0 ? salary : baseNetSalaryWithDLOP;
     const deductionsWithoutDLOP =
       totalDeductedDaysWithoutDLOP === 0 ? 0 : baseDeductionsWithoutDLOP;
@@ -536,6 +536,8 @@ export class CreateComponent {
       professionalTax = 150;
     }
     netSalary = netSalary - professionalTax;
+    netSalaryWithoutDoubleLop=netSalaryWithoutDoubleLop-professionalTax
+    netSalaryWithDoubleLop=netSalaryWithDoubleLop-professionalTax
     const formData = {
       payrollMonth: monthFormatted,
       employeeName,

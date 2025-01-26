@@ -26,6 +26,7 @@ export class HikeletterComponent {
   designations: any = [];
   employeeId: string | null = null;
   currentYear: number;
+  apiLoading: any;
   constructor(
     private location: Location,
     private route: ActivatedRoute,
@@ -117,7 +118,7 @@ export class HikeletterComponent {
     return hikePercentage.toFixed(2) + '%';
   }
   getSalaryHikesById(id: string) {
-    this.loading = true;
+    this.apiLoading = true;
     this.employeesService.getSalaryHikesById(id).subscribe(
       (response) => {
         this.salaryHikes = response;
@@ -125,24 +126,24 @@ export class HikeletterComponent {
         if (this.salaryHikes.employeeId) {
           this.getEmployeeById(this.salaryHikes.employeeId);
         }
-        this.loading = false;
+        this.apiLoading = false;
       },
       (error: any) => {
-        this.loading = false;
+        this.apiLoading = false;
         this.toastService.showError(error);
       }
     );
   }
   getEmployeeById(id: string) {
-    this.loading = true;
+    this.apiLoading = true;
     this.employeesService.getEmployeeById(id).subscribe(
       (response) => {
         this.employees = response;
         console.log('Employees', this.employees);
-        this.loading = false;
+        this.apiLoading = false;
       },
       (error: any) => {
-        this.loading = false;
+        this.apiLoading = false;
         this.toastService.showError(error);
       }
     );

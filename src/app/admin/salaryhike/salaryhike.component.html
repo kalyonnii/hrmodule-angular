@@ -39,7 +39,11 @@
   header="{{ heading }}"
   (onHide)="clearDialog()"
 >
+<div *ngIf="dataLoading"  class="preloader-container">
+  <app-preloader></app-preloader>
+</div>
   <form
+  *ngIf="!dataLoading"
     class="login-form mt-3"
     [formGroup]="salaryHikeForm"
     novalidate
@@ -129,7 +133,7 @@
     </div>
   </form>
 </p-dialog>
-<div class="text-capitalize table-card">
+<div class="text-capitalize table-card" *ngIf="!loading">
   <p-table
     #salaryHikeTable
     [value]="salaryHikes"

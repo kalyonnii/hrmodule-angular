@@ -76,3 +76,11 @@
   flex: 1;
   margin-left: 5px;
 }
+.preloader-container {
+  height: 280px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f9f9f9;
+}

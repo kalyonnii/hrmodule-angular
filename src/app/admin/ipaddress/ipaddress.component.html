@@ -39,10 +39,9 @@
   header="{{ heading }}"
   (onHide)="clearDialog()"
 >
-<div *ngIf="dataLoading" class="preloader-container">
-  <app-preloader></app-preloader>
-</div>
-
+  <div *ngIf="dataLoading" class="preloader-container">
+    <app-preloader></app-preloader>
+  </div>
 
   <form
     *ngIf="!dataLoading"

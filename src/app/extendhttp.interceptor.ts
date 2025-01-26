@@ -79,9 +79,12 @@ export class ExtendhttpInterceptor implements HttpInterceptor {
             ? request.url
             : projectConstantsLocal.BASE_URL + request.url,
           responseType: 'json',
-          setHeaders: {
-            'mysystem-IP': clientIp, 
-          },
+          // setHeaders: {
+          //   'mysystem-IP': clientIp,
+          // },
+          ...(request.url.startsWith('http')
+          ? {}
+          : { setHeaders: { 'mysystem-IP': clientIp } }),
         });
         return next.handle(request);
       }),

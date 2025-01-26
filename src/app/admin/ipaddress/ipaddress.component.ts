@@ -321,7 +321,7 @@ export class IpaddressComponent {
   confirmDelete(ipAddress) {
     this.confirmationService.confirm({
       message: `Are you sure you want to delete this Ip Address ? <br>
-              Ip Address Name: ${ipAddress.displayName}<br>
+              Ip Address Name: ${ipAddress.ipAddressName}<br>
               Ip Address ID: ${ipAddress.ipAddressId}
               `,
       header: 'Confirm Deletion',

@@ -28,10 +28,10 @@
   </div>
 </div>
 
-<div *ngIf="loading">
+<div *ngIf="apiLoading">
   <app-preloader></app-preloader>
 </div>
-<div class="card-container">
+<div class="card-container" *ngIf="!apiLoading">
   <div class="card payslip-card" *ngIf="payroll">
     <div #pdfContent class="card-body">
       <div class="header">
