@@ -656,16 +656,13 @@ export class EmployeesComponent implements OnInit {
     );
   }
   getEmployeesStatusCount() {
-    this.apiLoading = true;
     this.employeesService.getEmployees().subscribe(
       (response: any) => {
         this.employeeStatusCount = this.countEmployeeInternalStatus(response);
         console.log(this.employeeStatusCount);
         this.updateCountsAnalytics();
-        this.apiLoading = false;
       },
       (error: any) => {
-        this.apiLoading = false;
         this.toastService.showError(error);
       }
     );

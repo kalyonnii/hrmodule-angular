@@ -79,7 +79,7 @@
         Incentive Amount<b>:&nbsp;</b>
       </div>
       <div class="value">
-        {{
+        Rs.{{
           selectedIncentive.incentiveAmount
             ? selectedIncentive.incentiveAmount
             : "-"
@@ -364,7 +364,7 @@
           <span
             class="table-column-data"
             *ngIf="incentive.incentiveAmount; else noData"
-            >{{ incentive.incentiveAmount | capitalizeFirst }}</span
+            >Rs.{{ incentive.incentiveAmount | capitalizeFirst }}</span
           >
         </td>
         <td>

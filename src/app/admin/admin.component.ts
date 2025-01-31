@@ -2,6 +2,7 @@ import { Component, HostListener } from '@angular/core';
 import { SubscriptionService } from '../services/subscription.service';
 import { RoutingService } from '../services/routing-service';
 import { Subscription } from 'rxjs';
+import { LocalStorageService } from '../services/local-storage.service';
 
 @Component({
   selector: 'app-admin',
@@ -14,11 +15,15 @@ export class AdminComponent {
   smallMenuSection: any = false;
   bodyHeight: any;
   smallDeviceDisplay: any;
+  userType: any;
   constructor(
+    private localStorageService: LocalStorageService,
     private subscriptionService: SubscriptionService,
     private routingService: RoutingService
   ) {
     this.onResize();
+    this.userType =
+      this.localStorageService.getItemFromLocalStorage('userType');
     this.subscription = this.subscriptionService
       .getMessage()
       .subscribe((message) => {
@@ -32,7 +37,8 @@ export class AdminComponent {
             break;
         }
       });
-    this.routingService.setFeatureRoute('user');
+    // this.routingService.setFeatureRoute('user');
+    this.routingService.setFeatureRoute(this.userType);
   }
 
   @HostListener('window:resize', ['$event'])

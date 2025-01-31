@@ -9,6 +9,7 @@ import axios from 'axios';
 })
 export class EmployeesService {
   moment: any;
+  private readonly IP_CACHE_DURATION = 5 * 60 * 1000;
   // loading: any;
   private url = 'https://s3.thefintalk.in/offerletterformat/index.html';
   // designations: any = [];
@@ -94,13 +95,54 @@ export class EmployeesService {
     return capabilities;
   }
 
-  getClientIp(): Promise<string> {
-    return axios.get('https://api.ipify.org?format=json')
-      .then(response => response.data.ip)
-      .catch(error => {
-        console.error('Error fetching IP address:', error);
-        return '';
-      });
+  // getClientIp(): Promise<string> {
+  //   console.log("Fetch client ip called")
+  //   return axios.get('https://api.ipify.org?format=json')
+  //     .then(response => response.data.ip)
+  //     .catch(error => {
+  //       console.error('Error fetching IP address:', error);
+  //       return '';
+  //     });
+  // }
+
+  async getClientIp(): Promise<string> {
+    console.log('Fetching client IP...');
+    try {
+      const response = await axios.get('https://api.ipify.org?format=json');
+      return response.data.ip;
+    } catch (error) {
+      console.error('Error fetching IP address:', error);
+      return '';
+    }
+  }
+
+  async fetchAndStoreClientIp(): Promise<void> {
+    const lastFetchedTime = parseInt(
+      localStorage.getItem('clientIpTime') || '0',
+      10
+    );
+    const currentTime = Date.now();
+
+    if (
+      !lastFetchedTime ||
+      currentTime - lastFetchedTime > this.IP_CACHE_DURATION
+    ) {
+      const newIp = await this.getClientIp();
+      if (newIp) {
+        const storedIp = localStorage.getItem('clientIp');
+        if (storedIp !== newIp) {
+          localStorage.setItem('clientIp', newIp);
+          localStorage.setItem('clientIpTime', currentTime.toString());
+          console.log('Client IP updated:', newIp);
+        }
+      }
+    }
+  }
+  startIpUpdateInterval(): void {
+    this.fetchAndStoreClientIp(); // Fetch immediately on app load
+    setInterval(() => {
+      this.fetchAndStoreClientIp();
+    }, this.IP_CACHE_DURATION);
   }
   // current year
   getCurrentYear(): number {

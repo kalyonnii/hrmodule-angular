@@ -360,7 +360,7 @@
     </div>
   </div>
 </p-dialog>
-<div class="text-capitalize table-card">
+<div class="text-capitalize table-card" *ngIf="!loading">
   <p-table
     #payrollTable
     [value]="payroll"

@@ -1,7 +1,7 @@
 <div class="container-fluid">
   <div class="row align-items-center">
     <div class="col-md-6 p-0">
-      <div class="col-12 text-left d-flex align-items-center logo-container">
+      <div class="text-left d-flex align-items-center logo-container">
         <img src="../../assets/images/logo.png" alt="Logo" class="logo" />
         <b class="logo-left"> The <span class="logo-right">Fintalk</span> </b>
       </div>
@@ -37,13 +37,16 @@
         </div>
       </div>
     </div>
-    <div class="col-md-6 mb-5">
+    <div class="col-md-6 mb-5 text-capitalize">
       <div class="signinform">
         <div class="px-4 py-5 px-md-5">
           <div class="card-logo">
             <div class="d-flex">
               <div class="d-flex align-items-center" style="font-size: 25px">
-                <span class="fw-bold" style="color: #1e4079">Sign In</span>
+                <!-- <span class="fw-bold" style="color: #1e4079">Sign In</span> -->
+                <span class="fw-bold" style="color: #1e4079"
+                  >Sign In As {{ userType }}</span
+                >
               </div>
             </div>
           </div>
@@ -64,9 +67,7 @@
             (ngSubmit)="onSubmit(loginForm.value)"
           >
             <div data-mdb-input-init class="form-outline mb-4">
-              <label class="form-label" for="form3Example3"
-                >Enter Username</label
-              >
+              <label class="form-label" for="form3Example3">Username</label>
               <input
                 pInputText
                 class="rounded-lg w-100"
@@ -100,17 +101,26 @@
                 </span>
               </div>
             </div>
+            <!-- <div class="login-container">
+              <div class="form-label">
+                Login As {{ userType === "user" ? "employee" : "user" }} ?
+                <span class="toggle-link" (click)="toggleUserType()"
+                  >Click Here!</span
+                >
+              </div>
+            </div> -->
 
             <button
               pButton
               pRipple
               style="width: 100%"
               type="submit"
-              class="p-button-primary center-button"
+              class="p-button-primary center-button text-capitalize"
               [disabled]="!loginForm.valid || clicked"
               (click)="onSignIn()"
             >
-              Sign In
+              <!-- Sign In -->
+              Sign In as {{ userType }}
             </button>
           </form>
         </div>

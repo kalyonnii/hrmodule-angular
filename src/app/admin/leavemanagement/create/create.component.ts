@@ -49,6 +49,7 @@ export class CreateComponent {
     private localStorageService: LocalStorageService,
     private dateTimeProcessor: DateTimeProcessorService
   ) {
+    const usertype = localStorage.getItem('userType');
     this.moment = this.dateTimeProcessor.getMoment();
     this.activatedRoute.params.subscribe((params) => {
       if (params && params['id']) {
@@ -76,12 +77,12 @@ export class CreateComponent {
       {
         icon: 'fa fa-house',
         label: ' Dashboard',
-        routerLink: '/user/dashboard',
+        routerLink: `/${usertype}/dashboard`,
         queryParams: { v: this.version },
       },
       {
         label: 'Leave Management',
-        routerLink: '/user/leaves',
+        routerLink: `/${usertype}/leaves`,
         queryParams: { v: this.version },
       },
       { label: this.actionType == 'create' ? 'Create' : 'Update' },

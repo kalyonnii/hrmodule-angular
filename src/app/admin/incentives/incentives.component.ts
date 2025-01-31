@@ -41,18 +41,21 @@ export class IncentivesComponent implements OnInit {
     private routingService: RoutingService,
     private dateTimeProcessor: DateTimeProcessorService
   ) {
+    const usertype = localStorage.getItem('userType');
     this.moment = this.dateTimeProcessor.getMoment();
-    this.selectedMonth = this.moment(new Date())
-      .subtract(1, 'month')
-      .format('YYYY-MM');
-    this.displayMonth = this.moment(new Date())
-      .subtract(1, 'month')
-      .format('MMMM YYYY');
+    // this.selectedMonth = this.moment(new Date())
+    //   .subtract(1, 'month')
+    //   .format('YYYY-MM');
+    // this.displayMonth = this.moment(new Date())
+    //   .subtract(1, 'month')
+    //   .format('MMMM YYYY');
+    this.selectedMonth = this.moment(new Date()).format('YYYY-MM');
+    this.displayMonth = this.moment(new Date()).format('MMMM YYYY');
     this.breadCrumbItems = [
       {
         icon: 'fa fa-house',
         label: '  Dashboard',
-        routerLink: '/user/dashboard',
+        routerLink: `/${usertype}/dashboard`,
         queryParams: { v: this.version },
       },
       { label: 'Incentives' },

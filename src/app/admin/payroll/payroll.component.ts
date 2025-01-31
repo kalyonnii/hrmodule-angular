@@ -42,6 +42,7 @@ export class PayrollComponent {
     private localStorageService: LocalStorageService,
     private dateTimeProcessor: DateTimeProcessorService
   ) {
+    const usertype = localStorage.getItem('userType');
     this.moment = this.dateTimeProcessor.getMoment();
     this.selectedMonth = this.moment(new Date())
       .subtract(1, 'month')
@@ -53,7 +54,7 @@ export class PayrollComponent {
       {
         icon: 'fa fa-house',
         label: '  Dashboard',
-        routerLink: '/user/dashboard',
+        routerLink: `/${usertype}/dashboard`,
         queryParams: { v: this.version },
       },
       { label: 'Payroll' },

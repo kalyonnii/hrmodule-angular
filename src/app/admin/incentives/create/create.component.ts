@@ -236,11 +236,11 @@ export class CreateComponent implements OnInit {
       }));
     const calculateIncentive = (totalDisbursedAmount: number): number => {
       if (totalDisbursedAmount >= 10000000) {
-        return totalDisbursedAmount * 0.003;
+        return Math.round(totalDisbursedAmount * 0.003);
       } else if (totalDisbursedAmount >= 4900000) {
-        return totalDisbursedAmount * 0.002;
+        return Math.round(totalDisbursedAmount * 0.002);
       } else if (totalDisbursedAmount >= 1500000) {
-        return totalDisbursedAmount * 0.0015;
+        return Math.round(totalDisbursedAmount * 0.0015);
       }
       return 0;
     };
@@ -255,9 +255,12 @@ export class CreateComponent implements OnInit {
       this.secondMonthFiles || []
     );
     const thirdMonthTotal = getTotalDisbursedAmount(this.thirdMonthFiles || []);
-    const totalDisbursedAmount =
-      firstMonthTotal + secondMonthTotal + thirdMonthTotal;
-    const incentiveAmount = calculateIncentive(totalDisbursedAmount);
+    // const totalDisbursedAmount =
+    //   firstMonthTotal + secondMonthTotal + thirdMonthTotal;
+    const incentiveAmount =
+      calculateIncentive(firstMonthTotal) +
+      calculateIncentive(secondMonthTotal) +
+      calculateIncentive(thirdMonthTotal);
     const formData: any = {
       employeeName: formValues.employeeName,
       employeeId: formValues.employeeId,

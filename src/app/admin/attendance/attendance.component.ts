@@ -40,13 +40,20 @@ export class AttendanceComponent implements OnInit {
     private localStorageService: LocalStorageService
   ) {
     this.moment = this.dateTimeProcessor.getMoment();
+    const usertype = localStorage.getItem('userType');
     this.selectedMonth = this.moment(new Date()).format('YYYY-MM');
     this.displayMonth = this.moment(new Date()).format('MMMM YYYY');
     this.breadCrumbItems = [
+      // {
+      //   icon: 'fa fa-house',
+      //   label: '  Dashboard',
+      //   routerLink: '/user/dashboard',
+      //   queryParams: { v: this.version },
+      // },
       {
         icon: 'fa fa-house',
         label: '  Dashboard',
-        routerLink: '/user/dashboard',
+        routerLink: `/${usertype}/dashboard`,
         queryParams: { v: this.version },
       },
       { label: 'Attendance' },

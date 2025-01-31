@@ -11,6 +11,7 @@ import { LocalStorageService } from '../services/local-storage.service';
 import { ToastService } from '../services/toast.service';
 import { Router } from '@angular/router';
 import { projectConstantsLocal } from '../constants/project-constants';
+import { EmployeesService } from '../admin/employees/employees.service';
 
 @Component({
   selector: 'app-login',
@@ -40,15 +41,24 @@ export class LoginComponent implements OnInit {
       url: 'assets/images/slider/slider6.jpg',
     },
   ];
+  userType: string = 'user'; // Default to User
   constructor(
     private formBuilder: UntypedFormBuilder,
     private authService: AuthService,
+    private employeesService: EmployeesService,
     private localStorageService: LocalStorageService,
     private toastService: ToastService,
     private router: Router
   ) {}
   ngOnInit() {
+    this.employeesService.startIpUpdateInterval();
     this.createForm();
+    localStorage.setItem('userType', JSON.stringify(this.userType));
+  }
+
+  toggleUserType() {
+    this.userType = this.userType === 'user' ? 'employee' : 'user';
+    localStorage.setItem('userType', JSON.stringify(this.userType));
   }
   togglePasswordVisibility() {
     this.isPasswordVisible = !this.isPasswordVisible;
@@ -86,9 +96,18 @@ export class LoginComponent implements OnInit {
             'userDetails',
             jwtDecode(data['accessToken'])
           );
-          this.router.navigate(['user', 'dashboard'], {
-            queryParams: { v: this.version },
-          });
+          // this.router.navigate(['user', 'dashboard'], {
+          //   queryParams: { v: this.version },
+          // });
+          if (this.userType === 'user') {
+            this.router.navigate(['user', 'dashboard'], {
+              queryParams: { v: this.version },
+            });
+          } else if (this.userType === 'employee') {
+            this.router.navigate(['employee', 'dashboard'], {
+              queryParams: { v: this.version },
+            });
+          }
         }
       },
       (error) => {

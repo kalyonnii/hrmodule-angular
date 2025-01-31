@@ -36,7 +36,7 @@ export class SalaryhikeComponent {
   salaryHikes1: any = [];
   currentTableEvent: any;
   apiLoading: any;
-  dataLoading:any
+  dataLoading: any;
   salaryHikeForm: UntypedFormGroup;
   heading: any = 'Create Salary Hike';
   actionType: any = 'create';
@@ -54,12 +54,13 @@ export class SalaryhikeComponent {
     private toastService: ToastService,
     private dateTimeProcessor: DateTimeProcessorService
   ) {
+    const usertype = localStorage.getItem('userType');
     this.moment = this.dateTimeProcessor.getMoment();
     this.breadCrumbItems = [
       {
         icon: 'fa fa-house',
         label: '  Dashboard',
-        routerLink: '/user/dashboard',
+        routerLink: `/${usertype}/dashboard`,
         queryParams: { v: this.version },
       },
       { label: 'Salary Hikes' },

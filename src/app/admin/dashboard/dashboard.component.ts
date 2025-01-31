@@ -76,10 +76,13 @@ export class DashboardComponent implements OnInit {
     }
     this.capabilities = this.employeesService.getUserRbac();
     console.log('capabilities', this.capabilities);
+    this.selectedDate = this.moment().format('YYYY-MM-DD');
+    if (!this.capabilities.employee) {
+      this.getAttendanceByDate();
+    }
     if (this.userDetails.employeeId && this.capabilities.employee) {
       this.getEmployeeById(this.userDetails?.employeeId);
     }
-    this.selectedDate = this.moment().format('YYYY-MM-DD');
     this.setChartOptions();
     this.updateCountsAnalytics();
     if (!this.capabilities.employee) {
@@ -98,7 +101,6 @@ export class DashboardComponent implements OnInit {
     this.fetchCounts();
     this.getGenderCounts();
     this.getBranchCounts();
-    this.getAttendanceByDate();
     this.getDepartmentCounts();
   }
   onDateChange(event: any) {
@@ -535,10 +537,10 @@ export class DashboardComponent implements OnInit {
       holidayfilter['date-gte'] = startOfYear;
       holidayfilter['date-lte'] = endOfYear;
     }
-    const incentivefilter = {
-      ...filter,
-      'incentiveApplicableMonth-eq': this.selectedDateforIncentive,
-    };
+    // const incentivefilter = {
+    //   ...filter,
+    //   'incentiveApplicableMonth-eq': this.selectedDateforIncentive,
+    // };
     forkJoin([
       this.employeesService?.getEmployeesCount(employeefilter),
       this.employeesService?.getUsersCount(filter),
@@ -547,7 +549,7 @@ export class DashboardComponent implements OnInit {
       this.employeesService?.getLeavesCount(leavesfilter),
       this.employeesService?.getPayrollCount(payrollfilter),
       this.employeesService?.getDesignationCount(departmentfilter),
-      this.employeesService?.getIncentivesCount(incentivefilter),
+      this.employeesService?.getIncentivesCount(filter),
     ]).subscribe(
       ([
         employeesCount,
@@ -770,7 +772,7 @@ export class DashboardComponent implements OnInit {
       //   offsetX: -5,
       // },
       legend: {
-        position: 'bottom',
+        position: 'top',
         horizontalAlign: 'center',
       },
     };
@@ -878,7 +880,10 @@ export class DashboardComponent implements OnInit {
     };
   }
   goToRoute(route) {
-    this.routingService.setFeatureRoute('user');
+    const usertype =
+      this.localStorageService.getItemFromLocalStorage('userType');
+    this.routingService.setFeatureRoute(usertype);
+    // this.routingService.setFeatureRoute('user');
     this.routingService.handleRoute(route, null);
   }
 }

@@ -34,17 +34,18 @@ export class PayslipComponent {
     private employeesService: EmployeesService,
     private dateTimeProcessor: DateTimeProcessorService
   ) {
+    const usertype = localStorage.getItem('userType');
     this.moment = this.dateTimeProcessor.getMoment();
     this.breadCrumbItems = [
       {
         icon: 'fa fa-house',
         label: ' Dashboard',
-        routerLink: '/user/dashboard',
+        routerLink: `/${usertype}/dashboard`,
         queryParams: { v: this.version },
       },
       {
         label: 'Payroll',
-        routerLink: '/user/payroll',
+        routerLink: `/${usertype}/payroll`,
         queryParams: { v: this.version },
       },
       { label: 'Payslip' },

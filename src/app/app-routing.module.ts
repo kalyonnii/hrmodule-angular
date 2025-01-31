@@ -11,8 +11,19 @@ const routes: Routes = [
       import('./admin/admin.module').then((m) => m.AdminModule),
     canActivate: [AuthGuard],
   },
+  // {
+  //   path: 'user/login',
+  //   loadChildren: () =>
+  //     import('./login/login.module').then((m) => m.LoginModule),
+  // },
   {
-    path: 'user/login',
+    path: 'employee',
+    loadChildren: () =>
+      import('./admin/admin.module').then((m) => m.AdminModule),
+    canActivate: [AuthGuard],
+  },
+  {
+    path: ':usertype/login',
     loadChildren: () =>
       import('./login/login.module').then((m) => m.LoginModule),
   },

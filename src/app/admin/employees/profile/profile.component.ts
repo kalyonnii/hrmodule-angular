@@ -77,6 +77,7 @@ export class ProfileComponent implements OnInit {
   resignationForm: UntypedFormGroup;
   terminationForm: UntypedFormGroup;
   currentYear: number;
+  userType: any;
   constructor(
     private location: Location,
     private confirmationService: ConfirmationService,
@@ -98,18 +99,19 @@ export class ProfileComponent implements OnInit {
     this.displayMonth = this.moment(new Date()).format('MMMM YYYY');
     this.capabilities = this.employeesService.getUserRbac();
     console.log('capabilities', this.capabilities);
+    this.userType = localStorage.getItem('userType');
     this.breadCrumbItems = [
       {
         icon: 'fa fa-house',
         label: ' Dashboard',
-        routerLink: '/user/dashboard',
+        routerLink: `/${this.userType}/dashboard`,
         queryParams: { v: this.version },
       },
       ...(!this.capabilities.employee
         ? [
             {
               label: 'Employees',
-              routerLink: '/user/employees',
+              routerLink: `/${this.userType}/employees`,
               queryParams: { v: this.version },
             },
           ]

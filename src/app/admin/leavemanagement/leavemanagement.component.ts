@@ -43,11 +43,12 @@ export class LeavemanagementComponent {
     private routingService: RoutingService,
     private localStorageService: LocalStorageService
   ) {
+    const usertype = localStorage.getItem('userType');
     this.breadCrumbItems = [
       {
         icon: 'fa fa-house',
         label: '  Dashboard',
-        routerLink: '/user/dashboard',
+        routerLink: `/${usertype}/dashboard`,
         queryParams: { v: this.version },
       },
       { label: 'Leave Management' },

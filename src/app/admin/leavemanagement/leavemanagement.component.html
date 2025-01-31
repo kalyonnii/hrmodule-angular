@@ -30,7 +30,7 @@
 <div *ngIf="loading">
   <app-preloader></app-preloader>
 </div>
-<div class="container-fluid">
+<div class="container-fluid" *ngIf="!loading">
   <div class="row">
     <div class="d-flex flex-wrap justify-content-start">
       <ng-container *ngFor="let item of countsAnalytics">
@@ -63,7 +63,7 @@
     </div>
   </div>
 </div>
-<div class="text-capitalize table-card">
+<div class="text-capitalize table-card" *ngIf="!loading">
   <p-table
     #leavesTable
     [value]="leaves"
