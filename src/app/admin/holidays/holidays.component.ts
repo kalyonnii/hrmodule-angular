@@ -38,7 +38,8 @@ export class HolidaysComponent implements OnInit {
     private localStorageService: LocalStorageService,
     private dateTimeProcessor: DateTimeProcessorService
   ) {
-    const usertype = localStorage.getItem('userType');
+    // const usertype = localStorage.getItem('userType');
+    const usertype = localStorageService.getItemFromLocalStorage('userType');
     this.moment = this.dateTimeProcessor.getMoment();
     this.breadCrumbItems = [
       {
@@ -56,13 +57,15 @@ export class HolidaysComponent implements OnInit {
     this.setFilterConfig();
     this.generateYears();
     this.selectedYear = new Date().getFullYear();
-    const storedYear = localStorage.getItem('selectedYear');
+    const storedYear =
+      this.localStorageService.getItemFromLocalStorage('selectedYear');
     if (storedYear) {
-      this.selectedYear = JSON.parse(storedYear);
+      this.selectedYear = storedYear;
     }
-    const storedAppliedFilter = localStorage.getItem('holidaysAppliedFilter');
+    const storedAppliedFilter =
+      this.localStorageService.getItemFromLocalStorage('holidaysAppliedFilter');
     if (storedAppliedFilter) {
-      this.appliedFilter = JSON.parse(storedAppliedFilter);
+      this.appliedFilter = storedAppliedFilter;
     }
   }
   setFilterConfig() {
@@ -166,9 +169,9 @@ export class HolidaysComponent implements OnInit {
     } else {
       this.appliedFilter = api_filter;
     }
-    localStorage.setItem(
+    this.localStorageService.setItemOnLocalStorage(
       'holidaysAppliedFilter',
-      JSON.stringify(this.appliedFilter)
+      this.appliedFilter
     );
     this.loadHolidays(this.currentTableEvent);
   }
@@ -216,7 +219,10 @@ export class HolidaysComponent implements OnInit {
   }
 
   loadHolidaysByYear(): void {
-    localStorage.setItem('selectedYear', JSON.stringify(this.selectedYear));
+    this.localStorageService.setItemOnLocalStorage(
+      'selectedYear',
+      this.selectedYear
+    );
     this.loadHolidays(this.currentTableEvent);
   }
   loadHolidays(event) {

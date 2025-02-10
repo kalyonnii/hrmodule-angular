@@ -118,7 +118,7 @@ export class EmployeesService {
 
   async fetchAndStoreClientIp(): Promise<void> {
     const lastFetchedTime = parseInt(
-      localStorage.getItem('clientIpTime') || '0',
+      this.localStorageService.getItemFromLocalStorage('clientIpTime') || '0',
       10
     );
     const currentTime = Date.now();
@@ -129,10 +129,14 @@ export class EmployeesService {
     ) {
       const newIp = await this.getClientIp();
       if (newIp) {
-        const storedIp = localStorage.getItem('clientIp');
+        const storedIp =
+          this.localStorageService.getItemFromLocalStorage('clientIp');
         if (storedIp !== newIp) {
-          localStorage.setItem('clientIp', newIp);
-          localStorage.setItem('clientIpTime', currentTime.toString());
+          this.localStorageService.setItemOnLocalStorage('clientIp', newIp);
+          this.localStorageService.setItemOnLocalStorage(
+            'clientIpTime',
+            currentTime.toString()
+          );
           console.log('Client IP updated:', newIp);
         }
       }
@@ -289,6 +293,10 @@ export class EmployeesService {
   getUsersCount(filter = {}) {
     const url = 'users/total';
     return this.serviceMeta.httpGet(url, null, filter);
+  }
+  changeUserStatus(userId, statusId) {
+    const url = `users/${userId}/changestatus/${statusId}`;
+    return this.serviceMeta.httpPut(url, null);
   }
   //REPORTS
   exportEmployees(filter = {}) {
@@ -466,7 +474,10 @@ export class EmployeesService {
     const url = 'salaryhikes/total';
     return this.serviceMeta.httpGet(url, null, filter);
   }
-
+  changeSalaryHikeStatus(hikeId, statusId) {
+    const url = `salaryhikes/${hikeId}/changestatus/${statusId}`;
+    return this.serviceMeta.httpPut(url, null);
+  }
   //Leaves
   createLeave(data) {
     const url = 'leaves';

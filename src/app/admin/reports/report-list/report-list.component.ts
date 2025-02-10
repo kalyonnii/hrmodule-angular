@@ -53,14 +53,16 @@ export class ReportListComponent {
     this.capabilities = this.employeesService.getUserRbac();
     console.log('capabilities', this.capabilities);
     this.setFilterConfig();
-    const storedReportType = localStorage.getItem('reportType');
+    const storedReportType =
+      this.localStorageService.getItemFromLocalStorage('reportType');
     if (storedReportType) {
       this.reportTypeToSearch = storedReportType;
       this.filterWithReportType();
     }
-    const storedAppliedFilter = localStorage.getItem('reportsAppliedFilter');
+    const storedAppliedFilter =
+      this.localStorageService.getItemFromLocalStorage('reportsAppliedFilter');
     if (storedAppliedFilter) {
-      this.appliedFilter = JSON.parse(storedAppliedFilter);
+      this.appliedFilter = storedAppliedFilter;
     }
   }
 
@@ -170,7 +172,8 @@ export class ReportListComponent {
 
   filterWithReportType(): void {
     const reportTypeToSearch =
-      localStorage.getItem('reportType') || this.reportTypeToSearch;
+      this.localStorageService.getItemFromLocalStorage('reportType') ||
+      this.reportTypeToSearch;
     if (reportTypeToSearch) {
       const searchFilter = { 'reportType-like': reportTypeToSearch };
       this.applyFilters(searchFilter);
@@ -184,11 +187,11 @@ export class ReportListComponent {
   inputValueChangeEvent(dataType: string, value: string): void {
     if (value === '') {
       this.searchFilter = {};
-      localStorage.setItem('reportType', value);
+      this.localStorageService.setItemOnLocalStorage('reportType', value);
       console.log(this.currentTableEvent);
       this.loadReports(this.currentTableEvent);
     } else {
-      localStorage.setItem('reportType', value);
+      this.localStorageService.setItemOnLocalStorage('reportType', value);
     }
   }
   applyConfigFilters(event) {
@@ -199,9 +202,9 @@ export class ReportListComponent {
     } else {
       this.appliedFilter = api_filter;
     }
-    localStorage.setItem(
+    this.localStorageService.setItemOnLocalStorage(
       'reportsAppliedFilter',
-      JSON.stringify(this.appliedFilter)
+      this.appliedFilter
     );
     this.loadReports(this.currentTableEvent);
   }

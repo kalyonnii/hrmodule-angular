@@ -204,8 +204,12 @@ export class ExtendhttpInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<unknown>> {
     const authToken =
       this.localStorageService.getItemFromLocalStorage('accessToken');
-    const clientIp = localStorage.getItem('clientIp') || '';
-    const userType = localStorage.getItem('userType') || '';
+    // const clientIp = localStorage.getItem('clientIp') || '';
+    // const userType = localStorage.getItem('userType') || '';
+    const userType =
+      this.localStorageService.getItemFromLocalStorage('userType') || '';
+    const clientIp =
+      this.localStorageService.getItemFromLocalStorage('clientIp') || '';
     if (authToken) {
       request = request.clone({
         setHeaders: {

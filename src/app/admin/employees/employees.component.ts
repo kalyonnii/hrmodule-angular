@@ -64,13 +64,18 @@ export class EmployeesComponent implements OnInit {
     this.updateCountsAnalytics();
     // this.setFilterConfig();
     this.getEmployeesStatusCount();
-    const storedStatus = localStorage.getItem('selectedEmployeeStatus');
+    const storedStatus = this.localStorageService.getItemFromLocalStorage(
+      'selectedEmployeeStatus'
+    );
     if (storedStatus) {
-      this.selectedEmployeeStatus = JSON.parse(storedStatus);
+      this.selectedEmployeeStatus = storedStatus;
     }
-    const storedAppliedFilter = localStorage.getItem('employeesAppliedFilter');
+    const storedAppliedFilter =
+      this.localStorageService.getItemFromLocalStorage(
+        'employeesAppliedFilter'
+      );
     if (storedAppliedFilter) {
-      this.appliedFilter = JSON.parse(storedAppliedFilter);
+      this.appliedFilter = storedAppliedFilter;
     }
   }
   updateCountsAnalytics() {
@@ -142,6 +147,11 @@ export class EmployeesComponent implements OnInit {
         label: 'Profile',
         icon: 'fa fa-eye',
         command: () => this.employeeProfile(employee.employeeId),
+      });
+      menuItems[0].items.push({
+        label: 'Relieving Letter',
+        icon: 'fa fa-file',
+        command: () => this.ViewRelievingletter(employee.employeeId),
       });
       menuItems[0].items.push({
         label: 'Active',
@@ -506,9 +516,9 @@ export class EmployeesComponent implements OnInit {
     } else {
       this.appliedFilter = api_filter;
     }
-    localStorage.setItem(
+    this.localStorageService.setItemOnLocalStorage(
       'employeesAppliedFilter',
-      JSON.stringify(this.appliedFilter)
+      this.appliedFilter
     );
     this.loadEmployees(this.currentTableEvent);
   }
@@ -565,13 +575,16 @@ export class EmployeesComponent implements OnInit {
   }
 
   statusChange(event: any): void {
-    localStorage.setItem('selectedEmployeeStatus', JSON.stringify(event.value));
+    this.localStorageService.setItemOnLocalStorage(
+      'selectedEmployeeStatus',
+      event.value
+    );
     this.loadEmployees(this.currentTableEvent);
   }
   inputValueChangeEvent(dataType, value) {
     if (value == '') {
       this.searchFilter = {};
-      localStorage.setItem('employeeNameToSearch', value);
+      // localStorage.setItem('employeeNameToSearch', value);
       console.log(this.currentTableEvent);
       this.loadEmployees(this.currentTableEvent);
     }
@@ -726,6 +739,12 @@ export class EmployeesComponent implements OnInit {
   ViewOfferletter(employeeId) {
     this.routingService.handleRoute(
       'employees/offerletter/' + employeeId,
+      null
+    );
+  }
+  ViewRelievingletter(employeeId) {
+    this.routingService.handleRoute(
+      'employees/relievingletter/' + employeeId,
       null
     );
   }

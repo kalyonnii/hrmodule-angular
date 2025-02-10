@@ -13,6 +13,7 @@ import { UsersComponent } from './users.component';
 import { FilterModule } from 'src/app/filter/filter.module';
 import { PreloaderModule } from 'src/app/preloader/preloader.module';
 import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
+import { DropdownModule } from 'primeng/dropdown';
 
 const routes: Routes = [
   { path: '', component: UsersComponent },
@@ -44,6 +45,8 @@ const routes: Routes = [
     FilterModule,
     PreloaderModule,
     CapitalizeFirstPipe,
+    MenuModule,
+    DropdownModule
   ],
 })
 export class UsersModule {}

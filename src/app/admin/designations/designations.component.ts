@@ -153,18 +153,20 @@ export class DesignationsComponent implements OnInit {
     this.setFilterConfig();
     // this.createForm();
     // this.setDepartmentsList();
-    const storedFilter = localStorage.getItem('selectedDepartmentStatus');
-    if (storedFilter) {
-      this.selectedDepartmentStatus = JSON.parse(storedFilter);
-    }
-    const storedAppliedFilter = localStorage.getItem(
-      'departmentsAppliedFilter'
+    const storedFilter = this.localStorageService.getItemFromLocalStorage(
+      'selectedDepartmentStatus'
     );
+    if (storedFilter) {
+      this.selectedDepartmentStatus = storedFilter;
+    }
+    const storedAppliedFilter =
+      this.localStorageService.getItemFromLocalStorage(
+        'departmentsAppliedFilter'
+      );
     if (storedAppliedFilter) {
-      this.appliedFilter = JSON.parse(storedAppliedFilter);
+      this.appliedFilter = storedAppliedFilter;
     }
   }
-
   // createForm() {
   //   this.departmentsForm = this.formBuilder.group({
   //     displayName: ['', Validators.required],
@@ -326,9 +328,9 @@ export class DesignationsComponent implements OnInit {
   //   console.log(this.selectedCheckboxes);
   // }
   statusChange(event: any): void {
-    localStorage.setItem(
+    this.localStorageService.setItemOnLocalStorage(
       'selectedDepartmentStatus',
-      JSON.stringify(event.value)
+      event.value
     );
     this.loadDesignations(this.currentTableEvent);
   }
@@ -341,9 +343,9 @@ export class DesignationsComponent implements OnInit {
     } else {
       this.appliedFilter = api_filter;
     }
-    localStorage.setItem(
+    this.localStorageService.setItemOnLocalStorage(
       'departmentsAppliedFilter',
-      JSON.stringify(this.appliedFilter)
+      this.appliedFilter
     );
     this.loadDesignations(this.currentTableEvent);
   }
@@ -661,7 +663,10 @@ export class DesignationsComponent implements OnInit {
     this.routingService.handleRoute('designations/create', null);
   }
   updateDepartment(designationId) {
-    this.routingService.handleRoute('designations/update/' + designationId, null);
+    this.routingService.handleRoute(
+      'designations/update/' + designationId,
+      null
+    );
   }
   ActiveDepartment(department) {
     this.changeDesignationStatus(department.designationId, 1);

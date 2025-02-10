@@ -40,7 +40,8 @@ export class AttendanceComponent implements OnInit {
     private localStorageService: LocalStorageService
   ) {
     this.moment = this.dateTimeProcessor.getMoment();
-    const usertype = localStorage.getItem('userType');
+    // const usertype = localStorage.getItem('userType');
+    const usertype = localStorageService.getItemFromLocalStorage('userType');
     this.selectedMonth = this.moment(new Date()).format('YYYY-MM');
     this.displayMonth = this.moment(new Date()).format('MMMM YYYY');
     this.breadCrumbItems = [
@@ -66,14 +67,18 @@ export class AttendanceComponent implements OnInit {
       this.localStorageService.getItemFromLocalStorage('userDetails');
     this.userDetails = userDetails.user;
     this.capabilities = this.employeesService.getUserRbac();
-    const storedDate = localStorage.getItem('selectedAttendanceDate');
+    const storedDate = this.localStorageService.getItemFromLocalStorage(
+      'selectedAttendanceDate'
+    );
     if (storedDate) {
       this.selectedDate = storedDate;
       this.filterByDate();
     }
-    const storedMonth = localStorage.getItem('selectedAttendanceMonth');
+    const storedMonth = this.localStorageService.getItemFromLocalStorage(
+      'selectedAttendanceMonth'
+    );
     if (storedMonth) {
-      this.selectedMonth = JSON.parse(storedMonth);
+      this.selectedMonth = storedMonth;
       this.displayMonth = this.moment(this.selectedMonth).format('MMMM YYYY');
     }
   }
@@ -108,9 +113,9 @@ export class AttendanceComponent implements OnInit {
   onDateChange(event: any) {
     this.selectedMonth = this.moment(event).format('YYYY-MM');
     this.displayMonth = this.moment(event).format('MMMM YYYY');
-    localStorage.setItem(
+    this.localStorageService.setItemOnLocalStorage(
       'selectedAttendanceMonth',
-      JSON.stringify(this.selectedMonth)
+      this.selectedMonth
     );
     this.loadAttendance(this.currentTableEvent);
   }
@@ -119,12 +124,17 @@ export class AttendanceComponent implements OnInit {
     if (this.selectedDate) {
       const formattedDate = this.moment(this.selectedDate).format('YYYY-MM-DD');
       console.log('Formatted Date:', formattedDate);
-      localStorage.setItem('selectedAttendanceDate', formattedDate);
+      this.localStorageService.setItemOnLocalStorage(
+        'selectedAttendanceDate',
+        formattedDate
+      );
       const searchFilter = { 'attendanceDate-like': formattedDate };
       this.applyFilters(searchFilter);
     } else {
       this.searchFilter = {};
-      localStorage.removeItem('selectedAttendanceDate');
+      this.localStorageService.removeItemFromLocalStorage(
+        'selectedAttendanceDate'
+      );
       this.loadAttendance(this.currentTableEvent);
     }
   }

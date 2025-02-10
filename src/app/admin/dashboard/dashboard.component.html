@@ -259,7 +259,7 @@
       </div>
       <div class="card p-2 employeeProfile" *ngIf="capabilities.employee">
         <div class="card-body text-capitalize" *ngIf="employeeData">
-          <div class="row">
+          <!-- <div class="row">
             <div class="employee-info-line">
               <span class="icon"><i class="fas fa-user"></i></span>
               <div class="employee-label d-flex justify-content-between">
@@ -365,7 +365,52 @@
                 &nbsp;View Profile
               </button>
             </div>
-          </div>
+          </div> -->
+          <!-- <div class="attendance-container p-4 "> -->
+            <h3 class="text-center mb-3">Attendance Tracker</h3>
+            <div class="d-flex justify-content-center gap-3">
+              <p-button
+                label="Check In"
+                icon="pi pi-sign-in"
+                class="p-button-success p-button-lg"
+                (click)="checkIn()"
+                [disabled]="checkInTime !== null"
+              ></p-button>
+              <p-button
+                label="Check Out"
+                icon="pi pi-sign-out"
+                class="p-button-danger p-button-lg"
+                (click)="checkOut()"
+                [disabled]="checkInTime === null || checkOutTime !== null"
+              ></p-button>
+            </div>
+            <div class="details-container mt-4 p-3 rounded text-center">
+              <p *ngIf="checkInTime" class="text-primary">
+                <b> Status:</b> {{ status  }}
+              </p>
+              <p *ngIf="checkInTime" class="text-primary">
+                <b>Checked In:</b> {{ checkInTime  }}
+              </p>
+              <p *ngIf="checkOutTime" class="text-danger">
+                <b>Checked Out:</b> {{ checkOutTime }}
+              </p>
+              <p *ngIf="checkInTime" class="text-success">
+                <b>Total Logged Time:</b> {{ loggedHours }}
+              </p>
+            </div>
+            <!-- <div class="d-flex justify-content-center">
+              <button
+                pButton
+                pRipple
+                icon="fa fa-cloud-arrow-up"
+                type="button"
+                class="me-2 rightbtn"
+                (click)="employeeProfile(this.userDetails.employeeId)"
+              >
+                &nbsp;View Profile
+              </button>
+            </div> -->
+
         </div>
       </div>
     </div>

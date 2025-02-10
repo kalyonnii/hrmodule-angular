@@ -13,6 +13,7 @@ import { SalaryhikeComponent } from './salaryhike.component';
 import { PreloaderModule } from 'src/app/preloader/preloader.module';
 import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
 import { FilterModule } from 'src/app/filter/filter.module';
+import { MenuModule } from 'primeng/menu';
 
 const routes: Routes = [
   { path: '', component: SalaryhikeComponent },
@@ -40,6 +41,7 @@ const routes: Routes = [
     PreloaderModule,
     CapitalizeFirstPipe,
     FilterModule,
+    MenuModule
   ],
 })
 export class SalaryhikeModule {}

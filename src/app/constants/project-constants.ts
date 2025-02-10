@@ -4,6 +4,16 @@ export const projectConstantsLocal = {
     { id: 1, name: 'Active', displayName: 'Active Employees' },
     { id: 2, name: 'InActive', displayName: 'InActive Employees' },
   ],
+  USERS_STATUS: [
+    { id: 0, name: 'all', displayName: 'All Users' },
+    { id: 1, name: 'Active', displayName: 'Active Users' },
+    { id: 2, name: 'InActive', displayName: 'InActive Users' },
+  ],
+  SALARY_HIKES_STATUS: [
+    { id: 0, name: 'all', displayName: 'All Hikes' },
+    { id: 1, name: 'Active', displayName: 'Active Hikes' },
+    { id: 2, name: 'InActive', displayName: 'InActive Hikes' },
+  ],
   BRANCH_ENTITIES: [
     { id: 1, displayName: 'Punjagutta', name: 'punjagutta' },
     { id: 2, displayName: 'Begumpet', name: 'begumpet' },

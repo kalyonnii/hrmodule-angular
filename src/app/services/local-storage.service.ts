@@ -26,7 +26,16 @@ export class LocalStorageService {
     this.storage.removeItem(key);
   }
 
+  // clearAllFromLocalStorage(): void {
+  //   this.storage.clear();
+  // }
+
   clearAllFromLocalStorage(): void {
-    this.storage.clear();
+    const keysToKeep = ['clientIp', 'clientIpTime','userType'];
+    Object.keys(localStorage).forEach((key) => {
+      if (!keysToKeep.includes(key)) {
+        localStorage.removeItem(key);
+      }
+    });
   }
 }

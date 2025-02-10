@@ -64,16 +64,20 @@ export class InterviewsComponent implements OnInit {
     this.updateCountsAnalytics();
     this.setFilterConfig();
     this.getInterviewsStatusCount();
-    const storedStatus = localStorage.getItem('selectedInterviewStatus');
+    const storedStatus = this.localStorageService.getItemFromLocalStorage(
+      'selectedInterviewStatus'
+    );
     if (storedStatus) {
-      this.selectedInterviewStatus = JSON.parse(storedStatus);
+      this.selectedInterviewStatus = storedStatus;
     }
-    const storedAppliedFilter = localStorage.getItem('interviewsAppliedFilter');
+    const storedAppliedFilter =
+      this.localStorageService.getItemFromLocalStorage(
+        'interviewsAppliedFilter'
+      );
     if (storedAppliedFilter) {
-      this.appliedFilter = JSON.parse(storedAppliedFilter);
+      this.appliedFilter = storedAppliedFilter;
     }
   }
-
   setFilterConfig() {
     this.filterConfig = [
       {
@@ -379,9 +383,9 @@ export class InterviewsComponent implements OnInit {
     this.loadInterviews(this.currentTableEvent);
   }
   statusChange(event: any): void {
-    localStorage.setItem(
+    this.localStorageService.setItemOnLocalStorage(
       'selectedInterviewStatus',
-      JSON.stringify(event.value)
+      event.value
     );
     this.loadInterviews(this.currentTableEvent);
   }
@@ -394,9 +398,9 @@ export class InterviewsComponent implements OnInit {
     } else {
       this.appliedFilter = api_filter;
     }
-    localStorage.setItem(
+    this.localStorageService.setItemOnLocalStorage(
       'interviewsAppliedFilter',
-      JSON.stringify(this.appliedFilter)
+      this.appliedFilter
     );
     this.loadInterviews(this.currentTableEvent);
   }

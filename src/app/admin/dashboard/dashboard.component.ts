@@ -51,6 +51,11 @@ export class DashboardComponent implements OnInit {
   capabilities: any;
   employeeData: any = null;
   currentYear: number;
+  checkInTime: Date | null = null;
+  checkOutTime: Date | null = null;
+  loggedHours: string = '0h 0m';
+  timerInterval: any;
+  status: any;
   constructor(
     private localStorageService: LocalStorageService,
     private routingService: RoutingService,
@@ -88,6 +93,577 @@ export class DashboardComponent implements OnInit {
     if (!this.capabilities.employee) {
       this.initializeDashboardData();
     }
+    this.fetchAttendance();
+  }
+
+  checkIn() {
+    this.saveAttendance(true);
+  }
+
+  checkOut() {
+    this.saveAttendance(false);
+    this.stopLoggedHoursTimer();
+  }
+  startLoggedHoursTimer() {
+    if (this.checkInTime) {
+      this.timerInterval = setInterval(() => {
+        this.loggedHours = this.calculateLiveLoggedHours();
+      }, 60000); // Update every minute
+    }
+  }
+  // saveAttendance(isCheckIn: boolean, filter = {}) {
+  //   const attendanceDate = this.moment(this.selectedDate).format('YYYY-MM-DD');
+  //   const attendanceData = {
+  //     attendanceDate: attendanceDate, // Keep same date
+  //     attendanceData: [
+  //       {
+  //         employeeId: this.employeeData.employeeId, // Current logged-in employee
+  //         status: isCheckIn ? 'Present' : 'Absent',
+  //         checkInTime: isCheckIn
+  //           ? this.moment(new Date()).format('HH:mm')
+  //           : this.checkInTime,
+  //         checkOutTime: !isCheckIn
+  //           ? this.moment(new Date()).format('HH:mm')
+  //           : null,
+  //       },
+  //     ],
+  //   };
+  //   console.log('Formatted Attendance Data:', attendanceData);
+  //   this.loading = true;
+  //   const attendanceFilter = { ...filter, 'attendanceDate-eq': attendanceDate };
+  //   this.employeesService.getAttendance(attendanceFilter).subscribe(
+  //     (existingRecord: any) => {
+  //       if (existingRecord && existingRecord.length > 0) {
+  //         console.log('existing record', existingRecord);
+  //         this.employeesService
+  //           .updateAttendance(existingRecord.attendanceId, attendanceData)
+  //           .subscribe(
+  //             (data) => {
+  //               this.loading = false;
+  //               this.toastService.showSuccess(
+  //                 'Attendance Updated Successfully'
+  //               );
+  //               // this.fetchAttendance(attendanceFilter);
+  //             },
+
+  //             (error: any) => {
+  //               this.loading = false;
+  //               this.toastService.showError(error);
+  //             }
+  //           );
+  //       } else {
+  //         this.employeesService.createAttendance(attendanceData).subscribe(
+  //           (data) => {
+  //             this.loading = false;
+  //             this.toastService.showSuccess('Attendance Added Successfully');
+  //             // this.fetchAttendance(attendanceFilter);
+  //           },
+  //           (error: any) => {
+  //             this.loading = false;
+  //             this.toastService.showError(error);
+  //           }
+  //         );
+  //       }
+  //     },
+  //     (error: any) => {
+  //       this.loading = false;
+  //       this.toastService.showError(error);
+  //     }
+  //   );
+  // }
+
+  // saveAttendance(isCheckIn: boolean, filter = {}) {
+  //   const attendanceDate = this.moment(this.selectedDate).format('YYYY-MM-DD');
+  //   const attendanceFilter = { ...filter, 'attendanceDate-eq': attendanceDate };
+  //   this.loading = true;
+  //   this.employeesService.getAttendance(attendanceFilter).subscribe(
+  //     (existingRecords: any) => {
+  //       let attendanceRecord =
+  //         existingRecords.length > 0 ? existingRecords[0] : null;
+  //       let updatedAttendanceData = attendanceRecord
+  //         ? [...attendanceRecord.attendanceData]
+  //         : [];
+  //       const existingEmployeeIndex = updatedAttendanceData.findIndex(
+  //         (data: any) => data.employeeId == this.userDetails.employeeId
+  //       );
+  //       if (existingEmployeeIndex !== -1) {
+  //         updatedAttendanceData[existingEmployeeIndex] = {
+  //           ...updatedAttendanceData[existingEmployeeIndex],
+  //           status: isCheckIn ? 'Present' : 'Absent',
+  //           checkInTime: isCheckIn
+  //             ? this.moment(new Date()).format('HH:mm')
+  //             : updatedAttendanceData[existingEmployeeIndex].checkInTime,
+  //           checkOutTime: !isCheckIn
+  //             ? this.moment(new Date()).format('HH:mm')
+  //             : null,
+  //         };
+  //       } else {
+  //         updatedAttendanceData.push({
+  //           employeeId: this.employeeData.employeeId,
+  //           status: isCheckIn ? 'Present' : 'Absent',
+  //           checkInTime: isCheckIn
+  //             ? this.moment(new Date()).format('HH:mm')
+  //             : null,
+  //           checkOutTime: !isCheckIn
+  //             ? this.moment(new Date()).format('HH:mm')
+  //             : null,
+  //         });
+  //       }
+  //       const attendanceData = {
+  //         attendanceDate: attendanceDate,
+  //         attendanceData: updatedAttendanceData,
+  //       };
+  //       if (attendanceRecord) {
+  //         this.employeesService
+  //           .updateAttendance(attendanceRecord.attendanceId, attendanceData)
+  //           .subscribe(
+  //             () => {
+  //               this.loading = false;
+  //               this.toastService.showSuccess(
+  //                 'Attendance Updated Successfully'
+  //               );
+  //               this.fetchAttendance();
+  //             },
+  //             (error: any) => {
+  //               this.loading = false;
+  //               this.toastService.showError(error);
+  //             }
+  //           );
+  //       } else {
+  //         this.employeesService.createAttendance(attendanceData).subscribe(
+  //           () => {
+  //             this.loading = false;
+  //             this.toastService.showSuccess('Attendance Added Successfully');
+  //             this.fetchAttendance();
+  //           },
+  //           (error: any) => {
+  //             this.loading = false;
+  //             this.toastService.showError(error);
+  //           }
+  //         );
+  //       }
+  //     },
+  //     (error: any) => {
+  //       this.loading = false;
+  //       this.toastService.showError(error);
+  //     }
+  //   );
+  // }
+
+  // saveAttendance(isCheckIn: boolean, filter = {}) {
+  //   const attendanceDate = this.moment(this.selectedDate).format('YYYY-MM-DD');
+  //   const attendanceFilter = { ...filter, 'attendanceDate-eq': attendanceDate };
+  //   this.loading = true;
+
+  //   this.employeesService.getAttendance(attendanceFilter).subscribe(
+  //     (existingRecords: any) => {
+  //       let attendanceRecord =
+  //         existingRecords.length > 0 ? existingRecords[0] : null;
+  //       let updatedAttendanceData = attendanceRecord
+  //         ? [...attendanceRecord.attendanceData]
+  //         : [];
+
+  //       const existingEmployeeIndex = updatedAttendanceData.findIndex(
+  //         (data: any) => data.employeeId == this.employeeData.employeeId
+  //       );
+
+  //       const now = this.moment();
+  //       const checkInTime = now.format('HH:mm');
+  //       const officeStartTime = this.moment('10:00', 'HH:mm');
+  //       const lateThreshold = this.moment('10:05', 'HH:mm');
+  //       const officeEndTime = this.moment('18:30', 'HH:mm');
+  //       let status = 'Present';
+  //       let totalDuration = 0;
+
+  //       if (existingEmployeeIndex !== -1) {
+  //         const existingEmployee = updatedAttendanceData[existingEmployeeIndex];
+
+  //         if (!isCheckIn) {
+  //           const checkOutTime = now.format('HH:mm');
+  //           const checkInMoment = this.moment(
+  //             existingEmployee.checkInTime,
+  //             'HH:mm'
+  //           );
+  //           totalDuration = now.diff(checkInMoment, 'hours', true);
+  //           if (totalDuration < 4) {
+  //             status = 'Half-day';
+  //           }
+  //           if (now.isBefore(officeEndTime)) {
+  //             status = 'Late';
+  //           }
+  //           updatedAttendanceData[existingEmployeeIndex] = {
+  //             ...existingEmployee,
+  //             status: status,
+  //             checkOutTime: checkOutTime,
+  //             totalDuration: totalDuration.toFixed(2),
+  //           };
+  //         }
+  //       } else {
+  //         // Check-In: Mark Late if after 10:05 AM
+  //         if (now.isAfter(lateThreshold)) {
+  //           status = 'Late';
+  //         }
+
+  //         updatedAttendanceData.push({
+  //           employeeId: this.employeeData.employeeId,
+  //           status: status,
+  //           checkInTime: checkInTime,
+  //           checkOutTime: null,
+  //           totalDuration: 0,
+  //         });
+  //       }
+
+  //       const attendanceData = {
+  //         attendanceDate: attendanceDate,
+  //         attendanceData: updatedAttendanceData,
+  //       };
+
+  //       if (attendanceRecord) {
+  //         this.employeesService
+  //           .updateAttendance(attendanceRecord.attendanceId, attendanceData)
+  //           .subscribe(
+  //             () => {
+  //               this.loading = false;
+  //               this.toastService.showSuccess(
+  //                 'Attendance Updated Successfully'
+  //               );
+  //               this.fetchAttendance();
+  //             },
+  //             (error: any) => {
+  //               this.loading = false;
+  //               this.toastService.showError(error);
+  //             }
+  //           );
+  //       } else {
+  //         this.employeesService.createAttendance(attendanceData).subscribe(
+  //           () => {
+  //             this.loading = false;
+  //             this.toastService.showSuccess('Attendance Added Successfully');
+  //             this.fetchAttendance();
+  //           },
+  //           (error: any) => {
+  //             this.loading = false;
+  //             this.toastService.showError(error);
+  //           }
+  //         );
+  //       }
+  //     },
+  //     (error: any) => {
+  //       this.loading = false;
+  //       this.toastService.showError(error);
+  //     }
+  //   );
+  // }
+  saveAttendance(isCheckIn: boolean, filter = {}) {
+    const attendanceDate = this.moment(this.selectedDate).format('YYYY-MM-DD');
+    const attendanceFilter = { ...filter, 'attendanceDate-eq': attendanceDate };
+    this.loading = true;
+
+    this.employeesService.getAttendance(attendanceFilter).subscribe(
+      (existingRecords: any) => {
+        let attendanceRecord =
+          existingRecords.length > 0 ? existingRecords[0] : null;
+        let updatedAttendanceData = attendanceRecord
+          ? [...attendanceRecord.attendanceData]
+          : [];
+        const now = this.moment();
+        const currentTime = now.format('HH:mm');
+        const lateThreshold = this.moment('10:05', 'HH:mm');
+        let status = now.isAfter(lateThreshold) ? 'Late' : 'Present';
+        if (!attendanceRecord) {
+          // No attendance record exists -> Initialize employees as "Absent"
+          this.employeesService
+            .getEmployees({ 'employeeInternalStatus-eq': 1 })
+            .subscribe((activeEmployees: any) => {
+              updatedAttendanceData = activeEmployees.map((employee) => ({
+                employeeId: employee.employeeId,
+                status:
+                  employee.employeeId === this.employeeData.employeeId
+                    ? status
+                    : 'Absent',
+                checkInTime:
+                  employee.employeeId === this.employeeData.employeeId
+                    ? currentTime
+                    : null,
+                checkOutTime: null,
+                totalDuration: 0,
+              }));
+
+              this.saveOrUpdateAttendance(
+                attendanceRecord,
+                attendanceDate,
+                updatedAttendanceData
+              );
+            });
+        } else {
+          // ✅ Check if employee already exists in attendance data
+          const employeeIndex = updatedAttendanceData.findIndex(
+            (data: any) => data.employeeId === this.employeeData.employeeId
+          );
+
+          if (employeeIndex !== -1) {
+            if (isCheckIn) {
+              // ✅ Check-In: Update status and check-in time
+              updatedAttendanceData[employeeIndex].status = status;
+              updatedAttendanceData[employeeIndex].checkInTime = currentTime;
+            } else {
+              // ✅ Check-Out: Update check-out time and calculate total duration
+              const checkInMoment = this.moment(
+                updatedAttendanceData[employeeIndex].checkInTime,
+                'HH:mm'
+              );
+              const totalDuration = now.diff(checkInMoment, 'minutes'); // Calculate duration in minutes
+
+              updatedAttendanceData[employeeIndex].checkOutTime = currentTime;
+              updatedAttendanceData[employeeIndex].totalDuration =
+                totalDuration;
+            }
+          }
+
+          this.saveOrUpdateAttendance(
+            attendanceRecord,
+            attendanceDate,
+            updatedAttendanceData
+          );
+        }
+      },
+      (error: any) => {
+        this.loading = false;
+        this.toastService.showError(error);
+      }
+    );
+  }
+
+  // ✅ Function to Save or Update Attendance Record
+  private saveOrUpdateAttendance(
+    attendanceRecord: any,
+    attendanceDate: string,
+    updatedAttendanceData: any
+  ) {
+    const attendanceData = {
+      attendanceDate: attendanceDate,
+      attendanceData: updatedAttendanceData,
+    };
+    if (attendanceRecord) {
+      this.employeesService
+        .updateAttendance(attendanceRecord.attendanceId, attendanceData)
+        .subscribe(
+          () => {
+            this.loading = false;
+            this.toastService.showSuccess('Attendance Updated Successfully');
+            this.fetchAttendance();
+          },
+          (error: any) => {
+            this.loading = false;
+            this.toastService.showError(error);
+          }
+        );
+    } else {
+      this.employeesService.createAttendance(attendanceData).subscribe(
+        () => {
+          this.loading = false;
+          this.toastService.showSuccess('Attendance Added Successfully');
+          this.fetchAttendance();
+        },
+        (error: any) => {
+          this.loading = false;
+          this.toastService.showError(error);
+        }
+      );
+    }
+  }
+
+  // saveAttendance(isCheckIn: boolean, filter = {}) {
+  //   const attendanceDate = this.moment(this.selectedDate).format('YYYY-MM-DD');
+  //   const attendanceFilter = { ...filter, 'attendanceDate-eq': attendanceDate };
+
+  //   this.loading = true;
+
+  //   this.employeesService.getAttendance(attendanceFilter).subscribe(
+  //     (existingRecords: any) => {
+  //       let attendanceRecord =
+  //         existingRecords.length > 0 ? existingRecords[0] : null;
+  //       let updatedAttendanceData = attendanceRecord
+  //         ? [...attendanceRecord.attendanceData]
+  //         : [];
+
+  //       const existingEmployeeIndex = updatedAttendanceData.findIndex(
+  //         (data: any) => data.employeeId === this.employeeData.employeeId
+  //       );
+
+  //       if (existingEmployeeIndex !== -1) {
+  //         // Employee already checked in, update their details
+  //         updatedAttendanceData[existingEmployeeIndex] = {
+  //           ...updatedAttendanceData[existingEmployeeIndex],
+  //           checkInTime:
+  //             updatedAttendanceData[existingEmployeeIndex].checkInTime ||
+  //             this.moment(new Date()).format('HH:mm'),
+  //         };
+  //       } else {
+  //         // New Employee logging in
+  //         updatedAttendanceData.push({
+  //           employeeId: this.userDetails.employeeId,
+  //           status: 'Present',
+  //           checkInTime: this.moment(new Date()).format('HH:mm'),
+  //           checkOutTime: null,
+  //         });
+  //       }
+
+  //       const attendanceData = {
+  //         attendanceDate: attendanceDate,
+  //         attendanceData: updatedAttendanceData,
+  //       };
+
+  //       if (attendanceRecord) {
+  //         // Update existing record
+  //         this.employeesService
+  //           .updateAttendance(attendanceRecord.attendanceId, attendanceData)
+  //           .subscribe(
+  //             () => {
+  //               this.loading = false;
+  //               this.toastService.showSuccess(
+  //                 'Attendance Updated Successfully'
+  //               );
+  //             },
+  //             (error: any) => {
+  //               this.loading = false;
+  //               this.toastService.showError(error);
+  //             }
+  //           );
+  //       } else {
+  //         // No record exists, create a new one
+  //         this.employeesService.createAttendance(attendanceData).subscribe(
+  //           () => {
+  //             this.loading = false;
+  //             this.toastService.showSuccess('Attendance Added Successfully');
+  //           },
+  //           (error: any) => {
+  //             // Handle case where another request already created it
+  //             if (error.status === 409 || error.status === 400) {
+  //               // Conflict or Bad Request, meaning another process created it already
+  //               this.employeesService
+  //                 .getAttendance(attendanceFilter)
+  //                 .subscribe((retryRecords: any) => {
+  //                   if (retryRecords.length > 0) {
+  //                     const retryAttendanceRecord = retryRecords[0];
+  //                     const retryUpdatedAttendanceData = [
+  //                       ...retryAttendanceRecord.attendanceData,
+  //                     ];
+
+  //                     retryUpdatedAttendanceData.push({
+  //                       employeeId: this.userDetails.employeeId,
+  //                       status: 'Present',
+  //                       checkInTime: this.moment(new Date()).format('HH:mm'),
+  //                       checkOutTime: null,
+  //                     });
+
+  //                     const retryAttendanceData = {
+  //                       attendanceDate: attendanceDate,
+  //                       attendanceData: retryUpdatedAttendanceData,
+  //                     };
+
+  //                     this.employeesService
+  //                       .updateAttendance(
+  //                         retryAttendanceRecord.attendanceId,
+  //                         retryAttendanceData
+  //                       )
+  //                       .subscribe(
+  //                         () => {
+  //                           this.loading = false;
+  //                           this.toastService.showSuccess(
+  //                             'Attendance Updated Successfully'
+  //                           );
+  //                         },
+  //                         (updateError: any) => {
+  //                           this.loading = false;
+  //                           this.toastService.showError(updateError);
+  //                         }
+  //                       );
+  //                   }
+  //                 });
+  //             } else {
+  //               this.loading = false;
+  //               this.toastService.showError(error);
+  //             }
+  //           }
+  //         );
+  //       }
+  //     },
+  //     (error: any) => {
+  //       this.loading = false;
+  //       this.toastService.showError(error);
+  //     }
+  //   );
+  // }
+
+  fetchAttendance(filter = {}) {
+    const attendanceDate = this.moment(this.selectedDate).format('YYYY-MM-DD');
+    const attendanceFilter = { ...filter, 'attendanceDate-eq': attendanceDate };
+
+    this.employeesService.getAttendance(attendanceFilter).subscribe(
+      (attendanceRecords: any) => {
+        if (attendanceRecords && attendanceRecords.length > 0) {
+          const latestAttendance = attendanceRecords[0]; // Get latest entry
+          const attendanceData = latestAttendance.attendanceData.find(
+            (data: any) => data.employeeId == this.userDetails.employeeId
+          );
+
+          if (attendanceData) {
+            this.checkInTime = attendanceData.checkInTime;
+            this.checkOutTime = attendanceData.checkOutTime;
+            this.status = attendanceData.status;
+
+            if (!this.checkOutTime) {
+              this.startLoggedHoursTimer(); // Start live time tracking
+            } else {
+              this.loggedHours = this.calculateLoggedHours();
+            }
+          } else {
+            this.resetAttendance();
+          }
+        } else {
+          this.resetAttendance();
+        }
+      },
+      (error: any) => {
+        this.toastService.showError(error);
+      }
+    );
+  }
+
+  calculateLiveLoggedHours(): string {
+    console.log(this.checkInTime);
+    if (this.checkInTime) {
+      const checkInMoment = this.moment(this.checkInTime, 'HH:mm');
+      const nowMoment = this.moment();
+      const duration = this.moment.duration(nowMoment.diff(checkInMoment));
+      return `${duration.hours()}h ${duration.minutes()}m`;
+    }
+    return '0h 0m';
+  }
+  calculateLoggedHours(): string {
+    if (this.checkInTime && this.checkOutTime) {
+      const checkInMoment = this.moment(this.checkInTime, 'HH:mm');
+      const checkOutMoment = this.moment(this.checkOutTime, 'HH:mm');
+      const duration = this.moment.duration(checkOutMoment.diff(checkInMoment));
+
+      return `${duration.hours()}h ${duration.minutes()}m`;
+    }
+    return '0h 0m';
+  }
+
+  stopLoggedHoursTimer() {
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+      this.timerInterval = null;
+    }
+  }
+
+  resetAttendance() {
+    this.stopLoggedHoursTimer();
+    this.checkInTime = null;
+    this.checkOutTime = null;
+    this.loggedHours = '0h 0m';
   }
   onImageLoad1() {
     console.log('Image loaded');
@@ -122,7 +698,8 @@ export class DashboardComponent implements OnInit {
     this.loading = true;
     this.employeesService.getEmployeeById(id).subscribe(
       (employeeData: any) => {
-        this.getSalaryHikes().subscribe(
+        const filter = { 'hikeInternalStatus-eq': 1 };
+        this.getSalaryHikes(filter).subscribe(
           (salaryHikeData: any) => {
             if (salaryHikeData) {
               const matchingHikes = salaryHikeData.filter(
@@ -162,8 +739,8 @@ export class DashboardComponent implements OnInit {
     const lakhs = amount / 100000;
     return lakhs.toFixed(1) + ' LPA';
   }
-  getSalaryHikes() {
-    return this.employeesService.getSalaryHikes();
+  getSalaryHikes(filter) {
+    return this.employeesService.getSalaryHikes(filter);
   }
   updateCountsAnalytics() {
     this.countsAnalytics = [
@@ -176,6 +753,16 @@ export class DashboardComponent implements OnInit {
         isLoading: true,
       },
       {
+        name: this.userDetails?.gender == 1 ? 'female' : 'male',
+        displayName: 'Profile',
+        // count: this.totalEmployeesCount, // Uncomment if needed
+        routerLink: this.userDetails
+          ? `employees/profile/${this.userDetails.employeeId}`
+          : 'employees/profile',
+        condition: this.capabilities?.employee, // Safe navigation in case capabilities is undefined
+        isLoading: true,
+      },
+      {
         name: 'interviews',
         displayName: 'Upcomming Interviews',
         count: this.totalInterviewsCount,
@@ -185,7 +772,9 @@ export class DashboardComponent implements OnInit {
       },
       {
         name: 'attendance',
-        displayName: 'Today Attendance',
+        displayName: this.capabilities.employee
+          ? 'Attendance'
+          : 'Today Attendance',
         count:
           this.totalPresentCount + this.totalLateCount + this.totalHalfDayCount,
         routerLink: 'attendance',
@@ -196,7 +785,9 @@ export class DashboardComponent implements OnInit {
       },
       {
         name: 'payroll',
-        displayName: 'Last Month Payroll',
+        displayName: this.capabilities.employee
+          ? 'Payroll'
+          : 'Last Month Payroll',
         count: this.lastMonthpayrollCount,
         routerLink: 'payroll',
         condition:
@@ -205,7 +796,7 @@ export class DashboardComponent implements OnInit {
       },
       {
         name: 'leaves',
-        displayName: 'Pending Leaves',
+        displayName: this.capabilities.employee ? 'Leaves' : 'Pending Leaves',
         count: this.totalLeavesCount,
         routerLink: 'leaves',
         condition:

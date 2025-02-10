@@ -293,7 +293,20 @@
             ></button>
           </div>
         </div>
-        <div class="col-md-4 mt-1 mb-1 no-padding-small"></div>
+        <div class="col-md-4 mt-1 mb-1 no-padding-small">
+          <p-dropdown
+          styleClass="text-left"
+          [style]="{ width: '100%' }"
+          [options]="userInternalStatusList"
+          (onChange)="statusChange($event)"
+          appendTo="body"
+          [dropdownIcon]="'fa fa-caret-down'"
+          [(ngModel)]="selectedUserStatus"
+          optionLabel="displayName"
+          dataKey="name"
+        >
+        </p-dropdown>
+        </div>
         <div class="col-md-4 mt-1 mb-1 no-padding-small text-right">
           <div class="d-flex">
             <div class="flex-grow-1 me-2"></div>
@@ -341,6 +354,9 @@
         </th>
         <th pSortableColumn="createdOn" class="text-nowrap">
           Created Date <p-sortIcon field="createdOn"></p-sortIcon>
+        </th>
+        <th pSortableColumn="userInternalStatus" class="text-nowrap">
+          Status <p-sortIcon [field]="'userInternalStatus'"></p-sortIcon>
         </th>
         <th>Actions</th>
       </tr>
@@ -411,7 +427,23 @@
             user.createdOn | date : "mediumDate"
           }}</span>
         </td>
-        <td>
+        <td class="text-nowrap">
+          <span
+            class="table-column-data fw-bold statusdata"
+            *ngIf="user.userInternalStatus; else noData"
+            [ngStyle]="{
+              color: getUserStatusColor(
+                getStatusName(user.userInternalStatus)
+              ).textColor,
+              'background-color': getUserStatusColor(
+                getStatusName(user.userInternalStatus)
+              ).backgroundColor
+            }"
+          >
+            {{ getStatusName(user.userInternalStatus) }}
+          </span>
+        </td>
+        <!-- <td>
           <div class="text-center">
             <div class="d-flex">
               <button
@@ -440,6 +472,25 @@
                 pTooltip="Delete"
                 class="p-button-danger me-2 delete-btn"
                 (click)="confirmDelete(user)"
+              ></button>
+            </div>
+          </div>
+        </td> -->
+        <td>
+          <div class="text-center">
+            <div class="d-flex">
+              <p-menu
+                appendTo="body"
+                #menu
+                [model]="actionItems(user)"
+                [popup]="true"
+              ></p-menu>
+              <button
+                pButton
+                type="button"
+                class="custom-btn"
+                (click)="menu.toggle($event)"
+                icon="pi pi-ellipsis-h"
               ></button>
             </div>
           </div>

@@ -43,7 +43,8 @@ export class LeavemanagementComponent {
     private routingService: RoutingService,
     private localStorageService: LocalStorageService
   ) {
-    const usertype = localStorage.getItem('userType');
+    // const usertype = localStorage.getItem('userType');
+    const usertype = localStorageService.getItemFromLocalStorage('userType');
     this.breadCrumbItems = [
       {
         icon: 'fa fa-house',
@@ -66,17 +67,22 @@ export class LeavemanagementComponent {
     this.updateCountsAnalytics();
     this.setFilterConfig();
     this.getLeavesStatusCount();
-    const storedStatus = localStorage.getItem('selectedLeaveStatus');
+    const storedStatus = this.localStorageService.getItemFromLocalStorage(
+      'selectedLeaveStatus'
+    );
     if (storedStatus) {
-      this.selectedLeavesStatus = JSON.parse(storedStatus);
+      this.selectedLeavesStatus = storedStatus;
     }
-    const storedEmployee = localStorage.getItem('selectedEmployeeStatus');
+    const storedEmployee = this.localStorageService.getItemFromLocalStorage(
+      'selectedEmployeeStatus'
+    );
     if (storedEmployee) {
-      this.selectedEmployee = JSON.parse(storedEmployee);
+      this.selectedEmployee = storedEmployee;
     }
-    const storedAppliedFilter = localStorage.getItem('leavesAppliedFilter');
+    const storedAppliedFilter =
+      this.localStorageService.getItemFromLocalStorage('leavesAppliedFilter');
     if (storedAppliedFilter) {
-      this.appliedFilter = JSON.parse(storedAppliedFilter);
+      this.appliedFilter = storedAppliedFilter;
     }
   }
 
@@ -547,12 +553,18 @@ export class LeavemanagementComponent {
   }
 
   statusChange(event: any): void {
-    localStorage.setItem('selectedLeaveStatus', JSON.stringify(event.value));
+    this.localStorageService.setItemOnLocalStorage(
+      'selectedLeaveStatus',
+      event.value
+    );
     this.loadLeaves(this.currentTableEvent);
   }
 
   statusChangeEmployee(event: any): void {
-    localStorage.setItem('selectedEmployeeStatus', JSON.stringify(event.value));
+    this.localStorageService.setItemOnLocalStorage(
+      'selectedEmployeeStatus',
+      event.value
+    );
     this.loadLeaves(this.currentTableEvent);
   }
   applyConfigFilters(event) {
@@ -563,9 +575,9 @@ export class LeavemanagementComponent {
     } else {
       this.appliedFilter = api_filter;
     }
-    localStorage.setItem(
+    this.localStorageService.setItemOnLocalStorage(
       'leavesAppliedFilter',
-      JSON.stringify(this.appliedFilter)
+      this.appliedFilter
     );
     this.loadLeaves(this.currentTableEvent);
   }

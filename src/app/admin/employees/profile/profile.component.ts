@@ -99,7 +99,7 @@ export class ProfileComponent implements OnInit {
     this.displayMonth = this.moment(new Date()).format('MMMM YYYY');
     this.capabilities = this.employeesService.getUserRbac();
     console.log('capabilities', this.capabilities);
-    this.userType = localStorage.getItem('userType');
+    this.userType = localStorageService.getItemFromLocalStorage('userType');
     this.breadCrumbItems = [
       {
         icon: 'fa fa-house',
@@ -419,7 +419,8 @@ export class ProfileComponent implements OnInit {
       this.loading = true;
       this.employeesService.getEmployeeById(id).subscribe(
         (employees: any) => {
-          this.getSalaryHikes().subscribe(
+          const filter = {  'hikeInternalStatus-eq': 1 };
+          this.getSalaryHikes(filter).subscribe(
             (salaryHikeData: any) => {
               if (salaryHikeData) {
                 const matchingHikes = salaryHikeData.filter(
@@ -456,8 +457,8 @@ export class ProfileComponent implements OnInit {
       );
     });
   }
-  getSalaryHikes() {
-    return this.employeesService.getSalaryHikes();
+  getSalaryHikes(filter) {
+    return this.employeesService.getSalaryHikes(filter);
   }
   loadPayslips(event) {
     this.currentTableEvent = event;

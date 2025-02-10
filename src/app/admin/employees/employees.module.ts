@@ -38,6 +38,13 @@ const routes: Routes = [
         (m) => m.OfferletterModule
       ),
   },
+  {
+    path: 'relievingletter/:id',
+    loadChildren: () =>
+      import('./relievingletter/relievingletter.module').then(
+        (m) => m.RelievingletterModule
+      ),
+  },
 ];
 
 @NgModule({

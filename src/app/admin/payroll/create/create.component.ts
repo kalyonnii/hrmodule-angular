@@ -152,7 +152,8 @@ export class CreateComponent {
               },
             });
           }
-          this.getSalaryHikes().subscribe(
+          const filter = {  'hikeInternalStatus-eq': 1 };
+          this.getSalaryHikes(filter).subscribe(
             (salaryHikes: any) => {
               const matchingHikes = salaryHikes.filter(
                 (hike) => hike.employeeId == selectedEmployee.employeeId
@@ -212,8 +213,8 @@ export class CreateComponent {
     });
   }
 
-  getSalaryHikes() {
-    return this.employeesService.getSalaryHikes();
+  getSalaryHikes(filter) {
+    return this.employeesService.getSalaryHikes(filter);
   }
   updateEmployee(employeeId) {
     this.routingService.handleRoute('employees/update/' + employeeId, null);

@@ -51,14 +51,16 @@ export class LoginComponent implements OnInit {
     private router: Router
   ) {}
   ngOnInit() {
-    this.employeesService.startIpUpdateInterval();
+    // this.employeesService.startIpUpdateInterval();
     this.createForm();
-    localStorage.setItem('userType', JSON.stringify(this.userType));
+    // localStorage.setItem('userType', JSON.stringify(this.userType));
+    this.localStorageService.setItemOnLocalStorage('userType', this.userType);
   }
 
   toggleUserType() {
     this.userType = this.userType === 'user' ? 'employee' : 'user';
-    localStorage.setItem('userType', JSON.stringify(this.userType));
+    // localStorage.setItem('userType', JSON.stringify(this.userType));
+    this.localStorageService.setItemOnLocalStorage('userType', this.userType);
   }
   togglePasswordVisibility() {
     this.isPasswordVisible = !this.isPasswordVisible;

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { EmployeesService } from '../employees/employees.service';
 import { ToastService } from 'src/app/services/toast.service';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MenuItem } from 'primeng/api';
 import { RoutingService } from 'src/app/services/routing-service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { projectConstantsLocal } from 'src/app/constants/project-constants';
@@ -26,6 +26,8 @@ export class UsersComponent implements OnInit {
   capabilities: any;
   designationDetails = projectConstantsLocal.DESIGNATION_ENTITIES;
   version = projectConstantsLocal.VERSION_DESKTOP;
+  userInternalStatusList: any = projectConstantsLocal.USERS_STATUS;
+  selectedUserStatus = this.userInternalStatusList[1];
   users: any = [];
   isPasswordVisible: boolean = false;
   currentYear: number;
@@ -53,9 +55,15 @@ export class UsersComponent implements OnInit {
     this.capabilities = this.employeesService.getUserRbac();
     console.log('capabilities', this.capabilities);
     this.setFilterConfig();
-    const storedAppliedFilter = localStorage.getItem('usersAppliedFilter');
+    const storedAppliedFilter =
+      this.localStorageService.getItemFromLocalStorage('usersAppliedFilter');
     if (storedAppliedFilter) {
-      this.appliedFilter = JSON.parse(storedAppliedFilter);
+      this.appliedFilter = storedAppliedFilter;
+    }
+    const storedStatus =
+      this.localStorageService.getItemFromLocalStorage('selectedUserStatus');
+    if (storedStatus) {
+      this.selectedUserStatus = storedStatus;
     }
   }
   togglePasswordVisibility(): void {
@@ -184,6 +192,15 @@ export class UsersComponent implements OnInit {
   loadUsers(event) {
     this.currentTableEvent = event;
     let api_filter = this.employeesService.setFiltersFromPrimeTable(event);
+    if (this.selectedUserStatus) {
+      if (this.selectedUserStatus && this.selectedUserStatus.name) {
+        if (this.selectedUserStatus.name != 'all') {
+          api_filter['userInternalStatus-eq'] = this.selectedUserStatus.id;
+        } else {
+          api_filter['userInternalStatus-or'] = '1,2';
+        }
+      }
+    }
     api_filter = Object.assign(
       {},
       api_filter,
@@ -222,6 +239,81 @@ export class UsersComponent implements OnInit {
     );
   }
 
+  statusChange(event: any): void {
+    this.localStorageService.setItemOnLocalStorage(
+      'selectedUserStatus',
+      event.value
+    );
+    this.loadUsers(this.currentTableEvent);
+  }
+  actionItems(user: any): MenuItem[] {
+    const menuItems: any = [{ label: 'Actions', items: [] }];
+    if (user.userInternalStatus === 1) {
+      menuItems[0].items.push({
+        label: 'User Profile',
+        icon: 'fa fa-eye',
+        command: () => this.showUserDetails(user),
+      });
+      menuItems[0].items.push({
+        label: 'Update',
+        icon: 'fa fa-pen-to-square',
+        command: () => this.updateUser(user.userId),
+      });
+      menuItems[0].items.push({
+        label: 'InActive',
+        icon: 'fa fa-right-to-bracket',
+        command: () => this.inactiveuser(user),
+      });
+    } else if (user.userInternalStatus === 2) {
+      menuItems[0].items.push({
+        label: 'Active',
+        icon: 'fa fa-right-to-bracket',
+        command: () => this.activateuser(user),
+      });
+    }
+    if (this.capabilities.delete) {
+      menuItems[0].items.push({
+        label: 'Delete',
+        icon: 'fa fa-trash',
+        command: () => this.confirmDelete(user),
+      });
+    }
+    return menuItems;
+  }
+
+  inactiveuser(user) {
+    this.changeUserStatus(user.userId, 2);
+  }
+  activateuser(user) {
+    this.changeUserStatus(user.userId, 1);
+  }
+  changeUserStatus(userId, statusId) {
+    this.loading = true;
+    this.employeesService.changeUserStatus(userId, statusId).subscribe(
+      (response) => {
+        this.toastService.showSuccess('User Status Changed Successfully');
+        this.loading = false;
+        this.loadUsers(this.currentTableEvent);
+      },
+      (error: any) => {
+        this.loading = false;
+        this.toastService.showError(error);
+      }
+    );
+  }
+
+  getStatusName(statusId) {
+    if (this.userInternalStatusList && this.userInternalStatusList.length > 0) {
+      let userStatusName = this.userInternalStatusList.filter(
+        (userStatus) => userStatus.id == statusId
+      );
+      return (
+        (userStatusName && userStatusName[0] && userStatusName[0].name) || ''
+      );
+    }
+    return '';
+  }
+
   inputValueChangeEvent(dataType, value) {
     if (value == '') {
       this.searchFilter = {};
@@ -238,9 +330,9 @@ export class UsersComponent implements OnInit {
     } else {
       this.appliedFilter = api_filter;
     }
-    localStorage.setItem(
+    this.localStorageService.setItemOnLocalStorage(
       'usersAppliedFilter',
-      JSON.stringify(this.appliedFilter)
+      this.appliedFilter
     );
     this.loadUsers(this.currentTableEvent);
   }
@@ -297,6 +389,20 @@ export class UsersComponent implements OnInit {
         return { textColor: '#FFFFFF', backgroundColor: '#9367B4' };
       case 'Support Team':
         return { textColor: '#FFFFFF', backgroundColor: '#F78181' };
+      default:
+        return { textColor: 'black', backgroundColor: 'white' };
+    }
+  }
+
+  getUserStatusColor(status: string): {
+    textColor: string;
+    backgroundColor: string;
+  } {
+    switch (status) {
+      case 'Active':
+        return { textColor: '#5DCC0B', backgroundColor: '#E4F7D6' };
+      case 'InActive':
+        return { textColor: '#FF555A', backgroundColor: '#FFE2E3' };
       default:
         return { textColor: 'black', backgroundColor: 'white' };
     }

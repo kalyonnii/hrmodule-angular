@@ -42,7 +42,8 @@ export class PayrollComponent {
     private localStorageService: LocalStorageService,
     private dateTimeProcessor: DateTimeProcessorService
   ) {
-    const usertype = localStorage.getItem('userType');
+    // const usertype = localStorage.getItem('userType');
+    const usertype = localStorageService.getItemFromLocalStorage('userType');
     this.moment = this.dateTimeProcessor.getMoment();
     this.selectedMonth = this.moment(new Date())
       .subtract(1, 'month')
@@ -71,24 +72,30 @@ export class PayrollComponent {
       this.getEmployees();
     }
     this.setFilterConfig();
-    const storedStatus = localStorage.getItem('selectedEmployee');
+    const storedStatus =
+      this.localStorageService.getItemFromLocalStorage('selectedEmployee');
     if (storedStatus) {
-      this.selectedEmployee = JSON.parse(storedStatus);
+      this.selectedEmployee = storedStatus;
     }
-    const storedMonth = localStorage.getItem('payrollMonth');
+    const storedMonth =
+      this.localStorageService.getItemFromLocalStorage('payrollMonth');
     if (storedMonth) {
-      this.selectedMonth = JSON.parse(storedMonth);
+      this.selectedMonth = storedMonth;
       this.displayMonth = this.moment(this.selectedMonth).format('MMMM YYYY');
     }
-    const storedAppliedFilter = localStorage.getItem('payrollAppliedFilter');
+    const storedAppliedFilter =
+      this.localStorageService.getItemFromLocalStorage('payrollAppliedFilter');
     if (storedAppliedFilter) {
-      this.appliedFilter = JSON.parse(storedAppliedFilter);
+      this.appliedFilter = storedAppliedFilter;
     }
   }
   onDateChange(event: any) {
     this.selectedMonth = this.moment(event).format('YYYY-MM');
     this.displayMonth = this.moment(event).format('MMMM YYYY');
-    localStorage.setItem('payrollMonth', JSON.stringify(this.selectedMonth));
+    this.localStorageService.setItemOnLocalStorage(
+      'payrollMonth',
+      this.selectedMonth
+    );
     this.loadPayslips(this.currentTableEvent);
   }
   getEmployees(filter = {}) {
@@ -160,7 +167,10 @@ export class PayrollComponent {
   }
 
   statusChange(event: any): void {
-    localStorage.setItem('selectedEmployee', JSON.stringify(event.value));
+    this.localStorageService.setItemOnLocalStorage(
+      'selectedEmployee',
+      event.value
+    );
     this.loadPayslips(this.currentTableEvent);
   }
   setFilterConfig() {
@@ -598,9 +608,9 @@ export class PayrollComponent {
     } else {
       this.appliedFilter = api_filter;
     }
-    localStorage.setItem(
+    this.localStorageService.setItemOnLocalStorage(
       'payrollAppliedFilter',
-      JSON.stringify(this.appliedFilter)
+      this.appliedFilter
     );
     this.loadPayslips(this.currentTableEvent);
   }

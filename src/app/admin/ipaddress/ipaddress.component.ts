@@ -66,12 +66,14 @@ export class IpaddressComponent {
     this.setFilterConfig();
     this.createForm();
     this.setIpAddressList();
-    const storedAppliedFilter = localStorage.getItem('ipAddressAppliedFilter');
+    const storedAppliedFilter =
+      this.localStorageService.getItemFromLocalStorage(
+        'ipAddressAppliedFilter'
+      );
     if (storedAppliedFilter) {
-      this.appliedFilter = JSON.parse(storedAppliedFilter);
+      this.appliedFilter = storedAppliedFilter;
     }
   }
-
   createForm() {
     this.ipAddressForm = this.formBuilder.group({
       ipAddressName: ['', Validators.required],
@@ -166,9 +168,9 @@ export class IpaddressComponent {
     } else {
       this.appliedFilter = api_filter;
     }
-    localStorage.setItem(
+    this.localStorageService.setItemOnLocalStorage(
       'ipAddressAppliedFilter',
-      JSON.stringify(this.appliedFilter)
+      this.appliedFilter
     );
     this.loadIpAddresses(this.currentTableEvent);
   }

@@ -39,11 +39,11 @@
   header="{{ heading }}"
   (onHide)="clearDialog()"
 >
-<div *ngIf="dataLoading"  class="preloader-container">
-  <app-preloader></app-preloader>
-</div>
+  <div *ngIf="dataLoading" class="preloader-container">
+    <app-preloader></app-preloader>
+  </div>
   <form
-  *ngIf="!dataLoading"
+    *ngIf="!dataLoading"
     class="login-form mt-3"
     [formGroup]="salaryHikeForm"
     novalidate
@@ -163,6 +163,20 @@
     <ng-template pTemplate="caption">
       <div class="row">
         <div class="col-md-4 mt-1 mb-1 no-padding-small">
+          <p-dropdown
+            styleClass="text-left"
+            [style]="{ width: '100%' }"
+            [options]="hikeInternalStatusList"
+            (onChange)="statusChange($event)"
+            appendTo="body"
+            [dropdownIcon]="'fa fa-caret-down'"
+            [(ngModel)]="selectedHikeStatus"
+            optionLabel="displayName"
+            dataKey="name"
+          >
+          </p-dropdown>
+        </div>
+        <div class="col-md-4 mt-1 mb-1 no-padding-small">
           <div class="p-inputgroup" *ngIf="capabilities.adminSalaryHikes">
             <input
               type="text"
@@ -184,7 +198,6 @@
             ></button>
           </div>
         </div>
-        <div class="col-md-4 mt-1 mb-1 no-padding-small"></div>
         <div class="col-md-4 mt-1 mb-1 no-padding-small text-right">
           <div class="d-flex">
             <div class="flex-grow-1 me-2"></div>
@@ -245,7 +258,12 @@
         <th pSortableColumn="createdOn" class="text-nowrap">
           Created Date <p-sortIcon field="createdOn"></p-sortIcon>
         </th>
-        <th *ngIf="capabilities.adminSalaryHikes" class="text-nowrap">Hike Letter</th>
+        <th *ngIf="capabilities.adminSalaryHikes" class="text-nowrap">
+          Hike Letter
+        </th>
+        <th pSortableColumn="hikeInternalStatus" class="text-nowrap">
+          Status <p-sortIcon [field]="'hikeInternalStatus'"></p-sortIcon>
+        </th>
         <th *ngIf="capabilities.adminSalaryHikes">Actions</th>
       </tr>
     </ng-template>
@@ -307,23 +325,17 @@
           </div>
         </td>
         <td>
-          <span
-            class="table-column-data"
-            *ngIf="salaryHike.basicSalary; else noData"
+          <span class="table-column-data"
             >Rs.{{ salaryHike.basicSalary | capitalizeFirst }}</span
           >
         </td>
         <td>
-          <span
-            class="table-column-data"
-            *ngIf="salaryHike.monthlyHike; else noData"
+          <span class="table-column-data"
             >Rs.{{ salaryHike.monthlyHike | capitalizeFirst }}</span
           >
         </td>
         <td>
-          <span
-            class="table-column-data"
-            *ngIf="salaryHike.totalSalary; else noData"
+          <span class="table-column-data"
             >Rs.{{ salaryHike.totalSalary | capitalizeFirst }}</span
           >
         </td>
@@ -358,19 +370,55 @@
                 pTooltip="Hike Letter"
                 tooltipPosition="left"
                 class="p-button-info me-2 view-btn"
-                icon="fa fa-download"
+                icon="fa fa-file"
                 (click)="ViewHikeletter(salaryHike.hikeId)"
               ></button>
             </div>
           </div>
         </td>
+        <td class="text-nowrap">
+          <span
+            class="table-column-data fw-bold statusdata"
+            *ngIf="salaryHike.hikeInternalStatus; else noData"
+            [ngStyle]="{
+              color: getStatusColor(
+                getStatusName(salaryHike.hikeInternalStatus)
+              ).textColor,
+              'background-color': getStatusColor(
+                getStatusName(salaryHike.hikeInternalStatus)
+              ).backgroundColor
+            }"
+          >
+            {{ getStatusName(salaryHike.hikeInternalStatus) }}
+          </span>
+        </td>
         <td *ngIf="capabilities.adminSalaryHikes">
+          <div class="text-center">
+            <div class="d-flex">
+              <p-menu
+                appendTo="body"
+                #menu
+                [model]="actionItems(salaryHike)"
+                [popup]="true"
+              ></p-menu>
+              <button
+                pButton
+                type="button"
+                class="custom-btn"
+                (click)="menu.toggle($event)"
+                icon="pi pi-ellipsis-h"
+              ></button>
+            </div>
+          </div>
+        </td>
+        <!-- <td *ngIf="capabilities.adminSalaryHikes">
           <div class="text-center">
             <div class="d-flex">
               <button
                 pButton
                 pRipple
                 type="button"
+                tooltipPosition="left"
                 pTooltip="Update"
                 class="p-button-success me-2 update-btn"
                 icon="fa fa-pen-to-square"
@@ -381,13 +429,14 @@
                 pButton
                 type="button"
                 icon="fa fa-trash"
+                tooltipPosition="left"
                 pTooltip="Delete"
                 class="p-button-danger me-2 delete-btn"
                 (click)="confirmDelete(salaryHike)"
               ></button>
             </div>
           </div>
-        </td>
+        </td> -->
       </tr>
     </ng-template>
     <ng-template pTemplate="emptymessage">

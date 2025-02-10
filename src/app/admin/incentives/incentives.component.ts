@@ -41,7 +41,7 @@ export class IncentivesComponent implements OnInit {
     private routingService: RoutingService,
     private dateTimeProcessor: DateTimeProcessorService
   ) {
-    const usertype = localStorage.getItem('userType');
+    const usertype = localStorageService.getItemFromLocalStorage('userType');
     this.moment = this.dateTimeProcessor.getMoment();
     // this.selectedMonth = this.moment(new Date())
     //   .subtract(1, 'month')
@@ -72,9 +72,11 @@ export class IncentivesComponent implements OnInit {
     this.capabilities = this.employeesService.getUserRbac();
     console.log('capabilities', this.capabilities);
     this.setupActiveItemTabs();
-    const storedMonth = localStorage.getItem('selectedIncentiveMonth');
+    const storedMonth = this.localStorageService.getItemFromLocalStorage(
+      'selectedIncentiveMonth'
+    );
     if (storedMonth) {
-      this.selectedMonth = JSON.parse(storedMonth);
+      this.selectedMonth = storedMonth;
       this.displayMonth = this.moment(this.selectedMonth).format('MMMM YYYY');
     }
   }
@@ -86,9 +88,9 @@ export class IncentivesComponent implements OnInit {
   onDateChange(event: any) {
     this.selectedMonth = this.moment(event).format('YYYY-MM');
     this.displayMonth = this.moment(event).format('MMMM YYYY');
-    localStorage.setItem(
+    this.localStorageService.setItemOnLocalStorage(
       'selectedIncentiveMonth',
-      JSON.stringify(this.selectedMonth)
+      this.selectedMonth
     );
     this.loadIncentives(this.currentTableEvent);
   }

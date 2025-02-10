@@ -9,7 +9,7 @@ import { projectConstantsLocal } from 'src/app/constants/project-constants';
 import { EmployeesService } from '../employees/employees.service';
 import { RoutingService } from 'src/app/services/routing-service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MenuItem } from 'primeng/api';
 import { ToastService } from 'src/app/services/toast.service';
 import { DateTimeProcessorService } from 'src/app/services/date-time-processor.service';
 
@@ -44,6 +44,8 @@ export class SalaryhikeComponent {
   capabilities: any;
   currentYear: number;
   version = projectConstantsLocal.VERSION_DESKTOP;
+  hikeInternalStatusList: any = projectConstantsLocal.SALARY_HIKES_STATUS;
+  selectedHikeStatus = this.hikeInternalStatusList[1];
   constructor(
     private employeesService: EmployeesService,
     private location: Location,
@@ -54,7 +56,8 @@ export class SalaryhikeComponent {
     private toastService: ToastService,
     private dateTimeProcessor: DateTimeProcessorService
   ) {
-    const usertype = localStorage.getItem('userType');
+    // const usertype = localStorage.getItem('userType');
+    const usertype = localStorageService.getItemFromLocalStorage('userType');
     this.moment = this.dateTimeProcessor.getMoment();
     this.breadCrumbItems = [
       {
@@ -77,11 +80,17 @@ export class SalaryhikeComponent {
     this.createForm();
     this.getEmployees();
     this.setSalaryHikesList();
-    const storedAppliedFilter = localStorage.getItem(
-      'salaryHikesAppliedFilter'
-    );
+    const storedAppliedFilter =
+      this.localStorageService.getItemFromLocalStorage(
+        'salaryHikesAppliedFilter'
+      );
     if (storedAppliedFilter) {
-      this.appliedFilter = JSON.parse(storedAppliedFilter);
+      this.appliedFilter = storedAppliedFilter;
+    }
+    const storedStatus =
+      this.localStorageService.getItemFromLocalStorage('selectedHikeStatus');
+    if (storedStatus) {
+      this.selectedHikeStatus = storedStatus;
     }
     this.salaryHikeForm
       .get('employeeName')
@@ -435,9 +444,9 @@ export class SalaryhikeComponent {
   }
 
   statusChange(event: any): void {
-    localStorage.setItem(
-      'selectedDepartmentStatus',
-      JSON.stringify(event.value)
+    this.localStorageService.setItemOnLocalStorage(
+      'selectedHikeStatus',
+      event.value
     );
     this.loadSalaryHikes(this.currentTableEvent);
   }
@@ -450,9 +459,9 @@ export class SalaryhikeComponent {
     } else {
       this.appliedFilter = api_filter;
     }
-    localStorage.setItem(
+    this.localStorageService.setItemOnLocalStorage(
       'salaryHikesAppliedFilter',
-      JSON.stringify(this.appliedFilter)
+      this.appliedFilter
     );
     this.loadSalaryHikes(this.currentTableEvent);
   }
@@ -469,6 +478,15 @@ export class SalaryhikeComponent {
   loadSalaryHikes(event) {
     this.currentTableEvent = event;
     let api_filter = this.employeesService.setFiltersFromPrimeTable(event);
+    if (this.selectedHikeStatus) {
+      if (this.selectedHikeStatus && this.selectedHikeStatus.name) {
+        if (this.selectedHikeStatus.name != 'all') {
+          api_filter['hikeInternalStatus-eq'] = this.selectedHikeStatus.id;
+        } else {
+          api_filter['hikeInternalStatus-or'] = '1,2';
+        }
+      }
+    }
     if (this.capabilities.employeeSalaryHikes) {
       api_filter['employeeId-eq'] = this.userDetails?.employeeId;
     }
@@ -611,15 +629,31 @@ export class SalaryhikeComponent {
 
   async onSubmit(formValues) {
     await this.getSalaryHikes1();
+    // if (this.salaryHikes) {
+    //   const existingHike = this.salaryHikes1
+    //     .filter((hike) => hike.hikeId === formValues.hikeId)
+    //     .sort(
+    //       (a, b) =>
+    //         new Date(b.hikeDate).getTime() - new Date(a.hikeDate).getTime()
+    //     )[0];
+    //   if (existingHike) {
+    //     formValues.basicSalary = existingHike.totalSalary;
+    //   }
+    // }
     if (this.salaryHikes) {
       const existingHike = this.salaryHikes1
-        .filter((hike) => hike.employeeId === formValues.employeeId)
+        .filter(
+          (hike) =>
+            hike.employeeId === formValues.employeeId &&
+            hike.hikeDate !== formValues.hikeDate &&
+            new Date(hike.hikeDate) < new Date(formValues.hikeDate)
+        )
         .sort(
           (a, b) =>
             new Date(b.hikeDate).getTime() - new Date(a.hikeDate).getTime()
         )[0];
       if (existingHike) {
-        formValues.basicSalary = existingHike.totalSalary;
+        formValues.basicSalary = existingHike.totalSalary; // Take previous hike's totalSalary
       }
     }
     let formData: any = {
@@ -675,6 +709,82 @@ export class SalaryhikeComponent {
     }
   }
 
+  actionItems(salaryHike: any): MenuItem[] {
+    const menuItems: any = [{ label: 'Actions', items: [] }];
+    if (salaryHike.hikeInternalStatus === 1) {
+      menuItems[0].items.push({
+        label: 'Update',
+        icon: 'fa fa-pen-to-square',
+        command: () => this.updateSalaryHike(salaryHike),
+      });
+      menuItems[0].items.push({
+        label: 'InActive',
+        icon: 'fa fa-right-to-bracket',
+        command: () => this.inactiveSalaryHike(salaryHike),
+      });
+    } else if (salaryHike.hikeInternalStatus === 2) {
+      menuItems[0].items.push({
+        label: 'Active',
+        icon: 'fa fa-right-to-bracket',
+        command: () => this.activateSalaryHike(salaryHike),
+      });
+    }
+    if (this.capabilities.delete) {
+      menuItems[0].items.push({
+        label: 'Delete',
+        icon: 'fa fa-trash',
+        command: () => this.confirmDelete(salaryHike),
+      });
+    }
+    return menuItems;
+  }
+  getStatusColor(status: string): {
+    textColor: string;
+    backgroundColor: string;
+  } {
+    switch (status) {
+      case 'Active':
+        return { textColor: '#5DCC0B', backgroundColor: '#E4F7D6' };
+      case 'InActive':
+        return { textColor: '#FF555A', backgroundColor: '#FFE2E3' };
+      default:
+        return { textColor: 'black', backgroundColor: 'white' };
+    }
+  }
+  getStatusName(statusId) {
+    if (this.hikeInternalStatusList && this.hikeInternalStatusList.length > 0) {
+      let hikeStatusName = this.hikeInternalStatusList.filter(
+        (hikeStatus) => hikeStatus.id == statusId
+      );
+      return (
+        (hikeStatusName && hikeStatusName[0] && hikeStatusName[0].name) || ''
+      );
+    }
+    return '';
+  }
+
+  inactiveSalaryHike(salaryHike) {
+    this.changeSalaryHikeStatus(salaryHike.hikeId, 2);
+  }
+  activateSalaryHike(salaryHike) {
+    this.changeSalaryHikeStatus(salaryHike.hikeId, 1);
+  }
+  changeSalaryHikeStatus(hikeId, statusId) {
+    this.loading = true;
+    this.employeesService.changeSalaryHikeStatus(hikeId, statusId).subscribe(
+      (response) => {
+        this.toastService.showSuccess(
+          'Salary Hike Status Changed Successfully'
+        );
+        this.loading = false;
+        this.loadSalaryHikes(this.currentTableEvent);
+      },
+      (error: any) => {
+        this.loading = false;
+        this.toastService.showError(error);
+      }
+    );
+  }
   updateSalaryHike(salaryHike) {
     this.isDialogVisible = true;
     if (salaryHike && salaryHike?.hikeId) {

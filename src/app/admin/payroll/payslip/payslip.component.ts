@@ -34,7 +34,7 @@ export class PayslipComponent {
     private employeesService: EmployeesService,
     private dateTimeProcessor: DateTimeProcessorService
   ) {
-    const usertype = localStorage.getItem('userType');
+    const usertype = localStorageService.getItemFromLocalStorage('userType');
     this.moment = this.dateTimeProcessor.getMoment();
     this.breadCrumbItems = [
       {

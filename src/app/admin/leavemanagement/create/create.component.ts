@@ -49,7 +49,8 @@ export class CreateComponent {
     private localStorageService: LocalStorageService,
     private dateTimeProcessor: DateTimeProcessorService
   ) {
-    const usertype = localStorage.getItem('userType');
+    // const usertype = localStorage.getItem('userType');
+    const usertype = localStorageService.getItemFromLocalStorage('userType');
     this.moment = this.dateTimeProcessor.getMoment();
     this.activatedRoute.params.subscribe((params) => {
       if (params && params['id']) {

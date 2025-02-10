@@ -28,7 +28,9 @@
             <!-- <button pButton pRipple type="button" class="btn btn-primary">
               Login
             </button> -->
-            <button pButton pRipple type="button" class="pluse">Login</button>
+            <button pButton pRipple type="button" class="loginbtn">
+              Login
+            </button>
           </a>
         </li>
       </ul>
@@ -36,132 +38,213 @@
   </div>
 </nav>
 
-<section
-  class="welcome-section d-flex flex-column flex-lg-row align-items-center justify-content-between py-5"
+<!-- <section
+  class="row welcome-section d-flex flex-column flex-lg-row align-items-center justify-content-between py-5"
 >
-  <div class="welcome-text">
+  <div class="col-md-6 welcome-text">
     <h1>
-      <div class="typing-text-container">The Fintalk HRM</div>
+      <div class="">The Fintalk HRM – Redefining Workforce Management</div>
     </h1>
     <p>
-      Your complete solution for Managing employees, Interviews, Attendance,
-      <br />
-      Payroll, Leaves, Incentives, Salary hikes and more.
+      Your Comprehensive HR Solution! Optimize workforce management, streamline
+      attendance tracking, automate payroll processing, and efficiently handle
+      leave, incentives, and performance appraisals—all within a unified,
+      cutting-edge platform tailored for modern enterprises.
     </p>
     <button class="btn btn-primary">Get Started</button>
   </div>
-  <div class="welcome-image">
+  <div class="col-md-6 welcome-image">
     <img
       src="../../assets/images/slider/slider1"
       alt="HRMS Welcome"
       class="img-fluid"
     />
   </div>
-</section>
+</section> -->
 
-<div class="features-section py-5">
+<section class="container-fluid py-5 welcome-section">
+  <div class="row align-items-center">
+    <div class="col-12 col-md-6 text-center text-md-start">
+      <h1 class="fw-bold">The Fintalk HRM – Redefining Workforce Management</h1>
+      <p class="mt-3 justify-text">
+        Your Comprehensive HR Solution! Optimize workforce management,
+        streamline attendance tracking, automate payroll processing, and
+        efficiently handle leave, incentives, and performance appraisals—all
+        within a unified, cutting-edge platform tailored for modern enterprises.
+      </p>
+      <button pButton pRipple type="button" class="getstartedbtn">
+        Get Started <i class="pi pi-arrow-right ms-2"></i>
+      </button>
+    </div>
+    <div class="col-12 col-md-6 text-center mt-4 mt-md-0 welcome-image">
+      <img
+        src="../../assets/images/home/dash.png"
+        alt="HRMS Welcome"
+        class="img-fluid d-block mx-auto"
+      />
+    </div>
+  </div>
+</section>
+<div class="area">
+  <ul class="circles">
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+  </ul>
+</div>
+
+<div class="features-section">
   <div class="container-fluid">
-    <div class="feature row align-items-center mb-5 p-4">
-      <div class="feature-image col-md-6 text-center">
-        <img
-          src="../../assets/images/slider/employeemgmt.jpg"
-          alt="Employee Management"
-          class="img-fluid"
-        />
-      </div>
-      <div class="feature-text col-md-6">
-        <h2 class="fw-bold">Employee Management</h2>
-        <p class="text-muted">
-          Simplify employee onboarding, track roles, and ensure seamless
-          updates—all in one centralized system. Enhance collaboration and
-          streamline HR operations.
-        </p>
+    <div class="feature p-5">
+      <div class="heading">Features</div>
+      <div class="row align-items-center">
+        <div class="col-12 col-md-6 text-center mt-4 mt-md-0 welcome-image">
+          <img
+            src="../../assets/images/home/employee.png"
+            alt="Employee Management"
+            class="img-fluid d-block mx-auto"
+          />
+        </div>
+        <div class="col-12 col-md-6 text-center text-md-start">
+          <div class="feature-text">
+            <h2 class="fw-bold">Employee Management</h2>
+            <p class="justify-text">
+              Manage your workforce effortlessly with our all-in-one Employee
+              Management System. From onboarding new employees to updating
+              profiles, issuing offer letters, and removing employees, every HR
+              task is streamlined. Automate your HR processes, save time, and
+              improve data accuracy. Handle everything from employee records to
+              compliance tracking in a single platform. Enhance efficiency and
+              focus on what matters most—your people.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
-    <!-- Interviews Management -->
-    <div class="feature row align-items-center mb-5 p-4">
-      <div class="feature-text col-md-6">
-        <h2 class="fw-bold">Interviews Management</h2>
-        <p class="text-muted">
-          Manage interviews effortlessly with scheduling tools, feedback
-          tracking, and detailed hiring pipelines.
-        </p>
+
+    <!-- Attendance Management -->
+    <div class="feature row align-items-center mb-5 p-5">
+      <div class="col-12 col-md-6 text-center text-md-start">
+        <div class="feature-text">
+          <h2 class="fw-bold">Attendance Management</h2>
+          <p class="justify-text">
+            Track and manage employee attendance seamlessly with our Attendance
+            Management System. Easily mark attendance, update records, and
+            monitor absences, leaves, and late entries in real time. If an
+            employee's status changes, update it instantly for accurate payroll
+            processing. Ensure smooth workforce management with a system
+            designed for efficiency and accuracy.
+          </p>
+        </div>
       </div>
-      <div class="feature-image col-md-6 text-center">
+      <div class="col-12 col-md-6 text-center mt-4 mt-md-0 feature-image">
+        <img
+          src="../../assets/images/slider/attendance.jpg"
+          alt="Attendance Management"
+          class="img-fluid d-block mx-auto"
+        />
+      </div>
+    </div>
+
+    <div class="row feature align-items-center p-5">
+      <div class="col-12 col-md-6 text-center mt-4 mt-md-0 feature-image">
         <img
           src="../../assets/images/slider/interview.jpg"
-          alt="Interviews Management"
-          class="img-fluid"
+          alt="Employee Management"
+          class="img-fluid d-block mx-auto"
         />
       </div>
-    </div>
-    <!-- Attendance Management -->
-    <div class="feature row align-items-center mb-5 p-4">
-      <div class="feature-image col-md-6 text-center">
-        <img
-          src="../../assets/images/slider/slider3.jpg"
-          alt="Attendance Management"
-          class="img-fluid"
-        />
-      </div>
-      <div class="feature-text col-md-6">
-        <h2 class="fw-bold">Attendance Management</h2>
-        <p class="text-muted">
-          Automate attendance tracking with smart integrations. Keep tabs on
-          time management and ensure accuracy across the board.
-        </p>
+      <div class="col-12 col-md-6 text-center text-md-start">
+        <div class="feature-text">
+          <h2 class="fw-bold">Interview Management</h2>
+          <p class="justify-text">
+            Effortlessly schedule interviews, update interview details, and
+            manage candidate status with our Interview Management System. If a
+            candidate needs to be postponed, simply select a new date, and the
+            system will automatically update the interview status. Send
+            automatic notifications to candidates and interviewers for any
+            changes. Track progress with real-time status updates, including
+            selection, rejection, or postponement. Simplify your hiring process
+            and ensure smooth coordination for every interview.
+          </p>
+        </div>
       </div>
     </div>
-    <!-- Payroll Management -->
-    <div class="feature row align-items-center mb-5 p-4">
-      <div class="feature-text col-md-6">
-        <h2 class="fw-bold">Payroll Management</h2>
-        <p class="text-muted">
-          Streamline payroll calculations, tax compliance, and timely
-          disbursements. Simplify HR operations with automated solutions.
-        </p>
+    <div class="row feature align-items-center p-5">
+      <div class="col-12 col-md-6 text-center text-md-start">
+        <div class="feature-text">
+          <h2 class="fw-bold">Payroll Management</h2>
+          <p class="justify-text">
+            Manage employee salaries, deductions, and bonuses effortlessly with
+            our Payroll Management System. Automate salary calculations, tax
+            deductions, and overtime payments for accuracy and compliance.
+            Generate detailed pay slips and process payroll with seamless bank
+            integrations. Easily update salary structures and track payment
+            history in real time. Ensure timely and error-free payroll
+            processing for a smooth financial workflow.
+          </p>
+        </div>
       </div>
-      <div class="feature-image col-md-6 text-center">
+      <div class="col-12 col-md-6 text-center mt-4 mt-md-0 feature-image">
         <img
-          src="../../assets/images/slider/slider4.png"
+          src="../../assets/images/slider/payroll.png"
           alt="Payroll Management"
-          class="img-fluid"
+          class="img-fluid d-block mx-auto"
         />
       </div>
     </div>
-    <!-- Leave Management -->
-    <div class="feature row align-items-center mb-5 p-4">
-      <div class="feature-image col-md-6 text-center">
+
+    <div class="row feature align-items-center p-5">
+      <div class="col-12 col-md-6 text-center mt-4 mt-md-0 feature-image">
         <img
           src="../../assets/images/slider/leave.jpg"
           alt="Leave Management"
-          class="img-fluid"
+          class="img-fluid d-block mx-auto"
         />
       </div>
-      <div class="feature-text col-md-6">
-        <h2 class="fw-bold">Leave Management</h2>
-        <p class="text-muted">
-          Digitize leave requests, approvals, and tracking. Enable a clear and
-          efficient leave policy for your organization.
-        </p>
+      <div class="col-12 col-md-6 text-center text-md-start">
+        <div class="feature-text">
+          <h2 class="fw-bold">Leave Management</h2>
+          <p class="justify-text">
+            Efficiently manage employee leaves with our Leave Management System.
+            Employees can apply for leave, track approvals, and check leave
+            balances in real time. Automate leave approvals, rejections, and
+            notifications to streamline workflows. Maintain accurate records for
+            paid, unpaid, and sick leaves with seamless integration into
+            payroll. Simplify leave tracking and ensure smooth workforce
+            planning.
+          </p>
+        </div>
       </div>
     </div>
 
-    <!-- Incentive Management -->
-    <div class="feature row align-items-center mb-5 p-4">
-      <div class="feature-text col-md-6">
-        <h2 class="fw-bold">Incentive Management</h2>
-        <p class="text-muted">
-          Boost employee motivation with efficient incentive and reward
-          management systems. Increase transparency and build a culture of
-          recognition.
-        </p>
+    <div class="row feature align-items-center p-5">
+      <div class="col-12 col-md-6 text-center text-md-start">
+        <div class="feature-text">
+          <h2 class="fw-bold">Incentive Management</h2>
+          <p class="justify-text">
+            Motivate your employees with our Incentives Management System.
+            Easily track performance metrics and assign bonuses, commissions, or
+            rewards based on achievements. Automate incentive calculations and
+            ensure timely disbursement with seamless integration into payroll.
+            Generate detailed reports to analyze incentive distribution and
+            impact. Boost productivity and morale by recognizing and rewarding
+            excellence effortlessly.
+          </p>
+        </div>
       </div>
-      <div class="feature-image col-md-6 text-center">
+      <div class="col-12 col-md-6 text-center mt-4 mt-md-0 feature-image">
         <img
           src="../../assets/images/slider/incentive.jpg"
           alt="Incentive Management"
-          class="img-fluid"
+          class="img-fluid d-block mx-auto"
         />
       </div>
     </div>
