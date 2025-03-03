@@ -57,35 +57,59 @@
         </div>
         <div>
           <p class="para firstpara indented-paragraph">
-            This is to formally acknowledge that you were employed with Winway
-            Creators India Private Limited, as a Financial Consultant from
+            We acknowledge your resignation and confirm that you were employed
+            with Winway Creators India Private Limited, as a
+            {{ getDesignationName(employees.designation) }} from
             {{ employees.joiningDate | date : "dd-MM-yyyy" }} to
             {{
               employees.resignedDate || employees.terminationDate
                 | date : "dd-MM-yyyy"
-            }}. During your tenure, you played a valuable role in providing
-            financial guidance, managing client portfolios, and assisting in
-            strategic financial planning.
+            }}.
           </p>
-
-          <p class="para indented-paragraph">
-            We confirm that you have been relieved from your duties effective
-            {{ employees.resignedDate || employees.terminationDate }}, and all
-            exit formalities, including clearance of dues and handover of
-            responsibilities, have been successfully completed.
+          <p class="para indented-paragraph" *ngIf="employees.designation == 4">
+            Your expertise in frontend and backend technologies, along with your
+            problem-solving skills, has contributed immensely to our projects.
+            Your dedication to delivering high-quality applications and
+            innovative solutions has been greatly valued.
+          </p>
+          <p class="para indented-paragraph" *ngIf="employees.designation == 1">
+            Your expertise in lead generation, client engagement, and persuasive
+            communication has contributed immensely to our organization's
+            growth. Your dedication to understanding customer needs, building
+            strong relationships, and effectively closing sales has been greatly
+            valued.
+          </p>
+          <p class="para indented-paragraph" *ngIf="employees.designation == 2">
+            During your time with us, your contributions to sales operations,
+            customer engagement, and revenue growth have been invaluable. Your
+            dedication and persistence in meeting sales targets have played a
+            vital role in our success.
+          </p>
+          <p class="para indented-paragraph" *ngIf="employees.designation == 3">
+            Your contributions in talent acquisition, employee relations, and HR
+            policies have greatly strengthened our workforce. Your dedication to
+            employee engagement and organizational development has been truly
+            commendable.
           </p>
           <p class="para indented-paragraph">
-            We appreciate your contributions to our organization and wish you
-            the best in your future endeavors. Should you require any further
-            assistance, please feel free to contact us.
+            As of
+            {{
+              employees.resignedDate || employees.terminationDate
+                | date : "dd-MM-yyyy"
+            }}, you have been officially relieved from your duties, and all
+            necessary exit formalities have been completed.
+          </p>
+          <p class="para indented-paragraph">
+            We sincerely appreciate your hard work and wish you success in all
+            your future endeavors.
           </p>
         </div>
-        <div class="regards text-capitalize">
+        <div class="regards">
           <div>
             <br />
             <b> Regards,</b>
           </div>
-          <div>
+          <div class="text-capitalize">
             <b>{{ employees.createdBy | capitalizeFirst }} </b>
           </div>
           <div>(HR Executive)</div>

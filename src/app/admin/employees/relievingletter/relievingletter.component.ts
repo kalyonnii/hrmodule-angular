@@ -67,16 +67,16 @@ export class RelievingletterComponent {
   generatePDF() {
     const element = document.getElementById('content');
     if (element) {
-      this.loading = true; // Show loading indicator
+      this.loading = true;
       html2pdf()
         .from(element)
-        .save('RelievingLetter.pdf')
+        .save(`${this.employees?.employeeName} Relieving Letter.pdf`)
         .then(() => {
-          this.loading = false; // Hide loading indicator after success
+          this.loading = false;
         })
         .catch((error) => {
           console.error('PDF generation error:', error);
-          this.loading = false; // Hide loading indicator on error
+          this.loading = false;
         });
     }
   }

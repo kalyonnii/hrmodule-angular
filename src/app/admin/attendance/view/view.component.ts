@@ -193,6 +193,7 @@ export class ViewComponent implements OnInit {
           status: attendance?.status,
           checkInTime: attendance?.checkInTime,
           checkOutTime: attendance?.checkOutTime,
+          reason: attendance?.reason,
         };
       });
     console.log(

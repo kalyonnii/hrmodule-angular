@@ -184,7 +184,7 @@
           {{ attendance.absentCount }}
         </td>
         <td>
-          {{ attendance.createdBy }}
+          {{ attendance.createdBy | capitalizeFirst }}
         </td>
         <td>
           {{ attendance.createdOn | date }}
@@ -264,7 +264,7 @@
         <td>{{ employee.checkInTime }}</td>
         <td>{{ employee.checkOutTime }}</td>
         <td>
-          {{ employee.createdBy }}
+          {{ employee.createdBy | capitalizeFirst }}
         </td>
         <td>
           {{ employee.createdOn | date }}

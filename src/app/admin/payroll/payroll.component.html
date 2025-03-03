@@ -443,13 +443,26 @@
                 pButton
                 pRipple
                 type="button"
-                pTooltip="Add Payroll"
+                pTooltip="Employee Payroll"
                 tooltipPosition="top"
-                class="p-button-primary"
+                class="p-button-primary me-2"
                 icon="fa fa-plus"
                 (click)="createPayroll()"
               >
                 &nbsp;Add Payroll
+              </button>
+              <button
+                *ngIf="capabilities.adminPayroll"
+                pButton
+                pRipple
+                type="button"
+                pTooltip="Last Month Payroll"
+                tooltipPosition="top"
+                class="p-button-primary"
+                icon="fa fa-plus"
+                (click)="confirmCalculate()"
+              >
+                &nbsp;Calculate
               </button>
             </div>
           </div>
@@ -461,7 +474,11 @@
         <th pSortableColumn="payslipId" class="text-nowrap">
           Payroll Id <p-sortIcon field="payslipId"></p-sortIcon>
         </th>
-        <th pSortableColumn="employeeName" class="text-nowrap">
+        <th
+          pSortableColumn="employeeName"
+          *ngIf="!capabilities.employeePayroll"
+          class="text-nowrap"
+        >
           Employee Name <p-sortIcon field="employeeName"></p-sortIcon>
         </th>
         <th
@@ -500,7 +517,7 @@
             >{{ payslip.payslipId }}</span
           >
         </td>
-        <td class="text-nowrap">
+        <td *ngIf="!capabilities.employeePayroll" class="text-nowrap">
           <div class="d-flex align-items-center">
             <span class="me-2">
               <ng-container

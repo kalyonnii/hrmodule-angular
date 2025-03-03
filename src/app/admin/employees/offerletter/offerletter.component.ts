@@ -108,7 +108,7 @@ export class OfferletterComponent {
       this.loading = true; // Show loading indicator
       html2pdf()
         .from(element)
-        .save('OfferLetter.pdf')
+        .save(`${this.employees?.employeeName} Offer Letter.pdf`)
         .then(() => {
           this.loading = false; // Hide loading indicator after success
         })

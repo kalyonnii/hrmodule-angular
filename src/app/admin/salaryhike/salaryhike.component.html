@@ -235,7 +235,11 @@
         <th pSortableColumn="hikeId" class="text-nowrap">
           Salary Hike Id <p-sortIcon field="hikeId"></p-sortIcon>
         </th>
-        <th pSortableColumn="employeeName" class="text-nowrap">
+        <th
+          pSortableColumn="employeeName"
+          *ngIf="capabilities.adminSalaryHikes"
+          class="text-nowrap"
+        >
           Employee Name <p-sortIcon field="employeeName"></p-sortIcon>
         </th>
         <th pSortableColumn="basicSalary" class="text-nowrap">
@@ -285,7 +289,7 @@
             >
           </b>
         </td> -->
-        <td>
+        <td *ngIf="capabilities.adminSalaryHikes">
           <div class="d-flex align-items-center">
             <span class="me-2">
               <ng-container

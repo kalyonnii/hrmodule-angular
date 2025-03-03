@@ -11,6 +11,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { CreateComponent } from './create.component';
 import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
 import { PreloaderModule } from 'src/app/preloader/preloader.module';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 
 const routes: Routes = [{ path: '', component: CreateComponent }];
 
@@ -28,6 +29,7 @@ const routes: Routes = [{ path: '', component: CreateComponent }];
     CalendarModule,
     CapitalizeFirstPipe,
     PreloaderModule,
+    InputTextareaModule
   ],
 })
 export class CreateModule {}

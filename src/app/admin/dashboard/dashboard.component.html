@@ -367,38 +367,83 @@
             </div>
           </div> -->
           <!-- <div class="attendance-container p-4 "> -->
-            <h3 class="text-center mb-3">Attendance Tracker</h3>
-            <div class="d-flex justify-content-center gap-3">
-              <p-button
-                label="Check In"
-                icon="pi pi-sign-in"
-                class="p-button-success p-button-lg"
-                (click)="checkIn()"
-                [disabled]="checkInTime !== null"
-              ></p-button>
-              <p-button
-                label="Check Out"
-                icon="pi pi-sign-out"
-                class="p-button-danger p-button-lg"
-                (click)="checkOut()"
-                [disabled]="checkInTime === null || checkOutTime !== null"
-              ></p-button>
+          <h3 class="attendance-heading text-center mb-3">
+            Mark Your Attendance
+          </h3>
+          <div
+            *ngIf="checkIpAccess()"
+            class="d-flex justify-content-center gap-3"
+          >
+            <button
+              pButton
+              pRipple
+              label="Check In"
+              icon="pi pi-sign-in"
+              class="p-button-success"
+              (click)="checkIn()"
+              [disabled]="checkInTime !== null"
+            ></button>
+            <button
+              pButton
+              pRipple
+              label="Check Out"
+              icon="pi pi-sign-out"
+              class="p-button-danger"
+              (click)="checkOut()"
+              [disabled]="checkInTime === null || checkOutTime !== null"
+            ></button>
+          </div>
+          <div class="details-container mt-4 p-3 rounded fw-bold">
+            <div class="employee-info-line" *ngIf="status">
+              <span class="icon text-dark-emphasis"
+                ><i class="fa fa-user-check"></i
+              ></span>
+              <div
+                class="text-dark-emphasis employee-label d-flex justify-content-between"
+              >
+                Status<b>:&nbsp;</b>
+              </div>
+              <div class="employee-value text-dark-emphasis">
+                {{ status }}
+              </div>
             </div>
-            <div class="details-container mt-4 p-3 rounded text-center">
-              <p *ngIf="checkInTime" class="text-primary">
-                <b> Status:</b> {{ status  }}
-              </p>
-              <p *ngIf="checkInTime" class="text-primary">
-                <b>Checked In:</b> {{ checkInTime  }}
-              </p>
-              <p *ngIf="checkOutTime" class="text-danger">
-                <b>Checked Out:</b> {{ checkOutTime }}
-              </p>
-              <p *ngIf="checkInTime" class="text-success">
-                <b>Total Logged Time:</b> {{ loggedHours }}
-              </p>
+            <div class="employee-info-line" *ngIf="checkInTime">
+              <span class="icon text-success"
+                ><i class="fa fa-sign-in-alt"></i
+              ></span>
+              <div
+                class="text-success employee-label d-flex justify-content-between"
+              >
+                Checked In Time<b>:&nbsp;</b>
+              </div>
+              <div class="employee-value text-success">
+                {{ checkInTime }}
+              </div>
             </div>
-            <!-- <div class="d-flex justify-content-center">
+            <div class="employee-info-line" *ngIf="checkOutTime">
+              <span class="icon text-danger"
+                ><i class="fa fa-sign-out-alt"></i
+              ></span>
+              <div
+                class="text-danger employee-label d-flex justify-content-between"
+              >
+                Checked Out Time<b>:&nbsp;</b>
+              </div>
+              <div class="employee-value text-danger">
+                {{ checkOutTime }}
+              </div>
+            </div>
+            <div class="text-center mt-3" *ngIf="loggedHours">
+              <!-- <span class="icon text-primary"><i class="fa fa-clock"></i></span> -->
+              <div class="text-primary-emphasis">
+                Total Logged Hours<b>&nbsp;</b>
+              </div>
+              <div class="loggedin-value mt-2 text-primary-emphasis">
+                {{ loggedHours }}
+              </div>
+            </div>
+          </div>
+          <!-- <div class="d-flex justify-content-center">
               <button
                 pButton
                 pRipple
@@ -410,7 +455,6 @@
                 &nbsp;View Profile
               </button>
             </div> -->
-
         </div>
       </div>
     </div>

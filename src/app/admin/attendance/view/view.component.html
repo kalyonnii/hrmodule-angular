@@ -126,6 +126,7 @@
         <th class="text-nowrap">Attendance Status</th>
         <th class="text-nowrap">Check-in Time</th>
         <th class="text-nowrap">Check-Out Time</th>
+        <th class="text-nowrap">Reason</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-employee let-i="rowIndex">
@@ -208,6 +209,7 @@
         </td>
         <td>{{ employee.checkInTime }}</td>
         <td>{{ employee.checkOutTime }}</td>
+        <td>{{ employee.reason | capitalizeFirst }}</td>
       </tr>
     </ng-template>
   </p-table>

@@ -160,7 +160,11 @@
         <th pSortableColumn="leaveId" class="text-nowrap">
           Leave Id <p-sortIcon field="leaveId"></p-sortIcon>
         </th>
-        <th pSortableColumn="employeeName" class="text-nowrap">
+        <th
+          pSortableColumn="employeeName"
+          *ngIf="capabilities.adminLeaves"
+          class="text-nowrap"
+        >
           Employee Name <p-sortIcon field="employeeName"></p-sortIcon>
         </th>
         <th pSortableColumn="leaveType" class="text-nowrap">
@@ -209,7 +213,7 @@
             >
           </b>
         </td> -->
-        <td class="text-nowrap">
+        <td *ngIf="capabilities.adminLeaves" class="text-nowrap">
           <div class="d-flex align-items-center">
             <span class="me-2">
               <ng-container

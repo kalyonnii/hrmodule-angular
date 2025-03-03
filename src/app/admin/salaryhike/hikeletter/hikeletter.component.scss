@@ -103,7 +103,22 @@
   transform: scale(1.05);
 }
 .card-body {
-  margin: 35px;
+  position: relative;
+  margin-right:35px;
+  border-left: 35px solid #265a7e;
+  min-height: 1122px;
+  padding-left: 30px; /* Adjust spacing to fit the second border */
+}
+/* Left Gradient Border */
+.card-body::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 25px; /* Thin strip beside border */
+  height: 100%;
+  border-left: 2px solid #fff;
+  background: linear-gradient(to bottom, lightgrey,lightgrey, #558B28);
 }
 
 

@@ -113,6 +113,31 @@
 .card-body {
   margin: 28px;
 }
+// @page {
+//   size: A4; /* Adjust for different page sizes */
+//   margin: 1in;
+// }
+
+// /* Apply the style to every page */
+// .card-body {
+//   position: relative;
+//   margin-right: 28px;
+//   border-left: 35px solid #265a7e;
+//   padding-left: 30px;
+// }
+
+// /* Left Gradient Border on Every Page */
+// .card-body::before {
+//   content: "";
+//   position: absolute;
+//   left: 0;
+//   top: 0;
+//   width: 25px; /* Thin strip beside border */
+//   height: 100%;
+//   border-left: 2px solid #fff;
+//   background: linear-gradient(to bottom, lightgrey, lightgrey, #558B28);
+// }
+
 .download-btn {
   background: linear-gradient(145deg, #035d81, #4a8fa3);
   border-radius: 100px;

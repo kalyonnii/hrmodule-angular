@@ -70,7 +70,7 @@ export class PayslipComponent {
       const imgWidth = 190;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
       pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
-      pdf.save('payslip.pdf');
+      pdf.save(`${this.payroll?.employeeName}  ${this.getMonthNameAndYear(this.payroll?.payrollMonth)} Payslip.pdf`);
       this.loading = false;
     });
   }

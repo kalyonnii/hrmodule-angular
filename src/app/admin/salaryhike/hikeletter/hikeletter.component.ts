@@ -94,7 +94,7 @@ export class HikeletterComponent {
       this.loading = true; // Show loading indicator
       html2pdf()
         .from(element)
-        .save('IncrementLetter.pdf')
+        .save(`${this.employees?.employeeName} Increment Letter.pdf`)
         .then(() => {
           this.loading = false; // Hide loading indicator after success
         })

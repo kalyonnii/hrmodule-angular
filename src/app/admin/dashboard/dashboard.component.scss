@@ -72,6 +72,7 @@
   display: inline-flex;
   justify-content: center;
   align-items: center;
+  box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
 }
 .attendance-heading {
   font-size: 20px;
@@ -84,6 +85,8 @@
 }
 .employeeProfile {
   min-height: 430px;
+  // background-color: #31425e;
+  border-top: 5px solid #31425e;
 }
 .custom-scroll-container {
   max-height: 330px;
@@ -164,4 +167,7 @@
   box-shadow: 0 0 0.25rem rgba(0, 0, 0, 0.5),
     -0.125rem -0.125rem 1rem rgba(140, 106, 241, 0.514),
     0.125rem 0.125rem 1rem rgba(192, 139, 241, 0.5);
+}
+.loggedin-value{
+  font-size: 30px;
 }

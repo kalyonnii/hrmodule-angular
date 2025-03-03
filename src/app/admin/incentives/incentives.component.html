@@ -280,7 +280,11 @@
         <th pSortableColumn="incentiveId" class="text-nowrap">
           Incentive Id <p-sortIcon field="incentiveId"></p-sortIcon>
         </th>
-        <th pSortableColumn="employeeName" class="text-nowrap">
+        <th
+          pSortableColumn="employeeName"
+          *ngIf="capabilities.adminIncentives"
+          class="text-nowrap"
+        >
           Employee Name <p-sortIcon field="employeeName"></p-sortIcon>
         </th>
         <th pSortableColumn="incentiveApplicableMonth" class="text-nowrap">
@@ -289,6 +293,9 @@
         </th>
         <th pSortableColumn="incentiveAmount" class="text-nowrap">
           Incentive Amount <p-sortIcon field="incentiveAmount"></p-sortIcon>
+        </th>
+        <th pSortableColumn="createdBy" class="text-nowrap">
+          created By <p-sortIcon field="createdBy"></p-sortIcon>
         </th>
         <th pSortableColumn="createdOn" class="text-nowrap">
           created Date <p-sortIcon field="createdOn"></p-sortIcon>
@@ -314,7 +321,7 @@
             >
           </b>
         </td> -->
-        <td class="text-nowrap">
+        <td *ngIf="capabilities.adminIncentives" class="text-nowrap">
           <div class="d-flex align-items-center">
             <span class="me-2">
               <ng-container
@@ -365,6 +372,13 @@
             class="table-column-data"
             *ngIf="incentive.incentiveAmount; else noData"
             >Rs.{{ incentive.incentiveAmount | capitalizeFirst }}</span
+          >
+        </td>
+        <td>
+          <span
+            class="table-column-data"
+            *ngIf="incentive.createdBy; else noData"
+            >{{ incentive.createdBy | capitalizeFirst }}</span
           >
         </td>
         <td>

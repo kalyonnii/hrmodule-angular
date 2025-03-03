@@ -138,8 +138,8 @@ export class CreateComponent {
     );
   }
   setDefaultAttendanceData() {
-    const defaultCheckInTime = this.formatTime(new Date(0, 0, 0, 10, 5));
-    const defaultCheckOutTime = this.formatTime(new Date(0, 0, 0, 18, 30));
+    const defaultCheckInTime = this.formatTime(new Date(0, 0, 0, 10, 0));
+    // const defaultCheckOutTime = this.formatTime(new Date(0, 0, 0, 18, 30));
     console.log(this.actionType);
     if (this.actionType === 'create') {
       this.employeeDetails = this.employees.map((employee) => ({
@@ -151,7 +151,8 @@ export class CreateComponent {
         joiningDate: employee.joiningDate,
         status: 'Present',
         checkInTime: defaultCheckInTime,
-        checkOutTime: defaultCheckOutTime,
+        checkOutTime: '',
+        reason: '',
       }));
       console.log(
         'Employee Details with Default Data for Create:',
@@ -178,6 +179,7 @@ export class CreateComponent {
             status: attendance?.status,
             checkInTime: attendance?.checkInTime,
             checkOutTime: attendance?.checkOutTime,
+            reason: attendance?.reason,
           };
         });
       console.log(
@@ -194,8 +196,8 @@ export class CreateComponent {
       employee.checkInTime = '';
       employee.checkOutTime = '';
     } else {
-      employee.checkInTime = this.formatTime(new Date(0, 0, 0, 10, 5));
-      employee.checkOutTime = this.formatTime(new Date(0, 0, 0, 18, 30));
+      employee.checkInTime = this.formatTime(new Date(0, 0, 0, 10, 0));
+      // employee.checkOutTime = this.formatTime(new Date(0, 0, 0, 18, 30));
     }
   }
   private formatTime(date: Date): string {
@@ -209,8 +211,9 @@ export class CreateComponent {
       attendanceData: this.employeeDetails.map((employee) => ({
         employeeId: employee.employeeId,
         status: employee.status,
-        checkInTime: employee.checkInTime,
-        checkOutTime: employee.checkOutTime,
+        checkInTime: employee.checkInTime ? employee.checkInTime : null,
+        checkOutTime: employee.checkOutTime ? employee.checkOutTime : null,
+        reason: employee.reason,
       })),
     };
     console.log('Formatted Form Data:', formData);

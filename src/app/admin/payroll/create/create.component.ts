@@ -13,6 +13,7 @@ import { ToastService } from 'src/app/services/toast.service';
 import { RoutingService } from 'src/app/services/routing-service';
 import { projectConstantsLocal } from 'src/app/constants/project-constants';
 import { ConfirmationService } from 'primeng/api';
+import { forkJoin } from 'rxjs';
 @Component({
   selector: 'app-create',
   templateUrl: './create.component.html',
@@ -152,7 +153,7 @@ export class CreateComponent {
               },
             });
           }
-          const filter = {  'hikeInternalStatus-eq': 1 };
+          const filter = { 'hikeInternalStatus-eq': 1 };
           this.getSalaryHikes(filter).subscribe(
             (salaryHikes: any) => {
               const matchingHikes = salaryHikes.filter(
@@ -537,8 +538,8 @@ export class CreateComponent {
       professionalTax = 150;
     }
     netSalary = netSalary - professionalTax;
-    netSalaryWithoutDoubleLop=netSalaryWithoutDoubleLop-professionalTax
-    netSalaryWithDoubleLop=netSalaryWithDoubleLop-professionalTax
+    netSalaryWithoutDoubleLop = netSalaryWithoutDoubleLop - professionalTax;
+    netSalaryWithDoubleLop = netSalaryWithDoubleLop - professionalTax;
     const formData = {
       payrollMonth: monthFormatted,
       employeeName,
@@ -607,6 +608,229 @@ export class CreateComponent {
       );
     }
   }
+
+  // calculatePayrollForAllEmployees() {
+  //   this.loading = true;
+  //   const payrollMonth = this.moment().subtract(1, 'month').format('YYYY-MM');
+  //   const workingDays = this.getWorkingDays(payrollMonth);
+  //   const payroll = new Date(this.moment(payrollMonth, 'YYYY-MM').toDate());
+
+  //   this.employeesService
+  //     .getEmployees({ 'employeeInternalStatus-eq': 1 })
+  //     .subscribe((response: any) => {
+  //       const employees = response;
+  //       if (!employees || employees.length === 0) {
+  //         this.toastService.showError('No active employees found.');
+  //         this.loading = false;
+  //         return;
+  //       }
+  //       const attendanceRequests = employees.map((employee) =>
+  //         this.employeesService.getAttendance()
+  //       );
+
+  //       forkJoin(attendanceRequests).subscribe(
+  //         (attendanceResponses: any) => {
+  //           employees.forEach((employee, index) => {
+  //             const attendance = attendanceResponses[index];
+  //             // let presentDays = 0;
+  //             // let lateDays = 0;
+  //             let doubleLopDays = 0;
+  //             const filteredAttendance = attendance.filter((record) => {
+  //               const attendanceDate = new Date(record.attendanceDate);
+  //               return (
+  //                 attendanceDate.getMonth() === payroll.getMonth() &&
+  //                 attendanceDate.getFullYear() === payroll.getFullYear()
+  //               );
+  //             });
+  //             console.log(filteredAttendance);
+  //             const presentDays = filteredAttendance.reduce((count, record) => {
+  //               const employeeRecord = record.attendanceData.find(
+  //                 (emp) => emp.employeeId === employee.employeeId
+  //               );
+  //               if (employeeRecord) {
+  //                 if (
+  //                   employeeRecord.status === 'Present' ||
+  //                   employeeRecord.status === 'Late'
+  //                 ) {
+  //                   return count + 1;
+  //                 }
+  //                 if (employeeRecord.status === 'Half-day') {
+  //                   return count + 0.5;
+  //                 }
+  //               }
+  //               return count;
+  //             }, 0);
+  //             const lateDays = filteredAttendance.reduce((count, record) => {
+  //               const employeeRecord = record.attendanceData.find(
+  //                 (emp) =>
+  //                   emp.employeeId === employee.employeeId &&
+  //                   emp.status === 'Late'
+  //               );
+  //               return employeeRecord ? count + 1 : count;
+  //             }, 0);
+
+  //             const filter = { 'hikeInternalStatus-eq': 1 };
+  //             this.getSalaryHikes(filter).subscribe(
+  //               (salaryHikes: any) => {
+  //                 const matchingHikes = salaryHikes.filter(
+  //                   (hike) => hike.employeeId == employee.employeeId
+  //                 );
+  //                 if (matchingHikes.length > 0) {
+  //                   const totalHike = matchingHikes.reduce(
+  //                     (accumulatedHike, hike) =>
+  //                       accumulatedHike + hike.monthlyHike,
+  //                     0
+  //                   );
+  //                   employee.salary += totalHike;
+  //                   console.log(employee.salary);
+  //                 }
+  //               },
+  //               (error) => {
+  //                 console.error(error);
+  //               }
+  //             );
+  //             const petrolExpenses = 0;
+  //             const lateLopDays = Math.floor(lateDays / 3);
+  //             const casualDays = this.getCasualDaysCount(
+  //               employee.joiningDate,
+  //               payrollMonth
+  //             );
+  //             const absentDays =
+  //               presentDays > 0 && workingDays > 0
+  //                 ? workingDays - presentDays
+  //                 : 0;
+  //             const totalAbsentDays =
+  //               casualDays > 0 && absentDays
+  //                 ? Math.max(0, absentDays - casualDays)
+  //                 : absentDays || 0;
+  //             const daySalary = Number(
+  //               (employee.salary / workingDays).toFixed()
+  //             );
+  //             const absentAndLate =
+  //               absentDays > 0 || lateLopDays > 0
+  //                 ? casualDays > 0 && absentDays == 0.5
+  //                   ? Math.max(0, absentDays - casualDays) + lateLopDays
+  //                   : absentDays + lateLopDays - casualDays
+  //                 : absentDays + lateLopDays;
+  //             const totalDeductedDaysWithoutDLOP = absentAndLate;
+  //             const totalDeductedDaysWithDLOP = absentAndLate + doubleLopDays;
+  //             const paidDaysWithoutDLOP =
+  //               workingDays - totalDeductedDaysWithoutDLOP;
+  //             const paidDaysWithDLOP = workingDays - totalDeductedDaysWithDLOP;
+
+  //             const baseNetSalaryWithoutDLOP = Number(
+  //               (paidDaysWithoutDLOP * daySalary).toFixed()
+  //             );
+  //             const baseNetSalaryWithDLOP = Number(
+  //               (paidDaysWithDLOP * daySalary).toFixed()
+  //             );
+  //             const baseDeductionsWithoutDLOP =
+  //               employee.salary - baseNetSalaryWithoutDLOP;
+  //             const baseDeductionsWithDLOP =
+  //               employee.salary - baseNetSalaryWithDLOP;
+  //             let netSalaryWithoutDoubleLop =
+  //               totalDeductedDaysWithoutDLOP === 0
+  //                 ? employee.salary
+  //                 : baseNetSalaryWithoutDLOP;
+  //             let netSalaryWithDoubleLop =
+  //               totalDeductedDaysWithDLOP === 0
+  //                 ? employee.salary
+  //                 : baseNetSalaryWithDLOP;
+  //             const deductionsWithoutDLOP =
+  //               totalDeductedDaysWithoutDLOP === 0
+  //                 ? 0
+  //                 : baseDeductionsWithoutDLOP;
+  //             const deductionsWithDLOP =
+  //               totalDeductedDaysWithDLOP === 0 ? 0 : baseDeductionsWithDLOP;
+
+  //             const lopOption = 'withoutDoubleLOP';
+  //             let netSalary =
+  //               lopOption === 'withoutDoubleLOP'
+  //                 ? netSalaryWithoutDoubleLop + petrolExpenses
+  //                 : netSalaryWithDoubleLop + petrolExpenses;
+  //             const deductions =
+  //               lopOption === 'withoutDoubleLOP'
+  //                 ? deductionsWithoutDLOP
+  //                 : deductionsWithDLOP;
+  //             const paidDays =
+  //               lopOption === 'withoutDoubleLOP'
+  //                 ? paidDaysWithoutDLOP
+  //                 : paidDaysWithDLOP;
+
+  //             let professionalTax = 0;
+  //             if (employee.salary > 20000) {
+  //               professionalTax = 200;
+  //             } else if (employee.salary > 15000) {
+  //               professionalTax = 150;
+  //             }
+
+  //             netSalary -= professionalTax;
+  //             netSalaryWithoutDoubleLop -= professionalTax;
+  //             netSalaryWithDoubleLop -= professionalTax;
+
+  //             const payrollData = {
+  //               payrollMonth,
+  //               employeeName: employee.employeeName,
+  //               employeeId: employee.employeeId,
+  //               customEmployeeId: employee.customEmployeeId,
+  //               joiningDate: employee.joiningDate,
+  //               workingDays,
+  //               presentDays,
+  //               absentDays,
+  //               casualDays,
+  //               totalAbsentDays,
+  //               doubleLopDays,
+  //               lateLopDays,
+  //               salary: employee.salary,
+  //               daySalary,
+  //               petrolExpenses,
+  //               accountNumber: employee.accountNumber,
+  //               ifscCode: employee.ifscCode,
+  //               bankBranch: employee.bankBranch,
+  //               totalDeductedDaysWithoutDLOP,
+  //               totalDeductedDaysWithDLOP,
+  //               paidDaysWithoutDLOP,
+  //               paidDaysWithDLOP,
+  //               netSalaryWithoutDoubleLop,
+  //               netSalaryWithDoubleLop,
+  //               deductionsWithoutDLOP,
+  //               deductionsWithDLOP,
+  //               lopOption,
+  //               netSalary,
+  //               deductions,
+  //               paidDays,
+  //               professionalTax,
+  //             };
+  //             console.log('Payroll Data:', payrollData);
+  //             this.employeesService.createPayroll(payrollData).subscribe(
+  //               (data) => {
+  //                 if (data) {
+  //                   this.loading = false;
+  //                   this.toastService.showSuccess('Payroll Added Successfully');
+  //                   this.routingService.handleRoute('payroll', null);
+  //                 }
+  //               },
+  //               (error: any) => {
+  //                 this.loading = false;
+  //                 console.log(error);
+  //                 this.toastService.showError(error);
+  //               }
+  //             );
+
+  //             (error: any) => {
+  //               this.loading = false;
+  //               this.toastService.showError(error);
+  //             };
+  //           });
+  //         },
+  //         (error) => {
+  //           this.toastService.showError('Error fetching employees.');
+  //           this.loading = false;
+  //           console.error(error);
+  //         }
+  //       );
+  //     });
+  // }
 
   getPayrollById(filter = {}) {
     return new Promise((resolve, reject) => {

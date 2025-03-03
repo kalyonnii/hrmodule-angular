@@ -79,7 +79,7 @@
     <ng-template pTemplate="header">
       <tr>
         <th>#</th>
-        <th class="text-nowrap">Employee Id</th>
+        <!-- <th class="text-nowrap">Employee Id</th> -->
         <th class="text-nowrap">Custom Employee Id</th>
         <th>Employee Name</th>
         <th>Designation</th>
@@ -87,13 +87,14 @@
         <th>Attendance Status</th>
         <th>Check-in Time</th>
         <th>Check-Out Time</th>
+        <th>Reason For leave</th>
       </tr>
     </ng-template>
 
     <ng-template pTemplate="body" let-employee let-i="rowIndex">
       <tr>
         <td>{{ i + 1 }}</td>
-        <td>{{ employee.employeeId }}</td>
+        <!-- <td>{{ employee.employeeId }}</td> -->
         <td>{{ employee.customEmployeeId | uppercase }}</td>
         <td>
           <div class="d-flex align-items-center">
@@ -184,6 +185,17 @@
               [style]="{ width: '150px' }"
             />
           </ng-template>
+        </td>
+        <td>
+          <textarea
+            pInputTextarea
+            rows="1"
+            cols="30"
+            class="rounded-lg form-control"
+            [(ngModel)]="employee.reason"
+            [style]="{ width: '200px' }"
+            placeholder="Enter reason for leave..."
+          ></textarea>
         </td>
       </tr>
     </ng-template>

@@ -6,6 +6,7 @@ import { ToastService } from 'src/app/services/toast.service';
 import { forkJoin } from 'rxjs';
 import { DateTimeProcessorService } from 'src/app/services/date-time-processor.service';
 import { Table } from 'primeng/table';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-dashboard',
@@ -53,14 +54,18 @@ export class DashboardComponent implements OnInit {
   currentYear: number;
   checkInTime: Date | null = null;
   checkOutTime: Date | null = null;
-  loggedHours: string = '0h 0m';
+  loggedHours: string = '0 : 0 : 0';
   timerInterval: any;
   status: any;
+  reason: any;
+  clientIp: any;
+  allowedIps: string[] = [];
   constructor(
     private localStorageService: LocalStorageService,
     private routingService: RoutingService,
     private employeesService: EmployeesService,
     private toastService: ToastService,
+    private confirmationService: ConfirmationService,
     private dateTimeProcessor: DateTimeProcessorService
   ) {
     this.moment = this.dateTimeProcessor.getMoment();
@@ -79,9 +84,14 @@ export class DashboardComponent implements OnInit {
     if (userDetails) {
       this.userDetails = userDetails.user;
     }
+    this.clientIp =
+      this.localStorageService.getItemFromLocalStorage('clientIp');
     this.capabilities = this.employeesService.getUserRbac();
     console.log('capabilities', this.capabilities);
     this.selectedDate = this.moment().format('YYYY-MM-DD');
+    if (this.capabilities.employee) {
+      this.getIpAddress();
+    }
     if (!this.capabilities.employee) {
       this.getAttendanceByDate();
     }
@@ -96,19 +106,64 @@ export class DashboardComponent implements OnInit {
     this.fetchAttendance();
   }
 
-  checkIn() {
-    this.saveAttendance(true);
+  getIpAddress(filter = {}) {
+    this.apiLoading = true;
+    this.employeesService.getIpAddress(filter).subscribe({
+      next: (response: any) => {
+        this.allowedIps = response.map((row) =>
+          row.ipAddress.split('.').slice(0, 2).join('.')
+        );
+        console.log('Allowed IP Addresses:', this.allowedIps);
+        this.apiLoading = false;
+      },
+      error: (error) => {
+        this.apiLoading = false;
+        this.toastService.showError(error);
+      },
+    });
   }
-
+  checkIpAccess(): boolean {
+    const ip = this.clientIp.split('.').slice(0, 2).join('.');
+    return ip !== null && this.allowedIps.includes(ip);
+  }
+  checkIn() {
+    // this.saveAttendance(true);
+    this.confirmationService.confirm({
+      // message: 'Are you sure you want to delete this Employee?',
+      message: `Are you sure you want to Check In ?<br>
+              `,
+      header: 'Confirm Check In ',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Yes',
+      rejectLabel: 'No',
+      accept: () => {
+        this.saveAttendance(true);
+      },
+    });
+  }
   checkOut() {
-    this.saveAttendance(false);
-    this.stopLoggedHoursTimer();
+    // this.saveAttendance(false);
+    // this.stopLoggedHoursTimer();
+
+    this.confirmationService.confirm({
+      // message: 'Are you sure you want to delete this Employee?',
+      message: `Are you sure you want to Check Out ?<br>
+              `,
+      header: 'Confirm Check Out',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Yes',
+      rejectLabel: 'No',
+      accept: () => {
+        this.saveAttendance(false);
+        this.stopLoggedHoursTimer();
+      },
+    });
   }
   startLoggedHoursTimer() {
     if (this.checkInTime) {
       this.timerInterval = setInterval(() => {
         this.loggedHours = this.calculateLiveLoggedHours();
-      }, 60000); // Update every minute
+      }, 1000); // Update every second
     }
   }
   // saveAttendance(isCheckIn: boolean, filter = {}) {
@@ -373,7 +428,10 @@ export class DashboardComponent implements OnInit {
         if (!attendanceRecord) {
           // No attendance record exists -> Initialize employees as "Absent"
           this.employeesService
-            .getEmployees({ 'employeeInternalStatus-eq': 1 })
+            .getEmployees({
+              'employeeInternalStatus-eq': 1,
+              sort: 'joiningDate,asc',
+            })
             .subscribe((activeEmployees: any) => {
               updatedAttendanceData = activeEmployees.map((employee) => ({
                 employeeId: employee.employeeId,
@@ -386,9 +444,9 @@ export class DashboardComponent implements OnInit {
                     ? currentTime
                     : null,
                 checkOutTime: null,
-                totalDuration: 0,
+                reason: '',
+                // totalDuration: 0,
               }));
-
               this.saveOrUpdateAttendance(
                 attendanceRecord,
                 attendanceDate,
@@ -412,14 +470,16 @@ export class DashboardComponent implements OnInit {
                 updatedAttendanceData[employeeIndex].checkInTime,
                 'HH:mm'
               );
-              const totalDuration = now.diff(checkInMoment, 'minutes'); // Calculate duration in minutes
-
+              const totalDuration = now.diff(checkInMoment, 'hours', true);
+              if (totalDuration >= 3.5 && totalDuration <= 6.5) {
+                status = 'Half-day';
+              }
               updatedAttendanceData[employeeIndex].checkOutTime = currentTime;
-              updatedAttendanceData[employeeIndex].totalDuration =
-                totalDuration;
+              updatedAttendanceData[employeeIndex].status = status;
+              // updatedAttendanceData[employeeIndex].totalDuration =
+              //   totalDuration;
             }
           }
-
           this.saveOrUpdateAttendance(
             attendanceRecord,
             attendanceDate,
@@ -612,9 +672,9 @@ export class DashboardComponent implements OnInit {
             this.checkInTime = attendanceData.checkInTime;
             this.checkOutTime = attendanceData.checkOutTime;
             this.status = attendanceData.status;
-
+            this.reason = attendanceData.reason;
             if (!this.checkOutTime) {
-              this.startLoggedHoursTimer(); // Start live time tracking
+              this.startLoggedHoursTimer();
             } else {
               this.loggedHours = this.calculateLoggedHours();
             }
@@ -632,24 +692,23 @@ export class DashboardComponent implements OnInit {
   }
 
   calculateLiveLoggedHours(): string {
-    console.log(this.checkInTime);
+    // console.log(this.checkInTime);
     if (this.checkInTime) {
       const checkInMoment = this.moment(this.checkInTime, 'HH:mm');
       const nowMoment = this.moment();
       const duration = this.moment.duration(nowMoment.diff(checkInMoment));
-      return `${duration.hours()}h ${duration.minutes()}m`;
+      return `${duration.hours()} : ${duration.minutes()} : ${duration.seconds()}`;
     }
-    return '0h 0m';
+    return '0 : 0 : 0';
   }
   calculateLoggedHours(): string {
     if (this.checkInTime && this.checkOutTime) {
       const checkInMoment = this.moment(this.checkInTime, 'HH:mm');
       const checkOutMoment = this.moment(this.checkOutTime, 'HH:mm');
       const duration = this.moment.duration(checkOutMoment.diff(checkInMoment));
-
-      return `${duration.hours()}h ${duration.minutes()}m`;
+      return `${duration.hours()} : ${duration.minutes()} :  ${duration.seconds()}`;
     }
-    return '0h 0m';
+    return '0 : 0 : 0';
   }
 
   stopLoggedHoursTimer() {
@@ -663,7 +722,7 @@ export class DashboardComponent implements OnInit {
     this.stopLoggedHoursTimer();
     this.checkInTime = null;
     this.checkOutTime = null;
-    this.loggedHours = '0h 0m';
+    this.loggedHours = '0 : 0 : 0';
   }
   onImageLoad1() {
     console.log('Image loaded');
