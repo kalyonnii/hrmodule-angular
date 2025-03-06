@@ -424,6 +424,7 @@ export class DashboardComponent implements OnInit {
         const now = this.moment();
         const currentTime = now.format('HH:mm');
         const lateThreshold = this.moment('10:05', 'HH:mm');
+        const checkOutThreshold = this.moment('18:30', 'HH:mm');
         let status = now.isAfter(lateThreshold) ? 'Late' : 'Present';
         if (!attendanceRecord) {
           // No attendance record exists -> Initialize employees as "Absent"
@@ -471,8 +472,11 @@ export class DashboardComponent implements OnInit {
                 'HH:mm'
               );
               const totalDuration = now.diff(checkInMoment, 'hours', true);
+              let status = updatedAttendanceData[employeeIndex].status; // Keep initial status
               if (totalDuration >= 3.5 && totalDuration <= 6.5) {
                 status = 'Half-day';
+              } else if (now.isBefore(checkOutThreshold)) {
+                status = 'Late';
               }
               updatedAttendanceData[employeeIndex].checkOutTime = currentTime;
               updatedAttendanceData[employeeIndex].status = status;
