@@ -209,7 +209,18 @@
         </td>
         <td>{{ employee.checkInTime }}</td>
         <td>{{ employee.checkOutTime }}</td>
-        <td>{{ employee.reason | capitalizeFirst }}</td>
+        <!-- <td>{{ employee.reason | capitalizeFirst }}</td> -->
+        <td>
+          <textarea
+            pInputTextarea
+            rows="1"
+            [value]="employee.reason | capitalizeFirst"
+            class="rounded-lg form-control"
+            [style]="{ width: '200px' }"
+            [readonly]="true"
+          >
+          </textarea>
+        </td>
       </tr>
     </ng-template>
   </p-table>

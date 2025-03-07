@@ -9,6 +9,7 @@ import { ButtonModule } from 'primeng/button';
 import { ViewComponent } from './view.component';
 import { PreloaderModule } from 'src/app/preloader/preloader.module';
 import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 
 const routes: Routes = [{ path: '', component: ViewComponent }];
 
@@ -21,6 +22,7 @@ const routes: Routes = [{ path: '', component: ViewComponent }];
     BreadcrumbModule,
     TableModule,
     InputTextModule,
+    InputTextareaModule,
     ButtonModule,
     PreloaderModule,
     CapitalizeFirstPipe,
