@@ -42,7 +42,14 @@
       <div class="row">
         <div class="col-md-12">
           <div class="row mt-3" *ngIf="formFields">
-            <div *ngFor="let field of formFields" class="col-md-4 mt-2">
+            <div
+              *ngFor="let field of formFields"
+              [ngClass]="{
+                'col-md-12': field.controlName === 'reason',
+                'col-md-4': field.controlName !== 'reason'
+              }"
+              class="mt-2"
+            >
               <div>
                 <label>
                   {{ field.label }}
@@ -86,6 +93,15 @@
                     [filter]="true"
                     filterPlaceholder="Search..."
                   ></p-dropdown>
+                  <textarea
+                    *ngSwitchCase="'textarea'"
+                    pInputTextarea
+                    class="rounded-lg"
+                    autocomplete="off"
+                    [formControlName]="field.controlName"
+                    [placeholder]="'Enter ' + field.label"
+                    [cols]="30"
+                  ></textarea>
                 </ng-container>
               </div>
             </div>

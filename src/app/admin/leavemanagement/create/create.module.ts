@@ -8,6 +8,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
 import { CreateComponent } from './create.component';
 import { PreloaderModule } from 'src/app/preloader/preloader.module';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 
 const routes: Routes = [{ path: '', component: CreateComponent }];
 
@@ -23,6 +24,7 @@ const routes: Routes = [{ path: '', component: CreateComponent }];
     DropdownModule,
     CalendarModule,
     PreloaderModule,
+    InputTextareaModule
   ],
 })
 export class CreateModule {}

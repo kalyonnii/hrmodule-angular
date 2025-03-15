@@ -38,6 +38,7 @@ export class DashboardComponent implements OnInit {
   totalUsersCount: any = 0;
   totalLeavesCount: any = 0;
   employees: any[] = [];
+  leaves: any[] = [];
   totalInterviewsCount: any = 0;
   employeeDetails: any[] = [];
   totalHolidaysCount: any = 0;
@@ -166,66 +167,6 @@ export class DashboardComponent implements OnInit {
       }, 1000); // Update every second
     }
   }
-  // saveAttendance(isCheckIn: boolean, filter = {}) {
-  //   const attendanceDate = this.moment(this.selectedDate).format('YYYY-MM-DD');
-  //   const attendanceData = {
-  //     attendanceDate: attendanceDate, // Keep same date
-  //     attendanceData: [
-  //       {
-  //         employeeId: this.employeeData.employeeId, // Current logged-in employee
-  //         status: isCheckIn ? 'Present' : 'Absent',
-  //         checkInTime: isCheckIn
-  //           ? this.moment(new Date()).format('HH:mm')
-  //           : this.checkInTime,
-  //         checkOutTime: !isCheckIn
-  //           ? this.moment(new Date()).format('HH:mm')
-  //           : null,
-  //       },
-  //     ],
-  //   };
-  //   console.log('Formatted Attendance Data:', attendanceData);
-  //   this.loading = true;
-  //   const attendanceFilter = { ...filter, 'attendanceDate-eq': attendanceDate };
-  //   this.employeesService.getAttendance(attendanceFilter).subscribe(
-  //     (existingRecord: any) => {
-  //       if (existingRecord && existingRecord.length > 0) {
-  //         console.log('existing record', existingRecord);
-  //         this.employeesService
-  //           .updateAttendance(existingRecord.attendanceId, attendanceData)
-  //           .subscribe(
-  //             (data) => {
-  //               this.loading = false;
-  //               this.toastService.showSuccess(
-  //                 'Attendance Updated Successfully'
-  //               );
-  //               // this.fetchAttendance(attendanceFilter);
-  //             },
-
-  //             (error: any) => {
-  //               this.loading = false;
-  //               this.toastService.showError(error);
-  //             }
-  //           );
-  //       } else {
-  //         this.employeesService.createAttendance(attendanceData).subscribe(
-  //           (data) => {
-  //             this.loading = false;
-  //             this.toastService.showSuccess('Attendance Added Successfully');
-  //             // this.fetchAttendance(attendanceFilter);
-  //           },
-  //           (error: any) => {
-  //             this.loading = false;
-  //             this.toastService.showError(error);
-  //           }
-  //         );
-  //       }
-  //     },
-  //     (error: any) => {
-  //       this.loading = false;
-  //       this.toastService.showError(error);
-  //     }
-  //   );
-  // }
 
   // saveAttendance(isCheckIn: boolean, filter = {}) {
   //   const attendanceDate = this.moment(this.selectedDate).format('YYYY-MM-DD');
@@ -238,168 +179,76 @@ export class DashboardComponent implements OnInit {
   //       let updatedAttendanceData = attendanceRecord
   //         ? [...attendanceRecord.attendanceData]
   //         : [];
-  //       const existingEmployeeIndex = updatedAttendanceData.findIndex(
-  //         (data: any) => data.employeeId == this.userDetails.employeeId
-  //       );
-  //       if (existingEmployeeIndex !== -1) {
-  //         updatedAttendanceData[existingEmployeeIndex] = {
-  //           ...updatedAttendanceData[existingEmployeeIndex],
-  //           status: isCheckIn ? 'Present' : 'Absent',
-  //           checkInTime: isCheckIn
-  //             ? this.moment(new Date()).format('HH:mm')
-  //             : updatedAttendanceData[existingEmployeeIndex].checkInTime,
-  //           checkOutTime: !isCheckIn
-  //             ? this.moment(new Date()).format('HH:mm')
-  //             : null,
-  //         };
-  //       } else {
-  //         updatedAttendanceData.push({
-  //           employeeId: this.employeeData.employeeId,
-  //           status: isCheckIn ? 'Present' : 'Absent',
-  //           checkInTime: isCheckIn
-  //             ? this.moment(new Date()).format('HH:mm')
-  //             : null,
-  //           checkOutTime: !isCheckIn
-  //             ? this.moment(new Date()).format('HH:mm')
-  //             : null,
-  //         });
-  //       }
-  //       const attendanceData = {
-  //         attendanceDate: attendanceDate,
-  //         attendanceData: updatedAttendanceData,
-  //       };
-  //       if (attendanceRecord) {
-  //         this.employeesService
-  //           .updateAttendance(attendanceRecord.attendanceId, attendanceData)
-  //           .subscribe(
-  //             () => {
-  //               this.loading = false;
-  //               this.toastService.showSuccess(
-  //                 'Attendance Updated Successfully'
-  //               );
-  //               this.fetchAttendance();
-  //             },
-  //             (error: any) => {
-  //               this.loading = false;
-  //               this.toastService.showError(error);
-  //             }
-  //           );
-  //       } else {
-  //         this.employeesService.createAttendance(attendanceData).subscribe(
-  //           () => {
-  //             this.loading = false;
-  //             this.toastService.showSuccess('Attendance Added Successfully');
-  //             this.fetchAttendance();
-  //           },
-  //           (error: any) => {
-  //             this.loading = false;
-  //             this.toastService.showError(error);
-  //           }
-  //         );
-  //       }
-  //     },
-  //     (error: any) => {
-  //       this.loading = false;
-  //       this.toastService.showError(error);
-  //     }
-  //   );
-  // }
-
-  // saveAttendance(isCheckIn: boolean, filter = {}) {
-  //   const attendanceDate = this.moment(this.selectedDate).format('YYYY-MM-DD');
-  //   const attendanceFilter = { ...filter, 'attendanceDate-eq': attendanceDate };
-  //   this.loading = true;
-
-  //   this.employeesService.getAttendance(attendanceFilter).subscribe(
-  //     (existingRecords: any) => {
-  //       let attendanceRecord =
-  //         existingRecords.length > 0 ? existingRecords[0] : null;
-  //       let updatedAttendanceData = attendanceRecord
-  //         ? [...attendanceRecord.attendanceData]
-  //         : [];
-
-  //       const existingEmployeeIndex = updatedAttendanceData.findIndex(
-  //         (data: any) => data.employeeId == this.employeeData.employeeId
-  //       );
-
   //       const now = this.moment();
-  //       const checkInTime = now.format('HH:mm');
-  //       const officeStartTime = this.moment('10:00', 'HH:mm');
-  //       const lateThreshold = this.moment('10:05', 'HH:mm');
-  //       const officeEndTime = this.moment('18:30', 'HH:mm');
-  //       let status = 'Present';
-  //       let totalDuration = 0;
-
-  //       if (existingEmployeeIndex !== -1) {
-  //         const existingEmployee = updatedAttendanceData[existingEmployeeIndex];
-
-  //         if (!isCheckIn) {
-  //           const checkOutTime = now.format('HH:mm');
-  //           const checkInMoment = this.moment(
-  //             existingEmployee.checkInTime,
-  //             'HH:mm'
-  //           );
-  //           totalDuration = now.diff(checkInMoment, 'hours', true);
-  //           if (totalDuration < 4) {
-  //             status = 'Half-day';
-  //           }
-  //           if (now.isBefore(officeEndTime)) {
-  //             status = 'Late';
-  //           }
-  //           updatedAttendanceData[existingEmployeeIndex] = {
-  //             ...existingEmployee,
-  //             status: status,
-  //             checkOutTime: checkOutTime,
-  //             totalDuration: totalDuration.toFixed(2),
-  //           };
-  //         }
-  //       } else {
-  //         // Check-In: Mark Late if after 10:05 AM
-  //         if (now.isAfter(lateThreshold)) {
-  //           status = 'Late';
-  //         }
-
-  //         updatedAttendanceData.push({
-  //           employeeId: this.employeeData.employeeId,
-  //           status: status,
-  //           checkInTime: checkInTime,
-  //           checkOutTime: null,
-  //           totalDuration: 0,
-  //         });
-  //       }
-
-  //       const attendanceData = {
-  //         attendanceDate: attendanceDate,
-  //         attendanceData: updatedAttendanceData,
-  //       };
-
-  //       if (attendanceRecord) {
+  //       const currentTime = now.format('HH:mm');
+  //       const lateThreshold = this.moment('10:15', 'HH:mm');
+  //       const checkOutThreshold = this.moment('18:30', 'HH:mm');
+  //       let status = now.isAfter(lateThreshold) ? 'Late' : 'Present';
+  //       if (!attendanceRecord) {
+  //         // No attendance record exists -> Initialize employees as "Absent"
   //         this.employeesService
-  //           .updateAttendance(attendanceRecord.attendanceId, attendanceData)
-  //           .subscribe(
-  //             () => {
-  //               this.loading = false;
-  //               this.toastService.showSuccess(
-  //                 'Attendance Updated Successfully'
+  //           .getEmployees({
+  //             'employeeInternalStatus-eq': 1,
+  //             sort: 'joiningDate,asc',
+  //           })
+  //           .subscribe((activeEmployees: any) => {
+  //             updatedAttendanceData = activeEmployees.map((employee) => {
+  //               const leaveRecord = this.leaves?.find(
+  //                 (leave) => leave.employeeId === employee.employeeId
   //               );
-  //               this.fetchAttendance();
-  //             },
-  //             (error: any) => {
-  //               this.loading = false;
-  //               this.toastService.showError(error);
-  //             }
-  //           );
+  //               return {
+  //                 employeeId: employee.employeeId,
+  //                 status: leaveRecord
+  //                   ? 'On Leave'
+  //                   : employee.employeeId === this.employeeData.employeeId
+  //                   ? status
+  //                   : 'Absent',
+  //                 checkInTime:
+  //                   employee.employeeId === this.employeeData.employeeId
+  //                     ? currentTime
+  //                     : null,
+  //                 checkOutTime: null,
+  //                 reason: leaveRecord ? leaveRecord.reason : '',
+  //               };
+  //             });
+  //             this.saveOrUpdateAttendance(
+  //               attendanceRecord,
+  //               attendanceDate,
+  //               updatedAttendanceData
+  //             );
+  //           });
   //       } else {
-  //         this.employeesService.createAttendance(attendanceData).subscribe(
-  //           () => {
-  //             this.loading = false;
-  //             this.toastService.showSuccess('Attendance Added Successfully');
-  //             this.fetchAttendance();
-  //           },
-  //           (error: any) => {
-  //             this.loading = false;
-  //             this.toastService.showError(error);
+  //         // ✅ Check if employee already exists in attendance data
+  //         const employeeIndex = updatedAttendanceData.findIndex(
+  //           (data: any) => data.employeeId === this.employeeData.employeeId
+  //         );
+
+  //         if (employeeIndex !== -1) {
+  //           if (isCheckIn) {
+  //             // ✅ Check-In: Update status and check-in time
+  //             updatedAttendanceData[employeeIndex].status = status;
+  //             updatedAttendanceData[employeeIndex].checkInTime = currentTime;
+  //           } else {
+  //             // ✅ Check-Out: Update check-out time and calculate total duration
+  //             const checkInMoment = this.moment(
+  //               updatedAttendanceData[employeeIndex].checkInTime,
+  //               'HH:mm'
+  //             );
+  //             const totalDuration = now.diff(checkInMoment, 'hours', true);
+  //             let updatedStatus = updatedAttendanceData[employeeIndex].status; // Keep initial status
+  //             if (totalDuration >= 3.5 && totalDuration <= 6) {
+  //               updatedStatus = 'Half-day';
+  //             } else if (now.isBefore(checkOutThreshold)) {
+  //               updatedStatus = 'Late';
+  //             }
+  //             updatedAttendanceData[employeeIndex].checkOutTime = currentTime;
+  //             updatedAttendanceData[employeeIndex].status = updatedStatus;
   //           }
+  //         }
+  //         this.saveOrUpdateAttendance(
+  //           attendanceRecord,
+  //           attendanceDate,
+  //           updatedAttendanceData
   //         );
   //       }
   //     },
@@ -413,83 +262,118 @@ export class DashboardComponent implements OnInit {
     const attendanceDate = this.moment(this.selectedDate).format('YYYY-MM-DD');
     const attendanceFilter = { ...filter, 'attendanceDate-eq': attendanceDate };
     this.loading = true;
+    filter['leaveFrom-lte'] = attendanceDate;
+    filter['leaveTo-gte'] = attendanceDate;
+    filter['leaveInternalStatus-or'] = "1,2";
+    // ✅ Step 1: Fetch leave records first
+    this.employeesService.getLeaves(filter).subscribe(
+      (leavesData: any) => {
+        this.leaves = leavesData; // Store leaves globally
+        // ✅ Step 2: Fetch attendance records
+        this.employeesService.getAttendance(attendanceFilter).subscribe(
+          (existingRecords: any) => {
+            let attendanceRecord =
+              existingRecords.length > 0 ? existingRecords[0] : null;
+            let updatedAttendanceData = attendanceRecord
+              ? [...attendanceRecord.attendanceData]
+              : [];
+            const now = this.moment();
+            const currentTime = now.format('HH:mm');
+            const lateThreshold = this.moment('10:15', 'HH:mm');
+            const checkOutThreshold = this.moment('18:30', 'HH:mm');
+            let status = now.isAfter(lateThreshold) ? 'Late' : 'Present';
+            if (!attendanceRecord) {
+              // ✅ No attendance record → Initialize attendance from active employees
+              this.employeesService
+                .getEmployees({
+                  'employeeInternalStatus-eq': 1,
+                  sort: 'joiningDate,asc',
+                })
+                .subscribe((activeEmployees: any) => {
+                  updatedAttendanceData = activeEmployees.map((employee) => {
+                    const leaveRecord = this.leaves.find(
+                      (leave) => leave.employeeId === employee.employeeId
+                    );
+                    return {
+                      employeeId: employee.employeeId,
+                      status: leaveRecord
+                        ? (leaveRecord.durationType == 'half-day'
+                        ? 'Half-day'
+                        : 'Absent')
+                        : (employee.employeeId === this.employeeData.employeeId
+                        ? status
+                        : 'Absent'),
+                      checkInTime:
+                        employee.employeeId === this.employeeData.employeeId
+                          ? currentTime
+                          : null,
+                      checkOutTime: null,
+                      reason: leaveRecord ? leaveRecord.reason : '',
+                    };
+                  });
 
-    this.employeesService.getAttendance(attendanceFilter).subscribe(
-      (existingRecords: any) => {
-        let attendanceRecord =
-          existingRecords.length > 0 ? existingRecords[0] : null;
-        let updatedAttendanceData = attendanceRecord
-          ? [...attendanceRecord.attendanceData]
-          : [];
-        const now = this.moment();
-        const currentTime = now.format('HH:mm');
-        const lateThreshold = this.moment('10:15', 'HH:mm');
-        const checkOutThreshold = this.moment('18:30', 'HH:mm');
-        let status = now.isAfter(lateThreshold) ? 'Late' : 'Present';
-        if (!attendanceRecord) {
-          // No attendance record exists -> Initialize employees as "Absent"
-          this.employeesService
-            .getEmployees({
-              'employeeInternalStatus-eq': 1,
-              sort: 'joiningDate,asc',
-            })
-            .subscribe((activeEmployees: any) => {
-              updatedAttendanceData = activeEmployees.map((employee) => ({
-                employeeId: employee.employeeId,
-                status:
-                  employee.employeeId === this.employeeData.employeeId
-                    ? status
-                    : 'Absent',
-                checkInTime:
-                  employee.employeeId === this.employeeData.employeeId
-                    ? currentTime
-                    : null,
-                checkOutTime: null,
-                reason: '',
-                // totalDuration: 0,
-              }));
+                  // Save attendance with initialized data
+                  this.saveOrUpdateAttendance(
+                    attendanceRecord,
+                    attendanceDate,
+                    updatedAttendanceData
+                  );
+                });
+            } else {
+              // ✅ Attendance exists → Check if employee record needs updating
+              const employeeIndex = updatedAttendanceData.findIndex(
+                (data: any) => data.employeeId === this.employeeData.employeeId
+              );
+
+              if (employeeIndex !== -1) {
+                if (isCheckIn) {
+                  // ✅ Check-in: Update status and check-in time
+                  updatedAttendanceData[employeeIndex].status = status;
+                  updatedAttendanceData[employeeIndex].checkInTime =
+                    currentTime;
+                } else {
+                  // ✅ Check-out: Update checkout time & duration
+                  const checkInMoment = this.moment(
+                    updatedAttendanceData[employeeIndex].checkInTime,
+                    'HH:mm'
+                  );
+                  const totalDuration = now.diff(checkInMoment, 'hours', true);
+                  let updatedStatus =
+                    updatedAttendanceData[employeeIndex].status;
+
+                  if (totalDuration >= 3.5 && totalDuration <= 6) {
+                    updatedStatus = 'Half-day';
+                  } else if (now.isBefore(checkOutThreshold)) {
+                    updatedStatus = 'Late';
+                  }
+                  updatedAttendanceData[employeeIndex].checkOutTime =
+                    currentTime;
+                  updatedAttendanceData[employeeIndex].status = updatedStatus;
+                }
+              }
+              else {
+                // ✅ If employee is missing in attendance, add them
+                updatedAttendanceData.push({
+                  employeeId: this.employeeData.employeeId,
+                  status: status,
+                  checkInTime: isCheckIn ? currentTime : null,
+                  checkOutTime: isCheckIn ? null : currentTime,
+                  reason: '',
+                });
+              }
+              // Save the updated attendance record
               this.saveOrUpdateAttendance(
                 attendanceRecord,
                 attendanceDate,
                 updatedAttendanceData
               );
-            });
-        } else {
-          // ✅ Check if employee already exists in attendance data
-          const employeeIndex = updatedAttendanceData.findIndex(
-            (data: any) => data.employeeId === this.employeeData.employeeId
-          );
-
-          if (employeeIndex !== -1) {
-            if (isCheckIn) {
-              // ✅ Check-In: Update status and check-in time
-              updatedAttendanceData[employeeIndex].status = status;
-              updatedAttendanceData[employeeIndex].checkInTime = currentTime;
-            } else {
-              // ✅ Check-Out: Update check-out time and calculate total duration
-              const checkInMoment = this.moment(
-                updatedAttendanceData[employeeIndex].checkInTime,
-                'HH:mm'
-              );
-              const totalDuration = now.diff(checkInMoment, 'hours', true);
-              let status = updatedAttendanceData[employeeIndex].status; // Keep initial status
-              if (totalDuration >= 3.5 && totalDuration <= 6) {
-                status = 'Half-day';
-              } else if (now.isBefore(checkOutThreshold)) {
-                status = 'Late';
-              }
-              updatedAttendanceData[employeeIndex].checkOutTime = currentTime;
-              updatedAttendanceData[employeeIndex].status = status;
-              // updatedAttendanceData[employeeIndex].totalDuration =
-              //   totalDuration;
             }
+          },
+          (error: any) => {
+            this.loading = false;
+            this.toastService.showError(error);
           }
-          this.saveOrUpdateAttendance(
-            attendanceRecord,
-            attendanceDate,
-            updatedAttendanceData
-          );
-        }
+        );
       },
       (error: any) => {
         this.loading = false;
@@ -537,128 +421,6 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  // saveAttendance(isCheckIn: boolean, filter = {}) {
-  //   const attendanceDate = this.moment(this.selectedDate).format('YYYY-MM-DD');
-  //   const attendanceFilter = { ...filter, 'attendanceDate-eq': attendanceDate };
-
-  //   this.loading = true;
-
-  //   this.employeesService.getAttendance(attendanceFilter).subscribe(
-  //     (existingRecords: any) => {
-  //       let attendanceRecord =
-  //         existingRecords.length > 0 ? existingRecords[0] : null;
-  //       let updatedAttendanceData = attendanceRecord
-  //         ? [...attendanceRecord.attendanceData]
-  //         : [];
-
-  //       const existingEmployeeIndex = updatedAttendanceData.findIndex(
-  //         (data: any) => data.employeeId === this.employeeData.employeeId
-  //       );
-
-  //       if (existingEmployeeIndex !== -1) {
-  //         // Employee already checked in, update their details
-  //         updatedAttendanceData[existingEmployeeIndex] = {
-  //           ...updatedAttendanceData[existingEmployeeIndex],
-  //           checkInTime:
-  //             updatedAttendanceData[existingEmployeeIndex].checkInTime ||
-  //             this.moment(new Date()).format('HH:mm'),
-  //         };
-  //       } else {
-  //         // New Employee logging in
-  //         updatedAttendanceData.push({
-  //           employeeId: this.userDetails.employeeId,
-  //           status: 'Present',
-  //           checkInTime: this.moment(new Date()).format('HH:mm'),
-  //           checkOutTime: null,
-  //         });
-  //       }
-
-  //       const attendanceData = {
-  //         attendanceDate: attendanceDate,
-  //         attendanceData: updatedAttendanceData,
-  //       };
-
-  //       if (attendanceRecord) {
-  //         // Update existing record
-  //         this.employeesService
-  //           .updateAttendance(attendanceRecord.attendanceId, attendanceData)
-  //           .subscribe(
-  //             () => {
-  //               this.loading = false;
-  //               this.toastService.showSuccess(
-  //                 'Attendance Updated Successfully'
-  //               );
-  //             },
-  //             (error: any) => {
-  //               this.loading = false;
-  //               this.toastService.showError(error);
-  //             }
-  //           );
-  //       } else {
-  //         // No record exists, create a new one
-  //         this.employeesService.createAttendance(attendanceData).subscribe(
-  //           () => {
-  //             this.loading = false;
-  //             this.toastService.showSuccess('Attendance Added Successfully');
-  //           },
-  //           (error: any) => {
-  //             // Handle case where another request already created it
-  //             if (error.status === 409 || error.status === 400) {
-  //               // Conflict or Bad Request, meaning another process created it already
-  //               this.employeesService
-  //                 .getAttendance(attendanceFilter)
-  //                 .subscribe((retryRecords: any) => {
-  //                   if (retryRecords.length > 0) {
-  //                     const retryAttendanceRecord = retryRecords[0];
-  //                     const retryUpdatedAttendanceData = [
-  //                       ...retryAttendanceRecord.attendanceData,
-  //                     ];
-
-  //                     retryUpdatedAttendanceData.push({
-  //                       employeeId: this.userDetails.employeeId,
-  //                       status: 'Present',
-  //                       checkInTime: this.moment(new Date()).format('HH:mm'),
-  //                       checkOutTime: null,
-  //                     });
-
-  //                     const retryAttendanceData = {
-  //                       attendanceDate: attendanceDate,
-  //                       attendanceData: retryUpdatedAttendanceData,
-  //                     };
-
-  //                     this.employeesService
-  //                       .updateAttendance(
-  //                         retryAttendanceRecord.attendanceId,
-  //                         retryAttendanceData
-  //                       )
-  //                       .subscribe(
-  //                         () => {
-  //                           this.loading = false;
-  //                           this.toastService.showSuccess(
-  //                             'Attendance Updated Successfully'
-  //                           );
-  //                         },
-  //                         (updateError: any) => {
-  //                           this.loading = false;
-  //                           this.toastService.showError(updateError);
-  //                         }
-  //                       );
-  //                   }
-  //                 });
-  //             } else {
-  //               this.loading = false;
-  //               this.toastService.showError(error);
-  //             }
-  //           }
-  //         );
-  //       }
-  //     },
-  //     (error: any) => {
-  //       this.loading = false;
-  //       this.toastService.showError(error);
-  //     }
-  //   );
-  // }
 
   fetchAttendance(filter = {}) {
     const attendanceDate = this.moment(this.selectedDate).format('YYYY-MM-DD');

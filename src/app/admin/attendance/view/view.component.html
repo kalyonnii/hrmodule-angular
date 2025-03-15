@@ -118,7 +118,7 @@
     <ng-template pTemplate="header">
       <tr>
         <th>#</th>
-        <th class="text-nowrap">Employee Id</th>
+        <!-- <th class="text-nowrap">Employee Id</th> -->
         <th class="text-nowrap">Custom Employee Id</th>
         <th class="text-nowrap">Employee Name</th>
         <th class="text-nowrap">Designation Name</th>
@@ -132,7 +132,7 @@
     <ng-template pTemplate="body" let-employee let-i="rowIndex">
       <tr>
         <td>{{ i + 1 }}</td>
-        <td>{{ employee.employeeId }}</td>
+        <!-- <td>{{ employee.employeeId }}</td> -->
         <td>{{ employee.customEmployeeId | uppercase }}</td>
         <td>
           <div class="d-flex align-items-center">

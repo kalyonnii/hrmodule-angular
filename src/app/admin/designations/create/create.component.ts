@@ -71,14 +71,14 @@ export class CreateComponent implements OnInit {
       { label: this.actionType == 'create' ? 'Create' : 'Update' },
     ];
     this.modules = [
-      {
-        name: 'Employees',
-        options: [
-          { label: 'Admin Employees', value: 'adminEmployees' },
-          { label: 'Employee Profile', value: 'employee' },
-        ],
-        type: 'radio',
-      },
+      // {
+      //   name: 'Employees',
+      //   options: [
+      //     { label: 'Admin Employees', value: 'adminEmployees' },
+      //     { label: 'Employee Profile', value: 'employee' },
+      //   ],
+      //   type: 'radio',
+      // },
       {
         name: 'Attendance',
         options: [
@@ -124,6 +124,11 @@ export class CreateComponent implements OnInit {
           },
         ],
         type: 'radio',
+      },
+      {
+        name: 'Profile',
+        options: [{ label: 'Employee Profile', value: 'employee' }],
+        type: 'checkbox',
       },
       {
         name: 'Interviews',

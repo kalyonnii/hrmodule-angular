@@ -48,6 +48,7 @@
         [showButtonBar]="true"
         [readonlyInput]="true"
         placeholder="Select Attendance date"
+        (onSelect)="getLeaves()"
       >
       </p-calendar>
     </div>
@@ -149,7 +150,7 @@
             [showClear]="true"
             appendTo="body"
             (onChange)="updateAttendanceStatus(employee)"
-            [style]="{ width: '200px' }"
+            [style]="{ width: '150px' }"
           ></p-dropdown>
         </td>
         <td>
@@ -165,7 +166,7 @@
               [(ngModel)]="employee.checkInTime"
               [disabled]="employee.status === 'Absent'"
               class="form-control"
-              [style]="{ width: '150px' }"
+              [style]="{ width: '130px' }"
             />
           </ng-template>
         </td>
@@ -182,7 +183,7 @@
               [(ngModel)]="employee.checkOutTime"
               [disabled]="employee.status === 'Absent'"
               class="form-control"
-              [style]="{ width: '150px' }"
+              [style]="{ width: '130px' }"
             />
           </ng-template>
         </td>
@@ -194,7 +195,7 @@
             class="rounded-lg form-control"
             [(ngModel)]="employee.reason"
             [style]="{ width: '200px' }"
-            placeholder="Enter reason for leave..."
+            placeholder="Enter reason"
           ></textarea>
         </td>
       </tr>

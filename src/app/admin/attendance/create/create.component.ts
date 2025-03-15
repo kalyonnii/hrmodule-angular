@@ -24,6 +24,7 @@ export class CreateComponent {
   loading: boolean = false;
   version = projectConstantsLocal.VERSION_DESKTOP;
   employees: any[] = [];
+  leaves: any[] = [];
   employeeDetails: any[] = [];
   attendanceId: any;
   attendanceOptions = projectConstantsLocal.ATTENDANCE_OPTIONS;
@@ -47,6 +48,7 @@ export class CreateComponent {
             if (data) {
               (this.selectedDate = this.attendanceData?.attendanceDate),
                 console.log('Attendance Data', this.attendanceData);
+                this.getLeaves();
             }
           })
           .catch((error) => {
@@ -137,23 +139,113 @@ export class CreateComponent {
       }
     );
   }
+  getLeaves(filter = {}) {
+    this.loading = true;
+    const formattedDate = this.moment(this.selectedDate).format('YYYY-MM-DD');
+    filter['leaveFrom-lte'] = formattedDate;
+    filter['leaveTo-gte'] = formattedDate;
+    filter['leaveInternalStatus-or'] = "1,2";
+    this.employeesService.getLeaves(filter).subscribe(
+      (response: any) => {
+        this.leaves = response;
+        console.log('Leaves', this.leaves);
+        this.loading = false;
+        this.setDefaultAttendanceData();
+        if (this.leaves && this.leaves.length > 0) {
+          this.toastService.showSuccess("Leaves Fetched Successfully");
+        } else {
+          this.toastService.showInfo("No leaves Today");
+        }
+      },
+      (error: any) => {
+        this.loading = false;
+        this.toastService.showError(error);
+      }
+    );
+  }
+  // setDefaultAttendanceData() {
+  //   const defaultCheckInTime = this.formatTime(new Date(0, 0, 0, 10, 0));
+  //   // const defaultCheckOutTime = this.formatTime(new Date(0, 0, 0, 18, 30));
+  //   console.log(this.actionType);
+  //   if (this.actionType === 'create') {
+  //     this.employeeDetails = this.employees.map((employee) => ({
+  //       employeeId: employee.employeeId,
+  //       customEmployeeId: employee.customEmployeeId,
+  //       employeeName: employee.employeeName.trim(),
+  //       passPhoto: employee.passPhoto,
+  //       designationName: employee.designationName,
+  //       joiningDate: employee.joiningDate,
+  //       status: 'Present',
+  //       checkInTime: defaultCheckInTime,
+  //       checkOutTime: '',
+  //       reason: '',
+  //     }));
+  //     console.log(
+  //       'Employee Details with Default Data for Create:',
+  //       this.employeeDetails
+  //     );
+  //   } else if (this.actionType === 'update') {
+  //     this.employeeDetails = this.employees
+  //       .filter((employee) =>
+  //         this.attendanceData?.attendanceData.some(
+  //           (att) => att.employeeId === employee.employeeId
+  //         )
+  //       )
+  //       .map((employee) => {
+  //         const attendance = this.attendanceData?.attendanceData.find(
+  //           (att) => att.employeeId === employee.employeeId
+  //         );
+  //         return {
+  //           employeeId: employee.employeeId,
+  //           customEmployeeId: employee.customEmployeeId,
+  //           employeeName: employee.employeeName.trim(),
+  //           passPhoto: employee.passPhoto,
+  //           designationName: employee.designationName,
+  //           joiningDate: employee.joiningDate,
+  //           status: attendance?.status,
+  //           checkInTime: attendance?.checkInTime,
+  //           checkOutTime: attendance?.checkOutTime,
+  //           reason: attendance?.reason,
+  //         };
+  //       });
+  //     console.log(
+  //       'Employee Details with Attendance Data for Update:',
+  //       this.employeeDetails
+  //     );
+  //   }
+  // }
+
   setDefaultAttendanceData() {
     const defaultCheckInTime = this.formatTime(new Date(0, 0, 0, 10, 0));
-    // const defaultCheckOutTime = this.formatTime(new Date(0, 0, 0, 18, 30));
     console.log(this.actionType);
     if (this.actionType === 'create') {
-      this.employeeDetails = this.employees.map((employee) => ({
-        employeeId: employee.employeeId,
-        customEmployeeId: employee.customEmployeeId,
-        employeeName: employee.employeeName.trim(),
-        passPhoto: employee.passPhoto,
-        designationName: employee.designationName,
-        joiningDate: employee.joiningDate,
-        status: 'Present',
-        checkInTime: defaultCheckInTime,
-        checkOutTime: '',
-        reason: '',
-      }));
+      this.employeeDetails = this.employees.map((employee) => {
+        // Find leave record for the employee if today's date falls within their leave period
+        const leaveRecord = this.leaves?.find(
+          (leave) => leave.employeeId === employee.employeeId
+        );
+        console.log(leaveRecord);
+        return {
+          employeeId: employee.employeeId,
+          customEmployeeId: employee.customEmployeeId,
+          employeeName: employee.employeeName.trim(),
+          passPhoto: employee.passPhoto,
+          designationName: employee.designationName,
+          joiningDate: employee.joiningDate,
+          status: leaveRecord
+            ? (leaveRecord.durationType == 'half-day'
+              ? 'Half-day'
+              : 'Absent')
+            : 'Present',
+          checkInTime: leaveRecord
+            ? (leaveRecord.durationType == 'half-day'
+              ? defaultCheckInTime
+              : '')
+            : defaultCheckInTime, // No check-in for leave
+          checkOutTime: '',
+          reason: leaveRecord ? leaveRecord.reason : '',
+        };
+      });
       console.log(
         'Employee Details with Default Data for Create:',
         this.employeeDetails
@@ -169,6 +261,10 @@ export class CreateComponent {
           const attendance = this.attendanceData?.attendanceData.find(
             (att) => att.employeeId === employee.employeeId
           );
+          // Check if employee is on leave today
+          const leaveRecord = this.leaves?.find(
+            (leave) => leave.employeeId === employee.employeeId
+          );
           return {
             employeeId: employee.employeeId,
             customEmployeeId: employee.customEmployeeId,
@@ -176,10 +272,18 @@ export class CreateComponent {
             passPhoto: employee.passPhoto,
             designationName: employee.designationName,
             joiningDate: employee.joiningDate,
-            status: attendance?.status,
-            checkInTime: attendance?.checkInTime,
-            checkOutTime: attendance?.checkOutTime,
-            reason: attendance?.reason,
+            status: leaveRecord
+              ? (leaveRecord.durationType == 'half-day'
+                ? 'Half-day'
+                : 'Absent')
+              : attendance?.status,
+            checkInTime: leaveRecord
+              ? (leaveRecord.durationType == 'half-day'
+                ? (attendance?.checkInTime ? attendance?.checkInTime :defaultCheckInTime)
+                : '')
+              : attendance?.checkInTime,
+            checkOutTime: attendance?.checkOutTime || '',
+            reason: leaveRecord ? leaveRecord.reason : attendance?.reason || '',
           };
         });
       console.log(

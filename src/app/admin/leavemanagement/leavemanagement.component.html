@@ -184,10 +184,10 @@
         <th pSortableColumn="durationType" class="text-nowrap">
           Duration Type<p-sortIcon field="durationType"></p-sortIcon>
         </th>
-        <th pSortableColumn="reason" class="text-nowrap">
+        <!-- <th pSortableColumn="reason" class="text-nowrap">
           Reason
           <p-sortIcon field="reason"></p-sortIcon>
-        </th>
+        </th> -->
         <th pSortableColumn="createdOn" class="text-nowrap">
           Created Date <p-sortIcon field="createdOn"></p-sortIcon>
         </th>
@@ -213,7 +213,7 @@
             >
           </b>
         </td> -->
-        <td *ngIf="capabilities.adminLeaves" class="text-nowrap">
+        <td *ngIf="capabilities.adminLeaves" class="">
           <div class="d-flex align-items-center">
             <span class="me-2">
               <ng-container
@@ -281,11 +281,11 @@
             >{{ leave.durationType }}</span
           >
         </td>
-        <td>
+        <!-- <td>
           <span class="table-column-data" *ngIf="leave.reason; else noData">{{
             leave.reason | capitalizeFirst
           }}</span>
-        </td>
+        </td> -->
         <td>
           <span
             class="table-column-data"
@@ -342,6 +342,15 @@
               ></button>
             </div>
           </div>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="1" class="text-center"><b>Reason</b></td>
+        <td colspan="10">
+          <span class="table-column-data" *ngIf="leave.reason; else noData">{{
+            leave.reason | capitalizeFirst
+          }}</span>
         </td>
       </tr>
     </ng-template>

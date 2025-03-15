@@ -206,7 +206,7 @@ export class CreateComponent {
       {
         label: 'Reason',
         controlName: 'reason',
-        type: 'text',
+        type: 'textarea',
         required: true,
       },
     ];
