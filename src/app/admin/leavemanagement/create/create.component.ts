@@ -235,7 +235,8 @@ export class CreateComponent {
       leaveType: formValues.leaveType,
       durationType: formValues.durationType,
       noOfDays: formValues.noOfDays,
-      reason: formValues.reason,
+      // reason: formValues.reason,
+      reason: formValues.reason ? formValues.reason.replace(/\s+/g, ' ').trim() : null,
       leaveTo: formValues.leaveTo
         ? this.moment(formValues.leaveTo).format('YYYY-MM-DD')
         : null,
