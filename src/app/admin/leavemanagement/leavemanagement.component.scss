@@ -54,3 +54,54 @@
 .cards {
   border-left: 5px solid #31425e;
 }
+
+.active-card {
+  box-shadow: 0 0 15px rgba(38, 32, 104, 0.5) !important;
+}
+.icon {
+  width: 35px;
+  margin-right: 13px;
+  color: #31425e;
+  background-color: #f2f7fe;
+  border-radius: 50%;
+  padding: 8px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
+}
+.profilebg {
+  height: 140px;
+  background-color: #31425e;
+  width: 100%;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+.profile-img-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: -130px;
+}
+.profileimg {
+  border-radius: 50%;
+  width: 200px;
+  height: 200px;
+  border: 5px solid white;
+}
+.info-line {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.label {
+  flex: 0 0 250px;
+  font-weight: bold;
+}
+
+.value {
+  color: grey;
+  flex: 1;
+  margin-left: 5px;
+}

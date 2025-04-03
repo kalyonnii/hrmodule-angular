@@ -354,8 +354,16 @@
   <div class="row">
     <div class="d-flex flex-wrap justify-content-start">
       <ng-container *ngFor="let item of countsAnalytics">
-        <div class="col-lg-3 col-md-3 col-sm-6 col-12 mt-2">
-          <div class="card p-3 shadow-sm pointer-cursor m-2 cards">
+        <div
+          class="col-lg-3 col-md-3 col-sm-6 col-12 mt-2"
+          (click)="cardClick(item)"
+        >
+          <div
+            class="card p-3 shadow-sm pointer-cursor m-2 cards"
+            [ngClass]="{
+              'active-card': this.selectedInterviewStatus?.name === item?.name
+            }"
+          >
             <div class="d-flex justify-content-between">
               <div class="d-flex align-items-center">
                 <div>
@@ -374,7 +382,7 @@
                   'background-color': item.backgroundcolor
                 }"
               >
-                <i class="fa fa-{{ item.name }}"></i>
+                <i class="fa fa-{{ item.icon }}"></i>
               </div>
             </div>
           </div>

@@ -12,6 +12,7 @@ import { LeavemanagementComponent } from './leavemanagement.component';
 import { FilterModule } from 'src/app/filter/filter.module';
 import { PreloaderModule } from 'src/app/preloader/preloader.module';
 import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize.pipe';
+import { DialogModule } from 'primeng/dialog';
 
 const routes: Routes = [
   { path: '', component: LeavemanagementComponent },
@@ -37,6 +38,7 @@ const routes: Routes = [
     ButtonModule,
     TableModule,
     DropdownModule,
+    DialogModule,
     MenuModule,
     InputTextModule,
     FilterModule,

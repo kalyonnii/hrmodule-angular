@@ -35,6 +35,8 @@ export class LeavemanagementComponent {
   userDetails: any;
   capabilities: any;
   currentYear: number;
+  selectedLeave: any = null;
+  isDialogVisible = false;
   constructor(
     private employeesService: EmployeesService,
     private location: Location,
@@ -227,7 +229,8 @@ export class LeavemanagementComponent {
   updateCountsAnalytics() {
     this.countsAnalytics = [
       {
-        name: 'user',
+        icon: 'user',
+        name:'all',
         displayName: 'Total Leaves',
         count:
           this.leavesStatusCount[1] +
@@ -237,21 +240,24 @@ export class LeavemanagementComponent {
         backgroundcolor: '#F0EFFF',
       },
       {
-        name: 'circle-half-stroke',
+        icon: 'circle-half-stroke',
+        name:'pending',
         displayName: 'Pending Leaves',
         count: this.leavesStatusCount[1],
         textcolor: '#FFC107',
         backgroundcolor: '#FFF3D6',
       },
       {
-        name: 'check-circle',
+        icon: 'check-circle',
+        name:'approved',
         displayName: 'Approved Leaves',
         count: this.leavesStatusCount[2],
         textcolor: '#2ECC71',
         backgroundcolor: '#F0F9E8',
       },
       {
-        name: 'circle-xmark',
+        icon: 'circle-xmark',
+        name:'rejected',
         displayName: 'Rejected Leaves',
         count: this.leavesStatusCount[3],
         textcolor: '#DC3545',
@@ -259,6 +265,15 @@ export class LeavemanagementComponent {
       },
     ];
   }
+
+  cardClick(item: any) {
+    this.selectedLeavesStatus = this.leavesInternalStatusList.find(
+      (status) => status.name === item.name
+    );
+    console.log(this.selectedLeavesStatus)
+    this.statusChange({ value: this.selectedLeavesStatus });
+  }
+
   loadLeaves(event) {
     this.currentTableEvent = event;
     let api_filter = this.employeesService.setFiltersFromPrimeTable(event);
@@ -296,9 +311,21 @@ export class LeavemanagementComponent {
     }
   }
 
+  showLeaveDetails(user: any): void {
+    this.selectedLeave = user;
+    this.isDialogVisible = true;
+  }
+  clearDialog(): void {
+    this.selectedLeave = null;
+    this.isDialogVisible = false;
+  }
   actionItems(leave: any): MenuItem[] {
     const menuItems: any = [{ label: 'Actions', items: [] }];
-
+    menuItems[0].items.push({
+      label: 'Leave Details',
+      icon: 'fa fa-eye',
+      command: () => this.showLeaveDetails(leave),
+    });
     if (leave.leaveInternalStatus === 1) {
       menuItems[0].items.push({
         label: 'Approved',

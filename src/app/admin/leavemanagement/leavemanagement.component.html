@@ -34,8 +34,16 @@
   <div class="row">
     <div class="d-flex flex-wrap justify-content-start">
       <ng-container *ngFor="let item of countsAnalytics">
-        <div class="col-lg-3 col-md-3 col-sm-6 col-12 mt-2">
-          <div class="card p-3 shadow-sm pointer-cursor m-2 cards">
+        <div
+          class="col-lg-3 col-md-3 col-sm-6 col-12 mt-2"
+          (click)="cardClick(item)"
+        >
+          <div
+            class="card p-3 shadow-sm pointer-cursor m-2 cards"
+            [ngClass]="{
+              'active-card': this.selectedLeavesStatus?.name === item?.name
+            }"
+          >
             <div class="d-flex justify-content-between">
               <div class="d-flex align-items-center">
                 <div>
@@ -54,7 +62,7 @@
                   'background-color': item.backgroundcolor
                 }"
               >
-                <i class="fa fa-{{ item.name }}"></i>
+                <i class="fa fa-{{ item.icon }}"></i>
               </div>
             </div>
           </div>
@@ -63,6 +71,234 @@
     </div>
   </div>
 </div>
+<p-dialog
+  [(visible)]="isDialogVisible"
+  [modal]="true"
+  [closable]="true"
+  [responsive]="true"
+  class="dialogbox"
+  header="Leave Details"
+  (onHide)="clearDialog()"
+>
+  <div *ngIf="selectedLeave" class="text-capitalize">
+    <div class="profilebg"></div>
+    <div
+      class="d-flex profile-img-container flex-column align-items-center justify-content-center"
+      style="height: 270px"
+    >
+      <div
+        *ngIf="
+          selectedLeave &&
+          selectedLeave.passPhoto &&
+          selectedLeave.passPhoto.length > 0
+        "
+        class="d-flex justify-content-center"
+      >
+        <ng-container>
+          <a [href]="'//' + selectedLeave.passPhoto[0]" target="_blank">
+            <img
+              [src]="'//' + selectedLeave.passPhoto[0]"
+              alt="Profile"
+              class="profileimg mb-3"
+              style="width: 190px; height: 190px"
+            />
+          </a>
+        </ng-container>
+      </div>
+      <div
+        *ngIf="selectedLeave && selectedLeave.passPhoto == null"
+        class="d-flex justify-content-center"
+      >
+        <tr class="text-center">
+          <img
+            src="../../../assets/images/profile/profile.png"
+            alt="Profile"
+            class="profileimg mb-3"
+            style="width: 190px; height: 190px"
+          />
+        </tr>
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-id-badge"></i></span>
+      <div class="label d-flex justify-content-between">
+        Leave Id<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{ selectedLeave.leaveId ? selectedLeave.leaveId : "-" }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-user-alt"></i></span>
+      <div class="label d-flex justify-content-between">
+        Employee Name<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{
+          selectedLeave.employeeName
+            ? (selectedLeave.employeeName | capitalizeFirst)
+            : "-"
+        }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-clipboard-list"></i></span>
+      <div class="label d-flex justify-content-between">
+        Leave Type<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{
+          selectedLeave.leaveType
+            ? (selectedLeave.leaveType | capitalizeFirst)
+            : "-"
+        }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-calendar-alt"></i></span>
+      <div class="label d-flex justify-content-between">
+        Leave From<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{ selectedLeave.leaveFrom ? (selectedLeave.leaveFrom | date) : "-" }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-calendar-check"></i></span>
+      <div class="label d-flex justify-content-between">
+        Leave To<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{ selectedLeave.leaveTo ? (selectedLeave.leaveTo | date) : "-" }}
+      </div>
+    </div>
+
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-hourglass-half"></i></span>
+      <div class="label d-flex justify-content-between">
+        No Of Days<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{ selectedLeave.noOfDays ? selectedLeave.noOfDays : "-" }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-stopwatch"></i></span>
+      <div class="label d-flex justify-content-between">
+        Duration Type<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{ selectedLeave.durationType ? selectedLeave.durationType : "-" }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-comment-alt"></i></span>
+      <div class="label d-flex justify-content-between">
+        Reason<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{
+          selectedLeave.reason ? (selectedLeave.reason | capitalizeFirst) : "-"
+        }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-info-circle"></i></span>
+      <div class="label d-flex justify-content-between">
+        Leave Status<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        <span
+          class="fw-bold statusdata"
+          [ngStyle]="{
+            color: getStatusColor(
+              getStatusName(selectedLeave.leaveInternalStatus)
+            ).textColor,
+            'background-color': getStatusColor(
+              getStatusName(selectedLeave.leaveInternalStatus)
+            ).backgroundColor
+          }"
+        >
+          {{ getStatusName(selectedLeave.leaveInternalStatus) }}
+        </span>
+      </div>
+    </div>
+    <div
+      class="info-line"
+      *ngIf="
+        selectedLeave.leaveInternalStatus === 2 ||
+        selectedLeave.leaveInternalStatus === 3
+      "
+    >
+      <span class="icon"><i class="fas fa-user-circle"></i></span>
+      <div class="label d-flex justify-content-between">
+        {{
+          selectedLeave.leaveInternalStatus === 2
+            ? "Approved By"
+            : "Rejected By"
+        }}<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{
+          selectedLeave.lastUpdatedBy
+            ? (selectedLeave.lastUpdatedBy | capitalizeFirst)
+            : "-"
+        }}
+      </div>
+    </div>
+
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-user"></i></span>
+      <div class="label d-flex justify-content-between">
+        Created By<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{
+          selectedLeave.createdBy
+            ? (selectedLeave.createdBy | capitalizeFirst)
+            : "-"
+        }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-calendar-alt"></i></span>
+      <div class="label d-flex justify-content-between">
+        Created On<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{ selectedLeave.createdOn ? (selectedLeave.createdOn | date) : "-" }}
+      </div>
+    </div>
+
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-user-tag"></i></span>
+      <div class="label d-flex justify-content-between">
+        Last Updated By<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{
+          selectedLeave.lastUpdatedBy
+            ? (selectedLeave.lastUpdatedBy | capitalizeFirst)
+            : "-"
+        }}
+      </div>
+    </div>
+    <div class="info-line">
+      <span class="icon"><i class="fas fa-calendar-check"></i></span>
+      <div class="label d-flex justify-content-between">
+        Last Updated On<b>:&nbsp;</b>
+      </div>
+      <div class="value">
+        {{
+          selectedLeave.lastUpdatedOn
+            ? (selectedLeave.lastUpdatedOn | date : "MMM d, y, h:mm a")
+            : "-"
+        }}
+      </div>
+    </div>
+  </div>
+</p-dialog>
+
 <div class="text-capitalize table-card" *ngIf="!loading">
   <p-table
     #leavesTable
@@ -178,12 +414,12 @@
         <th pSortableColumn="leaveTo" class="text-nowrap">
           Leave To <p-sortIcon field="leaveTo"></p-sortIcon>
         </th>
-        <th pSortableColumn="noOfDays" class="text-nowrap">
+        <!-- <th pSortableColumn="noOfDays" class="text-nowrap">
           No Of Days<p-sortIcon field="noOfDays"></p-sortIcon>
-        </th>
-        <th pSortableColumn="durationType" class="text-nowrap">
+        </th> -->
+        <!-- <th pSortableColumn="durationType" class="text-nowrap">
           Duration Type<p-sortIcon field="durationType"></p-sortIcon>
-        </th>
+        </th> -->
         <!-- <th pSortableColumn="reason" class="text-nowrap">
           Reason
           <p-sortIcon field="reason"></p-sortIcon>
@@ -193,6 +429,22 @@
         </th>
         <th pSortableColumn="leaveInternalStatus" class="text-nowrap">
           Status <p-sortIcon field="leaveInternalStatus"></p-sortIcon>
+        </th>
+        <th
+          pSortableColumn="lastUpdatedBy"
+          class="text-nowrap"
+          *ngIf="selectedLeavesStatus.id !== 1"
+        >
+          <ng-container *ngIf="selectedLeavesStatus.id === 2">
+            Approved By
+          </ng-container>
+          <ng-container *ngIf="selectedLeavesStatus.id === 3">
+            Rejected By
+          </ng-container>
+          <ng-container *ngIf="selectedLeavesStatus.id === 0">
+            Approved / Rejected By
+          </ng-container>
+          <p-sortIcon field="lastUpdatedBy"></p-sortIcon>
         </th>
         <th>Actions</th>
       </tr>
@@ -269,18 +521,18 @@
             leave.leaveTo | date : "mediumDate"
           }}</span>
         </td>
-        <td>
+        <!-- <td>
           <span class="table-column-data" *ngIf="leave.noOfDays; else noData">{{
             leave.noOfDays
           }}</span>
-        </td>
-        <td>
+        </td> -->
+        <!-- <td>
           <span
             class="table-column-data"
             *ngIf="leave.durationType; else noData"
             >{{ leave.durationType }}</span
           >
-        </td>
+        </td> -->
         <!-- <td>
           <span class="table-column-data" *ngIf="leave.reason; else noData">{{
             leave.reason | capitalizeFirst
@@ -308,9 +560,34 @@
             {{ getStatusName(leave.leaveInternalStatus) }}
           </span>
         </td>
+        <td
+          *ngIf="
+            leave.leaveInternalStatus !== 1 || selectedLeavesStatus.id == 0
+          "
+        >
+          <span
+            class="table-column-data"
+            *ngIf="
+              leave.leaveInternalStatus == 2 || leave.leaveInternalStatus == 3;
+              else noData
+            "
+            >{{ leave.lastUpdatedBy }}</span
+          >
+        </td>
         <td>
           <div class="text-center">
             <div class="d-flex">
+              <button
+              *ngIf="capabilities.employeeLeaves"
+              pButton
+              pRipple
+              type="button"
+              pTooltip="Leave Details"
+              tooltipPosition="left"
+              class="p-button-info me-2 view-btn"
+              icon="fa fa-eye"
+              (click)="showLeaveDetails(leave)"
+            ></button>
               <button
                 *ngIf="capabilities.employeeLeaves"
                 pButton

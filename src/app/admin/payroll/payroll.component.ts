@@ -35,6 +35,11 @@ export class PayrollComponent {
   capabilities: any;
   userDetails: any;
   currentYear: number;
+  countsAnalytics: any[] = [];
+  totalSalary: any = 0;
+  totalDeductions: any = 0;
+  totalNetSalary: any = 0;
+  payrollEmployees: any = 0;
   constructor(
     private location: Location,
     private confirmationService: ConfirmationService,
@@ -73,6 +78,8 @@ export class PayrollComponent {
     if (this.capabilities.adminPayroll) {
       this.getEmployees();
       this.getHolidays();
+      this.getEmployeesStatusCount();
+      this.updateCountsAnalytics();
     }
     this.setFilterConfig();
     const storedStatus =
@@ -92,6 +99,64 @@ export class PayrollComponent {
       this.appliedFilter = storedAppliedFilter;
     }
   }
+
+  updateCountsAnalytics() {
+    this.countsAnalytics = [
+      {
+        name: 'user', // Represents total employees in payroll
+        displayName: 'Total Payroll Employees',
+        count: `${this.payrollEmployees} `, // Assuming you have a variable for total employees
+        textcolor: '#3498DB', // Blue to represent a professional/business environment
+        backgroundcolor: '#D9EAF7',
+      },
+      {
+        name: 'sack-dollar', // Represents total gross salary (big earnings)
+        displayName: 'Total Gross Salary',
+        count: `Rs. ${this.totalSalary} ( ${this.convertToReadableFormat(
+          this.totalSalary
+        )} )`,
+        textcolor: '#F39C12', // Warm golden yellow for money representation
+        backgroundcolor: '#FEF5E7',
+      },
+      {
+        name: 'file-invoice-dollar', // Represents deductions (taxes, deductions)
+        displayName: 'Total Deductions',
+        count: `Rs. ${this.totalDeductions} ( ${this.convertToReadableFormat(
+          this.totalDeductions
+        )} )`,
+        textcolor: '#E74C3C', // Red for deductions (represents money going out)
+        backgroundcolor: '#FDEDEC',
+      },
+      {
+        name: 'piggy-bank', // Represents net salary (final savings or payout)
+        displayName: 'Total Net Salary',
+        count: `Rs. ${this.totalNetSalary} ( ${this.convertToReadableFormat(
+          this.totalNetSalary
+        )} )`,
+        textcolor: '#27AE60', // Green to indicate received/savings amount
+        backgroundcolor: '#E9F7EF',
+      },
+    ];
+  }
+
+  convertToReadableFormat(amount: number): string {
+    if (amount >= 10000000) {
+      // Convert to Crores
+      return (
+        (amount / 10000000).toFixed(amount % 10000000 === 0 ? 0 : 2) + ' Cr'
+      );
+    } else if (amount >= 100000) {
+      // Convert to Lakhs
+      return (amount / 100000).toFixed(amount % 100000 === 0 ? 0 : 2) + ' L';
+    } else if (amount >= 1000) {
+      // Convert to Thousands
+      return (amount / 1000).toFixed(amount % 1000 === 0 ? 0 : 1) + ' K';
+    } else {
+      // Show the exact number
+      return amount.toString();
+    }
+  }
+
   onDateChange(event: any) {
     this.selectedMonth = this.moment(event).format('YYYY-MM');
     this.displayMonth = this.moment(event).format('MMMM YYYY');
@@ -100,6 +165,7 @@ export class PayrollComponent {
       this.selectedMonth
     );
     this.loadPayslips(this.currentTableEvent);
+    this.getEmployeesStatusCount();
   }
   getEmployees(filter = {}) {
     this.loading = true;
@@ -132,6 +198,39 @@ export class PayrollComponent {
       },
       (error: any) => {
         this.loading = false;
+        this.toastService.showError(error);
+      }
+    );
+  }
+  getEmployeesStatusCount(filter = {}) {
+    filter['payrollMonth-eq'] = this.selectedMonth;
+    this.employeesService.getPayroll(filter).subscribe(
+      (response: any) => {
+        // Ensure response is treated as an array
+        console.log(response);
+        this.totalSalary = response.reduce((sum, emp) => sum + emp.salary, 0);
+        const deductions = response.reduce(
+          (sum, emp) => sum + emp.deductions,
+          0
+        );
+        const professionalTax = response.reduce(
+          (sum, emp) => sum + emp.professionalTax,
+          0
+        );
+        this.totalDeductions = deductions + professionalTax;
+        this.totalNetSalary = response.reduce(
+          (sum, emp) => sum + emp.netSalary,
+          0
+        );
+        this.payrollEmployees = response.length;
+        console.log('Total Salary:', this.totalSalary);
+        console.log('Total Deductions:', this.totalDeductions);
+        console.log('Total Net Salary:', this.totalNetSalary);
+        console.log('Total Payroll Employees:', this.payrollEmployees);
+
+        this.updateCountsAnalytics();
+      },
+      (error: any) => {
         this.toastService.showError(error);
       }
     );

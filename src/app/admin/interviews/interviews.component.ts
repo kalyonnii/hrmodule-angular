@@ -263,7 +263,8 @@ export class InterviewsComponent implements OnInit {
   updateCountsAnalytics() {
     this.countsAnalytics = [
       {
-        name: 'circle-user',
+        icon: 'circle-user',
+        name:'all',
         displayName: 'All Interviews',
         count:
           this.interviewStatusCount[1] +
@@ -273,21 +274,24 @@ export class InterviewsComponent implements OnInit {
         backgroundcolor: '#F0EFFF',
       },
       {
-        name: 'circle-half-stroke',
+        icon: 'circle-half-stroke',
+        name:'pending',
         displayName: 'Pending Interviews',
         count: this.interviewStatusCount[1],
         textcolor: '#FFC107',
         backgroundcolor: '#FFF3D6',
       },
       {
-        name: 'check-circle',
+        icon: 'check-circle',
+        name:'selected',
         displayName: 'Selected Interviews',
         count: this.interviewStatusCount[2],
         textcolor: '#2ECC71',
         backgroundcolor: '#F0F9E8',
       },
       {
-        name: 'circle-xmark',
+        icon: 'circle-xmark',
+        name:'rejected',
         displayName: 'Rejected Interviews',
         count: this.interviewStatusCount[3],
         textcolor: '#DC3545',
@@ -295,6 +299,14 @@ export class InterviewsComponent implements OnInit {
       },
     ];
   }
+  cardClick(item: any) {
+    this.selectedInterviewStatus = this.interviewInternalStatusList.find(
+      (status) => status.name === item.name
+    );
+    console.log(this.selectedInterviewStatus)
+    this.statusChange({ value: this.selectedInterviewStatus });
+  }
+
   actionItems(interview: any): MenuItem[] {
     const menuItems: any = [{ label: 'Actions', items: [] }];
     menuItems[0].items.push({
